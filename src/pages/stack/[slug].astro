@@ -40,7 +40,12 @@ const tierColor =
     : "var(--color-tier-meta)";
 
 const projects = loadProjectsForLayer(entry.data.slug);
-const readings = loadReadingsForLayer(entry.data.slug);
+// Layer-page "Learn more" shows most-recent first so the user sees
+// fresh material (2025-2026) before foundational primary sources fall
+// into view. Full year-grouped reading list lives at /learn/<slug>.
+const readings = [...loadReadingsForLayer(entry.data.slug)]
+  .sort((a, b) => b.year - a.year)
+  .slice(0, 8);
 const predictions = loadPredictionsForLayer(entry.data.slug);
 
 // Pull latest news bucket count for this layer from the most recent
@@ -304,7 +309,7 @@ const orderedProjects = [...projects].sort(
           <section class="mb-12">
             <h2 class="font-sans text-xl font-semibold mb-1">Learn more</h2>
             <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
-              {readings.length} hand-picked &middot; primary sources first
+              {readings.length} most recent &middot; full grouped list at /learn/{entry.data.slug}
             </p>
             <ul class="space-y-3">
               {readings.map((r) => (

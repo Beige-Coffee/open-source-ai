@@ -26,8 +26,8 @@ readings:
     url: "http://www.incompleteideas.net/IncIdeas/BitterLesson.html"
     type: post
     year: 2019
-    layers: [silicon, compute, training]
-    description: "Why compute, not cleverness, wins in AI. The most-cited 700 words in modern AI strategy."
+    layers: [silicon]
+    description: "Why compute, not cleverness, wins in AI. The most-cited 700 words in modern AI strategy. The argument anchors silicon-layer reasoning even though the essay predates the transformer era."
 
   - title: "RISC-V: An Open Architecture Atlas"
     source: RISC-V International
@@ -75,8 +75,8 @@ readings:
     url: "https://bittensor.com/whitepaper"
     type: paper
     year: 2021
-    layers: [compute, weights, training]
-    description: "The original whitepaper. Token-incentive design for distributed compute and model training. Read alongside the subnet docs."
+    layers: [compute]
+    description: "Original whitepaper for the leading token-incentivized distributed compute network. Read alongside the current subnet docs to see what shipped vs. what was theory."
 
   - title: "Cloud GPU Pricing, Tracked"
     source: getdeploying.com / artificialanalysis
@@ -134,14 +134,6 @@ readings:
     year: 2023
     layers: [data, governance]
     description: "Read the actual complaint, not the news coverage. Sets the legal frame for every dataset-licensing decision being made today."
-
-  - title: "Datasheets for Datasets"
-    source: Timnit Gebru et al.
-    url: "https://arxiv.org/abs/1803.09010"
-    type: paper
-    year: 2018
-    layers: [data, governance]
-    description: "The proposal that made dataset documentation a standard practice. Still the best primer."
 
   - title: "DCLM: Datacomp-LM"
     source: DCLM team (UW, Apple, Anthropic, others)
@@ -214,8 +206,8 @@ readings:
     url: "https://arxiv.org/abs/2108.07258"
     type: paper
     year: 2021
-    layers: [weights, governance]
-    description: "The paper that named the category. Still the best framing of why weights matter politically, not just technically."
+    layers: [governance]
+    description: "The paper that named the category. Still the best framing of why foundation models are a political object, not only a technical one."
 
   - title: "The Llama Community License, Annotated"
     source: Mark Lemley / Open Source Initiative
@@ -503,14 +495,6 @@ readings:
     layers: [governance, weights, data]
     description: "Read the actual text, not the takes about it. The most-contested definition in the field."
 
-  - title: "Llama Community License, Annotated"
-    source: Mark Lemley (Stanford Law)
-    url: "https://opensource.org/blog/meta-llama-license-still-not-open-source"
-    type: post
-    year: 2024
-    layers: [governance, weights]
-    description: "Why Llama is not OSI-open and why the 700M-user clause is the operative constraint."
-
   - title: "EU AI Act, Plain English"
     source: Future of Life Institute
     url: "https://artificialintelligenceact.eu/"
@@ -689,3 +673,110 @@ readings:
     year: 2026
     layers: [sovereignty-decentralization, governance]
     description: "Our own working definition of sovereign AI and how it differs from 'national AI', 'open AI', and 'decentralized AI'."
+
+  # Recent additions (2025-2026 refresh)
+  # Curated for layer pages where the older catalog read stale.
+
+  - title: "Building Effective Agents"
+    source: Anthropic
+    url: "https://www.anthropic.com/research/building-effective-agents"
+    type: post
+    year: 2024
+    layers: [agents]
+    description: "Anthropic's plain-English breakdown of agent design patterns (workflows vs. agents, tool use, evaluation). Read before reading any framework's docs."
+
+  - title: "Goose: An On-Machine, Open AI Agent"
+    source: Block (Square Crypto / Spiral)
+    url: "https://block.github.io/goose/"
+    type: docs
+    year: 2025
+    layers: [agents, sovereignty-decentralization]
+    description: "Sovereignty-positioned open agent: extension-based, runs on your machine, BYOK on the model, MCP-native. Now under the Linux Foundation's AAIF."
+
+  - title: "Awesome MCP Servers"
+    source: Model Context Protocol community
+    url: "https://github.com/modelcontextprotocol/servers"
+    type: docs
+    year: 2025
+    layers: [protocols]
+    description: "Community-maintained index of MCP server implementations. The fastest way to understand what people are actually building on MCP."
+
+  - title: "vLLM V1: A Major Upgrade to vLLM Architecture"
+    source: vLLM team
+    url: "https://blog.vllm.ai/"
+    type: post
+    year: 2025
+    layers: [runtime]
+    description: "The architecture rewrite that landed in early 2025. Reset the perf baseline; read alongside the original PagedAttention paper to see what changed."
+
+  - title: "GPT-OSS: Open-Weights Frontier Models from OpenAI"
+    source: OpenAI
+    url: "https://openai.com/index/introducing-gpt-oss/"
+    type: post
+    year: 2025
+    layers: [weights]
+    description: "OpenAI's first open-weights release in years (gpt-oss-120b and gpt-oss-20b, Apache 2.0). Significant strategic signal regardless of capability."
+
+  - title: "FineWeb 2: A Multilingual Pretraining Corpus"
+    source: HuggingFace
+    url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
+    type: docs
+    year: 2024
+    layers: [data]
+    description: "Open multilingual pretraining corpus across 1000+ languages. The most ambitious open-data response to closed multilingual training mixes."
+
+  - title: "Anthropic Economic Index"
+    source: Anthropic
+    url: "https://www.anthropic.com/economic-index"
+    type: post
+    year: 2025
+    layers: [agents, governance]
+    description: "Recurring report on how Claude is actually used in the workforce. Best public proxy for measuring agent and assistant adoption by occupation."
+
+  - title: "The Foundation Model Transparency Index, 2025"
+    source: Stanford HAI / CRFM
+    url: "https://crfm.stanford.edu/fmti/"
+    type: docs
+    year: 2025
+    layers: [governance, weights]
+    description: "Scored transparency across 14 frontier developers on data, labor, compute, and downstream impact. The most-actionable open-vs-closed scorecard."
+
+  - title: "Patterns for Building LLM-based Systems and Products"
+    source: Eugene Yan
+    url: "https://eugeneyan.com/writing/llm-patterns/"
+    type: post
+    year: 2024
+    layers: [agents, retrieval-memory]
+    description: "Production-shaped patterns (evals, RAG, fine-tuning, caching, guardrails, monitoring) from someone who actually ships them. Re-read every six months."
+
+  - title: "DeepSeek-V3.1 Release Notes"
+    source: DeepSeek
+    url: "https://api-docs.deepseek.com/news/news250821"
+    type: docs
+    year: 2025
+    layers: [weights]
+    description: "Hybrid reasoning architecture: one model with both thinking and non-thinking modes. The release that signaled the next frontier-architecture inflection."
+
+  - title: "Karpathy: Software Is Changing (Again)"
+    source: Andrej Karpathy
+    url: "https://www.youtube.com/@AndrejKarpathy"
+    type: talk
+    year: 2025
+    layers: [agents, weights]
+    description: "Karpathy's recurring framing of LLMs as a new computing substrate. Watch the most recent talk; rewatch when his framing updates (it does, often)."
+
+  - title: "INTELLECT-2: 32B Globally-Distributed RL"
+    source: Prime Intellect
+    url: "https://www.primeintellect.ai/blog/intellect-2"
+    type: post
+    year: 2025
+    layers: [sovereignty-decentralization, training]
+    description: "Globally-distributed reinforcement-learning training of a 32B reasoning model. The successor to INTELLECT-1; read for the reproducible-distributed-training playbook."
+
+  - title: "Semianalysis: AI Compute Quarterly"
+    source: SemiAnalysis (Dylan Patel et al.)
+    url: "https://semianalysis.com/"
+    type: post
+    year: 2026
+    layers: [silicon, compute]
+    description: "The most-credible paid newsletter on hyperscaler buildouts and chip-supply economics. Filter to the chip-supply and inference-economics posts."
