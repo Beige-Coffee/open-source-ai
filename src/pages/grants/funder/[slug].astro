@@ -1,0 +1,165 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { loadLayers } from "../../../lib/layers";
+import { loadFunders, loadGrants, formatUsd } from "../../../lib/grants";
+
+export async function getStaticPaths() {
+  const funders = loadFunders();
+  return funders.map((f) => ({
+    params: { slug: f.slug },
+    props: { funder: f },
+  }));
+}
+
+const { funder } = Astro.props;
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+
+const grants = loadGrants();
+const funderGrants = grants.filter((g) => g.funder === funder.slug);
+---
+
+<BaseLayout
+  title={`${funder.name} · Funder profile`}
+  description={funder.mission}
+>
+  <section class="max-w-3xl mx-auto px-6 pt-12 pb-2">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+    >
+      <a href="/grants" class="no-underline hover:underline text-[var(--color-text-subtle)]">
+        Grants
+      </a>
+      <span> &middot; </span>
+      <span>{funder.region} &middot; {funder.type}</span>
+    </p>
+    <h1 class="font-serif text-3xl md:text-4xl leading-tight tracking-tight mb-4">
+      {funder.name}
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">
+      {funder.mission}
+    </p>
+  </section>
+
+  <div class="max-w-5xl mx-auto px-6 grid gap-12 md:grid-cols-[1fr_240px] mt-8">
+    <article class="prose">
+      <h2>Notable recent</h2>
+      <p>{funder.notable_recent}</p>
+
+      {
+        funderGrants.length > 0 && (
+          <>
+            <h2>Documented grants ({funderGrants.length})</h2>
+            <ul class="not-prose space-y-3">
+              {funderGrants.map((g) => (
+                <li class="border border-[var(--color-border)] rounded-md p-3 bg-[var(--color-surface)]">
+                  <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+                    <a
+                      href={g.url}
+                      class="font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:no-underline text-sm"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      {g.title}
+                    </a>
+                    <span class="font-mono text-[11px] text-[var(--color-text-subtle)]">
+                      {g.date} · {g.amount_label}
+                    </span>
+                  </div>
+                  <p class="text-xs text-[var(--color-text-muted)] mb-2">
+                    Recipient: {g.recipient}
+                  </p>
+                  <p class="text-sm text-[var(--color-text)] mb-2">{g.notes}</p>
+                  <div class="flex flex-wrap gap-1">
+                    {g.layers.map((layerSlug) => {
+                      const layer = findLayer(layerSlug);
+                      if (!layer) return null;
+                      return (
+                        <a
+                          href={`/stack/${layer.slug}`}
+                          class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-[var(--color-border)] rounded no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] text-[var(--color-text-muted)]"
+                        >
+                          {layer.title}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+
+      <h2>Process</h2>
+      <p>{funder.process}</p>
+
+      <h2>Cadence</h2>
+      <p>{funder.cadence}</p>
+
+      <p>
+        <a href={funder.url} target="_blank" rel="noopener">
+          Visit {funder.name} &rarr;
+        </a>
+      </p>
+    </article>
+
+    <aside class="text-sm space-y-6">
+      <div
+        class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+      >
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+          Type
+        </p>
+        <p class="font-medium mb-3">{funder.type}</p>
+
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+          Region
+        </p>
+        <p class="font-medium mb-3">{funder.region}</p>
+
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+          Funding range
+        </p>
+        <p class="font-mono text-xs text-[var(--color-text-muted)] mb-3">{funder.funding_range}</p>
+
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+          Cadence
+        </p>
+        <p class="font-mono text-xs text-[var(--color-text-muted)]">{funder.cadence}</p>
+      </div>
+
+      {
+        funder.focus_layers && funder.focus_layers.length > 0 && (
+          <div>
+            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+              Focus layers
+            </p>
+            <ul class="space-y-1">
+              {funder.focus_layers
+                .map((slug) => findLayer(slug))
+                .filter((l) => l)
+                .map((l) => (
+                  <li>
+                    <a
+                      href={`/stack/${l!.slug}`}
+                      class="no-underline hover:underline text-sm"
+                    >
+                      {l!.title}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="text-xs text-[var(--color-text-subtle)]">
+        <a href="/grants" class="no-underline hover:underline">
+          ← All funders
+        </a>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

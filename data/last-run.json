@@ -1,6 +1,63 @@
 {
-  "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run. Start state is empty; the first run treats all items as new but caps to max_items_per_day.",
+  "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": null,
-  "sources": {}
+  "last_run_at": "2026-05-13T08:00:00-07:00",
+  "sources": {
+    "vllm-releases": {
+      "last_seen_tag": "v0.21.0rc2",
+      "last_seen_at": "2026-05-13"
+    },
+    "sglang-releases": {
+      "last_seen_tag": "v0.5.11",
+      "last_seen_at": "2026-05-05"
+    },
+    "mcp-releases": {
+      "last_seen_tag": "2025-11-25",
+      "last_seen_at": "2025-11-25"
+    },
+    "mcp-blog": {
+      "last_seen_at": null,
+      "note": "feed returned 404 on 2026-05-13; logged to fetch-errors.jsonl"
+    },
+    "interconnects": {
+      "last_seen_url": "https://www.interconnects.ai/p/how-open-model-ecosystems-compound",
+      "last_seen_at": "2026-05-12"
+    },
+    "eleutherai-blog": {
+      "last_seen_url": "https://blog.eleuther.ai/reward-hacking-indicators/",
+      "last_seen_at": "2026-04-15"
+    },
+    "semianalysis": {
+      "last_seen_url": "https://newsletter.semianalysis.com/p/cerebras-faster-tokens-please",
+      "last_seen_at": "2026-05-13"
+    },
+    "chips-and-cheese": {
+      "last_seen_url": "https://chipsandcheese.com/p/evaluating-geekbench-6",
+      "last_seen_at": "2026-05-07"
+    },
+    "latent-space": {
+      "last_seen_url": "https://www.latent.space/p/ainews-the-end-of-finetuning",
+      "last_seen_at": "2026-05-13"
+    },
+    "lmarena-blog": {
+      "last_seen_at": null,
+      "note": "feed at blog.lmarena.ai/feed.xml 301-redirects to arena.ai/blog/feed.xml; sources.yaml entry may need a human update"
+    },
+    "osi-blog": {
+      "last_seen_url": "https://opensource.org/blog/listening-learning-and-building-together-at-osi",
+      "last_seen_at": "2026-05-13"
+    },
+    "import-ai": {
+      "last_seen_url": "https://importai.substack.com/p/import-ai-456-rsi-and-economic-growth",
+      "last_seen_at": "2026-05-11"
+    },
+    "apple-security-blog": {
+      "last_seen_at": null,
+      "note": "feed returned 404 on 2026-05-13; logged to fetch-errors.jsonl"
+    },
+    "ezkl-blog": {
+      "last_seen_url": "https://blog.ezkl.xyz/post/defi3dot0/",
+      "last_seen_at": "2025-04-10"
+    }
+  }
 }

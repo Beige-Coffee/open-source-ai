@@ -1,0 +1,3 @@
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "mcp-blog", "url": "https://blog.modelcontextprotocol.io/feed.xml", "error": "HTTP 404"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "apple-security-blog", "url": "https://security.apple.com/blog/feed.xml", "error": "HTTP 404"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "lmarena-blog", "url": "https://blog.lmarena.ai/feed.xml", "error": "301 redirect to https://arena.ai/blog/feed.xml; sources.yaml needs human update"}

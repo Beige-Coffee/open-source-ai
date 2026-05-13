@@ -1,0 +1,66 @@
+---
+date: 2026-05-13
+editorial_letter: "This is the inaugural issue of the daily roundup. Today the runtime layer carried three primary-source releases (vLLM v0.21.0rc2 and v0.20.2 plus SGLang v0.5.11), the silicon layer logged a SemiAnalysis write-up on Cerebras wafer-scale inference, and the governance layer covered both the OSI's new executive director update and Jack Clark's Import AI 456. The most significant primary release of the day is vLLM v0.21.0rc2, which packages bundled DeepGEMM and wires the nvidia-cutlass-dsl[cu13] extra for CUDA 13 platforms."
+item_count: 8
+layer_buckets:
+  silicon: 2
+  weights: 1
+  runtime: 3
+  governance: 2
+---
+
+## Silicon
+
+### Cerebras: Faster Tokens Please
+
+SemiAnalysis published a technical write-up on Cerebras wafer-scale inference, the Cerebras and OpenAI partnership, and the economics of fast token generation. The piece is dated 2026-05-13.
+
+Source: [SemiAnalysis](https://newsletter.semianalysis.com/p/cerebras-faster-tokens-please)
+
+### Evaluating Geekbench 6
+
+Chester Lam at Chips and Cheese posted an evaluation of Geekbench 6, examining its instruction composition, branch prediction patterns, and memory access behavior across modern CPU microarchitectures including Intel Lion Cove and AMD Zen 5. Published 2026-05-07.
+
+Source: [Chips and Cheese](https://chipsandcheese.com/p/evaluating-geekbench-6)
+
+## Weights
+
+### How open model ecosystems compound
+
+Nathan Lambert posted a piece on Interconnects arguing that China's open-first AI release pattern produces cost advantages by letting labs learn from peers and avoid duplicating research effort. Dated 2026-05-12.
+
+Source: [Interconnects](https://www.interconnects.ai/p/how-open-model-ecosystems-compound)
+
+## Runtime
+
+### vLLM v0.21.0rc2
+
+vLLM tagged a release candidate v0.21.0rc2 on 2026-05-13. The noted change installs the nvidia-cutlass-dsl[cu13] extra on CUDA 13 platforms, continuing the v0.21.0rc1 work to package bundled DeepGEMM as a per-Python _C module so the wheel imports correctly.
+
+Source: [vLLM GitHub Releases](https://github.com/vllm-project/vllm/releases/tag/v0.21.0rc2)
+
+### vLLM v0.20.2
+
+vLLM v0.20.2 shipped on 2026-05-10 as a patch on the v0.20 stable line. It precedes the in-progress v0.21.0 release candidates.
+
+Source: [vLLM GitHub Releases](https://github.com/vllm-project/vllm/releases/tag/v0.20.2)
+
+### SGLang v0.5.11
+
+SGLang published v0.5.11 on 2026-05-05. The release notes reference v0.5.10.post1 as the prior comparison point.
+
+Source: [SGLang GitHub Releases](https://github.com/sgl-project/sglang/releases/tag/v0.5.11)
+
+## Governance
+
+### Listening, Learning, and Building Together at OSI
+
+Duane O'Brien, the new OSI executive director, posted a one-month update on 2026-05-13. The note outlines plans to attend UN Open Source Week and continues the organization's focus on the Open Source AI Definition.
+
+Source: [Open Source Initiative](https://opensource.org/blog/listening-learning-and-building-together-at-osi)
+
+### Import AI 456: RSI and economic growth; radical optionality for AI regulation; and a neural computer
+
+Jack Clark's Import AI 456 (2026-05-11) covers recursive self-improvement as a driver of economic growth, an argument for "radical optionality" as an AI-regulation approach, and a write-up of a neural-computer research direction.
+
+Source: [Import AI](https://importai.substack.com/p/import-ai-456-rsi-and-economic-growth)

@@ -1,0 +1,1 @@
+{"timestamp": "2026-05-13T08:00:00-07:00", "duration_ms": null, "items_fetched": 50, "items_kept": 8, "layers_covered": ["silicon", "weights", "runtime", "governance"], "sources_attempted": 14, "errors": ["mcp-blog: 404", "apple-security-blog: 404", "lmarena-blog: 301 redirect"], "notes": "inaugural issue; first-run cap of 10 applied; preferred very-high signal sources"}

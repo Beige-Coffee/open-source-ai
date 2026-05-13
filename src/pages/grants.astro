@@ -1,12 +1,52 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadLayers } from "../lib/layers";
+import {
+  loadFunders,
+  loadGrants,
+  loadUnderfunded,
+  buildLayerRollup,
+  formatUsd,
+} from "../lib/grants";
+
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const funders = loadFunders();
+const grants = loadGrants();
+const underfunded = loadUnderfunded();
+const rollup = buildLayerRollup();
+
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+const findFunder = (slug: string) => funders.find((f) => f.slug === slug);
+
+const recentGrants = grants.slice(0, 12);
+
+const layerRollupRows = allLayers
+  .map((layer) => ({
+    layer,
+    row: rollup[layer.slug] || {
+      layer: layer.slug,
+      grant_count: 0,
+      total_usd: 0,
+      underfunded_count: 0,
+      underfunded_high_count: 0,
+      funders: new Set<string>(),
+    },
+  }))
+  .filter((entry) => entry.row.grant_count > 0 || entry.row.underfunded_count > 0)
+  .sort((a, b) => b.row.total_usd - a.row.total_usd);
+
+const totalDocumentedUsd = grants.reduce(
+  (sum, g) => sum + (g.amount_usd || 0),
+  0,
+);
 ---
 
 <BaseLayout
   title="Grants"
   description="Who funds open-source AI, what they fund, where the gaps are, and concrete project shapes for new grantees."
 >
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12">
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
     <p
       class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
     >
@@ -17,50 +57,283 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     >
       Who funds what, and where the gaps are
     </h1>
-    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
       Active funders. Recently funded projects with layer attribution.
       Underfunded areas. Concrete project shapes a new grantee could fund.
-      A heat map of "where the money is going" versus "where it should."
+      All sourced from public announcements; layer attribution applied here.
     </p>
-    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mt-4">
-      The grants section is wired up but not yet populated. Week 3 of the
-      build lands the schema (funder, program, recent-funded, RFPs, layer
-      attribution), the initial seed data (top 5 funders plus their recent
-      funded projects), and the cross-layer "funded vs. underfunded" map.
-      Until then, see the
-      <a
-        href="/Users/austinv2/code/sovereign-ai-wiki/deliverables/open-source-ai-stack-plan.md"
-      >
-        plan document
-      </a>
-      for the research synthesis.
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose mt-4"
+    >
+      The headline number: AI captured roughly half of global venture capital
+      in 2025, but open-source's share of enterprise AI adoption fell from
+      19% to 11% over the same period. Funding is flowing past the OSS tier.
+      This page is the operational case for who can change that.
     </p>
   </section>
 
-  <section class="max-w-3xl mx-auto px-6 my-8 prose">
-    <h2>The headline number</h2>
-    <p>
-      AI captured roughly half of global venture capital in 2025, but
-      open-source's share of enterprise AI adoption fell from 19% to 11%
-      over the same period. Funding is flowing past the OSS tier. The
-      grants section is the operational case for who can change that.
+  <section
+    class="max-w-5xl mx-auto px-6 my-12 border-t border-b border-[var(--color-border)] py-6"
+  >
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+          Funders tracked
+        </p>
+        <p class="font-serif text-3xl mt-1">{funders.length}</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+          Grants documented
+        </p>
+        <p class="font-serif text-3xl mt-1">{grants.length}</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+          Underfunded gaps
+        </p>
+        <p class="font-serif text-3xl mt-1">{underfunded.length}</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+          Documented USD
+        </p>
+        <p class="font-serif text-3xl mt-1">
+          {formatUsd(totalDocumentedUsd)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Funded vs underfunded by layer -->
+  <section class="max-w-5xl mx-auto px-6 my-16">
+    <h2 class="font-serif text-2xl mb-2">Funded vs. underfunded, by layer</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
+      Per-layer rollup of grants flowing in versus named gaps in the
+      ecosystem. "High-priority gap" counts underfunded areas marked as
+      having credible budgets and near-term impact in `data/underfunded.yaml`.
     </p>
-    <h2>Active funders, briefly</h2>
-    <p>
-      In rough order of 2024-2026 dollar volume: NSF (with the $152M Ai2
-      OMAI grant August 2025 as the headline event), Schmidt Sciences ($18M
-      AI2050 plus $10M Safety Science), Open Philanthropy ($40M+ Technical
-      AI Safety RFP), UK AISI's Alignment Project (£27M to 60+ projects),
-      and NLnet / NGI Zero (200+ small grants per year, bi-monthly calls).
+    <div class="overflow-x-auto">
+      <table
+        class="w-full text-sm border-collapse"
+      >
+        <thead>
+          <tr class="bg-[var(--color-surface-warm)] text-left">
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold">Layer</th>
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold text-right">Grants</th>
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold text-right">Funders</th>
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold text-right">USD documented</th>
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold text-right">Gaps</th>
+            <th class="border border-[var(--color-border)] px-3 py-2 font-semibold text-right">High-priority gaps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            layerRollupRows.map(({ layer, row }) => (
+              <tr class="hover:bg-[var(--color-surface-warm)]">
+                <td class="border border-[var(--color-border)] px-3 py-2">
+                  <a
+                    href={`/stack/${layer.slug}`}
+                    class="no-underline hover:underline font-medium"
+                  >
+                    {layer.title}
+                  </a>
+                  <span
+                    class="ml-2 font-mono text-[10px] uppercase tracking-wider"
+                    style={`color: ${layer.slug.startsWith("evaluation") || layer.slug.startsWith("governance") || layer.slug.startsWith("identity") || layer.slug.startsWith("safety") || layer.slug.startsWith("sovereignty") ? "var(--color-tier-meta)" : "var(--color-tier-core)"}`}
+                  >
+                    {layers.core.find((l) => l.slug === layer.slug) ? "core" : "meta"}
+                  </span>
+                </td>
+                <td class="border border-[var(--color-border)] px-3 py-2 text-right font-mono">{row.grant_count}</td>
+                <td class="border border-[var(--color-border)] px-3 py-2 text-right font-mono">{row.funders.size}</td>
+                <td class="border border-[var(--color-border)] px-3 py-2 text-right font-mono">{formatUsd(row.total_usd)}</td>
+                <td class="border border-[var(--color-border)] px-3 py-2 text-right font-mono">{row.underfunded_count}</td>
+                <td class="border border-[var(--color-border)] px-3 py-2 text-right font-mono">{row.underfunded_high_count}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-[var(--color-text-subtle)] mt-3">
+      One grant can span multiple layers (e.g., OMAI hits weights + data + compute), so the grant count column sums to more than the absolute number of documented grants.
     </p>
-    <h2>Underfunded layers</h2>
+  </section>
+
+  <!-- Recently funded -->
+  <section class="max-w-5xl mx-auto px-6 my-16">
+    <h2 class="font-serif text-2xl mb-2">Recently funded</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
+      Newest first. Each entry: recipient, funder, amount where public,
+      layer attribution, and a one-line note.
+    </p>
+    <ul class="space-y-4">
+      {
+        recentGrants.map((g) => {
+          const funder = findFunder(g.funder);
+          return (
+            <li class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+              <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
+                <a
+                  href={g.url}
+                  class="font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:no-underline text-base"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {g.title}
+                </a>
+                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+                  {g.date} · {g.amount_label}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] mb-2">
+                {g.recipient}
+                {funder && (
+                  <>
+                    {" "}· funded by{" "}
+                    <a
+                      href={`/grants/funder/${funder.slug}`}
+                      class="no-underline hover:underline"
+                    >
+                      {funder.name}
+                    </a>
+                  </>
+                )}
+              </p>
+              <p class="text-sm text-[var(--color-text)] mb-3">{g.notes}</p>
+              <div class="flex flex-wrap gap-1.5">
+                {g.layers.map((layerSlug) => {
+                  const layer = findLayer(layerSlug);
+                  if (!layer) return null;
+                  return (
+                    <a
+                      href={`/stack/${layer.slug}`}
+                      class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-[var(--color-border)] rounded no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] text-[var(--color-text-muted)]"
+                    >
+                      {layer.title}
+                    </a>
+                  );
+                })}
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <!-- Funders -->
+  <section class="max-w-5xl mx-auto px-6 my-16">
+    <h2 class="font-serif text-2xl mb-2">Active funders</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
+      Top funders by 2024-2026 activity. Click a name for the full profile
+      and notable recent grants.
+    </p>
+    <div class="grid gap-4 md:grid-cols-2">
+      {
+        funders.map((f) => (
+          <a
+            href={`/grants/funder/${f.slug}`}
+            class="block border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)] hover:border-[var(--color-accent)] no-underline hover:no-underline group"
+          >
+            <div class="flex items-baseline justify-between gap-3 mb-1">
+              <span class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
+                {f.name}
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                {f.region} · {f.type}
+              </span>
+            </div>
+            <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-2">
+              {f.mission}
+            </p>
+            <p class="text-xs text-[var(--color-text-subtle)] font-mono">
+              {f.funding_range}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Underfunded areas -->
+  <section class="max-w-5xl mx-auto px-6 my-16">
+    <h2 class="font-serif text-2xl mb-2">Underfunded areas</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
+      Ten specific gaps in the open-source AI stack where credible project
+      shapes exist and no existing funder is sustainably covering the work.
+      Sorted by priority. Layer attribution maps back to the
+      <a href="/stack" class="no-underline hover:underline">stack</a>.
+    </p>
+    <ul class="space-y-6">
+      {
+        underfunded.map((u) => {
+          const layer = findLayer(u.layer);
+          const priorityColor =
+            u.priority === "high"
+              ? "var(--color-accent)"
+              : u.priority === "medium"
+                ? "var(--color-tier-meta)"
+                : "var(--color-text-subtle)";
+          return (
+            <li class="border-l-4 pl-4" style={`border-color: ${priorityColor}`}>
+              <div class="flex flex-wrap items-baseline gap-3 mb-1">
+                <span class="font-mono text-[10px] uppercase tracking-wider" style={`color: ${priorityColor}`}>
+                  {u.priority} priority
+                </span>
+                {layer && (
+                  <a
+                    href={`/stack/${layer.slug}`}
+                    class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] no-underline hover:underline"
+                  >
+                    {layer.title}
+                  </a>
+                )}
+              </div>
+              <h3 class="font-medium text-base text-[var(--color-text)] mb-2">
+                {u.title}
+              </h3>
+              <p class="text-sm text-[var(--color-text-muted)] mb-3 max-w-prose">
+                {u.description}
+              </p>
+              <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+                Project shapes
+              </p>
+              <ul class="list-disc list-inside text-sm text-[var(--color-text-muted)] space-y-1">
+                {u.project_shapes.map((shape) => (
+                  <li>{shape}</li>
+                ))}
+              </ul>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 my-16 prose">
+    <h2>Methodology</h2>
     <p>
-      Maintenance contracts for foundational OSS runtimes (lm-evaluation-harness,
-      vLLM, llama.cpp). Decentralized inference at frontier scale.
-      License-clean pretraining data (EleutherAI's Common Pile is essentially
-      alone). Benchmark-contamination scanners. Open RISC-V AI accelerator
-      reference designs. Multilingual eval datasets for low-resource
-      languages. Sandbox-escape capability evaluations.
+      Funder profiles come from public announcement pages, RFP texts, and
+      grants-announcement posts. Grant entries link to the primary source
+      where possible. The "funded vs. underfunded" rollup attributes each
+      grant to one or more stack layers based on the project's primary
+      focus; cross-layer grants count toward each layer.
+    </p>
+    <p>
+      Underfunded areas are synthesized from the May 2026 grants-ecosystem
+      research, cross-checked against currently-funded projects. The
+      project-shape descriptions are concrete enough that a grant
+      application could quote them.
+    </p>
+    <p>
+      A weekly grants-watch routine surfaces candidate new grants to a
+      review queue; entries enter this page only after human verification
+      of the primary source. Missing a grant? File an issue on
+      <a href="https://github.com/Beige-Coffee/open-source-ai/issues">GitHub</a>.
     </p>
   </section>
 </BaseLayout>

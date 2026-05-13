@@ -1,0 +1,139 @@
+# Sources for the weekly grants-watch routine.
+#
+# These are funder-announcement feeds, aggregator pages, and tracking
+# resources that surface new grants. The routine fetches each, classifies
+# candidates, and queues them in data/inbox/grants-needs-review.jsonl.
+# No auto-publish: human verifies before entries land in data/grants.yaml.
+
+funders:
+  - id: frontier-model-forum-updates
+    name: "Frontier Model Forum updates"
+    feed: "https://www.frontiermodelforum.org/updates/"
+    type: scrape
+    signal: very-high
+    notes: "AISF announcements; cohort reveals."
+
+  - id: nlnet-news
+    name: "NLnet news feed"
+    feed: "https://nlnet.nl/news/index.html"
+    type: scrape
+    signal: very-high
+    notes: "Every NGI Zero round, project list, dates."
+
+  - id: nsf-news-ai
+    name: "NSF news (AI focus areas)"
+    feed: "https://www.nsf.gov/news/index.jsp?org=NSF"
+    type: scrape
+    signal: high
+    notes: "Major institute and partnership announcements (filter for AI / OMAI / Ai2)."
+
+  - id: schmidt-sciences-opportunities
+    name: "Schmidt Sciences Opportunities"
+    feed: "https://www.schmidtsciences.org/opportunities/"
+    type: scrape
+    signal: high
+
+  - id: schmidt-sciences-announcements
+    name: "Schmidt Sciences announcements"
+    feed: "https://www.schmidtsciences.org/news/"
+    type: scrape
+    signal: high
+
+  - id: mozilla-foundation-press
+    name: "Mozilla Foundation press center"
+    feed: "https://foundation.mozilla.org/en/blog/"
+    type: scrape
+    signal: medium
+
+  - id: mozilla-builders-blog
+    name: "Mozilla Builders blog"
+    feed: "https://builders.mozilla.org/blog/"
+    type: scrape
+    signal: high
+
+  - id: sovereign-tech-agency-news
+    name: "Sovereign Tech Agency news"
+    feed: "https://www.sovereigntechfund.de/news/"
+    type: scrape
+    signal: high
+
+  - id: anthropic-news-funding
+    name: "Anthropic news (filter for programs and credits)"
+    feed: "https://www.anthropic.com/news"
+    type: scrape
+    signal: medium
+    notes: "Filter posts for Fellows / Economic Futures / Claude for OSS keywords."
+
+  - id: openai-index-funding
+    name: "OpenAI index (filter for grants and partnerships)"
+    feed: "https://openai.com/index/"
+    type: scrape
+    signal: medium
+
+  - id: lf-aaif-blog
+    name: "Linux Foundation AI and Data / AAIF announcements"
+    feed: "https://lfaidata.foundation/blog/"
+    type: scrape
+    signal: high
+
+  - id: open-philanthropy-grants
+    name: "Open Philanthropy grants database"
+    feed: "https://www.openphilanthropy.org/grants/"
+    type: scrape
+    signal: very-high
+    notes: "Searchable; filter for Technical AI Safety category."
+
+  - id: ai2-blog-funding
+    name: "AI2 blog (filter for funding posts)"
+    feed: "https://allenai.org/blog"
+    type: scrape
+    signal: medium
+
+  - id: huggingface-blog-grants
+    name: "HuggingFace blog (filter for grants posts)"
+    feed: "https://huggingface.co/blog/feed.xml"
+    type: rss
+    signal: medium
+
+aggregators:
+  - id: granted-ai
+    name: "GrantedAI"
+    feed: "https://grantedai.com/"
+    type: scrape
+    signal: medium
+    notes: "Aggregator that surfaces new AI-related RFPs early."
+
+  - id: opportunity-desk
+    name: "Opportunity Desk"
+    feed: "https://opportunitydesk.org/"
+    type: scrape
+    signal: low
+    notes: "Broad opportunity aggregator; filter for AI."
+
+  - id: ea-forum-grants
+    name: "EA Forum (grants tag)"
+    feed: "https://forum.effectivealtruism.org/tag/grants/feed.xml"
+    type: rss
+    signal: medium
+    notes: "Early signal on Open-Phil-shaped RFPs."
+
+  - id: lesswrong-funding
+    name: "LessWrong (funding-tagged)"
+    feed: "https://www.lesswrong.com/feed.xml"
+    type: rss
+    signal: low
+    notes: "Filter for funding / grants tags."
+
+regional:
+  - id: eu-horizon-news
+    name: "EU Horizon Europe AI news"
+    feed: "https://digital-strategy.ec.europa.eu/en/news"
+    type: scrape
+    signal: medium
+    notes: "Filter for AI / GenAI4EU / OpenEuroLLM / RAISE."
+
+  - id: aisi-uk-grants
+    name: "UK AISI grants page"
+    feed: "https://www.aisi.gov.uk/grants"
+    type: scrape
+    signal: high

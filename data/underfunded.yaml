@@ -1,0 +1,116 @@
+# Underfunded areas of the open-source AI stack, with concrete project
+# shapes a new grantee could pursue.
+#
+# Rendered at /grants in the "Underfunded areas" section and on each
+# per-layer page as a "Funding gap" sidebar item.
+#
+# Source: synthesized from the May 2026 grants-ecosystem research and
+# the news-sources research. Cross-checked against current funded-projects
+# in grants.yaml.
+
+underfunded:
+  - id: runtime-maintenance-contracts
+    layer: runtime
+    title: "Maintenance contracts for foundational OSS AI runtimes"
+    description: "Critical inference runtimes (vLLM, SGLang, llama.cpp, transformers) and evaluation infrastructure (lm-evaluation-harness) have no dedicated, sustained maintainer funding. Most maintainers are part-time, employer-sponsored, or volunteer. A single corporate exit or burnout incident threatens the open ecosystem."
+    project_shapes:
+      - "Fixed-term funded maintainer role for lm-evaluation-harness (EleutherAI lineage)"
+      - "Fixed-term funded maintainer role for vLLM (UC Berkeley origin, LF AI hosted)"
+      - "Fixed-term funded maintainer role for llama.cpp (Georgi Gerganov, post-HuggingFace acquisition)"
+      - "Fixed-term funded maintainer role for HuggingFace transformers (Apache 2.0, broad ecosystem dependency)"
+    priority: high
+
+  - id: decentralized-inference-research
+    layer: compute
+    title: "Decentralized / volunteer inference for current-gen MoE models"
+    description: "Petals-class decentralized inference works at small / medium model sizes but no public-goods funder is sustaining research on MoE-class inference at frontier scale. Prime Intellect and Templar have shipped decentralized training; decentralized inference of the same model sizes is mostly stalled."
+    project_shapes:
+      - "Re-implementation of Petals for current MoE architectures (DeepSeek V3, Qwen Max class)"
+      - "Verifiable computation layer for decentralized inference (proof-of-correct-inference, ZKML-adjacent)"
+      - "Latency-tolerant inference protocols suitable for residential-internet pipelines"
+    priority: high
+
+  - id: license-clean-pretraining-data
+    layer: data
+    title: "License-clean pretraining data corpora"
+    description: "EleutherAI's Common Pile v0.1 is essentially the only entity doing this work at scale. Dolma (AI2) covers some of it but uses non-Common-Pile licensing assumptions. No other lab is funding the multi-year work of curating, licensing, and shipping fully-redistributable pretraining corpora."
+    project_shapes:
+      - "License-clean corpus for code (alternative to The Stack)"
+      - "License-clean multilingual corpus (alternative to OSCAR / mC4)"
+      - "License-clean reasoning / math corpus (alternative to proprietary AI-Math, AIME training sets)"
+    priority: high
+
+  - id: multilingual-eval-low-resource
+    layer: evaluation
+    title: "Multilingual evaluation datasets for low-resource languages"
+    description: "Cohere Aya is one of few movers but covers ~100 languages. Thousands of languages with millions of speakers remain unevaluated. Without local-language evals, open-weights models cannot demonstrate non-English competence, which keeps closed-frontier models dominant in non-Anglo markets."
+    project_shapes:
+      - "African-languages eval suite (Yoruba, Swahili, Hausa, Amharic) at MMLU-Pro depth"
+      - "Indigenous-languages eval suite (Quechua, Cherokee, Maori) at basic-reasoning depth"
+      - "Dialectal Arabic / dialectal Chinese eval suite extensions"
+    priority: medium
+
+  - id: contamination-detection
+    layer: evaluation
+    title: "Benchmark-contamination detection tooling"
+    description: "Models trained on the eval data score artificially well. No public-goods detector exists that operators can run to scan a published model checkpoint against published benchmark sets and report contamination probability. The contamination-aware benchmarks (LiveBench) are partial workarounds, not solutions."
+    project_shapes:
+      - "Open scanner that ingests a HuggingFace checkpoint + benchmark and outputs contamination score"
+      - "Continuous-monitoring service that flags new releases against contamination signatures"
+      - "Benchmark refresh framework that auto-rotates held-out items"
+    priority: high
+
+  - id: open-ai-accelerator-reference
+    layer: silicon
+    title: "Open RISC-V AI accelerator reference design"
+    description: "Tenstorrent is the only company shipping open-trending AI accelerators, but their work is for-profit. No fabbable, open-licensed reference design exists for a RISC-V-based AI accelerator that academia or sovereign-tech communities can iterate on without commercial entanglement. Sovereign Tech Fund flirts with hardware but lacks AI-specific commitments."
+    project_shapes:
+      - "Tinygrad-class open accelerator reference design (chiplet-tape-out target)"
+      - "OpenTitan-style open AI accelerator IP for FPGA bring-up"
+      - "Open MLIR / Triton dialect lowering targeting open accelerators"
+    priority: medium
+
+  - id: civic-deliberation-toolkit
+    layer: sovereignty-decentralization
+    title: "Civic / public-comment AI infrastructure"
+    description: "Tools for legislatures, public consultations, FOIA, and democratic deliberation are mostly absent from the open-source AI stack. Closed vendors (Polis, some Mozilla-funded efforts) provide partial coverage; no end-to-end open civic-deliberation toolkit exists."
+    project_shapes:
+      - "Federated, end-to-end-encrypted LLM-assisted comment synthesis for public consultations"
+      - "Open transcription + summarization toolkit for legislative hearings"
+      - "FOIA-request-assist tooling for journalists and researchers"
+    priority: medium
+
+  - id: training-data-provenance
+    layer: data
+    title: "Auditable training-data provenance"
+    description: "C2PA-style attestation exists for images but not for training datasets. There is no public-goods system for proving 'this dataset contains exactly these sources, licensed under exactly these terms, scraped on exactly these dates.' Without provenance, the OSAID v2.0 data-disclosure clause cannot be operationalized."
+    project_shapes:
+      - "Open data-card generator with cryptographic provenance attestation"
+      - "Verifiable inclusion-list service for training datasets ('is my work in your data?')"
+      - "Continuous-monitoring service for web crawls that signals license changes upstream"
+    priority: high
+
+  - id: sandbox-escape-evals
+    layer: safety-guardrails
+    title: "Long-horizon sandboxing and sandbox-escape evaluations"
+    description: "Apollo Research and METR have done first-pass scheming evaluations. No open public-goods benchmark for agent runtime safety beyond the closed work exists. AISI Inspect is a framework, not a benchmark suite; the gap is shared evaluation data."
+    project_shapes:
+      - "Open sandbox-escape benchmark for agent runtimes (analog to SWE-bench for safety)"
+      - "Long-horizon scheming evaluation suite (multi-step deception detection)"
+      - "Capability-token enforcement evals (does the agent honor scoped permissions)"
+    priority: medium
+
+  - id: reproducibility-infrastructure
+    layer: evaluation
+    title: "Independent reproducibility infrastructure"
+    description: "Almost no funder pays for re-running released model training to verify reported numbers. Cost reasons (frontier training is $millions) plus credibility reasons (third parties cannot easily access the data and code). Without this, claimed benchmark numbers go unverified."
+    project_shapes:
+      - "Public-goods reproduction lab for small-and-medium model training (OLMo 1B, Phi-3.5 scale)"
+      - "Continuous reproduction service that re-runs published recipes on standardized hardware"
+      - "Recipe-card standard for end-to-end training runs (data + code + checkpoints + reproduction log)"
+    priority: medium
+
+priority_levels:
+  high: "Largest gaps; project shapes with credible ~$500K-$5M budgets; high near-term impact."
+  medium: "Real gaps with credible budgets; near-term impact dependent on adjacent infrastructure."
+  low: "Worth noting but not the most leveraged areas to fund."

@@ -1,0 +1,186 @@
+# Funders profile data for the Grants section.
+#
+# Rendered at /grants/funder/<slug>. Cited from the public grants section
+# at /grants. Edited by the weekly grants-watch routine (additions go to
+# data/inbox/grants-needs-review.jsonl first for human review).
+
+funders:
+  - slug: nsf
+    name: "National Science Foundation"
+    region: US
+    type: government
+    mission: "Largest sustained US AI research funder. AI Research Institutes program and partner programs (e.g., NSF-NVIDIA OMAI)."
+    funding_range: "$5M to $152M per major grant; AI Research Institutes ~$20M over 5 years."
+    cadence: "Annual + per-program RFPs"
+    process: "Federal RFP; consortium-based often; competitive."
+    url: "https://www.nsf.gov/news/"
+    focus_layers: [silicon, compute, data, weights, evaluation]
+    notable_recent: "$152M Ai2 OMAI partnership announced Aug 2025 (with NVIDIA matching), the first major US public funding to cross into open foundation-model training at scale."
+
+  - slug: schmidt-sciences
+    name: "Schmidt Sciences"
+    region: US
+    type: foundation
+    mission: "Trustworthy AI science, interpretability, alignment, 'AI for science.' Multiple programs (AI2050, Safety Science, AI Safety RFP)."
+    funding_range: "~$370K average per project (AI Safety Science); AI2050 fellowships at $18M cohort scale."
+    cadence: "Annual RFPs"
+    process: "RFP, academic-leaning. Pre-existing relationships help."
+    url: "https://www.schmidtsciences.org/"
+    focus_layers: [evaluation, safety-guardrails, governance]
+    notable_recent: "$10M AI Safety Science program covering 27 projects (Feb 2025 cohort: Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy)."
+
+  - slug: open-philanthropy
+    name: "Open Philanthropy (Coefficient Giving)"
+    region: US
+    type: foundation
+    mission: "Technical AI safety research across 21 areas. The default mover in mid-7-figure safety grants."
+    funding_range: "API-credit-scale to $5M+ org-scale grants."
+    cadence: "RFP plus rolling individual decisions."
+    process: "Open RFP for technical safety; structured around 21 areas."
+    url: "https://www.openphilanthropy.org/"
+    focus_layers: [safety-guardrails, evaluation, governance]
+    notable_recent: "$40M+ Technical AI Safety RFP closed April 15, 2025; FAR.AI received $6.65M over two years for FAR.Futures field-building."
+
+  - slug: aisi-alignment-project
+    name: "UK AI Security Institute (Alignment Project)"
+    region: UK
+    type: government
+    mission: "Frontier AI alignment research at the UK national-lab level. Released open Inspect evaluation framework."
+    funding_range: "Up to £1M per project."
+    cadence: "Currently closed for new applications (as of mid-2026)."
+    process: "Competitive open RFP when active."
+    url: "https://alignmentproject.aisi.gov.uk/"
+    focus_layers: [safety-guardrails, evaluation]
+    notable_recent: "£27M committed across 60+ alignment projects in 2025; Systemic AI Safety Grants total £8.5M; released open Inspect evaluation harness."
+
+  - slug: nlnet
+    name: "NLnet Foundation / NGI Zero"
+    region: EU
+    type: foundation
+    mission: "Open internet commons, increasingly inclusive of open AI and open data. Bi-monthly small-grant engine for protocols, interoperability, trusted open hardware."
+    funding_range: "€5K to €50K initial, with scale-up possibility."
+    cadence: "Bi-monthly open calls (13th NGI Zero Commons Fund call closes June 2026)."
+    process: "Permissive open application, accessible to small teams; capped initial amount; merit-based."
+    url: "https://nlnet.nl/"
+    focus_layers: [protocols, governance, identity-trust, data]
+    notable_recent: "€21.6M total commitment 2024-2027; 57 projects April 2026 round, 44 in March 2026, 45 in November 2025, 50 in January 2025."
+
+  - slug: mozilla
+    name: "Mozilla Foundation / Builders / Mozilla.ai"
+    region: US
+    type: foundation
+    mission: "Open-source AI tooling, developer-facing AI applications, democratic AI. Three audience-segmented sites (Builders, Mozilla.ai, AI Guide)."
+    funding_range: "$50K-$100K (Builders); $50K x 10 teams ($1M) for Democracy x AI Cohort 2026; $250K Sustain Track top-up."
+    cadence: "Annual cohort calls; rolling Builders applications."
+    process: "Open application; must agree to open-source the deliverable."
+    url: "https://builders.mozilla.org/"
+    focus_layers: [evaluation, agents, governance, sovereignty-decentralization]
+    notable_recent: "Democracy x AI Cohort 2026 announced ($1M across 10 teams). Mozilla Technology Fund previously awarded to lm-evaluation-harness (audit tools track)."
+
+  - slug: frontier-model-forum-aisf
+    name: "Frontier Model Forum AI Safety Fund (AISF)"
+    region: US
+    type: consortium
+    mission: "Industry-backed safety research fund. Anthropic, Google, Microsoft, OpenAI plus Patrick J. McGovern, Packard Foundation, Schmidt Sciences, Jaan Tallinn."
+    funding_range: "$10M+ total commitment; Dec 2025 round disbursed >$5M across 11 grantees."
+    cadence: "Annual RFPs in biosecurity, cybersecurity, agent evaluation, synthetic content."
+    process: "Closed-RFP, FMF-mediated."
+    url: "https://www.frontiermodelforum.org/ai-safety-fund/"
+    focus_layers: [safety-guardrails, evaluation, agents]
+    notable_recent: "Dec 2025 cohort: Apollo Research (black-box scheming monitors), Caltech BioSentinel, Institute for Decentralized AI, Faculty AI (automated red-teaming)."
+
+  - slug: anthropic
+    name: "Anthropic (Fellows, Economic Futures, Claude for OSS)"
+    region: US
+    type: corporate
+    mission: "Three programs serving distinct audiences. Fellows for safety researchers, Economic Futures for impact-research, Claude for OSS for maintainer support."
+    funding_range: "Fellows: $3,850/week stipend + ~$15K/month compute, 4 months. Economic Futures Research Awards: $10K-$50K. Claude for OSS: free Claude Max for 10K+ OSS maintainers."
+    cadence: "Cohort-based for Fellows; rolling for the others."
+    process: "Applications + eligibility gates (5K+ GitHub stars or 1M+ npm/month for OSS credits)."
+    url: "https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/"
+    focus_layers: [safety-guardrails, agents, sovereignty-decentralization]
+    notable_recent: "Claude for Open Source program (free Claude Max for 10K maintainers, announced Feb 2026, closing June 30 2026). May and July 2026 Fellows cohorts active."
+
+  - slug: sovereign-tech-fund
+    name: "Sovereign Tech Agency (Germany)"
+    region: EU
+    type: government
+    mission: "Foundational open-source infrastructure; explicit concern about AI dependencies on critical 'digital base components.'"
+    funding_range: "€17M budget 2025; €23M+ ($24.9M) deployed across 60 technologies in two years."
+    cadence: "Rolling applications; budget renewed annually."
+    process: "Direct funding to maintainers of critical open-source infrastructure."
+    url: "https://www.sovereigntechfund.de/"
+    focus_layers: [runtime, governance, identity-trust]
+    notable_recent: "Funded foundational deps: Sequoia, OpenSSH, GNU coreutils, curl. Positioning to fund AI-stack projects directly via the SOOFI initiative (German sovereign-LLM effort)."
+
+  - slug: eu-horizon
+    name: "European Commission Horizon Europe (GenAI4EU, OpenEuroLLM, RAISE)"
+    region: EU
+    type: government
+    mission: "EU digital sovereignty; trustworthy AI; open multilingual European LLMs."
+    funding_range: "€307.3M Q4 2025 call. €221.8M for trustworthy AI. €107M for RAISE pilot. €40M for Open Internet Stack."
+    cadence: "Multi-year programs with periodic open calls."
+    process: "Heavy consortium-based; multi-partner; long application windows."
+    url: "https://digital-strategy.ec.europa.eu/en/policies/genai4eu"
+    focus_layers: [weights, data, compute]
+    notable_recent: "OpenEuroLLM (open multilingual LLM consortium), AI4LIFE (open models/datasets), RAISE pilot launched at Copenhagen AI in Science Summit Nov 2025."
+
+  - slug: ai2
+    name: "Allen Institute for AI (Ai2)"
+    region: US
+    type: foundation
+    mission: "Funder-and-builder. Young Investigator Program, AI2 Incubator. Builds OLMo / Tülu / Molmo (the only major fully-open model families)."
+    funding_range: "Young Investigator Program $100K + compute. AI2 Incubator $600K-$1.6M for startups."
+    cadence: "Annual YIP cycle; rolling Incubator."
+    process: "Competitive application; institutional partnerships."
+    url: "https://allenai.org/"
+    focus_layers: [data, weights, evaluation]
+    notable_recent: "OLMo 2 32B (March 2025), OLMo 3 family (Nov 2025), OLMo 3.1 (Dec 2025), Molmo 2 video (Dec 2025), OMAI partnership with NSF (Aug 2025, $152M)."
+
+  - slug: cohere-labs
+    name: "Cohere Labs (formerly Cohere for AI)"
+    region: Multi
+    type: corporate
+    mission: "Multilingual LLM research; civic and academic API access; community grants."
+    funding_range: "API credits only (no cash). Catalyst Grants free access to Aya, Command, Rerank, Embed for civic and academic users."
+    cadence: "Rolling open application."
+    process: "Open application; API credits granted by quota."
+    url: "https://cohere.com/research/grants"
+    focus_layers: [weights, data, evaluation]
+    notable_recent: "Multilingual LLM education evaluation, expanding from Finnish to English, Spanish, and African languages via Cohere Aya."
+
+  - slug: huggingface
+    name: "HuggingFace Community Grants"
+    region: Multi
+    type: corporate
+    mission: "GPU credits for Spaces, robotics datasets, hosted model demos. Informal, community-mediated grants."
+    funding_range: "Compute grants only; informal scale."
+    cadence: "Rolling."
+    process: "HF Discord and forum-mediated; tied to specific Spaces or datasets."
+    url: "https://huggingface.co/"
+    focus_layers: [weights, data]
+    notable_recent: "Robotics datasets grew 1,145 (2024) to 26,991 (2025) after Pollen Robotics acquisition; various Spaces granted academic-tier GPU."
+
+  - slug: linux-foundation-aaif
+    name: "Linux Foundation / Agentic AI Foundation"
+    region: Multi
+    type: foundation
+    mission: "Open agent standards. Anchor projects: MCP (Anthropic), goose (Block), AGENTS.md (OpenAI)."
+    funding_range: "Member-dues funded; in-kind contributions from members (compute, engineering) rather than cash grants to outside teams."
+    cadence: "Member contribution model."
+    process: "Membership-based, not external grant program."
+    url: "https://aaif.linuxfoundation.org/"
+    focus_layers: [agents, protocols, governance]
+    notable_recent: "Founded Dec 9, 2025 with platinum tier AWS, Anthropic, Block, Bloomberg, Cloudflare, Google, Microsoft, OpenAI. David Nalley as chair. 97 new members by Feb 24, 2026."
+
+  - slug: protocol-labs
+    name: "Protocol Labs / Filecoin Foundation"
+    region: Multi
+    type: foundation
+    mission: "Decentralized storage; data layer; increasingly cross-cutting into AI."
+    funding_range: "$5K-$10K dev grants; larger Open Grants."
+    cadence: "Tri-monthly review cycle."
+    process: "Open application for dev grants; structured rounds for Open Grants."
+    url: "https://fil.org/grants"
+    focus_layers: [data, compute, sovereignty-decentralization]
+    notable_recent: "Filecoin AI data layer thesis emerging. Specific 2025-2026 AI grantees not yet verified in public sources."
