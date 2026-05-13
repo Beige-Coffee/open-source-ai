@@ -1,0 +1,82 @@
+---
+slug: runtime
+title: Runtime
+short_description: Inference engines that serve tokens from weights.
+tier: core
+order: 6
+lock_in_vector: runtime
+sovereignty_relevance: 5
+related_layers: [silicon, weights, agents]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+How weights become inference. Specifically: the engines that take a
+transformer model and serve tokens efficiently from it on actual
+hardware. Runtime sits between Weights and the application using the
+model, and it is the layer most invisible to end users but most decisive
+for production economics. The same Llama 3 70B model can cost 10x more
+on a poorly-tuned runtime than on a well-tuned one, and the difference
+shows up in dollars per million tokens served.
+
+This is also the layer where the open ecosystem has done some of its
+most surprising work. vLLM, llama.cpp, and SGLang are open-source
+projects that have repeatedly demonstrated parity with or improvement
+over closed-source equivalents like TensorRT-LLM, often within months.
+The runtime layer is the strongest argument for genuine open competition
+working: when a layer is open and the workload is well-defined, the open
+ecosystem catches up fast.
+
+## Open vs. closed
+
+The open side has converged on a small set of inference engines, each
+with a different specialty.
+
+**vLLM** is the dominant production-grade open inference engine, built
+by Woosuk Kwon and others (originally at Berkeley, now its own project
+under the LF AI and Data umbrella). Its core technical contribution is
+PagedAttention (memory management for KV-cache as virtual memory pages),
+plus continuous batching. Apache 2.0. Supports NVIDIA, AMD ROCm, Intel,
+and increasingly TPU.
+
+**SGLang** is the leading vLLM alternative, from the LMSYS team. Its
+central technical contribution is RadixAttention (KV-cache sharing
+across requests with a shared prefix tree), plus structured generation
+primitives. Apache 2.0. Gaining ground for use cases with heavy
+structured-output requirements or shared-prefix patterns.
+
+**llama.cpp** is Georgi Gerganov's project, the local-first inference
+engine. C++, runs on CPU, on Apple Silicon, on small GPUs. Defines the
+GGUF file format. MIT license. The only major engine that runs well on
+hardware you own outright.
+
+**TGI** (HuggingFace's Text Generation Inference) returned to Apache 2.0
+in late 2024 after a brief restrictive phase, and is in maintenance mode
+as of 2026. **Ollama** is the local UX layer over llama.cpp. **MLC-LLM**
+is the cross-platform compilation play.
+
+The closed side is **TensorRT-LLM**, NVIDIA's tightly-optimized inference
+engine. It is fast (often the fastest on NVIDIA hardware), NVIDIA-only,
+closed-source under NVIDIA's standard terms. Hyperscalers running
+first-party inference inside AWS Bedrock, Azure AI, or Google Vertex are
+running closed inference stacks; you do not see what runs underneath the
+API.
+
+## The lock-in vector
+
+Closed runtime defeats open silicon. Even if you have open silicon
+(RISC-V CPUs, Tenstorrent accelerators) and open weights, if the only
+economical way to serve those weights at production scale is on closed
+runtime that targets closed silicon, you are still inside NVIDIA's
+perimeter. The open runtimes have to be production-quality,
+hardware-portable, and broadly deployed, or the sovereignty argument
+collapses one layer down.
+
+The good news is that the open runtimes are actually winning at the
+technical layer. vLLM and SGLang are competitive with TensorRT-LLM on
+NVIDIA hardware and uniquely positioned on AMD and Intel. llama.cpp is
+the local-first standard. The bad news is that production inference at
+scale still routes mostly through hyperscaler hosted services running
+whatever they want underneath; the open-runtime victory is not yet
+visible in the inference economy's gross numbers.

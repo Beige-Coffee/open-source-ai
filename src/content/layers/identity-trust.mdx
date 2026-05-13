@@ -1,0 +1,64 @@
+---
+slug: identity-trust
+title: Identity and Trust
+short_description: TEEs, confidential computing, verifiable inference, agent passports.
+tier: meta
+order: 3
+lock_in_vector: identity
+sovereignty_relevance: 4
+related_layers: [silicon, runtime, agents, protocols]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+The cryptographic and hardware infrastructure that lets you verify what
+a model is doing or who an agent is. It is a meta-layer because it
+crosses every part of the production pipeline: trust anchors at silicon,
+confidential computing at runtime, verifiable inference at the model
+call, agent passports at the protocol layer.
+
+This layer is also new enough that the standard nine-layer taxonomy
+historically buried it under cross-cutting topics. Giving it a named
+meta-layer makes the dependencies visible: when sovereignty arguments
+require "you can prove the right model ran on your data," every piece
+of evidence comes from a different sub-cluster here.
+
+## What is in it
+
+**Trusted Execution Environments (TEEs)**: Intel SGX, AMD SEV, ARM
+TrustZone, Apple Secure Enclave, NVIDIA H100 Confidential Computing.
+Hardware-attested isolated execution.
+
+**Confidential computing services**: Phala Network (TEE-as-a-service),
+Apple PCC (Private Cloud Compute), various AWS / Azure / GCP
+confidential VM offerings.
+
+**Verifiable inference (ZKML)**: EZKL (zero-knowledge proofs for ML
+inference), Modulus Labs, Lagrange (ZK coprocessor for verifiable
+compute, including DeepProve).
+
+**Agent identity primitives**: agent passports (cryptographic
+credentials for autonomous agents acting on a user's behalf),
+decentralized identifiers (DIDs, W3C standard), Worldcoin / World ID
+(proof-of-personhood), L402 macaroons as a capability-token primitive.
+
+**an internal team-style productized trust anchors**: hardware-anchored personal-AI
+appliances where the trust anchor and the runtime live together,
+audited and privilege-separated (an internal team Aegis, the internal system).
+
+## The lock-in vector
+
+Identity and trust have a subtle lock-in: trust primitives depend on
+silicon vendor cooperation. NVIDIA H100 Confidential Computing only
+works on NVIDIA. Apple PCC only works in Apple's cloud. Intel SGX has
+its own complexities. If verifiable inference becomes load-bearing for
+sovereignty, the silicon-vendor monopoly at Layer 1 re-entrenches at
+the trust layer.
+
+The opposite framing: open-silicon counter-bets (Tenstorrent, RISC-V)
+have to develop their own trust-anchor stories before the silicon
+layer's open story is complete. As of 2026 this is mostly future
+work. ZKML approaches (EZKL, Modulus, Lagrange) try to make trust
+silicon-agnostic via pure cryptography, at substantial performance
+cost.

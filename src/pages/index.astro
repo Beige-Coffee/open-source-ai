@@ -1,17 +1,100 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import StackDiagram from "../components/StackDiagram.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="The Open-Source AI Stack">
+  <section class="max-w-4xl mx-auto px-6 pt-16 pb-4">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      A living map &middot; updated daily
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      The Open-Source AI Stack
+    </h1>
+    <p
+      class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      Nine core layers, five cross-cutting meta-layers, and the projects,
+      news, and funding flowing through each. Updated once a day at 08:00
+      Pacific by a scheduled agent that reads about thirty layer-specific
+      feeds, dedupes, and routes each item to the layer it affects.
+    </p>
+  </section>
+
+  <StackDiagram />
+
+  <section class="max-w-4xl mx-auto px-6 my-16 grid gap-8 md:grid-cols-2">
+    <a
+      href="/today"
+      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
+    >
+      <p
+        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+      >
+        Today
+      </p>
+      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
+        What moved at each layer today
+      </h2>
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        Per-layer roundup. One editorial paragraph, then layer-by-layer items
+        with citations. Yesterday and the week archive linked from the page.
+      </p>
+    </a>
+    <a
+      href="/grants"
+      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
+    >
+      <p
+        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+      >
+        Grants
+      </p>
+      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
+        Who funds what, and where the gaps are
+      </h2>
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        Active funders. Recently funded projects with layer attribution.
+        Underfunded areas and concrete project shapes for new grantees.
+      </p>
+    </a>
+    <a
+      href="/learn"
+      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
+    >
+      <p
+        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+      >
+        Learn
+      </p>
+      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
+        How to read the stack
+      </h2>
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        Per-layer reading lists. A daily concept hook. Curated talks, papers,
+        and project guides for going deeper at each layer.
+      </p>
+    </a>
+    <a
+      href="/about"
+      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
+    >
+      <p
+        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+      >
+        About
+      </p>
+      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
+        How this site is built and updated
+      </h2>
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        Open methodology. The scheduled agent that maintains the site, the
+        source feeds it reads, and the editorial rules it follows.
+      </p>
+    </a>
+  </section>
+</BaseLayout>

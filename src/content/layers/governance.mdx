@@ -1,0 +1,73 @@
+---
+slug: governance
+title: Governance
+short_description: Licensing, definitions, foundations, OSAID.
+tier: meta
+order: 2
+lock_in_vector: governance
+sovereignty_relevance: 4
+related_layers: [data, weights, protocols]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+Definitions, licenses, foundations, standards bodies, and the procedural
+infrastructure that decides what "open" means in the AI context.
+Governance is meta-relative-to-the-stack: it does not produce silicon,
+weights, or runtime, but it produces the definitions by which the other
+layers get judged.
+
+The dominant body is the Open Source Initiative (OSI), which has
+historically defined "open source" for software and which has now
+extended that work into AI. OSAID v1.0 (Open Source AI Definition,
+October 2024) is the first formal definition of "open source AI." It
+is contested in specific ways, especially around the requirement (or
+absence of requirement) for full data disclosure. The next OSAID
+revision cycle is scheduled to overlap Q4 2026.
+
+Other bodies that matter: the Linux Foundation as a neutral hosting and
+governance ground, AAIF (Agentic AI Foundation) as the agent-and-protocol
+focused subsidiary, the Apache Foundation for Apache 2.0 stewardship,
+and the lab-specific license families (Llama Community License, Gemma
+Terms, Mistral Research Tiers).
+
+## Open vs. closed
+
+The open governance landscape is small and structured. **OSI** is the
+long-standing body for software definitions, now extending into AI via
+OSAID. **Linux Foundation** is the neutral hosting body that owns AAIF,
+A2A, and various other AI projects. The **Free Software Foundation** has
+a different (stricter) posture but is less active in current AI
+governance discussions. The **Apache Software Foundation** stewards
+Apache 2.0, the most-used license for open AI projects.
+
+The contested governance question for AI specifically is OSAID v1.0's
+requirement: "weights, code, and data information sufficient for a
+skilled person to recreate a substantially equivalent system." Critics
+(especially Bradley Kuhn at the Software Freedom Conservancy and parts
+of the academic open-data community) argue that "data information
+sufficient" allows for closed-data models to claim open-source status.
+Supporters (OSI's Stefano Maffulli, AAIF) argue that requiring full data
+would make the definition impractical given the legal landscape around
+data licensing.
+
+The closed side at the governance layer is the absence of governance:
+lab-specific licenses (Llama Community License, Gemma Terms, Mistral
+Research Tiers) operate outside the OSI process and accumulate their own
+ecosystem-by-default. The dynamic: the more models ship under non-OSI
+licenses, the more "open" stops meaning "OSI-approved" and starts
+meaning "whatever the dominant lab calls open."
+
+## The lock-in vector
+
+Governance lock-in is the longest-cycle but most-foundational lock-in.
+Once a definition is in the field and adopted, changing it is a
+multi-year project. The OSAID v1.0 is the definition through approximately
+2026; if Llama Community License-style models become "open AI" in popular
+usage, OSAID risks being a definition nobody enforces, which is the
+worst possible outcome for definitional rigor.
+
+The constructive position: definitions matter, and the AAIF and OSI
+should be tightening the definitions rather than loosening them. The
+2026 OSAID revision cycle is the operational moment.

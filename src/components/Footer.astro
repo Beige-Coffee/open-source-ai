@@ -1,0 +1,49 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer
+  class="border-t border-[var(--color-border)] bg-[var(--color-surface)] mt-24"
+>
+  <div
+    class="max-w-6xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-4 text-sm text-[var(--color-text-muted)]"
+  >
+    <div class="md:col-span-2">
+      <p class="font-semibold text-[var(--color-text)] mb-2">
+        The Open-Source AI Stack
+      </p>
+      <p class="leading-relaxed">
+        A living map of the open-source AI stack. Updated daily by a scheduled
+        agent that reads ~30 layer-specific feeds, dedupes, and routes each
+        story to the layer it affects.
+      </p>
+    </div>
+    <div>
+      <p class="font-semibold text-[var(--color-text)] mb-2 text-xs uppercase tracking-wider">
+        Sections
+      </p>
+      <ul class="space-y-1">
+        <li><a href="/stack" class="no-underline hover:underline">The Stack</a></li>
+        <li><a href="/today" class="no-underline hover:underline">Today</a></li>
+        <li><a href="/news" class="no-underline hover:underline">News archive</a></li>
+        <li><a href="/learn" class="no-underline hover:underline">Learn</a></li>
+        <li><a href="/grants" class="no-underline hover:underline">Grants</a></li>
+        <li><a href="/about" class="no-underline hover:underline">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-[var(--color-text)] mb-2 text-xs uppercase tracking-wider">
+        Subscribe
+      </p>
+      <ul class="space-y-1">
+        <li><a href="/rss/news.xml" class="no-underline hover:underline">RSS · all news</a></li>
+        <li><a href="/rss" class="no-underline hover:underline">Per-layer feeds</a></li>
+      </ul>
+    </div>
+  </div>
+  <div
+    class="border-t border-[var(--color-border)] py-4 text-xs text-[var(--color-text-subtle)] text-center"
+  >
+    © {year} The Open-Source AI Stack
+  </div>
+</footer>

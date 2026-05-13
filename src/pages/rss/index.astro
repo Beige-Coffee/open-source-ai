@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadLayers } from "../../lib/layers";
+
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+---
+
+<BaseLayout
+  title="RSS feeds"
+  description="Subscribe to the full firehose or to any individual layer's feed."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12 prose">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+      style="font-family: var(--font-mono);"
+    >
+      RSS
+    </p>
+    <h1>Subscribe</h1>
+
+    <p>
+      One feed for everything, fourteen feeds per layer. Updated every day at
+      08:00 Pacific. Open in any RSS reader.
+    </p>
+
+    <h2>Full firehose</h2>
+    <ul>
+      <li>
+        <code>/rss/news.xml</code> — every daily issue, every layer.
+        <a href="/rss/news.xml">Subscribe</a>
+      </li>
+    </ul>
+
+    <h2>Per-layer feeds (coming Week 2)</h2>
+    <p>
+      Once the daily routine starts publishing in Week 2 of the build,
+      per-layer feeds become available at
+      <code>/rss/&lt;slug&gt;.xml</code>. The slugs:
+    </p>
+    <ul>
+      {
+        allLayers.map((layer) => (
+          <li>
+            <code>/rss/{layer.slug}.xml</code> — {layer.title}
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Email</h2>
+    <p>
+      Email subscription wiring lands with the news routine in Week 2. For
+      now, RSS is the only subscription channel.
+    </p>
+  </section>
+</BaseLayout>

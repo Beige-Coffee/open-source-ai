@@ -1,0 +1,72 @@
+---
+slug: data
+title: Data
+short_description: Training corpora, open and closed.
+tier: core
+order: 3
+lock_in_vector: data
+sovereignty_relevance: 4
+related_layers: [training, weights, governance]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+The training corpora. The text, code, images, audio, and synthetic data
+that go into pretraining and fine-tuning. This is the layer where "open"
+is the most ambiguous, because almost every open-weights model has data
+that is either secret (Llama, Mistral, Qwen, DeepSeek) or partially
+disclosed (Falcon mentioned its sources; Llama 3 named some sources but
+not the mix). Truly open data, meaning a published corpus you could
+re-train on, exists for a small number of models. OLMo is the prototype:
+AI2 released the weights, the training code, and the training corpus
+(Dolma).
+
+The data layer is where the OSAID v1.0 conversation lives and where the
+Q4 2026 update is most likely to bite. Different definitions of "open"
+disagree on whether the training data must be publicly available or
+whether documentation of the data sufficient to reproduce the model's
+data pipeline is enough.
+
+## Open vs. closed
+
+The open side is a relatively small set of public corpora. Common Crawl
+is the substrate: petabytes of HTML and metadata crawled monthly since
+2008. Every modern open corpus is a filtered subset of Common Crawl plus
+some additional sources. The Pile (EleutherAI, 2020) was the first major
+open dataset oriented toward LLM training. RedPajama (Together AI, 2023)
+is an open replication of Llama 1's training mix. Dolma (AI2) is the
+OLMo training corpus, around 3 trillion tokens. FineWeb (HuggingFace,
+2024) is fifteen trillion tokens after filtering Common Crawl with
+careful quality classifiers. DCLM is both a benchmark for data filtering
+and the resulting filtered corpus.
+
+The closed side is the data behind every frontier model, plus the
+licensed data labs have paid for. OpenAI signed deals with Reddit, Stack
+Exchange, Axel Springer, the Financial Times, Vox, Associated Press, and
+others. Meta's training corpus included Library Genesis content, as
+documented in legal filings. The data layer is where the legal and
+economic structure of frontier AI gets least transparent.
+
+A third category that matters for sovereignty: synthetic data. Models
+are now used to generate the training data for the next generation of
+models. Phi-3 was trained heavily on synthetic data. The implication is
+that the closed-frontier-model output becomes the seed for the open
+ecosystem, which is a soft form of upstream dependency that does not
+show up in any open-source license.
+
+## The lock-in vector
+
+Data is a weaker lock-in vector than silicon or runtime, but it has two
+real teeth. First, the legal one: licensed-data deals are non-transferable.
+If OpenAI paid the Financial Times for training data, that data is not
+available to an open project at any price. Second, the contamination one:
+if open-weights models are trained on the output of closed models, the
+open ecosystem is downstream of the closed ecosystem in a way that is
+hard to escape.
+
+The framing here: data is where the OSI / OSAID fight actually lives. You
+cannot be "open source" without disclosed data. The push-back from labs
+is that fully disclosed data is impossibly expensive given the licensing
+landscape. The OLMo counter is that it is not impossible, just more
+expensive in absolute terms, and labs prefer the cheaper path.

@@ -1,0 +1,94 @@
+# The Open-Source AI Stack taxonomy
+#
+# 9 core layers in production-pipeline order, plus 5 cross-cutting meta-layers.
+# This file is the canonical source for the stack diagram and the per-layer
+# routing. The scheduled agent uses `slug` for tagging news items.
+#
+# Order within each tier is the display order. Cross-cutting meta-layers are
+# rendered horizontally as observers / constraints on the core stack.
+
+core:
+  - slug: silicon
+    order: 1
+    title: Silicon
+    short_description: Chips and ISAs that execute the math.
+    lock_in_vector: silicon
+
+  - slug: compute
+    order: 2
+    title: Compute
+    short_description: Where silicon physically runs and gets accessed.
+    lock_in_vector: none
+
+  - slug: data
+    order: 3
+    title: Data
+    short_description: Training corpora, open and closed.
+    lock_in_vector: data
+
+  - slug: training
+    order: 4
+    title: Training
+    short_description: Tools to pretrain and fine-tune on your own.
+    lock_in_vector: none
+
+  - slug: weights
+    order: 5
+    title: Weights
+    short_description: Model artifacts and their license tiers.
+    lock_in_vector: weights
+
+  - slug: runtime
+    order: 6
+    title: Runtime
+    short_description: Inference engines that serve tokens from weights.
+    lock_in_vector: runtime
+
+  - slug: retrieval-memory
+    order: 7
+    title: Retrieval and Memory
+    short_description: Vector databases, embeddings, agent memory, RAG.
+    lock_in_vector: retrieval
+
+  - slug: agents
+    order: 8
+    title: Agents
+    short_description: Frameworks plus user-facing agent products.
+    lock_in_vector: agents
+
+  - slug: protocols
+    order: 9
+    title: Protocols
+    short_description: MCP, A2A, agentic payments, the integration wire.
+    lock_in_vector: protocols
+
+meta:
+  - slug: evaluation
+    order: 1
+    title: Evaluation
+    short_description: Benchmarks, harnesses, leaderboards.
+    lock_in_vector: evaluation
+
+  - slug: governance
+    order: 2
+    title: Governance
+    short_description: Licensing, definitions, foundations, OSAID.
+    lock_in_vector: governance
+
+  - slug: identity-trust
+    order: 3
+    title: Identity and Trust
+    short_description: TEEs, confidential computing, verifiable inference, agent passports.
+    lock_in_vector: identity
+
+  - slug: safety-guardrails
+    order: 4
+    title: Safety and Guardrails
+    short_description: Llama Guard, NeMo Guardrails, sandbox-escape evals.
+    lock_in_vector: safety
+
+  - slug: sovereignty-decentralization
+    order: 5
+    title: Sovereignty and Decentralization Primitives
+    short_description: Individual-vs-state framing, decentralized training, local-first patterns.
+    lock_in_vector: sovereignty

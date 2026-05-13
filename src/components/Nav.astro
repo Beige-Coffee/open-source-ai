@@ -1,0 +1,59 @@
+---
+const path = Astro.url.pathname;
+
+interface NavItem {
+  href: string;
+  label: string;
+  matchPrefix: string;
+}
+
+const items: NavItem[] = [
+  { href: "/stack", label: "The Stack", matchPrefix: "/stack" },
+  { href: "/today", label: "Today", matchPrefix: "/today" },
+  { href: "/news", label: "News", matchPrefix: "/news" },
+  { href: "/learn", label: "Learn", matchPrefix: "/learn" },
+  { href: "/grants", label: "Grants", matchPrefix: "/grants" },
+  { href: "/about", label: "About", matchPrefix: "/about" },
+];
+---
+
+<header class="border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+    <a
+      href="/"
+      class="font-semibold text-base tracking-tight no-underline hover:no-underline text-[var(--color-text)]"
+    >
+      The Open-Source AI Stack
+    </a>
+    <nav aria-label="Primary" class="hidden md:flex items-center gap-6 text-sm">
+      {
+        items.map((item) => {
+          const active =
+            item.href === "/"
+              ? path === "/"
+              : path === item.href || path.startsWith(item.matchPrefix + "/");
+          return (
+            <a
+              href={item.href}
+              class={`no-underline hover:no-underline ${
+                active
+                  ? "text-[var(--color-accent)] font-medium"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              }`}
+              aria-current={active ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+    <a
+      href="/rss/news.xml"
+      class="text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] no-underline"
+      title="Subscribe via RSS"
+    >
+      RSS
+    </a>
+  </div>
+</header>

@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import StackDiagram from "../../components/StackDiagram.astro";
+import { loadLayers } from "../../lib/layers";
+
+const layers = loadLayers();
+---
+
+<BaseLayout
+  title="The Stack"
+  description="Nine core layers and five cross-cutting meta-layers of the open-source AI stack. Click any layer to see what is in it."
+>
+  <section class="max-w-4xl mx-auto px-6 pt-16 pb-4">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      The Stack
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      Nine layers, five cross-cuts
+    </h1>
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      The open-source AI stack has nine layers in production-pipeline order
+      (what gets built on top of what). It also has five cross-cutting
+      meta-layers that observe or constrain the whole stack rather than
+      sitting between two other layers. Click any layer for what is in it.
+    </p>
+  </section>
+
+  <StackDiagram />
+
+  <section class="max-w-4xl mx-auto px-6 my-16 prose">
+    <h2>How to read this map</h2>
+    <p>
+      The nine core layers run in pipeline order: a chip
+      (<a href="/stack/silicon">silicon</a>) goes somewhere (<a href="/stack/compute">compute</a>),
+      gets fed something (<a href="/stack/data">data</a>) shaped by something else
+      (<a href="/stack/training">training</a>) to produce
+      <a href="/stack/weights">weights</a>, which a runtime
+      (<a href="/stack/runtime">runtime</a>) serves to an agent
+      (<a href="/stack/agents">agents</a>) that talks to other agents and tools
+      via wire protocols (<a href="/stack/protocols">protocols</a>). The agent
+      also reaches into a retrieval and memory store
+      (<a href="/stack/retrieval-memory">retrieval and memory</a>) at call time.
+    </p>
+    <p>
+      The cross-cutting meta-layers do not sit between two layers in the
+      pipeline. They observe (<a href="/stack/evaluation">evaluation</a>),
+      define (<a href="/stack/governance">governance</a>), trust-anchor
+      (<a href="/stack/identity-trust">identity and trust</a>), constrain
+      (<a href="/stack/safety-guardrails">safety and guardrails</a>), and shape
+      the political framing
+      (<a href="/stack/sovereignty-decentralization">sovereignty and decentralization primitives</a>).
+    </p>
+    <p>
+      Each layer page has five views in one place: the editorial explainer of
+      what the layer is, the living catalog of projects in it, the latest news
+      at the layer, the grants flowing into it, and a curated reading list for
+      going deeper. That five-in-one structure is what the rest of the
+      open-AI web does not currently offer.
+    </p>
+  </section>
+</BaseLayout>

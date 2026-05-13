@@ -1,0 +1,77 @@
+---
+import { loadLayers } from "../lib/layers";
+
+const layers = loadLayers();
+const core = layers.core;
+const meta = layers.meta;
+---
+
+<section aria-label="The Open-Source AI Stack diagram" class="my-12">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid gap-6 md:grid-cols-[1fr_240px]">
+      <!-- Core stack (vertical, pipeline order) -->
+      <div class="space-y-2">
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Core stack &middot; production pipeline
+        </p>
+        {
+          core.map((layer) => (
+            <a
+              href={`/stack/${layer.slug}`}
+              class="block group border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-accent-soft)] hover:border-[var(--color-accent)] transition-colors rounded-md px-4 py-3 no-underline hover:no-underline"
+            >
+              <div class="flex items-baseline justify-between gap-4">
+                <div class="flex items-baseline gap-3 flex-1 min-w-0">
+                  <span class="font-mono text-xs text-[var(--color-tier-core)] font-medium w-6 flex-none">
+                    {String(layer.order).padStart(2, "0")}
+                  </span>
+                  <span class="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
+                    {layer.title}
+                  </span>
+                </div>
+                <span class="text-xs text-[var(--color-text-subtle)] hidden sm:inline truncate max-w-xs">
+                  {layer.short_description}
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- Cross-cutting meta-layers -->
+      <aside class="space-y-2">
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Cross-cutting meta-layers
+        </p>
+        {
+          meta.map((layer) => (
+            <a
+              href={`/stack/${layer.slug}`}
+              class="block group border border-[var(--color-border)] bg-[var(--color-tier-meta-soft)] hover:border-[var(--color-tier-meta)] transition-colors rounded-md px-3 py-2 no-underline hover:no-underline"
+            >
+              <div class="flex flex-col gap-0.5">
+                <span class="font-medium text-sm text-[var(--color-text)] group-hover:text-[var(--color-tier-meta)]">
+                  {layer.title}
+                </span>
+                <span class="text-xs text-[var(--color-text-subtle)] leading-snug">
+                  {layer.short_description}
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </aside>
+    </div>
+
+    <div class="mt-6 pt-4 border-t border-[var(--color-border)] flex items-center gap-6 text-xs text-[var(--color-text-subtle)] font-mono">
+      <span class="flex items-center gap-2">
+        <span class="inline-block w-3 h-3 rounded border border-[var(--color-border)] bg-[var(--color-surface)]"></span>
+        core layer
+      </span>
+      <span class="flex items-center gap-2">
+        <span class="inline-block w-3 h-3 rounded border border-[var(--color-border)] bg-[var(--color-tier-meta-soft)]"></span>
+        meta layer
+      </span>
+    </div>
+  </div>
+</section>

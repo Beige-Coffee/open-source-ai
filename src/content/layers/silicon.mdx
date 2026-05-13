@@ -1,0 +1,73 @@
+---
+slug: silicon
+title: Silicon
+short_description: Chips and ISAs that execute the math.
+tier: core
+order: 1
+lock_in_vector: silicon
+sovereignty_relevance: 5
+related_layers: [compute, runtime]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+The substrate. Instruction set architectures (ISAs) and the physical
+accelerators that execute matrix math. Two sub-questions live here, and they
+are independent: is the ISA open, and is the accelerator architecture open.
+RISC-V is an open ISA but most RISC-V chips on the market today are not AI
+accelerators. NVIDIA H100s are closed accelerators on a closed ISA.
+Tenstorrent is the rare datapoint trying to make both open, on the AI
+accelerator side specifically.
+
+Silicon is the slowest-moving layer in this stack. A new model trains in
+months. A new runtime engine ships in weeks. A new chip takes three to five
+years from tape-out to volume. The implication: every layer above silicon
+inherits whatever lock-in the silicon vendor has accumulated, and that
+lock-in compounds the longer the rest of the stack tolerates it.
+
+## Open vs. closed
+
+The closed side is NVIDIA. The economic story is not that NVIDIA makes the
+only good chips; it is that the CUDA software ecosystem on top of those
+chips has been compounding for fifteen years, and every other layer of the
+AI stack has trained itself to assume CUDA. AMD's ROCm exists but lags by
+years on developer experience and per-framework optimization. Intel's Gaudi
+is competitive on some benchmarks but is tied to Intel as the sole vendor.
+Apple's Neural Engine is proprietary and not aimed at training at scale.
+Google's TPUs are not for sale. Amazon's Trainium and Inferentia are not
+for sale outside AWS.
+
+The open side is thin and recent. RISC-V is the open ISA, royalty-free and
+governance-light, and is the substrate that countries and companies use
+when they want to avoid licensing fees and export-control entanglement
+with ARM or x86. SiFive is the leading commercial RISC-V IP vendor.
+Tenstorrent is the company most aggressively trying to make open silicon
+at the AI accelerator level: their Wormhole and upcoming Blackhole
+products combine RISC-V CPUs with proprietary-then-opening Tensix tensor
+cores.
+
+There are partial datapoints in between. Cerebras builds wafer-scale
+accelerators that are proprietary in design but disruptive in inference
+economics. Groq builds LPUs that are proprietary but extraordinarily fast
+on inference for specific model sizes. Neither is "open silicon" in the
+Tenstorrent sense; they are alternatives to NVIDIA, not alternatives to
+closed silicon.
+
+## The lock-in vector
+
+Closed silicon defeats every open layer above it. If you publish open
+weights, you have done a service to research; you have not changed who
+owns the means of running those weights in production. The economic model
+for serving open weights still routes through a small number of companies
+running hyperscaler infrastructure on NVIDIA chips, paying NVIDIA gross
+margins of seventy-plus percent on the hardware.
+
+The lock-in is two-layered. The hardware-level lock-in is real (you need
+physical access to the chip) but is the smaller half. The software-level
+lock-in (CUDA, cuDNN, cuBLAS, TensorRT, NCCL) is the larger half: even
+when a competing chip exists, the porting cost of years of CUDA-optimized
+kernels means the competing chip ships with two-year-old kernel quality,
+which means it loses on benchmarks, which means nobody builds for it,
+which means the kernels never get written. This is the canonical platform
+lock-in pattern.

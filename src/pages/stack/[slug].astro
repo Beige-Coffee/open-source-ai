@@ -1,0 +1,111 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadLayers } from "../../lib/layers";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("layers");
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const layers = loadLayers();
+
+const all = [...layers.core, ...layers.meta];
+const findBySlug = (slug: string) => all.find((l) => l.slug === slug);
+
+const tierLabel = entry.data.tier === "core" ? "Core layer" : "Cross-cutting meta-layer";
+const tierColor =
+  entry.data.tier === "core"
+    ? "var(--color-tier-core)"
+    : "var(--color-tier-meta)";
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.short_description}
+>
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider mb-2">
+      <a href="/stack" class="no-underline hover:underline text-[var(--color-text-subtle)]">
+        The Stack
+      </a>
+      <span class="text-[var(--color-text-subtle)]"> &middot; </span>
+      <span style={`color: ${tierColor}`}>{tierLabel}</span>
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-4"
+    >
+      {entry.data.title}
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+      {entry.data.short_description}
+    </p>
+  </section>
+
+  <div class="max-w-5xl mx-auto px-6 grid gap-12 md:grid-cols-[1fr_220px] mt-8">
+    <article class="prose">
+      <Content />
+    </article>
+
+    <aside class="text-sm space-y-6">
+      <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Lock-in vector
+        </p>
+        <p class="font-medium">{entry.data.lock_in_vector}</p>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mt-4 mb-2">
+          Sovereignty relevance
+        </p>
+        <p class="font-mono">{entry.data.sovereignty_relevance} / 5</p>
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mt-4 mb-2">
+          Last updated
+        </p>
+        <p class="font-mono text-xs text-[var(--color-text-muted)]">
+          {entry.data.updated.toISOString().slice(0, 10)}
+        </p>
+      </div>
+
+      {
+        entry.data.related_layers.length > 0 && (
+          <div>
+            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+              Related layers
+            </p>
+            <ul class="space-y-1">
+              {entry.data.related_layers
+                .map((slug: string) => findBySlug(slug))
+                .filter((l: any) => l)
+                .map((l: any) => (
+                  <li>
+                    <a
+                      href={`/stack/${l.slug}`}
+                      class="no-underline hover:underline"
+                    >
+                      {l.title}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="text-xs text-[var(--color-text-subtle)]">
+        <p class="mb-2">
+          Coming soon at this layer:
+        </p>
+        <ul class="space-y-1">
+          <li>Living catalog of projects</li>
+          <li>Latest news (auto-updated)</li>
+          <li>Grants and funding</li>
+          <li>Curated reading list</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

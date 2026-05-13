@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Today"
+  description="The daily news roundup, routed to the layer it affects. Updated every day at 08:00 Pacific."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Today
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      What moved at each layer today
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">
+      The daily news roundup is wired up but not yet automated. Starting in
+      Week 2 of the build, a scheduled agent at 08:00 Pacific will fetch
+      roughly thirty layer-specific feeds, dedupe via SimHash, classify
+      each item by layer, draft a one-paragraph editorial letter, and
+      publish.
+    </p>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mt-4">
+      Until then, see <a href="/stack">the stack</a> for the per-layer
+      framing each item will be filed under, or the
+      <a href="/about">about page</a> for the source list and the routine's
+      methodology.
+    </p>
+  </section>
+</BaseLayout>

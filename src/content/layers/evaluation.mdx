@@ -1,0 +1,69 @@
+---
+slug: evaluation
+title: Evaluation
+short_description: Benchmarks, harnesses, leaderboards.
+tier: meta
+order: 1
+lock_in_vector: evaluation
+sovereignty_relevance: 3
+related_layers: [data, weights, agents]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+How we measure progress. The benchmarks, harnesses, leaderboards, and
+evaluation pipelines that decide which models are "better." Evaluation
+is a meta-layer rather than a stack layer because it observes the rest
+of the stack rather than sitting between two production-pipeline layers.
+You can describe AI progress without naming evaluation; you cannot
+report progress without it.
+
+The interesting fact about evaluation in 2026 is that the open ecosystem
+is in mostly-good shape here. lm-evaluation-harness (EleutherAI) is the
+de facto reference implementation of dozens of standard evals; the
+HuggingFace Open LLM Leaderboard ran v1 then v2; LMSYS Chatbot Arena
+(now LMArena) is the most-respected human-preference evaluation. The
+closed labs run their own private evals on private holdouts, but the
+public evals are largely open.
+
+What is not in good shape is the contamination problem (models trained
+on the eval data score artificially well) and the saturation problem
+(most public benchmarks have been saturated past the point of useful
+signal). The frontier of evaluation has moved toward dynamic / arena-style
+evals (LMArena), contamination-aware evals (LiveBench), and held-out
+reasoning evals (FrontierMath, GPQA Diamond, HLE).
+
+## Open vs. closed
+
+The open side has three categories. **Benchmarks** (the eval datasets
+and scoring functions): MMLU, MMLU-Pro, HumanEval, HumanEval+,
+LiveCodeBench, SWE-bench, GPQA, FrontierMath, HLE, GSM8K, HellaSwag.
+**Harnesses** (the code that runs evals): lm-evaluation-harness (the
+standard), HELM (Stanford CRFM), Inspect (UK AISI). **Leaderboards**
+(the public ranking): LMArena (gold standard), Open LLM Leaderboard
+(archived), LiveBench (contamination-aware), Artificial Analysis
+(commercial aggregator).
+
+The closed side is **private holdout sets** at frontier labs. The labs
+claim their models are good in part by reference to these internal
+scores. The public has no way to verify or compare. The "we got 92% on
+internal benchmark X" claims in lab announcements often refer to
+private holdouts.
+
+## The lock-in vector
+
+Evaluation is not a clean lock-in vector in the silicon or runtime
+sense; nobody is locked in to a benchmark. But there is an analogous
+structural problem: if frontier labs use private holdouts to claim
+leadership, the only way to verify is to trust the labs. That is a
+soft-lock-in on the narrative. The open ecosystem can chase whatever
+public benchmarks exist, but if those public benchmarks are saturated
+or contaminated, the public benchmarks stop being able to distinguish
+the frontier from the open-weights frontier.
+
+The framing here is modest. Evaluation is the meta-layer where the open
+ecosystem is doing best, and the residual problem is contamination and
+saturation, not closure. A constructive position: the AAIF or a similar
+neutral body should coordinate shared, refreshing eval datasets as a
+public good.

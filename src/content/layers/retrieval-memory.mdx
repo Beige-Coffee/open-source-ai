@@ -1,0 +1,63 @@
+---
+slug: retrieval-memory
+title: Retrieval and Memory
+short_description: Vector databases, embeddings, agent memory, RAG.
+tier: core
+order: 7
+lock_in_vector: retrieval
+sovereignty_relevance: 3
+related_layers: [weights, agents]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+The infrastructure that lets a model recall, search, and remember beyond
+its context window. Three things live here. First, **vector databases**:
+the data stores that index high-dimensional embeddings for similarity
+search. Second, **embedding models**: the transformer-derived encoders
+that turn text, images, or audio into the vectors that vector databases
+index. Third, **agent-memory frameworks**: the higher-level libraries
+that manage persistent agent state across sessions (Letta, mem0, Zep).
+
+This layer is what enables retrieval-augmented generation (RAG), long
+agent conversations, and any application where the model needs to act
+on data larger than its context window. In 2026 it is also the part of
+the stack that grows fastest because every production AI application
+eventually needs at least one of: a vector store, an embedding service,
+and a memory layer.
+
+## Open vs. closed
+
+The open side is robust at every sub-layer.
+
+**Vector databases**: Qdrant (Rust, open-core, Apache 2.0), Weaviate
+(Go, BSD-3), Chroma (Python, Apache 2.0), Milvus (Go, Apache 2.0),
+LanceDB (Rust, Apache 2.0), pgvector (PostgreSQL extension, PostgreSQL
+license). Pinecone is the closed commercial counterpart; it is fast and
+managed but has no on-prem self-host option at most tiers.
+
+**Embedding models**: sentence-transformers (the project), BGE (BAAI),
+jina-embeddings (Jina AI), and increasingly Voyage AI's open releases.
+OpenAI's text-embedding-3 is the dominant closed counterpart.
+
+**Agent-memory frameworks**: Letta (formerly MemGPT, MIT-licensed,
+research-grade), mem0 (Apache 2.0), Zep (Apache 2.0). These wrap a
+vector database plus an embedding model plus a memory-tier policy
+(short-term, long-term, episodic) into a single library.
+
+## The lock-in vector
+
+Retrieval and memory have minimal direct lock-in: the data formats are
+standard (vectors plus metadata), the schemas are obvious, and you can
+re-index in another vector database in an afternoon. The lock-in is
+indirect.
+
+The real risk is the **accumulated-context lock-in at the agent layer**
+that depends on this layer's stores. If your closed agent (ChatGPT,
+Claude.ai, Cursor) keeps the memories server-side and exports only
+trivially, you cannot move to an open agent without losing your
+accumulated context. The retrieval-and-memory layer is therefore where
+the sovereignty story for agents lives or dies: an agent backed by your
+own vector store and your own embedding service is portable; an agent
+whose memory is server-side at someone else's cloud is not.

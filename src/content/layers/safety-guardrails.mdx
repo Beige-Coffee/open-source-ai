@@ -1,0 +1,54 @@
+---
+slug: safety-guardrails
+title: Safety and Guardrails
+short_description: Llama Guard, NeMo Guardrails, sandbox-escape evals.
+tier: meta
+order: 4
+lock_in_vector: safety
+sovereignty_relevance: 3
+related_layers: [weights, agents, evaluation]
+updated: 2026-05-13
+---
+
+## What this layer is
+
+The tools and techniques for constraining what a model or agent is
+allowed to do. Safety is a meta-layer because constraints apply across
+the production pipeline: at training time (RLHF, constitutional methods),
+at inference time (output classifiers like Llama Guard), and at agent
+runtime (sandbox-escape evaluations, capability-token enforcement).
+
+In 2026 the open ecosystem at this layer is growing but is not yet at
+parity with the closed labs' internal safety stacks (which are
+proprietary by design and increasingly capability-evaluation-heavy).
+
+## What is in it
+
+**Output classifiers**: Llama Guard (Meta, open-weights), NeMo Guardrails
+(NVIDIA, Apache 2.0), various smaller open classifiers for specific
+prompt-injection patterns.
+
+**Training-time techniques**: Constitutional AI (Anthropic, methodology
+public), RLHF tooling in TRL, DPO and KTO and related preference-tuning
+methods.
+
+**Agent-level evaluation**: METR (Model Evaluation and Threat Research)
+sandbox-escape benchmarks, AISI Inspect framework for safety evaluations,
+Apollo Research's scheming-monitor work.
+
+**Capability-token enforcement**: the internal system-style privilege-separated
+kernels for personal-AI servers; the closest mainstream parallel is
+TEE-based sandboxing.
+
+## The lock-in vector
+
+Safety at the open-ecosystem layer is mostly tooling and methodology;
+there is little structural lock-in. The risk is reverse: the closed
+labs invest enormously in internal safety evaluations that they do not
+publish, which lets them claim a safety story the open ecosystem cannot
+independently verify.
+
+The constructive position: safety evaluation suites should themselves
+be open (the way lm-evaluation-harness is open for capability), so that
+the open ecosystem can produce auditable safety claims. AISI Inspect
+is the closest existing model.

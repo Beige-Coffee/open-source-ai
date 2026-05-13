@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Grants"
+  description="Who funds open-source AI, what they fund, where the gaps are, and concrete project shapes for new grantees."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Grants
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      Who funds what, and where the gaps are
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">
+      Active funders. Recently funded projects with layer attribution.
+      Underfunded areas. Concrete project shapes a new grantee could fund.
+      A heat map of "where the money is going" versus "where it should."
+    </p>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mt-4">
+      The grants section is wired up but not yet populated. Week 3 of the
+      build lands the schema (funder, program, recent-funded, RFPs, layer
+      attribution), the initial seed data (top 5 funders plus their recent
+      funded projects), and the cross-layer "funded vs. underfunded" map.
+      Until then, see the
+      <a
+        href="/Users/austinv2/code/sovereign-ai-wiki/deliverables/open-source-ai-stack-plan.md"
+      >
+        plan document
+      </a>
+      for the research synthesis.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 my-8 prose">
+    <h2>The headline number</h2>
+    <p>
+      AI captured roughly half of global venture capital in 2025, but
+      open-source's share of enterprise AI adoption fell from 19% to 11%
+      over the same period. Funding is flowing past the OSS tier. The
+      grants section is the operational case for who can change that.
+    </p>
+    <h2>Active funders, briefly</h2>
+    <p>
+      In rough order of 2024-2026 dollar volume: NSF (with the $152M Ai2
+      OMAI grant August 2025 as the headline event), Schmidt Sciences ($18M
+      AI2050 plus $10M Safety Science), Open Philanthropy ($40M+ Technical
+      AI Safety RFP), UK AISI's Alignment Project (£27M to 60+ projects),
+      and NLnet / NGI Zero (200+ small grants per year, bi-monthly calls).
+    </p>
+    <h2>Underfunded layers</h2>
+    <p>
+      Maintenance contracts for foundational OSS runtimes (lm-evaluation-harness,
+      vLLM, llama.cpp). Decentralized inference at frontier scale.
+      License-clean pretraining data (EleutherAI's Common Pile is essentially
+      alone). Benchmark-contamination scanners. Open RISC-V AI accelerator
+      reference designs. Multilingual eval datasets for low-resource
+      languages. Sandbox-escape capability evaluations.
+    </p>
+  </section>
+</BaseLayout>

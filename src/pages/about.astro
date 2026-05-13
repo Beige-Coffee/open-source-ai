@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="How the open-source-ai-stack site is built, what the scheduled agent does, and the editorial methodology."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12 prose">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+      style="font-family: var(--font-mono);"
+    >
+      About
+    </p>
+    <h1>How this site is built and updated</h1>
+
+    <p>
+      The Open-Source AI Stack is a living map of nine production-pipeline
+      layers and five cross-cutting meta-layers, with the projects, news,
+      and funding flowing through each. A scheduled agent updates the news
+      once a day at 08:00 Pacific.
+    </p>
+
+    <h2>The agent and what it does</h2>
+    <p>
+      A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:
+      it pulls about thirty layer-specific RSS feeds and Atom feeds (GitHub
+      releases, vendor blogs, academic newsletters) plus a handful of
+      HTML-scrape sources for vendor blogs without RSS. Items go into an
+      inbox keyed on a content hash. <strong>Dedupe and route</strong>: URLs are
+      normalized, SimHash clustering removes near-duplicates, and each
+      remaining item is classified by stack layer. <strong>Summarize and
+      publish</strong>: per-layer summaries are generated with prompt-cached
+      system prompts, an editorial letter is drafted, and the day's MDX
+      file is committed to the repo. Vercel rebuilds and the site goes
+      live.
+    </p>
+
+    <h2>What the agent does not do</h2>
+    <p>
+      It does not modify the taxonomy. It does not write opinion. It does
+      not auto-publish unverified claims. Items that lack a primary source
+      go to a needs-review queue instead of being published.
+    </p>
+
+    <h2>Editorial voice</h2>
+    <p>
+      Neutral-observational. The editorial letter at the top of each day
+      describes what moved; per-item summaries are factual and source-linked.
+      A linter rejects vocabulary that drifts into AI-slop ("delve,"
+      "tapestry," "landscape," "fascinating") and marketing buzzwords
+      ("transformative," "robust," "leveraging," "utilize").
+    </p>
+
+    <h2>Source list</h2>
+    <p>
+      Per-layer feeds plus a few aggregators. AI News by smol AI
+      (news.smol.ai) is the spine; SemiAnalysis, Interconnects, Latent
+      Space, Import AI, and The Batch are the highest-signal newsletters
+      across layers. GitHub release feeds (vLLM, SGLang, llama.cpp, MCP,
+      OpenHands, Aider) plus vendor blogs cover the rest. Full source
+      list is at <code>data/sources.yaml</code> in the repo.
+    </p>
+
+    <h2>Open methodology</h2>
+    <p>
+      The site, the agent prompt, the source list, the layer taxonomy, and
+      the per-day issues are all in the repo. Pull requests welcome.
+      Errata channel: file a GitHub issue.
+    </p>
+
+    <h2>Provenance</h2>
+    <p>
+      The stack taxonomy and the layer overview prose started from a
+      personal wiki built by Austin in May 2026 (a Karpathy-style
+      LLM-wiki, separately maintained). The wiki seeded the foundations;
+      this site is the public, daily-updated, polished form.
+    </p>
+  </section>
+</BaseLayout>
