@@ -37,6 +37,34 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       live.
     </p>
 
+    <h2>What is on each layer page</h2>
+    <p>
+      Each of the 14 layer pages is a five-in-one view. <strong>What it is</strong>:
+      a 3-5 sentence editorial intro. <strong>Key projects</strong>: a curated
+      catalog (5-10 per layer, ordered open-first, with license, maturity,
+      and a one-line description) sourced from
+      <code>data/projects.yaml</code> in the repo.
+      <strong>Latest news</strong>: the count of items at this layer in
+      today's daily issue, with a link out. <strong>Grants flowing in</strong>:
+      the most recent grants tagged to this layer, sourced from
+      <code>data/grants.yaml</code>. <strong>Predictions baseline</strong>:
+      falsifiable predictions we've filed at this layer, with horizons and
+      resolution criteria. <strong>Learn more</strong>: a curated reading
+      list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
+      A sidebar carries quick-glance metadata: lock-in vector, sovereignty
+      relevance, related layers.
+    </p>
+
+    <h2>Predictions tracker</h2>
+    <p>
+      Every prediction filed on this site is public, dated, and falsifiable.
+      Confidence is on a 1-5 scale (1 is vibes, 5 is market-priced); each
+      prediction names a horizon and a resolution criterion. When a prediction
+      resolves the original text stays in place and the outcome gets noted in
+      the news log on the resolution date. The full ledger is at
+      <a href="/predictions">/predictions</a>.
+    </p>
+
     <h2>What the agent does not do</h2>
     <p>
       It does not modify the taxonomy. It does not write opinion. It does
