@@ -1,9 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#1e3a8a"/>
-  <g>
-    <rect x="10" y="10" width="44" height="9" rx="2" fill="#fafaf9" fill-opacity="0.18"/>
-    <rect x="10" y="22" width="44" height="9" rx="2" fill="#fafaf9" fill-opacity="0.36"/>
-    <rect x="10" y="34" width="44" height="9" rx="2" fill="#fafaf9" fill-opacity="0.54"/>
-    <rect x="10" y="46" width="44" height="9" rx="2" fill="#fafaf9" fill-opacity="0.72"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!--
+    The Open-Source AI Stack favicon.
+    A miniature of the on-page StackDiagram: four horizontal bars
+    stacked, surface to foundation. Top three bars graduate from light
+    warm gray to mid warm gray; the foundation bar is the brand
+    indigo accent (silicon, the substrate the rest stacks on).
+  -->
+  <rect width="16" height="3" y="0" fill="#e7e5e4"/>
+  <rect width="16" height="3" y="4" fill="#d6d3d1"/>
+  <rect width="16" height="3" y="8" fill="#a8a29e"/>
+  <rect width="16" height="4" y="12" fill="#1e3a8a"/>
 </svg>
