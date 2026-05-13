@@ -308,12 +308,9 @@ protocols:
     type: rss
     layer: protocols
     signal: very-high
-  - id: mcp-blog
-    name: "Model Context Protocol Blog"
-    feed: "https://blog.modelcontextprotocol.io/feed.xml"
-    type: rss
-    layer: protocols
-    signal: very-high
+  # mcp-blog source removed 2026-05-13: blog.modelcontextprotocol.io/feed.xml
+  # returned HTTP 404 on first run. MCP coverage continues via mcp-releases
+  # (GitHub Atom). Restore when a working blog feed URL is confirmed.
   - id: lf-ai-data-blog
     name: "LF AI and Data Foundation Blog"
     feed: "https://lfaidata.foundation/blog/feed/"
@@ -337,10 +334,11 @@ protocols:
 evaluation:
   - id: lmarena-blog
     name: "LMArena Blog"
-    feed: "https://blog.lmarena.ai/feed.xml"
+    feed: "https://arena.ai/blog/feed.xml"
     type: rss
     layer: evaluation
     signal: very-high
+    notes: "URL updated 2026-05-13: blog.lmarena.ai now redirects to arena.ai/blog/feed.xml."
   - id: lm-eval-harness-releases
     name: "lm-evaluation-harness GitHub Releases"
     feed: "https://github.com/EleutherAI/lm-evaluation-harness/releases.atom"
@@ -387,13 +385,10 @@ identity-trust:
     type: scrape
     layer: identity-trust
     signal: medium
-  - id: apple-security-blog
-    name: "Apple Security Research Blog"
-    feed: "https://security.apple.com/blog/feed.xml"
-    type: rss
-    layer: identity-trust
-    signal: very-high
-    notes: "PCC announcements ship here."
+  # apple-security-blog removed 2026-05-13: security.apple.com/blog/feed.xml
+  # returned HTTP 404 on first run. Apple PCC announcements may have moved;
+  # needs human investigation before restoring. Try the security.apple.com
+  # research index page as a scrape source if no RSS resurfaces.
   - id: dif-blog
     name: "Decentralized Identity Foundation Blog"
     feed: "https://blog.identity.foundation/feed/"
