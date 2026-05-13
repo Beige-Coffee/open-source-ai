@@ -1,3 +1,8 @@
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "mcp-blog", "url": "https://blog.modelcontextprotocol.io/feed.xml", "error": "HTTP 404"}
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "apple-security-blog", "url": "https://security.apple.com/blog/feed.xml", "error": "HTTP 404"}
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "lmarena-blog", "url": "https://blog.lmarena.ai/feed.xml", "error": "301 redirect to https://arena.ai/blog/feed.xml; sources.yaml needs human update"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "open-philanthropy-grants", "url": "https://www.openphilanthropy.org/grants/", "error": "HTTP 403 (likely Cloudflare bot block); /giving/grants?focus-area=potential-risks-advanced-ai also 403"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "openai-index-funding", "url": "https://openai.com/index/", "error": "HTTP 403; /news/ also 403"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "nsf-news-ai", "url": "https://www.nsf.gov/news/index.jsp?org=NSF", "error": "HTTP 202 with empty body; fell back to https://www.nsf.gov/news/"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "mozilla-builders-blog", "url": "https://builders.mozilla.org/blog/", "error": "HTTP 404"}
+{"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "ea-forum-grants", "url": "https://forum.effectivealtruism.org/tag/grants/feed.xml", "error": "HTTP 404"}
