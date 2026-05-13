@@ -1,0 +1,443 @@
+# News sources for the daily routine.
+#
+# Per-layer ranked source list. RSS / Atom feeds are first-class; HTML
+# scrapes are tagged `scrape: true`. The daily routine fetches every
+# `feed` URL via WebFetch, parses entries, dedupes against last-run.json,
+# routes by `layer`, and publishes.
+#
+# Editing this file: add or remove sources here. The agent reads this on
+# every run; no code change required.
+#
+# Anti-pattern blocklist lives in data/news-rules.yaml.
+
+aggregators:
+  - id: ai-news-smol
+    name: "AI News (by smol AI)"
+    feed: "https://news.smol.ai/rss.xml"
+    type: rss
+    layer: any
+    signal: very-high
+    notes: "Already-aggregated daily summary of 356 X accounts + 21 Discords. Spine of the routine. Use entries to cross-validate other sources."
+
+  - id: tldr-ai
+    name: "TLDR AI"
+    feed: "https://tldr.tech/api/rss/ai"
+    type: rss
+    layer: any
+    signal: medium
+    notes: "Daily 5-minute roundup. Mainstream-skew; use to catch the broader news cycle."
+
+silicon:
+  - id: semianalysis
+    name: "SemiAnalysis (Dylan Patel)"
+    feed: "https://newsletter.semianalysis.com/feed"
+    type: rss
+    layer: silicon
+    signal: very-high
+  - id: nvidia-dev-blog
+    name: "NVIDIA Developer Blog"
+    feed: "https://developer.nvidia.com/blog/feed"
+    type: rss
+    layer: silicon
+    signal: high
+  - id: chips-and-cheese
+    name: "Chips and Cheese"
+    feed: "https://chipsandcheese.com/feed/"
+    type: rss
+    layer: silicon
+    signal: very-high
+  - id: amd-rocm-blog
+    name: "AMD ROCm Blog"
+    feed: "https://rocm.blogs.amd.com/index.html"
+    type: scrape
+    layer: silicon
+    signal: high
+  - id: tenstorrent-blog
+    name: "Tenstorrent Blog"
+    feed: "https://tenstorrent.com/blog"
+    type: scrape
+    layer: silicon
+    signal: high
+
+compute:
+  - id: aws-ml-blog
+    name: "AWS Machine Learning Blog"
+    feed: "https://aws.amazon.com/blogs/machine-learning/feed/"
+    type: rss
+    layer: compute
+    signal: medium
+    notes: "Filter for Trainium, Bedrock, Sagemaker. Skip generic ML-tutorial posts."
+  - id: gcp-ai-blog
+    name: "Google Cloud Blog (AI)"
+    feed: "https://cloudblog.withgoogle.com/products/ai-machine-learning/rss/"
+    type: rss
+    layer: compute
+    signal: medium
+  - id: coreweave-blog
+    name: "CoreWeave Blog"
+    feed: "https://www.coreweave.com/blog"
+    type: scrape
+    layer: compute
+    signal: very-high
+  - id: akash-blog
+    name: "Akash Network Blog"
+    feed: "https://akash.network/blog/"
+    type: scrape
+    layer: compute
+    signal: high
+  - id: io-net-blog
+    name: "io.net Blog"
+    feed: "https://io.net/blog"
+    type: scrape
+    layer: compute
+    signal: high
+  - id: hyperbolic-blog
+    name: "Hyperbolic Blog"
+    feed: "https://hyperbolic.xyz/blog"
+    type: scrape
+    layer: compute
+    signal: high
+  - id: prime-intellect-blog
+    name: "Prime Intellect Blog"
+    feed: "https://www.primeintellect.ai/blog"
+    type: scrape
+    layer: compute
+    signal: very-high
+    notes: "Also covers decentralized training (sovereignty-decentralization meta)."
+
+data:
+  - id: huggingface-blog
+    name: "HuggingFace Blog"
+    feed: "https://huggingface.co/blog/feed.xml"
+    type: rss
+    layer: data
+    signal: high
+    notes: "Also routes to weights and runtime depending on post topic."
+  - id: ai2-blog
+    name: "Allen Institute for AI Blog"
+    feed: "https://allenai.org/blog"
+    type: scrape
+    layer: data
+    signal: very-high
+    notes: "OLMo and Dolma releases. Cross-routes to weights."
+  - id: common-crawl-blog
+    name: "Common Crawl Blog"
+    feed: "https://commoncrawl.org/blog/index.xml"
+    type: rss
+    layer: data
+    signal: medium
+  - id: eleutherai-blog
+    name: "EleutherAI Blog"
+    feed: "https://blog.eleuther.ai/index.xml"
+    type: rss
+    layer: data
+    signal: very-high
+
+training:
+  - id: unsloth-blog
+    name: "Unsloth Blog"
+    feed: "https://unsloth.ai/blog"
+    type: scrape
+    layer: training
+    signal: high
+  - id: axolotl-releases
+    name: "Axolotl GitHub Releases"
+    feed: "https://github.com/axolotl-ai-cloud/axolotl/releases.atom"
+    type: rss
+    layer: training
+    signal: high
+  - id: llama-factory-releases
+    name: "LLaMA-Factory GitHub Releases"
+    feed: "https://github.com/hiyouga/LLaMA-Factory/releases.atom"
+    type: rss
+    layer: training
+    signal: medium
+  - id: trl-releases
+    name: "HuggingFace TRL GitHub Releases"
+    feed: "https://github.com/huggingface/trl/releases.atom"
+    type: rss
+    layer: training
+    signal: high
+
+weights:
+  - id: hf-trending-models
+    name: "HuggingFace Trending Models API"
+    feed: "https://huggingface.co/api/models?sort=trending&limit=30"
+    type: json
+    layer: weights
+    signal: very-high
+    notes: "JSON API. Every open weight ships here first."
+  - id: hf-daily-papers
+    name: "HuggingFace Daily Papers"
+    feed: "https://huggingface.co/papers"
+    type: scrape
+    layer: weights
+    signal: very-high
+  - id: interconnects
+    name: "Interconnects (Nathan Lambert)"
+    feed: "https://www.interconnects.ai/feed"
+    type: rss
+    layer: weights
+    signal: very-high
+  - id: meta-ai-blog
+    name: "Meta AI Blog"
+    feed: "https://ai.meta.com/blog/rss/"
+    type: rss
+    layer: weights
+    signal: high
+  - id: mistral-news
+    name: "Mistral News"
+    feed: "https://mistral.ai/news"
+    type: scrape
+    layer: weights
+    signal: high
+  - id: deepseek-news
+    name: "DeepSeek News"
+    feed: "https://api-docs.deepseek.com/news"
+    type: scrape
+    layer: weights
+    signal: high
+  - id: qwen-blog
+    name: "Qwen Blog"
+    feed: "https://qwen.ai/blog"
+    type: scrape
+    layer: weights
+    signal: high
+
+runtime:
+  - id: vllm-releases
+    name: "vLLM GitHub Releases"
+    feed: "https://github.com/vllm-project/vllm/releases.atom"
+    type: rss
+    layer: runtime
+    signal: very-high
+  - id: sglang-releases
+    name: "SGLang GitHub Releases"
+    feed: "https://github.com/sgl-project/sglang/releases.atom"
+    type: rss
+    layer: runtime
+    signal: very-high
+  - id: llama-cpp-releases
+    name: "llama.cpp GitHub Releases"
+    feed: "https://github.com/ggml-org/llama.cpp/releases.atom"
+    type: rss
+    layer: runtime
+    signal: high
+    notes: "Many releases; filter to milestones in the dedupe stage."
+  - id: ollama-releases
+    name: "Ollama GitHub Releases"
+    feed: "https://github.com/ollama/ollama/releases.atom"
+    type: rss
+    layer: runtime
+    signal: high
+  - id: redhat-ai-blog
+    name: "Red Hat AI / vLLM Blog"
+    feed: "https://developers.redhat.com/blog/category/ai-ml/feed"
+    type: rss
+    layer: runtime
+    signal: high
+
+retrieval-memory:
+  - id: qdrant-blog
+    name: "Qdrant Blog"
+    feed: "https://qdrant.tech/blog/feed.xml"
+    type: rss
+    layer: retrieval-memory
+    signal: high
+  - id: weaviate-blog
+    name: "Weaviate Blog"
+    feed: "https://weaviate.io/blog/rss.xml"
+    type: rss
+    layer: retrieval-memory
+    signal: medium
+  - id: letta-blog
+    name: "Letta Blog"
+    feed: "https://www.letta.com/blog"
+    type: scrape
+    layer: retrieval-memory
+    signal: very-high
+  - id: mem0-blog
+    name: "mem0 Blog"
+    feed: "https://mem0.ai/blog"
+    type: scrape
+    layer: retrieval-memory
+    signal: medium
+
+agents:
+  - id: latent-space
+    name: "Latent Space"
+    feed: "https://www.latent.space/feed"
+    type: rss
+    layer: agents
+    signal: very-high
+  - id: anthropic-news
+    name: "Anthropic News"
+    feed: "https://www.anthropic.com/news"
+    type: scrape
+    layer: agents
+    signal: very-high
+  - id: openhands-releases
+    name: "OpenHands GitHub Releases"
+    feed: "https://github.com/All-Hands-AI/OpenHands/releases.atom"
+    type: rss
+    layer: agents
+    signal: high
+  - id: aider-releases
+    name: "Aider GitHub Releases"
+    feed: "https://github.com/Aider-AI/aider/releases.atom"
+    type: rss
+    layer: agents
+    signal: high
+  - id: goose-blog
+    name: "Goose Blog"
+    feed: "https://block.github.io/goose/blog/rss.xml"
+    type: rss
+    layer: agents
+    signal: high
+  - id: cline-releases
+    name: "Cline GitHub Releases"
+    feed: "https://github.com/cline/cline/releases.atom"
+    type: rss
+    layer: agents
+    signal: medium
+
+protocols:
+  - id: mcp-releases
+    name: "MCP Spec GitHub Releases"
+    feed: "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"
+    type: rss
+    layer: protocols
+    signal: very-high
+  - id: mcp-blog
+    name: "Model Context Protocol Blog"
+    feed: "https://blog.modelcontextprotocol.io/feed.xml"
+    type: rss
+    layer: protocols
+    signal: very-high
+  - id: lf-ai-data-blog
+    name: "LF AI and Data Foundation Blog"
+    feed: "https://lfaidata.foundation/blog/feed/"
+    type: rss
+    layer: protocols
+    signal: high
+  - id: google-dev-blog
+    name: "Google Developers Blog"
+    feed: "https://developers.googleblog.com/feeds/posts/default"
+    type: rss
+    layer: protocols
+    signal: medium
+    notes: "Filter to A2A, AP2, agent-related posts."
+  - id: x402-releases
+    name: "x402 GitHub Releases"
+    feed: "https://github.com/coinbase/x402/releases.atom"
+    type: rss
+    layer: protocols
+    signal: high
+
+evaluation:
+  - id: lmarena-blog
+    name: "LMArena Blog"
+    feed: "https://blog.lmarena.ai/feed.xml"
+    type: rss
+    layer: evaluation
+    signal: very-high
+  - id: lm-eval-harness-releases
+    name: "lm-evaluation-harness GitHub Releases"
+    feed: "https://github.com/EleutherAI/lm-evaluation-harness/releases.atom"
+    type: rss
+    layer: evaluation
+    signal: very-high
+  - id: artificial-analysis-news
+    name: "Artificial Analysis"
+    feed: "https://artificialanalysis.ai/"
+    type: scrape
+    layer: evaluation
+    signal: very-high
+
+governance:
+  - id: osi-blog
+    name: "Open Source Initiative Blog"
+    feed: "https://opensource.org/blog/feed"
+    type: rss
+    layer: governance
+    signal: very-high
+  - id: import-ai
+    name: "Import AI (Jack Clark)"
+    feed: "https://importai.substack.com/feed"
+    type: rss
+    layer: governance
+    signal: very-high
+  - id: stanford-hai
+    name: "Stanford HAI"
+    feed: "https://hai.stanford.edu/news/rss.xml"
+    type: rss
+    layer: governance
+    signal: high
+
+identity-trust:
+  - id: ezkl-blog
+    name: "EZKL Blog"
+    feed: "https://blog.ezkl.xyz/index.xml"
+    type: rss
+    layer: identity-trust
+    signal: very-high
+  - id: phala-blog
+    name: "Phala Network Blog"
+    feed: "https://phala.network/posts"
+    type: scrape
+    layer: identity-trust
+    signal: medium
+  - id: apple-security-blog
+    name: "Apple Security Research Blog"
+    feed: "https://security.apple.com/blog/feed.xml"
+    type: rss
+    layer: identity-trust
+    signal: very-high
+    notes: "PCC announcements ship here."
+  - id: dif-blog
+    name: "Decentralized Identity Foundation Blog"
+    feed: "https://blog.identity.foundation/feed/"
+    type: rss
+    layer: identity-trust
+    signal: high
+
+safety-guardrails:
+  - id: nemo-guardrails-releases
+    name: "NeMo Guardrails GitHub Releases"
+    feed: "https://github.com/NVIDIA-NeMo/Guardrails/releases.atom"
+    type: rss
+    layer: safety-guardrails
+    signal: high
+  - id: anthropic-research
+    name: "Anthropic Research"
+    feed: "https://www.anthropic.com/research"
+    type: scrape
+    layer: safety-guardrails
+    signal: very-high
+    notes: "Filter for alignment-tagged posts."
+  - id: metr-blog
+    name: "METR (Model Evaluation and Threat Research)"
+    feed: "https://metr.org/blog/feed.xml"
+    type: rss
+    layer: safety-guardrails
+    signal: high
+
+sovereignty-decentralization:
+  - id: nous-research
+    name: "Nous Research"
+    feed: "https://nousresearch.com/blog/"
+    type: scrape
+    layer: sovereignty-decentralization
+    signal: high
+  - id: pluralis-blog
+    name: "Pluralis Research Blog"
+    feed: "https://pluralis.ai/blog"
+    type: scrape
+    layer: sovereignty-decentralization
+    signal: medium
+  - id: gensyn-articles
+    name: "Gensyn Articles"
+    feed: "https://www.gensyn.ai/articles"
+    type: scrape
+    layer: sovereignty-decentralization
+    signal: medium

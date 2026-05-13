@@ -1,0 +1,126 @@
+# Editorial and routing rules for the daily news routine.
+#
+# Read by the scheduled agent on every run. Edit this file to tune the
+# routine's behavior; no code change required.
+
+# ---------------------------------------------------------------------------
+# Layer routing rules
+# ---------------------------------------------------------------------------
+#
+# Slug list must match data/layers.yaml. Items are routed to exactly one
+# layer (the primary). If an item could fit two layers, pick the one
+# closest to the production-pipeline action (an OLMo release goes to
+# weights, not data, even though it also matters for data).
+
+layers:
+  core:
+    - silicon
+    - compute
+    - data
+    - training
+    - weights
+    - runtime
+    - retrieval-memory
+    - agents
+    - protocols
+  meta:
+    - evaluation
+    - governance
+    - identity-trust
+    - safety-guardrails
+    - sovereignty-decentralization
+
+# ---------------------------------------------------------------------------
+# Anti-pattern blocklist
+# ---------------------------------------------------------------------------
+#
+# Sources whose domain matches any of these go to the rejected pile
+# immediately. Press-release-rewrite outlets, content-farm sites, and
+# crypto-media outlets that frame open-AI projects as token-price stories.
+
+blocklist_domains:
+  - venturebeat.com
+  - techcrunch.com
+  - forbes.com
+  - marktechpost.com
+  - analyticsvidhya.com
+  - towardsdatascience.com
+  - coindesk.com
+  - decrypt.co
+  - cointelegraph.com
+
+blocklist_url_patterns:
+  - "medium.com/.*best.*llm.*2026"
+  - "medium.com/.*top.*ai.*tools"
+  - "medium.com/.*best.*open.*source.*ai"
+
+# Newsletter aggregators we deliberately do not re-syndicate (already covered
+# upstream by their own RSS feeds).
+deduplicate_against:
+  - bens-bites
+  - superhuman-ai
+  - rundown-ai
+
+# ---------------------------------------------------------------------------
+# Editorial style rules
+# ---------------------------------------------------------------------------
+#
+# The agent runs every generated string through this filter before
+# committing. Items containing banned phrases get rewritten or, if the
+# rewrite would change meaning, flagged to needs-review.
+
+banned_phrases:
+  - "delve"
+  - "tapestry"
+  - "landscape"
+  - "journey"
+  - "nuanced"
+  - "multifaceted"
+  - "realm"
+  - "paradigm"
+  - "fascinating"
+  - "transformative"
+  - "robust"
+  - "leveraging"
+  - "utilize"
+  - "in essence"
+  - "essentially"
+  - "fundamentally"
+  - "basically"
+  - "let me unpack"
+  - "let me walk you through"
+
+banned_characters:
+  - "—" # em dash
+
+# ---------------------------------------------------------------------------
+# Output schema (per day)
+# ---------------------------------------------------------------------------
+#
+# The agent writes one MDX file per day at src/content/news/YYYY-MM-DD.mdx
+# with the frontmatter below plus a body of layer-grouped items.
+
+mdx_frontmatter_schema:
+  date: "YYYY-MM-DD"
+  editorial_letter: "One paragraph, 2-4 sentences, neutral-observational. Names the layers with new items and the single most significant release of the day. No em dashes. No banned phrases."
+  item_count: "integer; total items published today"
+  layer_buckets: "dict layer-slug to integer item count"
+
+mdx_body_template: |
+  ## {Layer Title}
+
+  ### {Item title}
+
+  {2-4 sentence summary. Neutral. Cite the source URL.}
+
+  Source: [{source name}]({url})
+
+# ---------------------------------------------------------------------------
+# Routine behavior
+# ---------------------------------------------------------------------------
+
+max_items_per_day: 25
+max_items_per_layer_per_day: 5
+min_items_to_publish: 1 # if fewer than this, write empty issue with note
+
+needs_review_queue: data/inbox/needs-review.jsonl

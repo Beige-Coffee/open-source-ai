@@ -1,0 +1,87 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadLayers } from "../../lib/layers";
+
+export async function getStaticPaths() {
+  const issues = await getCollection("news");
+  return issues.map((issue) => {
+    const dateStr = issue.data.date.toISOString().slice(0, 10);
+    return {
+      params: { date: dateStr },
+      props: { issue },
+    };
+  });
+}
+
+const { issue } = Astro.props;
+const { Content } = await render(issue);
+
+const dateStr = issue.data.date.toISOString().slice(0, 10);
+const longDate = issue.data.date.toLocaleDateString("en-US", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+
+const buckets = Object.entries(issue.data.layer_buckets || {})
+  .map(([slug, count]) => ({ layer: findLayer(slug), count }))
+  .filter((b) => b.layer)
+  .sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout
+  title={`Daily roundup, ${dateStr}`}
+  description={issue.data.editorial_letter}
+>
+  <section class="max-w-3xl mx-auto px-6 pt-12 pb-2">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
+    >
+      <a href="/news" class="no-underline hover:underline text-[var(--color-text-subtle)]">News archive</a>
+      <span> &middot; </span>
+      <span>{dateStr}</span>
+    </p>
+    <h1 class="font-serif text-3xl md:text-4xl leading-tight tracking-tight mb-4">
+      {longDate}
+    </h1>
+    <p class="text-lg text-[var(--color-text)] leading-relaxed font-serif italic">
+      {issue.data.editorial_letter}
+    </p>
+  </section>
+
+  {
+    buckets.length > 0 && (
+      <section class="max-w-3xl mx-auto px-6 my-4">
+        <div class="flex flex-wrap gap-2 text-xs font-mono">
+          {buckets.map((b) => (
+            <a
+              href={`#${b.layer!.slug}`}
+              class="border border-[var(--color-border)] rounded px-2 py-1 text-[var(--color-text-muted)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              {b.layer!.title}
+              <span class="ml-1 text-[var(--color-text-subtle)]">
+                {b.count}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <article class="max-w-3xl mx-auto px-6 my-8 prose">
+    <Content />
+  </article>
+
+  <section class="max-w-3xl mx-auto px-6 mt-12 mb-16 border-t border-[var(--color-border)] pt-6 text-sm text-[var(--color-text-subtle)] flex flex-wrap gap-4">
+    <a href="/news" class="no-underline hover:underline">← All issues</a>
+    <a href="/rss/news.xml" class="no-underline hover:underline">RSS</a>
+  </section>
+</BaseLayout>
