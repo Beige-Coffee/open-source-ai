@@ -10,64 +10,17 @@ related_layers: [compute, training, runtime, agents, protocols]
 updated: 2026-05-13
 ---
 
-## What this layer is
-
 The political and architectural patterns that distinguish "open AI"
-from "open AI you can actually own." Sovereignty is a meta-layer
-because sovereignty arguments apply at every production-pipeline
-layer: open silicon, decentralized compute, open data, decentralized
-training, self-hostable runtime, personal-memory agents, permissionless
-payment rails.
-
-This meta-layer also names the **framing distinction** that the rest of
-the site is built on: individual sovereignty (cypherpunk, Bitcoin-and-Lightning-adjacent,
-personal ownership of compute and data) versus state sovereignty (the
-NVIDIA / Mistral / G42 "Sovereign AI" framing where the actor is a
-nation-state). The two share the word and almost nothing else; one
-framing accepts closed-but-domestic AI as sovereign, the other does not.
-
-## What is in it
-
-**Decentralized training** projects: Prime Intellect's INTELLECT-1 / 2 / 3,
-Nous Research's DisTrO, Templar's Covenant-72B (Bittensor subnet),
-Gensyn, Pluralis. Sub-cluster of the Training layer (Layer 4) that
-specifically aims at sovereignty-positive distributed training over
-commodity internet.
-
-**Decentralized inference**: Petals-class projects that pipeline
-inference for large models across many small machines. As of 2026 this
-is viable for small models per provider and for cooperative-cluster
-medium-model inference; not yet viable for frontier-scale inference
-over the open internet.
-
-**Local-first patterns**: llama.cpp on Apple Silicon, Ollama on
-consumer hardware, MLX on Mac clusters, the "personal AI server"
-category (an internal team Aegis, Friend, various Tab devices). Hardware-anchored
-sovereignty.
-
-**Permissionless agentic payments**: L402 (Lightning Labs), x402
-(Coinbase), MCP commerce. Discussed in detail at the Protocols layer
-but listed here as a sovereignty primitive because the choice of
-payment rail determines who can become an economic actor in the
-agentic web without permission.
-
-**Open-source funding ecosystems**: NLnet, Mozilla.ai, Linux Foundation,
-Optimism Retro Funding, Gitcoin Grants, NSF / Schmidt Sciences / Open
-Philanthropy. The grants section of this site is the operational view
-into this sub-layer.
-
-## The lock-in vector
-
-Sovereignty primitives have an interesting inverse-lock-in story. Each
-primitive (decentralized training, local-first inference, permissionless
-payments, open hardware) by itself does not change the production
-economics enough to displace the centralized incumbent. Combined, the
-primitives compound into a complete alternative stack that an
-individual or a small organization can run end-to-end on hardware they
-own.
-
-The risk is that any single layer slipping closed defeats the
-combination. The Sovereign AI Summit's core thesis is that closed
-silicon defeats open weights, closed runtime defeats open silicon,
-closed agents defeat open weights. This meta-layer is where those
-arguments cross-reference each other.
+from "open AI you can actually own." This meta-layer names the framing
+distinction the rest of the site is built on: individual sovereignty
+(cypherpunk, Bitcoin-and-Lightning-adjacent, personal ownership of
+compute and data) versus state sovereignty (the NVIDIA / Mistral / G42
+"Sovereign AI" framing where the actor is a nation-state). It also
+covers the primitives that make individual sovereignty viable:
+decentralized training (Prime Intellect, Nous DisTrO, Templar,
+Pluralis), decentralized inference (Petals), local-first patterns
+(llama.cpp, Ollama, MLX, personal-AI appliances), and permissionless
+agentic payments (L402, x402). Each primitive in isolation does not
+displace the centralized incumbent; combined, they compound into a
+complete alternative stack an individual or small organization can run
+end-to-end.

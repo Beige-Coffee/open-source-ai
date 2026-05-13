@@ -10,58 +10,15 @@ related_layers: [data, weights, runtime]
 updated: 2026-05-13
 ---
 
-## What this layer is
-
 The tools that take open data plus an architecture and produce weights.
-This is two related ecosystems. **Pretraining** infrastructure (Megatron-LM,
-DeepSpeed, FSDP, AxLearn, JAX-based stacks) is what frontier labs and AI2
-use to build base models from scratch. **Fine-tuning** infrastructure
-(Unsloth, Axolotl, LLaMA-Factory, HuggingFace TRL) is what an individual
-or a small team uses to take an existing open-weights base model and
-adapt it to specific data, tasks, or domains.
-
-Training is a layer in the production pipeline that the standard
-nine-layer taxonomy historically smuggled into Weights or Runtime.
-Giving it a dedicated layer makes the ecosystem visible: tools to make
-training accessible to non-hyperscaler audiences are the single cleanest
-sovereignty story in 2026. The cost of fine-tuning Llama 3 8B dropping
-from "A100 only" to "RTX 4090 plus a consumer Mac" is what put model
-customization within reach of any developer.
-
-## Open vs. closed
-
-The open side is most of what people actually use. **Unsloth** offers
-2x-30x faster fine-tuning at 70% less VRAM than the HuggingFace TRL
-baseline, with a free open-source tier and paid Pro / Enterprise tiers.
-**Axolotl** is a popular general-purpose fine-tuning framework. **LLaMA-Factory**
-is the Chinese-open-source equivalent, very feature-rich. **HuggingFace TRL**
-is the general standard library for supervised fine-tuning and RLHF.
-**Megatron-LM** (NVIDIA) and **DeepSpeed** (Microsoft) are the heavyweight
-distributed-training frameworks, open source but historically tuned for
-NVIDIA hardware. **FSDP** (PyTorch's Fully Sharded Data Parallel) is the
-default for production-scale training in 2026.
-
-A distinct sub-cluster within Training is **decentralized training**:
-Prime Intellect's INTELLECT-1, Nous Research's DisTrO, Templar's
-Covenant-72B, Gensyn, Pluralis. These projects use techniques like
-asynchronous gradient sync and gradient compression to make
-distributed-over-the-internet training feasible. They are still 10-100x
-slower than centralized frontier training, but they are real and they
-ship working models.
-
-The closed side is what every frontier lab uses internally. We can guess
-the shape (PyTorch + some custom stack + Megatron-style sharding) but
-the specifics are proprietary.
-
-## The lock-in vector
-
-Training has minimal direct lock-in. The tools are open. The lock-in
-shows up upstream (in Silicon, where NVIDIA's NCCL still dominates
-distributed-training synchronization) and downstream (in Weights, where
-the resulting model's license determines what you can do with the output).
-
-The interesting question at this layer is reach: who can train, and what.
-In 2026, the answer for fine-tuning is "anyone with a 4090 and a free
-Colab notebook." The answer for pretraining frontier-class models is
-still "labs with NVIDIA hyperscaler-class infrastructure." Decentralized
-training is trying to flip the second answer; it is not there yet.
+Two related ecosystems share this layer: pretraining infrastructure
+(Megatron-LM, DeepSpeed, FSDP, JAX-based stacks) used by frontier labs
+to build base models from scratch, and fine-tuning infrastructure
+(Unsloth, Axolotl, LLaMA-Factory, HuggingFace TRL) used by individuals
+and small teams to adapt existing open-weights models. A third
+sub-cluster is decentralized training (Prime Intellect, Nous DisTrO,
+Templar, Pluralis), which is still slower than centralized
+frontier training but is shipping working models. The single cleanest
+sovereignty story of 2026 lives here: fine-tuning Llama-class models
+went from "A100 only" to "consumer GPU plus a Mac," and the open
+fine-tuning ecosystem is what made that happen.

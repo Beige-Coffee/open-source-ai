@@ -34,6 +34,13 @@
   --color-status-fresh: #15803d;
   --color-status-stale: #a8a29e;
 
+  /* Focus tags on project cards. Color-coded by openness. */
+  --color-focus-open: #15803d;
+  --color-focus-open-weights: #1e3a8a;
+  --color-focus-source-available: #b45309;
+  --color-focus-proprietary: #78716c;
+  --color-focus-standard: #6d28d9;
+
   --font-sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;
   --font-serif: "IBM Plex Serif", "Iowan Old Style", "Charter", Georgia, serif;

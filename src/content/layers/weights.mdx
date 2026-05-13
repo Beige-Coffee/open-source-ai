@@ -10,62 +10,14 @@ related_layers: [data, training, runtime, governance]
 updated: 2026-05-13
 ---
 
-## What this layer is
-
-The model files. The trained weights are the artifact most often labeled
-"open" in popular conversation, and they are also the most superficial
-layer of openness. Having the weights means you can run the model,
-fine-tune it, and inspect it. It does not mean you can re-train it,
-reproduce it, or audit how it was trained. Most "open-weights" models
-are open at this layer and closed at Data (Layer 3) and at training-code
-(implicitly part of Data or Training).
-
-The weights layer is also where "open" hides the most license diversity.
-Apache 2.0 is genuinely open. The Llama Community License is
-source-available, not open-source; it carries acceptable-use restrictions
-and a 700M MAU clause that Meta can revoke. Gemma's terms are similarly
-source-available. DeepSeek and Qwen and Mistral mostly use Apache 2.0 or
-MIT for their smaller releases and progressively more restrictive
-licenses for their flagship releases. The OSAID v1.0 conversation matters
-here because the definition decides which of these counts as "open
-source AI."
-
-## Open vs. closed
-
-The open-weights ecosystem in 2026 has converged on a small set of model
-families, mostly from one of four sources. The US labs (Meta's Llama,
-Microsoft's Phi, Google's Gemma). The Chinese labs (Qwen from Alibaba,
-DeepSeek, Kimi from Moonshot, GLM from Zhipu, Yi from 01.AI). The
-European labs (Mistral, plus the truly-open AI2 with OLMo). And the
-Middle Eastern labs (Falcon from TII in the UAE).
-
-Llama is the most-used family but also the most-licensed. Mistral
-started Apache 2.0 (Mistral 7B, Mixtral 8x7B) and has progressively
-reserved more restrictive terms for flagship releases. Qwen has been
-surprisingly aggressive at the open end: Qwen 2.5 and Qwen 3 shipped
-under Apache 2.0 in many sizes. DeepSeek's V2, V3, and R1 releases reset
-the cost-quality curve and ship under permissive licenses. OLMo is the
-only family in the open-weights set that meets the strictest reading of
-"open AI" because the data, code, and weights are all published.
-
-The closed side is what the public discourse calls "frontier AI":
-GPT-class at OpenAI, Claude at Anthropic, Gemini at Google. Plus the
-API-only flagships of every lab that also ships open-weights (Mistral
-Large, Cohere's flagship, the closed tiers of every Chinese lab). The
-dynamic is that the same lab often ships an open tier (small, recent
-generation) and a closed tier (largest, current generation).
-
-## The lock-in vector
-
-Weights have weaker lock-in than silicon or runtime, but they have one
-specific lock-in: license restrictions. The Llama Community License is
-the canonical example. Meta retains the right to revoke the license for
-entities above the 700M MAU threshold, retains an acceptable-use list
-that has been used to selectively restrict downstream use, and reserves
-the right to update terms. This is structurally different from Apache
-2.0, where the rights you receive at download time are durable.
-
-The summit-grade framing here: "open weights" is necessary but not
-sufficient, and the question is which license you actually got. The
-strict-reading position is that only OSAID-compliant releases should be
-called "open AI," and the rest should be called "source-available AI."
+The model files. Having the weights means you can run the model,
+fine-tune it, and inspect it; it does not mean you can re-train or
+reproduce it. This is the most superficial layer of openness and also
+where license diversity hides the most: Apache 2.0 is genuinely open;
+the Llama Community License and Gemma's terms are source-available with
+revocable acceptable-use clauses; OLMo is one of the few families open
+at the weights, data, and training-code layers all at once. The
+open-weights ecosystem in 2026 is dominated by Chinese labs (Qwen,
+DeepSeek, Kimi, GLM), Meta's Llama family, Mistral, Google's Gemma, and
+AI2's OLMo. The OSAID definition decides which of these counts as "open
+source AI"; under the strictest reading, most do not.

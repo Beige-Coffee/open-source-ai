@@ -1,0 +1,691 @@
+# Curated reading lists per layer.
+#
+# 5-8 entries per layer. Each entry: title, author/source, url, type,
+# year, layer attribution, one-line description.
+#
+# Types: paper | post | talk | podcast | book | thread | docs
+#
+# Editorial bias: prefer primary sources (original papers, project docs,
+# release notes from the maintainers) over secondary commentary. Mix one
+# or two "best critical reads" per layer when they exist.
+#
+# Edit freely. Daily/weekly routines do not modify this file.
+
+readings:
+  # Silicon
+  - title: "CUDA, A Developer's Best Practices"
+    source: NVIDIA
+    url: "https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/"
+    type: docs
+    year: 2024
+    layers: [silicon]
+    description: "Why the software moat is real. Read the first three chapters to understand what 'CUDA lock-in' actually means at the hardware-software boundary."
+
+  - title: "The Bitter Lesson"
+    source: Rich Sutton
+    url: "http://www.incompleteideas.net/IncIdeas/BitterLesson.html"
+    type: post
+    year: 2019
+    layers: [silicon, compute, training]
+    description: "Why compute, not cleverness, wins in AI. The most-cited 700 words in modern AI strategy."
+
+  - title: "RISC-V: An Open Architecture Atlas"
+    source: RISC-V International
+    url: "https://riscv.org/about/"
+    type: docs
+    year: 2025
+    layers: [silicon]
+    description: "Foundational explainer for why the ISA being open matters and what RISC-V does and doesn't guarantee."
+
+  - title: "Chip War"
+    source: Chris Miller
+    url: "https://www.simonandschuster.com/books/Chip-War/Chris-Miller/9781982172008"
+    type: book
+    year: 2022
+    layers: [silicon]
+    description: "How the semiconductor industry became geopolitical. Essential context for export controls, TSMC, and Taiwan exposure."
+
+  - title: "The Tenstorrent Architecture, Explained"
+    source: Jim Keller, Hot Chips
+    url: "https://tenstorrent.com/vision"
+    type: talk
+    year: 2024
+    layers: [silicon]
+    description: "Jim Keller on why open-trending silicon on RISC-V is the only path that doesn't end at NVIDIA."
+
+  - title: "Groq vs. NVIDIA: The Inference Speed Question"
+    source: Semianalysis
+    url: "https://www.semianalysis.com/p/groq-inference-tokenomics-speed-but"
+    type: post
+    year: 2024
+    layers: [silicon, runtime]
+    description: "Inference-specialty silicon (Groq LPU, Cerebras) vs. NVIDIA's all-purpose accelerators. Where each wins."
+
+  # Compute
+  - title: "The Akash Network: Decentralized Compute Marketplace"
+    source: Akash Network docs
+    url: "https://akash.network/docs/"
+    type: docs
+    year: 2025
+    layers: [compute]
+    description: "Primary docs for the leading decentralized GPU marketplace. Start with the architecture overview."
+
+  - title: "Bittensor: A Peer-to-Peer Intelligence Market"
+    source: Bittensor (Yuma Rao et al.)
+    url: "https://bittensor.com/whitepaper"
+    type: paper
+    year: 2021
+    layers: [compute, weights, training]
+    description: "The original whitepaper. Token-incentive design for distributed compute and model training. Read alongside the subnet docs."
+
+  - title: "Cloud GPU Pricing, Tracked"
+    source: getdeploying.com / artificialanalysis
+    url: "https://artificialanalysis.ai/"
+    type: post
+    year: 2026
+    layers: [compute]
+    description: "Live tracker of inference cost per token across providers. Use this to ground every 'cheaper inference' claim."
+
+  - title: "Decentralized Training is Hard"
+    source: Prime Intellect (research blog)
+    url: "https://www.primeintellect.ai/blog"
+    type: post
+    year: 2025
+    layers: [compute, training]
+    description: "Why bandwidth-efficient distributed training is the bottleneck for sovereign training. Concrete numbers, not vibes."
+
+  - title: "The Stargate Project"
+    source: Microsoft / OpenAI public filings
+    url: "https://openai.com/index/announcing-the-stargate-project/"
+    type: post
+    year: 2025
+    layers: [compute]
+    description: "The other end of the spectrum: $500B hyperscaler buildout. Understand the gap you're trying to close."
+
+  # Data
+  - title: "FineWeb: Decanting the Web for the Finest Text Data at Scale"
+    source: HuggingFace
+    url: "https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1"
+    type: post
+    year: 2024
+    layers: [data]
+    description: "The deepest public account of how to build a serious open pretraining dataset. Includes ablations."
+
+  - title: "The Pile: An 800GB Dataset of Diverse Text"
+    source: EleutherAI
+    url: "https://arxiv.org/abs/2101.00027"
+    type: paper
+    year: 2021
+    layers: [data]
+    description: "Foundational paper for open pretraining data. The lineage of every modern open dataset traces here."
+
+  - title: "Common Pile v0.1: An 8TB Dataset of Public Domain and Openly Licensed Text"
+    source: EleutherAI + 30 partners
+    url: "https://huggingface.co/blog/stas/common-pile-v01"
+    type: post
+    year: 2025
+    layers: [data, governance]
+    description: "First serious attempt at a fully license-clean pretraining corpus at scale. Read the methodology, not just the announcement."
+
+  - title: "The NYT v. OpenAI Complaint"
+    source: New York Times v. Microsoft, OpenAI (SDNY)
+    url: "https://www.courtlistener.com/docket/68117049/the-new-york-times-company-v-microsoft-corporation/"
+    type: post
+    year: 2023
+    layers: [data, governance]
+    description: "Read the actual complaint, not the news coverage. Sets the legal frame for every dataset-licensing decision being made today."
+
+  - title: "Datasheets for Datasets"
+    source: Timnit Gebru et al.
+    url: "https://arxiv.org/abs/1803.09010"
+    type: paper
+    year: 2018
+    layers: [data, governance]
+    description: "The proposal that made dataset documentation a standard practice. Still the best primer."
+
+  - title: "DCLM: Datacomp-LM"
+    source: DCLM team (UW, Apple, Anthropic, others)
+    url: "https://arxiv.org/abs/2406.11794"
+    type: paper
+    year: 2024
+    layers: [data]
+    description: "Open competitive benchmark for pretraining-data filtering. Methodology over hype."
+
+  # Training
+  - title: "The Llama 3 Herd of Models"
+    source: Meta AI
+    url: "https://arxiv.org/abs/2407.21783"
+    type: paper
+    year: 2024
+    layers: [training, weights]
+    description: "The most detailed public training-recipe paper from a frontier-scale lab. Read it cover to cover."
+
+  - title: "The DeepSeek-V3 Technical Report"
+    source: DeepSeek
+    url: "https://arxiv.org/abs/2412.19437"
+    type: paper
+    year: 2024
+    layers: [training, weights]
+    description: "How DeepSeek trained a frontier-class model on a quarter of the compute budget. MoE, FP8, and engineering discipline."
+
+  - title: "DisTrO: Distributed Training Over-the-Internet"
+    source: Nous Research
+    url: "https://github.com/NousResearch/DisTrO"
+    type: paper
+    year: 2024
+    layers: [training, compute]
+    description: "Bandwidth-efficient distributed training optimizer. The strongest current candidate for sovereign-training infrastructure."
+
+  - title: "Direct Preference Optimization"
+    source: Rafailov et al.
+    url: "https://arxiv.org/abs/2305.18290"
+    type: paper
+    year: 2023
+    layers: [training]
+    description: "The paper that replaced RLHF for most open post-training. Foundational for understanding modern alignment recipes."
+
+  - title: "Unsloth: 2x Faster Fine-Tuning"
+    source: Unsloth team
+    url: "https://docs.unsloth.ai/"
+    type: docs
+    year: 2025
+    layers: [training]
+    description: "The practical fine-tuning entry point for individuals and small teams. Read the notebooks before reading the docs."
+
+  - title: "The HuggingFace Alignment Handbook"
+    source: HuggingFace
+    url: "https://github.com/huggingface/alignment-handbook"
+    type: docs
+    year: 2024
+    layers: [training]
+    description: "Open recipes for SFT, DPO, ORPO, KTO. The closest thing to a textbook for open post-training."
+
+  # Weights
+  - title: "OLMo 2: A Truly Open Language Model"
+    source: AI2 (Allen Institute)
+    url: "https://allenai.org/olmo"
+    type: paper
+    year: 2025
+    layers: [weights, data, training]
+    description: "Read this to see what fully-open means: weights, data, code, training logs, all released. The benchmark for openness, not capability."
+
+  - title: "On the Opportunities and Risks of Foundation Models"
+    source: Stanford HAI
+    url: "https://arxiv.org/abs/2108.07258"
+    type: paper
+    year: 2021
+    layers: [weights, governance]
+    description: "The paper that named the category. Still the best framing of why weights matter politically, not just technically."
+
+  - title: "The Llama Community License, Annotated"
+    source: Mark Lemley / Open Source Initiative
+    url: "https://opensource.org/blog/meta-llama-license-still-not-open-source"
+    type: post
+    year: 2024
+    layers: [weights, governance]
+    description: "Why Llama is not open source by OSI definition, and why the difference matters."
+
+  - title: "Mistral 7B"
+    source: Mistral AI
+    url: "https://arxiv.org/abs/2310.06825"
+    type: paper
+    year: 2023
+    layers: [weights]
+    description: "The release that proved European frontier-class open weights were possible. Sliding-window attention and grouped-query attention explained."
+
+  - title: "Qwen2.5 Technical Report"
+    source: Alibaba Qwen team
+    url: "https://arxiv.org/abs/2412.15115"
+    type: paper
+    year: 2024
+    layers: [weights]
+    description: "How Alibaba built the most-downloaded open weights family. Long-context, math, and code specialization at scale."
+
+  - title: "The DeepSeek-R1 Reasoning Paper"
+    source: DeepSeek
+    url: "https://arxiv.org/abs/2501.12948"
+    type: paper
+    year: 2025
+    layers: [weights, training]
+    description: "Open-weight frontier reasoning. R1-Zero in particular: pure RL post-training without SFT. Methodology, not just numbers."
+
+  # Runtime
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention"
+    source: vLLM team (Woosuk Kwon et al.)
+    url: "https://arxiv.org/abs/2309.06180"
+    type: paper
+    year: 2023
+    layers: [runtime]
+    description: "The vLLM paper. PagedAttention is the single most important runtime idea of the past three years."
+
+  - title: "SGLang: Efficient Execution of Structured Language Model Programs"
+    source: LMSYS / SGLang team
+    url: "https://arxiv.org/abs/2312.07104"
+    type: paper
+    year: 2023
+    layers: [runtime]
+    description: "RadixAttention and structured generation. Read after vLLM to see the design space."
+
+  - title: "llama.cpp: Inference of LLaMA Model in Pure C/C++"
+    source: Georgi Gerganov (project README)
+    url: "https://github.com/ggml-org/llama.cpp"
+    type: docs
+    year: 2025
+    layers: [runtime]
+    description: "Read the README and CONTRIBUTING. The local-first runtime philosophy lives here."
+
+  - title: "Speculative Decoding: A Survey"
+    source: Various
+    url: "https://arxiv.org/abs/2401.07851"
+    type: paper
+    year: 2024
+    layers: [runtime]
+    description: "Why your tokens per second keeps going up without bigger GPUs. Survey-quality overview."
+
+  - title: "GGUF File Format Spec"
+    source: ggml/llama.cpp project
+    url: "https://github.com/ggml-org/ggml/blob/master/docs/gguf.md"
+    type: docs
+    year: 2024
+    layers: [runtime, weights]
+    description: "The de facto local-first weights format. Read this if you want to understand how local inference distributes models."
+
+  - title: "Anyscale's Inference-Cost Notes"
+    source: Anyscale (Robert Nishihara et al.)
+    url: "https://www.anyscale.com/blog"
+    type: post
+    year: 2024
+    layers: [runtime, compute]
+    description: "Production-honest analysis of inference economics. Filter to the runtime-cost posts."
+
+  # Retrieval and memory
+  - title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+    source: Lewis et al.
+    url: "https://arxiv.org/abs/2005.11401"
+    type: paper
+    year: 2020
+    layers: [retrieval-memory]
+    description: "The original RAG paper. Read to understand what the term meant before everyone overloaded it."
+
+  - title: "MemGPT: Towards LLMs as Operating Systems"
+    source: Letta team (Charles Packer et al.)
+    url: "https://arxiv.org/abs/2310.08560"
+    type: paper
+    year: 2023
+    layers: [retrieval-memory, agents]
+    description: "The paper that became Letta. Hierarchical agent memory as OS-paged main memory."
+
+  - title: "The Vector Database Landscape, 2025"
+    source: Qdrant blog
+    url: "https://qdrant.tech/articles/"
+    type: post
+    year: 2025
+    layers: [retrieval-memory]
+    description: "Best ongoing technical writing on vector-DB tradeoffs from a maintainer. Filter to the architecture posts."
+
+  - title: "pgvector: Open-source vector similarity search for Postgres"
+    source: Andrew Kane (project docs)
+    url: "https://github.com/pgvector/pgvector"
+    type: docs
+    year: 2025
+    layers: [retrieval-memory]
+    description: "Why most teams should start here, not at a dedicated vector DB. The boring-tech path."
+
+  - title: "Lost in the Middle: How Language Models Use Long Contexts"
+    source: Liu et al.
+    url: "https://arxiv.org/abs/2307.03172"
+    type: paper
+    year: 2023
+    layers: [retrieval-memory, runtime]
+    description: "Why long context isn't free and retrieval still wins for production systems."
+
+  - title: "GraphRAG: A Modular Graph-Based RAG Approach"
+    source: Microsoft Research
+    url: "https://arxiv.org/abs/2404.16130"
+    type: paper
+    year: 2024
+    layers: [retrieval-memory]
+    description: "Knowledge-graph RAG for global-summarization questions. The technique behind the current wave of 'agentic search' systems."
+
+  # Agents
+  - title: "ReAct: Synergizing Reasoning and Acting in Language Models"
+    source: Yao et al.
+    url: "https://arxiv.org/abs/2210.03629"
+    type: paper
+    year: 2022
+    layers: [agents]
+    description: "The pattern every modern agent loop descends from. Foundational, still relevant."
+
+  - title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
+    source: Princeton NLP
+    url: "https://arxiv.org/abs/2310.06770"
+    type: paper
+    year: 2023
+    layers: [agents, evaluation]
+    description: "The benchmark that defines modern coding-agent progress. Read alongside the live leaderboard."
+
+  - title: "Anthropic's Engineering Blog on Claude Code"
+    source: Anthropic
+    url: "https://www.anthropic.com/engineering"
+    type: post
+    year: 2025
+    layers: [agents]
+    description: "The clearest public writing on how a serious coding agent is actually built. Filter to the agent-design posts."
+
+  - title: "OpenHands (formerly OpenDevin): An Open Platform for AI Software Developers"
+    source: OpenHands team
+    url: "https://arxiv.org/abs/2407.16741"
+    type: paper
+    year: 2024
+    layers: [agents]
+    description: "The clearest current account of an open coding-agent architecture. Compare to Goose and Aider as you read."
+
+  - title: "Aider: AI Pair Programming in Your Terminal"
+    source: Paul Gauthier (project docs)
+    url: "https://aider.chat/docs/"
+    type: docs
+    year: 2025
+    layers: [agents]
+    description: "Smallest sharp coding-agent design that works. Read the design notes."
+
+  - title: "What Are AI Agents, Really?"
+    source: Simon Willison
+    url: "https://simonwillison.net/2024/Sep/26/what-i-look-for-in-a-coding-agent/"
+    type: post
+    year: 2024
+    layers: [agents]
+    description: "Reliable hype-deflation from a careful observer. Read once per quarter to recalibrate."
+
+  # Protocols
+  - title: "Model Context Protocol Specification"
+    source: Anthropic + MCP working group
+    url: "https://modelcontextprotocol.io/specification"
+    type: docs
+    year: 2025
+    layers: [protocols]
+    description: "Read the spec, not the marketing. MCP's design choices and where it falls short on auth."
+
+  - title: "A2A: Agent-to-Agent Protocol"
+    source: Linux Foundation A2A working group
+    url: "https://a2a-protocol.org/"
+    type: docs
+    year: 2025
+    layers: [protocols]
+    description: "The competing-and-complementary protocol to MCP. Read the agent-card spec specifically."
+
+  - title: "L402: HTTP 402 Payment Required, For Real This Time"
+    source: Lightning Labs
+    url: "https://docs.lightning.engineering/the-lightning-network/l402"
+    type: docs
+    year: 2024
+    layers: [protocols, identity-trust]
+    description: "Bitcoin-Lightning-anchored agent payments. The native-internet alternative to API keys."
+
+  - title: "x402: Stablecoin Payments for the AI Era"
+    source: Coinbase
+    url: "https://github.com/coinbase/x402"
+    type: docs
+    year: 2025
+    layers: [protocols, identity-trust]
+    description: "Coinbase's HTTP 402 take, stablecoin-anchored. Read alongside L402 to see the trade space."
+
+  - title: "OpenAPI for Agents: What MCP Got Right and What's Still Missing"
+    source: Latent Space podcast / various essays
+    url: "https://www.latent.space/p/mcp"
+    type: post
+    year: 2025
+    layers: [protocols]
+    description: "Good overview of the protocol landscape as of early 2026 and the gaps that remain."
+
+  - title: "AAIF: Authenticated Agent Identification Framework"
+    source: Linux Foundation
+    url: "https://www.linuxfoundation.org/press/announcing-aaif"
+    type: docs
+    year: 2025
+    layers: [protocols, identity-trust]
+    description: "Specification for agent identity at the protocol layer. Specifically: what does it mean for an agent to authenticate?"
+
+  # Evaluation
+  - title: "Measuring Massive Multitask Language Understanding (MMLU)"
+    source: Hendrycks et al.
+    url: "https://arxiv.org/abs/2009.03300"
+    type: paper
+    year: 2020
+    layers: [evaluation]
+    description: "The benchmark everyone overfit to. Read to understand the saturation problem in benchmark design."
+
+  - title: "Holistic Evaluation of Language Models (HELM)"
+    source: Stanford CRFM
+    url: "https://crfm.stanford.edu/helm/"
+    type: docs
+    year: 2025
+    layers: [evaluation]
+    description: "The most-principled large-scale eval framework. Read the methodology section before reading any score."
+
+  - title: "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference"
+    source: LMSYS (Chiang et al.)
+    url: "https://arxiv.org/abs/2403.04132"
+    type: paper
+    year: 2024
+    layers: [evaluation]
+    description: "The methodology paper behind LMArena. Read this before citing arena scores."
+
+  - title: "AI Snake Oil"
+    source: Arvind Narayanan, Sayash Kapoor
+    url: "https://www.aisnakeoil.com/"
+    type: post
+    year: 2025
+    layers: [evaluation, governance]
+    description: "The single most-useful ongoing critical reading on AI claims. Filter to the evaluation posts."
+
+  - title: "SWE-bench Verified"
+    source: OpenAI
+    url: "https://openai.com/index/introducing-swe-bench-verified/"
+    type: post
+    year: 2024
+    layers: [evaluation, agents]
+    description: "Why the original SWE-bench had problems and how the verified subset fixes them. Read for what 'real-world benchmark' actually requires."
+
+  - title: "Humanity's Last Exam"
+    source: Scale AI + CAIS
+    url: "https://lastexam.ai/"
+    type: docs
+    year: 2025
+    layers: [evaluation]
+    description: "Frontier-saturated benchmark designed to last. Read the methodology and watch the leaderboard."
+
+  # Governance
+  - title: "The Open Source AI Definition v1.0"
+    source: OSI
+    url: "https://opensource.org/ai/open-source-ai-definition"
+    type: docs
+    year: 2024
+    layers: [governance, weights, data]
+    description: "Read the actual text, not the takes about it. The most-contested definition in the field."
+
+  - title: "Llama Community License, Annotated"
+    source: Mark Lemley (Stanford Law)
+    url: "https://opensource.org/blog/meta-llama-license-still-not-open-source"
+    type: post
+    year: 2024
+    layers: [governance, weights]
+    description: "Why Llama is not OSI-open and why the 700M-user clause is the operative constraint."
+
+  - title: "EU AI Act, Plain English"
+    source: Future of Life Institute
+    url: "https://artificialintelligenceact.eu/"
+    type: docs
+    year: 2025
+    layers: [governance]
+    description: "The most accessible summary of the EU AI Act with citations to articles. Read before citing 'GPAI obligations'."
+
+  - title: "Executive Order on AI (and its rescission)"
+    source: White House archives
+    url: "https://bidenwhitehouse.archives.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/"
+    type: docs
+    year: 2023
+    layers: [governance]
+    description: "Read the original EO, then read the 2025 rescission. The arc tells you where US AI policy is."
+
+  - title: "Choose an Open Source License"
+    source: GitHub
+    url: "https://choosealicense.com/"
+    type: docs
+    year: 2025
+    layers: [governance]
+    description: "The first stop before publishing anything. Pragmatic license comparison without lawyerese."
+
+  - title: "The Foundation Model Transparency Index"
+    source: Stanford HAI
+    url: "https://crfm.stanford.edu/fmti/"
+    type: docs
+    year: 2024
+    layers: [governance]
+    description: "Multi-dimensional scoring of transparency across major foundation models. Most-useful published artifact for this conversation."
+
+  # Identity and trust
+  - title: "Verifiable Compute: A Primer"
+    source: EZKL team
+    url: "https://blog.ezkl.xyz/"
+    type: post
+    year: 2025
+    layers: [identity-trust]
+    description: "ZK-proven inference, in plain English. Start here, not at the cryptography papers."
+
+  - title: "Apple's Private Cloud Compute: A New Frontier for AI Privacy in the Cloud"
+    source: Apple Security Engineering
+    url: "https://security.apple.com/blog/private-cloud-compute/"
+    type: post
+    year: 2024
+    layers: [identity-trust]
+    description: "The most-technically-detailed public account of a production confidential-AI deployment. Required reading."
+
+  - title: "Decentralized Identifiers (DIDs) v1.0"
+    source: W3C
+    url: "https://www.w3.org/TR/did-core/"
+    type: docs
+    year: 2022
+    layers: [identity-trust]
+    description: "Foundational standard for self-sovereign identity. Read the data model first, then the methods."
+
+  - title: "Confidential Computing: An AWS Perspective"
+    source: AWS / Confidential Computing Consortium
+    url: "https://confidentialcomputing.io/"
+    type: docs
+    year: 2025
+    layers: [identity-trust]
+    description: "Reasonable cross-vendor primer on TEEs, attestation, and what 'confidential' actually guarantees."
+
+  - title: "Modulus: Trustless ML"
+    source: Modulus Labs
+    url: "https://www.modulus.xyz/"
+    type: docs
+    year: 2025
+    layers: [identity-trust]
+    description: "Production-ish ZK-ML for inference verification. Read alongside EZKL for the trade space."
+
+  - title: "Verifiable Credentials Data Model 2.0"
+    source: W3C
+    url: "https://www.w3.org/TR/vc-data-model-2.0/"
+    type: docs
+    year: 2025
+    layers: [identity-trust]
+    description: "Companion spec to DIDs. Together they define the self-sovereign identity stack."
+
+  # Safety and guardrails
+  - title: "Llama Guard 3: Input/Output Safety Classifier"
+    source: Meta
+    url: "https://llama.meta.com/trust-and-safety/"
+    type: docs
+    year: 2024
+    layers: [safety-guardrails]
+    description: "The open input/output guard everyone deploys first. Read the model card before deploying."
+
+  - title: "Constitutional AI: Harmlessness from AI Feedback"
+    source: Anthropic
+    url: "https://arxiv.org/abs/2212.08073"
+    type: paper
+    year: 2022
+    layers: [safety-guardrails, training]
+    description: "Foundational paper for the constitution-and-self-critique alignment paradigm."
+
+  - title: "Inspect: An Open-Source Framework for LLM Evaluations"
+    source: UK AI Security Institute
+    url: "https://inspect.ai-safety-institute.org.uk/"
+    type: docs
+    year: 2024
+    layers: [safety-guardrails, evaluation]
+    description: "The most credible open eval framework for dangerous-capability evaluations. Read before reading any AISI report."
+
+  - title: "Apollo Research's Scheming-Evals Methodology"
+    source: Apollo Research
+    url: "https://www.apolloresearch.ai/research"
+    type: post
+    year: 2025
+    layers: [safety-guardrails]
+    description: "The clearest public writing on how to evaluate deception in frontier models. Read with skepticism, but read."
+
+  - title: "Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training"
+    source: Anthropic
+    url: "https://arxiv.org/abs/2401.05566"
+    type: paper
+    year: 2024
+    layers: [safety-guardrails, weights]
+    description: "Why post-hoc safety training has fundamental limits. Read the methodology, not just the abstract."
+
+  - title: "AI 2027"
+    source: AI Futures Project
+    url: "https://ai-2027.com/"
+    type: post
+    year: 2025
+    layers: [safety-guardrails, governance]
+    description: "Scenario-based forecast that grounded a lot of 2025 safety-policy debate. Read as fiction-with-cited-priors."
+
+  # Sovereignty and decentralization primitives
+  - title: "INTELLECT-1 Technical Report"
+    source: Prime Intellect
+    url: "https://www.primeintellect.ai/blog/intellect-1-release"
+    type: post
+    year: 2024
+    layers: [sovereignty-decentralization, training, weights]
+    description: "First decentralized training run of a 10B+ model across continents. Read for the operations details, not the marketing."
+
+  - title: "Templar: 72B Distributed Pretrain from Scratch on Bittensor"
+    source: Templar / Bittensor research
+    url: "https://templar.ai/"
+    type: post
+    year: 2025
+    layers: [sovereignty-decentralization, compute, training]
+    description: "The most ambitious distributed-training run to date. Read alongside DisTrO and Pluralis."
+
+  - title: "Petals: Collaborative Inference of Large Models"
+    source: BigScience / Petals team
+    url: "https://arxiv.org/abs/2209.01188"
+    type: paper
+    year: 2022
+    layers: [sovereignty-decentralization, runtime]
+    description: "Pipeline-parallel inference across consumer GPUs over the public internet. Read for the latency-vs-sovereignty trade analysis."
+
+  - title: "World ID: Proof-of-Personhood, Briefly Defended"
+    source: Tools for Humanity
+    url: "https://world.org/blog/announcements/world-id-protocol"
+    type: post
+    year: 2023
+    layers: [sovereignty-decentralization, identity-trust]
+    description: "Read alongside any of the dozen critiques. The most-deployed proof-of-personhood primitive, for better or worse."
+
+  - title: "Crypto-Native AI: A Cypherpunk Inventory"
+    source: Various
+    url: "https://www.cypherpunks.li/"
+    type: post
+    year: 2025
+    layers: [sovereignty-decentralization]
+    description: "Honest inventory of which crypto-native AI primitives actually work in production vs. which are roadmap items."
+
+  - title: "Sovereign AI: A Working Definition"
+    source: open-source-ai.tech (this site)
+    url: "/learn/sovereign-ai-definition"
+    type: post
+    year: 2026
+    layers: [sovereignty-decentralization, governance]
+    description: "Our own working definition of sovereign AI and how it differs from 'national AI', 'open AI', and 'decentralized AI'."

@@ -10,67 +10,13 @@ related_layers: [agents, governance]
 updated: 2026-05-13
 ---
 
-## What this layer is
-
 The wire protocols agents, tools, and models use to talk to each other.
-This is the layer of integration, and it is where the most consequential
-standards decisions for the AI ecosystem are being made in 2025-2026.
-The big three: MCP (Model Context Protocol, Anthropic-seeded), ACP
-(Agent Client Protocol), and A2A (Agent-to-Agent, Google-seeded). Plus
-the agentic payments protocols: L402, x402, MCP commerce extensions.
-
-Protocols matter for sovereignty disproportionately to their visibility.
-Whoever owns the protocol owns the integration ecosystem. HTTP, SMTP,
-BGP, TCP are the analogous historical examples; their openness allowed
-the internet to be a platform anyone could build on. If MCP becomes the
-analogous protocol for AI tools, and MCP remains genuinely open, that
-is a sovereignty win. If MCP ends up under one vendor's de-facto control
-(Anthropic's seeded status, the spec's evolution path), the dynamic
-shifts.
-
-## Open vs. closed
-
-The protocols here are notionally open (specs are public, implementations
-are permissive-licensed), but each carries different governance shapes
-that affect how open they remain over time.
-
-**MCP** (Model Context Protocol) is Anthropic's protocol for connecting
-models to context sources and tools. The spec is at modelcontextprotocol.io;
-implementations exist in TypeScript, Python, Go, Rust. MCP has become
-the de facto standard for tool access in agents in 2025-2026: supported
-by Claude Code natively, by Goose, by OpenHands, by every serious open
-agent. Donated to the Linux Foundation's AAIF in December 2025.
-
-**A2A** (Agent-to-Agent) is Google's protocol for inter-agent
-communication, announced April 2025 with broad industry signatories.
-A2A complements MCP: MCP is for an agent to talk to tools and resources,
-A2A is for agents to talk to other agents. Now under the Linux
-Foundation as of 2025.
-
-**AAIF** (Agentic AI Foundation) is the Linux Foundation umbrella for
-agent-and-protocol governance. Founded December 2025 with platinum
-members AWS, Anthropic, Block, Bloomberg, Cloudflare, Google, Microsoft,
-OpenAI.
-
-The agentic payments rails are a separate but related cluster. **L402**
-(Lightning Labs's payment protocol pairing HTTP 402 with Lightning
-Network invoices) is the original; **x402** (Coinbase's 2025 revival of
-HTTP 402 with on-chain payments) is the alternative. **MCP commerce** is
-the early-stage proposal to extend MCP itself with payment primitives.
-
-## The lock-in vector
-
-Protocols are a governance lock-in vector. Once a protocol is in the
-field, it is hard to replace; once one vendor controls the evolution,
-it is hard to fork. The summit-grade framing: open protocol specs are
-necessary but not sufficient; governance shapes that distribute
-authority over evolution (multi-vendor consortium, IETF-style RFC
-process, AAIF-style neutral foundation) are what makes a protocol
-durably open.
-
-The agentic-payments protocols are a sub-argument: if AI agents become
-economic actors, the payment rails determine who captures the value.
-L402 and x402 are the two open-spec offerings; closed equivalents are
-emerging (Stripe Agent SDK is the cleanest example). Whichever protocol
-wins the agentic-payments standard battle locks in the rails for a
-decade.
+The big three in 2026: MCP (Model Context Protocol, model-to-tool), A2A
+(agent-to-agent), and AAIF (agent identification). Plus the agentic
+payments rails: L402 (Bitcoin Lightning), x402 (stablecoin), and the
+in-development MCP commerce extensions. Protocols matter for sovereignty
+disproportionately to their visibility: whoever owns the protocol owns
+the integration ecosystem, the way HTTP, SMTP, and BGP did before them.
+The specs are notionally open, but governance shapes (foundation
+neutrality, multi-vendor consortium vs. seeded-by-one-lab) determine
+how durably open they remain.

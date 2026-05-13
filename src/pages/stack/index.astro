@@ -36,32 +36,36 @@ const layers = loadLayers();
   <section class="max-w-4xl mx-auto px-6 my-16 prose">
     <h2>How to read this map</h2>
     <p>
-      The nine core layers run in pipeline order: a chip
-      (<a href="/stack/silicon">silicon</a>) goes somewhere (<a href="/stack/compute">compute</a>),
-      gets fed something (<a href="/stack/data">data</a>) shaped by something else
+      The diagram above is a stack: the foundation
+      (<a href="/stack/silicon">silicon</a>) sits at the bottom, and each
+      layer above it builds on what is below. Above silicon, the chips run
+      somewhere (<a href="/stack/compute">compute</a>) on data
+      (<a href="/stack/data">data</a>) shaped by training tools
       (<a href="/stack/training">training</a>) to produce
-      <a href="/stack/weights">weights</a>, which a runtime
-      (<a href="/stack/runtime">runtime</a>) serves to an agent
-      (<a href="/stack/agents">agents</a>) that talks to other agents and tools
-      via wire protocols (<a href="/stack/protocols">protocols</a>). The agent
-      also reaches into a retrieval and memory store
-      (<a href="/stack/retrieval-memory">retrieval and memory</a>) at call time.
+      <a href="/stack/weights">weights</a>. A runtime
+      (<a href="/stack/runtime">runtime</a>) serves those weights through an
+      agent (<a href="/stack/agents">agents</a>) that talks to other agents
+      and tools via wire protocols
+      (<a href="/stack/protocols">protocols</a>). The agent also reaches
+      into a retrieval and memory store
+      (<a href="/stack/retrieval-memory">retrieval and memory</a>) at call
+      time. Protocols sit at the top because that is the layer closest to
+      the user.
     </p>
     <p>
-      The cross-cutting meta-layers do not sit between two layers in the
-      pipeline. They observe (<a href="/stack/evaluation">evaluation</a>),
-      define (<a href="/stack/governance">governance</a>), trust-anchor
+      The cross-cutting meta-layers run alongside the stack rather than
+      stacking on it. They observe
+      (<a href="/stack/evaluation">evaluation</a>), define
+      (<a href="/stack/governance">governance</a>), trust-anchor
       (<a href="/stack/identity-trust">identity and trust</a>), constrain
-      (<a href="/stack/safety-guardrails">safety and guardrails</a>), and shape
-      the political framing
+      (<a href="/stack/safety-guardrails">safety and guardrails</a>), and
+      shape the political framing
       (<a href="/stack/sovereignty-decentralization">sovereignty and decentralization primitives</a>).
     </p>
     <p>
-      Each layer page has five views in one place: the editorial explainer of
-      what the layer is, the living catalog of projects in it, the latest news
-      at the layer, the grants flowing into it, and a curated reading list for
-      going deeper. That five-in-one structure is what the rest of the
-      open-AI web does not currently offer.
+      Each layer page is a five-in-one view: a short editorial explainer, a
+      living catalog of projects in it, the latest news at the layer, the
+      grants flowing into it, and a curated reading list for going deeper.
     </p>
   </section>
 </BaseLayout>

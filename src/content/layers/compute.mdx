@@ -10,55 +10,14 @@ related_layers: [silicon, runtime]
 updated: 2026-05-13
 ---
 
-## What this layer is
-
-Where silicon physically lives and how it gets accessed. This layer has
-three categories: self-hosted (you own the hardware), centralized cloud
-(AWS, Azure, GCP, Oracle, CoreWeave, Lambda, plus the smaller dedicated AI
-clouds), and decentralized compute marketplaces (Akash, io.net, Hyperbolic,
-Bittensor compute subnets, Render, Gensyn). Each category trades different
-things off against different things. Self-hosted is the most sovereign but
-the least scalable. Centralized cloud is the most scalable but the least
-sovereign. Decentralized is the most hopeful and the least proven.
-
-This is the layer where decentralized infrastructure narratives from
-adjacent fields (Bitcoin, Lightning, IPFS, Filecoin) most cleanly map to
-existing crypto infrastructure. The question for the AI era is whether
-permissionless compute is solvable, and at what point of the cost-quality
-curve it becomes practical for real workloads.
-
-## Open vs. closed
-
-The closed side is the hyperscaler oligopoly. AWS, Azure, GCP, Oracle
-(newly relevant via the Stargate joint venture), plus a small set of
-dedicated AI-focused clouds like CoreWeave, Lambda Labs, Together AI on
-the hosted side. These are not "closed" in the sense that they refuse to
-run open software, but they are closed in the sense that they own the
-customer relationship, the SLAs, and the ability to change pricing
-unilaterally. Egress fees and lock-in pricing (committed-use discounts
-that punish leaving) are the operational shape of the lock-in.
-
-The decentralized open side is a small set of competing networks, each
-with a different model. Akash Network is the longest-running, built on
-Cosmos SDK with the AKT token and a reverse-auction marketplace. io.net
-is Solana-based and aggregates GPU supply across DePIN networks. Hyperbolic
-is more of a marketplace plus hosted inference. Bittensor's compute
-subnets sit inside the TAO economy with emission-based incentives. Gensyn
-is explicitly about decentralized training with cryptographic verification
-of compute.
-
-## The lock-in vector
-
-Compute does not have a structural lock-in vector of its own; it inherits
-silicon's lock-in (you can only decentralize what NVIDIA sells you) and
-it is the layer most amenable to actual market competition. The interesting
-sovereignty argument here is not "open vs. closed" so much as "concentrated
-vs. distributed." Even if every provider runs the same NVIDIA chips,
-having a hundred providers means no single one owns the relationship.
-
-The honest critique of decentralized compute today: it is cheaper for
-spot workloads but worse for reliability, and the gap between "experiment"
-and "production" is wide. The summit-grade framing on this layer: decentralized
-compute is closer to ready than most people think for inference, still far
-from ready for training at scale, and the gap is closing fastest at the
-inference end.
+Where silicon physically lives and how it gets accessed. Three
+categories share this layer: self-hosted (you own the hardware),
+centralized cloud (AWS, Azure, GCP, plus dedicated AI clouds like
+CoreWeave and Lambda), and decentralized marketplaces (Akash, io.net,
+Hyperbolic, Bittensor, Gensyn). Each trades sovereignty, scalability,
+and reliability against each other. This is the layer where
+decentralized-infrastructure narratives from Bitcoin, IPFS, and DePIN
+most cleanly map to AI workloads, and it is also where the open
+ecosystem is closest to economic parity with hyperscalers for inference.
+Training at scale remains a hyperscaler problem; decentralized training
+is moving but unproven at frontier scale.

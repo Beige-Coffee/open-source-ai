@@ -2,6 +2,20 @@
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadLayers } from "../../lib/layers";
+import {
+  loadProjectsForLayer,
+  focusLabel,
+  focusColor,
+} from "../../lib/projects";
+import {
+  loadReadingsForLayer,
+  typeLabel,
+} from "../../lib/reading-lists";
+import {
+  loadPredictionsForLayer,
+  confidenceLabel,
+} from "../../lib/predictions";
+import { loadGrants, formatUsd } from "../../lib/grants";
 
 export async function getStaticPaths() {
   const entries = await getCollection("layers");
@@ -18,11 +32,54 @@ const layers = loadLayers();
 const all = [...layers.core, ...layers.meta];
 const findBySlug = (slug: string) => all.find((l) => l.slug === slug);
 
-const tierLabel = entry.data.tier === "core" ? "Core layer" : "Cross-cutting meta-layer";
+const tierLabel =
+  entry.data.tier === "core" ? "Core layer" : "Cross-cutting meta-layer";
 const tierColor =
   entry.data.tier === "core"
     ? "var(--color-tier-core)"
     : "var(--color-tier-meta)";
+
+const projects = loadProjectsForLayer(entry.data.slug);
+const readings = loadReadingsForLayer(entry.data.slug);
+const predictions = loadPredictionsForLayer(entry.data.slug);
+
+// Pull latest news bucket count for this layer from the most recent
+// daily issue. Falls back to zero if the issue does not bucket this
+// layer.
+const allNews = await getCollection("news");
+const latestIssue = [...allNews].sort((a, b) =>
+  String(b.data.date).localeCompare(String(a.data.date)),
+)[0];
+const latestNewsCount =
+  latestIssue?.data.layer_buckets?.[entry.data.slug] ?? 0;
+const latestNewsDate = latestIssue
+  ? latestIssue.data.date.toISOString().slice(0, 10)
+  : null;
+
+// Grants flowing into this layer.
+const allGrants = loadGrants();
+const layerGrants = allGrants
+  .filter((g) => g.layers.includes(entry.data.slug))
+  .slice(0, 5);
+const layerGrantsTotal = allGrants
+  .filter((g) => g.layers.includes(entry.data.slug))
+  .reduce((sum, g) => sum + (g.amount_usd || 0), 0);
+const layerGrantsCount = allGrants.filter((g) =>
+  g.layers.includes(entry.data.slug),
+).length;
+
+// Group projects by focus for visual ordering: open first, then
+// open-weights, then everything else.
+const focusOrder = {
+  open: 0,
+  "open-weights": 1,
+  "source-available": 2,
+  standard: 3,
+  proprietary: 4,
+};
+const orderedProjects = [...projects].sort(
+  (a, b) => (focusOrder[a.focus] ?? 99) - (focusOrder[b.focus] ?? 99),
+);
 ---
 
 <BaseLayout
@@ -31,7 +88,10 @@ const tierColor =
 >
   <section class="max-w-5xl mx-auto px-6 pt-12 pb-4">
     <p class="font-mono text-xs uppercase tracking-wider mb-2">
-      <a href="/stack" class="no-underline hover:underline text-[var(--color-text-subtle)]">
+      <a
+        href="/stack"
+        class="no-underline hover:underline text-[var(--color-text-subtle)]"
+      >
         The Stack
       </a>
       <span class="text-[var(--color-text-subtle)]"> &middot; </span>
@@ -42,27 +102,281 @@ const tierColor =
     >
       {entry.data.title}
     </h1>
-    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
       {entry.data.short_description}
     </p>
   </section>
 
-  <div class="max-w-5xl mx-auto px-6 grid gap-12 md:grid-cols-[1fr_220px] mt-8">
-    <article class="prose">
-      <Content />
+  <div
+    class="max-w-5xl mx-auto px-6 grid gap-12 md:grid-cols-[1fr_240px] mt-8 pb-16"
+  >
+    <article>
+      <!-- What it is: the MDX body. Editorial intro, 3-5 sentences. -->
+      <section class="prose mb-12">
+        <h2 class="!mt-0">What it is</h2>
+        <Content />
+      </section>
+
+      <!-- Key projects: medium cards seeded from data/projects.yaml. -->
+      {
+        projects.length > 0 && (
+          <section class="mb-12">
+            <h2 class="font-sans text-xl font-semibold mb-1">
+              Key projects
+            </h2>
+            <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+              {projects.length} catalogued &middot; ordered open first
+            </p>
+            <ul class="grid gap-3 sm:grid-cols-2">
+              {orderedProjects.map((p) => (
+                <li class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] transition-colors">
+                  <div class="flex items-start justify-between gap-2 mb-1">
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener"
+                      class="font-semibold no-underline hover:underline text-[var(--color-text)]"
+                    >
+                      {p.name}
+                    </a>
+                    <span
+                      class="font-mono text-xs whitespace-nowrap"
+                      style={`color: ${focusColor(p.focus)};`}
+                    >
+                      {focusLabel(p.focus)}
+                    </span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-2">
+                    {p.description}
+                  </p>
+                  <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)] font-mono">
+                    <span>{p.license}</span>
+                    <span>&middot;</span>
+                    <span>{p.maturity}</span>
+                    {p.github && (
+                      <>
+                        <span>&middot;</span>
+                        <a
+                          href={p.github}
+                          target="_blank"
+                          rel="noopener"
+                          class="no-underline hover:underline"
+                        >
+                          GitHub
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <!-- Latest news: link to the daily issue with bucket count. -->
+      <section class="mb-12">
+        <h2 class="font-sans text-xl font-semibold mb-1">Latest news</h2>
+        <p class="text-sm text-[var(--color-text-subtle)] mb-3 font-mono">
+          Updates daily at 08:00 PT
+        </p>
+        {
+          latestIssue ? (
+            <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+              <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+                {latestNewsDate}
+              </p>
+              {latestNewsCount > 0 ? (
+                <p class="text-sm text-[var(--color-text-muted)] mb-3">
+                  Today's issue includes{" "}
+                  <strong class="text-[var(--color-text)]">
+                    {latestNewsCount}{" "}
+                    {latestNewsCount === 1 ? "item" : "items"}
+                  </strong>{" "}
+                  at this layer.
+                </p>
+              ) : (
+                <p class="text-sm text-[var(--color-text-muted)] mb-3">
+                  No items at this layer in today's issue.
+                </p>
+              )}
+              <a
+                href={`/news/${latestNewsDate}`}
+                class="font-mono text-sm no-underline hover:underline"
+              >
+                Read today's issue &rarr;
+              </a>
+            </div>
+          ) : (
+            <p class="text-sm text-[var(--color-text-subtle)] italic">
+              No news issues published yet.
+            </p>
+          )
+        }
+      </section>
+
+      <!-- Grants flowing in: summary plus top 5 grants tagged at this layer. -->
+      {
+        layerGrantsCount > 0 && (
+          <section class="mb-12">
+            <h2 class="font-sans text-xl font-semibold mb-1">
+              Grants flowing in
+            </h2>
+            <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+              {layerGrantsCount} tracked
+              {layerGrantsTotal > 0 ? (
+                <> &middot; {formatUsd(layerGrantsTotal)} disclosed total</>
+              ) : null}
+            </p>
+            <ul class="space-y-2">
+              {layerGrants.map((g) => (
+                <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)] flex items-start gap-3 flex-wrap">
+                  <span class="font-mono text-xs text-[var(--color-text-subtle)] whitespace-nowrap">
+                    {g.date}
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm">
+                      <a
+                        href={g.url}
+                        target="_blank"
+                        rel="noopener"
+                        class="font-medium no-underline hover:underline"
+                      >
+                        {g.title}
+                      </a>
+                    </p>
+                    <p class="text-xs text-[var(--color-text-subtle)]">
+                      {g.funder} &rarr; {g.recipient}
+                    </p>
+                  </div>
+                  <span class="font-mono text-xs whitespace-nowrap text-[var(--color-status-fresh)]">
+                    {g.amount_label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-3 text-xs font-mono">
+              <a href="/grants" class="no-underline hover:underline">
+                See all grants &rarr;
+              </a>
+            </p>
+          </section>
+        )
+      }
+
+      <!-- Predictions: layer-scoped baseline. -->
+      {
+        predictions.length > 0 && (
+          <section class="mb-12">
+            <h2 class="font-sans text-xl font-semibold mb-1">
+              Predictions baseline
+            </h2>
+            <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+              Filed 2026-05-13 &middot; we track our own calls
+            </p>
+            <ul class="space-y-3">
+              {predictions.map((p) => (
+                <li class="border-l-2 border-[var(--color-accent-soft)] pl-4">
+                  <p class="text-sm text-[var(--color-text)] mb-1">
+                    {p.claim}
+                  </p>
+                  <p class="text-xs font-mono text-[var(--color-text-subtle)]">
+                    resolves by {p.horizon} &middot; confidence{" "}
+                    {confidenceLabel(p.confidence)} ({p.confidence}/5)
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-3 text-xs font-mono">
+              <a href="/predictions" class="no-underline hover:underline">
+                See all predictions &rarr;
+              </a>
+            </p>
+          </section>
+        )
+      }
+
+      <!-- Learn more: curated reading list. -->
+      {
+        readings.length > 0 && (
+          <section class="mb-12">
+            <h2 class="font-sans text-xl font-semibold mb-1">Learn more</h2>
+            <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+              {readings.length} hand-picked &middot; primary sources first
+            </p>
+            <ul class="space-y-3">
+              {readings.map((r) => (
+                <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)]">
+                  <div class="flex items-start justify-between gap-3 mb-1 flex-wrap">
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener"
+                      class="font-medium no-underline hover:underline text-[var(--color-text)]"
+                    >
+                      {r.title}
+                    </a>
+                    <span class="font-mono text-xs whitespace-nowrap text-[var(--color-text-subtle)]">
+                      {typeLabel(r.type)} &middot; {r.year}
+                    </span>
+                  </div>
+                  <p class="text-xs text-[var(--color-text-subtle)] mb-1 font-mono">
+                    {r.source}
+                  </p>
+                  <p class="text-sm text-[var(--color-text-muted)] leading-snug">
+                    {r.description}
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-3 text-xs font-mono">
+              <a
+                href={`/learn/${entry.data.slug}`}
+                class="no-underline hover:underline"
+              >
+                See full reading list at this layer &rarr;
+              </a>
+            </p>
+          </section>
+        )
+      }
     </article>
 
-    <aside class="text-sm space-y-6">
-      <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+    <aside class="text-sm space-y-6 md:sticky md:top-20 md:self-start">
+      <!-- Quick-glance metadata: the old lock-in framing, now sidebar-only. -->
+      <div
+        class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+      >
+        <p
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
+        >
+          Position in the stack
+        </p>
+        <p class="font-mono text-sm mb-3">
+          {entry.data.tier === "core" ? `Layer ${entry.data.order} / 9` : "Cross-cutting"}
+        </p>
+
+        <p
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
+        >
           Lock-in vector
         </p>
-        <p class="font-medium">{entry.data.lock_in_vector}</p>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mt-4 mb-2">
+        <p class="text-sm mb-3">{entry.data.lock_in_vector}</p>
+
+        <p
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
+        >
           Sovereignty relevance
         </p>
-        <p class="font-mono">{entry.data.sovereignty_relevance} / 5</p>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mt-4 mb-2">
+        <p class="font-mono text-sm mb-3">
+          {entry.data.sovereignty_relevance} / 5
+        </p>
+
+        <p
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
+        >
           Last updated
         </p>
         <p class="font-mono text-xs text-[var(--color-text-muted)]">
@@ -94,18 +408,6 @@ const tierColor =
           </div>
         )
       }
-
-      <div class="text-xs text-[var(--color-text-subtle)]">
-        <p class="mb-2">
-          Coming soon at this layer:
-        </p>
-        <ul class="space-y-1">
-          <li>Living catalog of projects</li>
-          <li>Latest news (auto-updated)</li>
-          <li>Grants and funding</li>
-          <li>Curated reading list</li>
-        </ul>
-      </div>
     </aside>
   </div>
 </BaseLayout>
