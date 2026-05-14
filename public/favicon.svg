@@ -2,12 +2,12 @@
   <!--
     The Open-Source AI Stack favicon.
     A miniature of the on-page StackDiagram: four horizontal bars
-    stacked, surface to foundation. Top three bars graduate from light
-    warm gray to mid warm gray; the foundation bar is the brand
-    indigo accent (silicon, the substrate the rest stacks on).
+    stacked, surface to foundation. Monochrome: neutral gray gradient
+    from light at the top to near-black at the bottom (silicon,
+    the substrate the rest stacks on).
   -->
-  <rect width="16" height="3" y="0" fill="#e7e5e4"/>
-  <rect width="16" height="3" y="4" fill="#d6d3d1"/>
-  <rect width="16" height="3" y="8" fill="#a8a29e"/>
-  <rect width="16" height="4" y="12" fill="#1e3a8a"/>
+  <rect width="16" height="3" y="0" fill="#e5e5e5"/>
+  <rect width="16" height="3" y="4" fill="#d4d4d4"/>
+  <rect width="16" height="3" y="8" fill="#a3a3a3"/>
+  <rect width="16" height="4" y="12" fill="#18181b"/>
 </svg>

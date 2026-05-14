@@ -12,34 +12,43 @@
  */
 
 @theme {
-  --color-bg: #fafaf9;
+  /*
+   * Monochrome palette: neutral grays, near-black, white. No accent
+   * color, no warm beige tinting, no amber meta-tier. Differentiation
+   * comes from value (light vs dark), not hue.
+   */
+  --color-bg: #fafafa;
   --color-surface: #ffffff;
-  --color-surface-warm: #f5f5f4;
+  --color-surface-warm: #f5f5f5;
 
   --color-text: #18181b;
-  --color-text-muted: #44403c;
-  --color-text-subtle: #78716c;
+  --color-text-muted: #404040;
+  --color-text-subtle: #737373;
 
-  --color-border: #e7e5e4;
-  --color-border-strong: #d6d3d1;
+  --color-border: #e5e5e5;
+  --color-border-strong: #d4d4d4;
 
-  --color-accent: #1e3a8a;
-  --color-accent-soft: #dbeafe;
-  --color-accent-strong: #1e40af;
+  /* "Accent" is just near-black. Links + active states are darker text
+     against a slightly grayer chip background. */
+  --color-accent: #18181b;
+  --color-accent-soft: #f5f5f5;
+  --color-accent-strong: #000000;
 
-  --color-tier-core: #1e3a8a;
-  --color-tier-meta: #b45309;
-  --color-tier-meta-soft: #fef3c7;
+  /* Core vs meta tier: same family, different value. Core = near-black,
+     meta = mid gray. */
+  --color-tier-core: #18181b;
+  --color-tier-meta: #525252;
+  --color-tier-meta-soft: #fafafa;
 
-  --color-status-fresh: #15803d;
-  --color-status-stale: #a8a29e;
+  --color-status-fresh: #18181b;
+  --color-status-stale: #a3a3a3;
 
-  /* Focus tags on project cards. Color-coded by openness. */
-  --color-focus-open: #15803d;
-  --color-focus-open-weights: #1e3a8a;
-  --color-focus-source-available: #b45309;
-  --color-focus-proprietary: #78716c;
-  --color-focus-standard: #6d28d9;
+  /* Focus tags on project cards. All grayscale, different values. */
+  --color-focus-open: #18181b;
+  --color-focus-open-weights: #404040;
+  --color-focus-source-available: #737373;
+  --color-focus-proprietary: #a3a3a3;
+  --color-focus-standard: #525252;
 
   --font-sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;

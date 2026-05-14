@@ -8,15 +8,17 @@ const layers = loadLayers();
 const coreStackedTopDown = [...layers.core].sort((a, b) => b.order - a.order);
 const meta = layers.meta;
 
-// Visual stacking cues: layers shaded from light at the top (surface)
-// to slightly warmer / heavier at the bottom (foundation). Each layer
-// is a brick; the higher it sits, the closer to the user.
+// Visual stacking cues: neutral-gray gradient from light at the top
+// (surface) to darker at the bottom (foundation). Each layer is a
+// brick; the higher it sits, the closer to the user. Monochrome
+// palette: hue 0, saturation 0, lightness stepped across the stack.
 const total = coreStackedTopDown.length;
 function bgForIndex(index: number): string {
-  // index 0 is the top of the stack (surface); index N-1 is the foundation
-  // (silicon). Subtle gradient using HSL.
-  const lightness = 100 - index * 1.8; // ~98% at top, ~83% at bottom
-  return `hsl(35, 38%, ${lightness}%)`;
+  // 9 layers stepped from 96% lightness (top, near-white) to 76%
+  // (bottom, dark gray). A ~20% range so each brick is distinguishable
+  // against the page background.
+  const lightness = 96 - index * 2.5;
+  return `hsl(0, 0%, ${lightness}%)`;
 }
 ---
 
@@ -105,7 +107,7 @@ function bgForIndex(index: number): string {
       <span class="flex items-center gap-2">
         <span
           class="inline-block w-3 h-3 rounded border border-[var(--color-border-strong)]"
-          style="background: hsl(35, 38%, 92%);"
+          style="background: hsl(0, 0%, 90%);"
         ></span>
         core layer (stacked: surface above, foundation below)
       </span>
