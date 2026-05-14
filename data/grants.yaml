@@ -376,7 +376,7 @@ grants:
 
   - title: "Metalens"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Johanna Einsiedler"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -387,7 +387,7 @@ grants:
 
   - title: "Perplex"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Steven Molotnikov"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -398,7 +398,7 @@ grants:
 
   - title: "Policy Explorer"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Caleb Maresca"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -409,7 +409,7 @@ grants:
 
   - title: "Argument Debugger"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Nada Amin"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -420,7 +420,7 @@ grants:
 
   - title: "Remarker"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Jonas Kgomo"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -431,7 +431,7 @@ grants:
 
   - title: "Reward Hacking Benchmark"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Kunvar Thaman"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -442,7 +442,7 @@ grants:
 
   - title: "Socratic Mirror"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Zhongying Qiao"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"
@@ -453,7 +453,7 @@ grants:
 
   - title: "Socratica"
     kind: project
-    funder: cosmos-fire
+    funder: cosmos-institute
     recipient: "Jasmine Cui"
     date: "2025-07-01"
     amount_label: "$1K-$10K plus compute"

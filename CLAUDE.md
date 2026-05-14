@@ -220,6 +220,50 @@ grants from `data/grants-sources.yaml` to
 `data/inbox/grants-needs-review.jsonl` for human review. Does not
 auto-publish.
 
+### Quarterly grants-audit routine (1st of Mar/Jun/Sep/Dec, 10:00 PT)
+
+Named `oss-ai-stack-quarterly-grants-audit`. Picks every entry in
+`data/grants.yaml` and `data/funders.yaml`, fetches its primary
+`url`, and checks for three classes of drift:
+
+1. **Dead URL**: the entry's `url` returns 4xx/5xx or redirects
+   somewhere unrelated. Flag for re-sourcing.
+2. **Stale facts**: the entry's `description` or
+   `notable_recent` claims a specific dollar amount, date, count,
+   or recipient that no longer matches the live page. Flag with a
+   diff of what the live page says vs what we have.
+3. **Funder consolidation candidates**: when two funder entries
+   share a URL host or have substring overlap in their names,
+   flag for human review (caught Cosmos Institute / Cosmos x FIRE).
+
+Output appended to `data/inbox/grants-audit.jsonl` for human review.
+The audit does NOT modify the YAML files; resolutions are manual.
+The next agent updating those files reads the audit log first to
+know what needs attention.
+
+### Fact-check workflow (manual, anytime)
+
+For any individual entry that looks suspect, the human or agent can
+run the audit ad-hoc:
+
+1. Fetch the entry's `url`. Confirm it loads and is the correct
+   resource.
+2. Check every claim in the entry's text against the page:
+   - Dollar amounts (and the disclosure year context)
+   - Cohort sizes / grantee counts
+   - Dates of program announcements / closings
+   - Named partner organizations
+   - Layer attribution (does the project actually do that?)
+3. Update the entry. If a claim cannot be verified, soften to a
+   qualitative observation per the citation-discipline rule, or
+   remove.
+4. The linter runs on prebuild; any unsourced new claim fails the
+   build.
+
+For projects with `explainer` content, the same applies but the
+`sources` array on the entry must list every primary source for
+factual claims in the explainer (not just the `url` field).
+
 ### Manual append flows
 
 For projects, funders, grants, readings, and predictions: edit the

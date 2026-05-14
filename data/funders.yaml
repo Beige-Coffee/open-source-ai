@@ -211,19 +211,7 @@ funders:
     process: "Open application; rapid decisions; 90-day prototype window. Themed rounds run with partners (FIRE for truth-seeking, IHS for scholarship)."
     url: "https://cosmosgrants.org/"
     focus_layers: [agents, evaluation, sovereignty-decentralization, governance]
-    notable_recent: "$1M Truth-seeking AI round with FIRE in 2025; 27 inaugural and 24 second-cohort winners; Institute for Decentralized AI launched September 2025."
-
-  - slug: cosmos-fire
-    name: Cosmos x FIRE Truth-seeking AI Grants
-    region: US
-    type: consortium
-    mission: "$1M cash and Prime Intellect compute round backing open-source AI projects that defend a marketplace of ideas and promote truth-seeking through inquiry."
-    funding_range: "$1K - $10K plus compute credits"
-    cadence: "One-off 2025 round (concluded), follow-on cohorts continuing"
-    process: "Open application; selection by Cosmos and FIRE staff and fellows."
-    url: "https://cosmosgrants.org/truth"
-    focus_layers: [evaluation, identity-trust, sovereignty-decentralization, governance]
-    notable_recent: "27 inaugural winners and 24 second-cohort winners in 2025; total over 51 funded projects."
+    notable_recent: "$1M Truth-seeking AI round in partnership with FIRE in 2025 (27 inaugural + 24 second-cohort winners); Institute for Decentralized AI launched September 2025; rolling fast grants and themed cohorts year-round."
 
   - slug: hrf
     name: Human Rights Foundation

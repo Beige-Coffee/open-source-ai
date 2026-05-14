@@ -1,0 +1,252 @@
+---
+import { loadLayers } from "../lib/layers";
+import { buildLayerRollup, formatUsd } from "../lib/grants";
+
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+
+const rollup = buildLayerRollup();
+
+interface Row {
+  slug: string;
+  title: string;
+  value: number;
+  label: string;
+}
+
+function buildRows(metric: "dollars" | "grants" | "gaps"): Row[] {
+  const rows: Row[] = [];
+  for (const slug of Object.keys(rollup)) {
+    const layer = findLayer(slug);
+    if (!layer) continue;
+    const row = rollup[slug];
+    if (metric === "dollars") {
+      if (row.total_usd <= 0) continue;
+      rows.push({
+        slug,
+        title: layer.title,
+        value: row.total_usd,
+        label: formatUsd(row.total_usd),
+      });
+    } else if (metric === "grants") {
+      if (row.grant_count <= 0) continue;
+      rows.push({
+        slug,
+        title: layer.title,
+        value: row.grant_count,
+        label: String(row.grant_count),
+      });
+    } else if (metric === "gaps") {
+      if (row.underfunded_count <= 0) continue;
+      rows.push({
+        slug,
+        title: layer.title,
+        value: row.underfunded_count,
+        label: String(row.underfunded_count),
+      });
+    }
+  }
+  return rows.sort((a, b) => b.value - a.value);
+}
+
+const dollarsRows = buildRows("dollars");
+const grantsRows = buildRows("grants");
+const gapsRows = buildRows("gaps");
+
+const dollarsMax = Math.max(1, ...dollarsRows.map((r) => r.value));
+const grantsMax = Math.max(1, ...grantsRows.map((r) => r.value));
+const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
+---
+
+<section
+  id="grants-viz"
+  class="max-w-3xl mx-auto px-6 mb-8 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-4"
+>
+  <div class="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+    <h2
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]"
+    >
+      The shape of the data
+    </h2>
+    <div role="tablist" class="flex gap-1 text-xs font-mono">
+      <button
+        type="button"
+        role="tab"
+        data-viz-tab="dollars"
+        aria-selected="true"
+        class="px-2 py-0.5 rounded border border-[var(--color-text)] bg-[var(--color-text)] text-white cursor-pointer"
+      >
+        $ by layer
+      </button>
+      <button
+        type="button"
+        role="tab"
+        data-viz-tab="grants"
+        aria-selected="false"
+        class="px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-text)] cursor-pointer"
+      >
+        Grants by layer
+      </button>
+      <button
+        type="button"
+        role="tab"
+        data-viz-tab="gaps"
+        aria-selected="false"
+        class="px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-text)] cursor-pointer"
+      >
+        Gaps by layer
+      </button>
+    </div>
+  </div>
+
+  <!-- Dollars panel -->
+  <div data-viz-panel="dollars">
+    <ul class="space-y-1.5">
+      {
+        dollarsRows.map((r) => {
+          const pct = (r.value / dollarsMax) * 100;
+          return (
+            <li class="flex items-center gap-2 text-xs">
+              <a
+                href={`/stack/${r.slug}`}
+                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
+                title={r.title}
+              >
+                {r.title}
+              </a>
+              <span
+                class="h-3 bg-[var(--color-text)] rounded-sm"
+                style={`width: ${pct}%; min-width: 1px;`}
+              />
+              <span class="font-mono text-[10px] text-[var(--color-text-subtle)] tabular-nums whitespace-nowrap">
+                {r.label}
+              </span>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <p class="mt-2 text-[10px] font-mono text-[var(--color-text-subtle)]">
+      Disclosed dollar amounts attributed to each layer. A grant
+      tagged with multiple layers counts toward each.
+    </p>
+  </div>
+
+  <!-- Grants count panel -->
+  <div data-viz-panel="grants" class="hidden">
+    <ul class="space-y-1.5">
+      {
+        grantsRows.map((r) => {
+          const pct = (r.value / grantsMax) * 100;
+          return (
+            <li class="flex items-center gap-2 text-xs">
+              <a
+                href={`/stack/${r.slug}`}
+                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
+                title={r.title}
+              >
+                {r.title}
+              </a>
+              <span
+                class="h-3 bg-[var(--color-text)] rounded-sm"
+                style={`width: ${pct}%; min-width: 1px;`}
+              />
+              <span class="font-mono text-[10px] text-[var(--color-text-subtle)] tabular-nums whitespace-nowrap">
+                {r.label}
+              </span>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <p class="mt-2 text-[10px] font-mono text-[var(--color-text-subtle)]">
+      Number of grants tagged at each layer. Counts attention more
+      than dollars; small focused programs show up here.
+    </p>
+  </div>
+
+  <!-- Gaps panel -->
+  <div data-viz-panel="gaps" class="hidden">
+    {
+      gapsRows.length === 0 ? (
+        <p class="text-xs text-[var(--color-text-subtle)] italic">
+          No named gaps have been filed yet.
+        </p>
+      ) : (
+        <ul class="space-y-1.5">
+          {gapsRows.map((r) => {
+            const pct = (r.value / gapsMax) * 100;
+            return (
+              <li class="flex items-center gap-2 text-xs">
+                <a
+                  href={`/stack/${r.slug}`}
+                  class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
+                  title={r.title}
+                >
+                  {r.title}
+                </a>
+                <span
+                  class="h-3 bg-[var(--color-text)] rounded-sm"
+                  style={`width: ${pct}%; min-width: 1px;`}
+                />
+                <span class="font-mono text-[10px] text-[var(--color-text-subtle)] tabular-nums whitespace-nowrap">
+                  {r.label}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+    <p class="mt-2 text-[10px] font-mono text-[var(--color-text-subtle)]">
+      Named underfunded areas per layer (from data/underfunded.yaml).
+      Read this as the inverse of the funding view.
+    </p>
+  </div>
+</section>
+
+<script is:inline>
+  // Tab switcher for the grants-viz panels.
+  (function () {
+    const root = document.getElementById("grants-viz");
+    if (!root) return;
+    const tabs = Array.from(root.querySelectorAll("[data-viz-tab]"));
+    const panels = Array.from(root.querySelectorAll("[data-viz-panel]"));
+
+    function setActive(name) {
+      for (const t of tabs) {
+        const on = t.dataset.vizTab === name;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) {
+          t.classList.add(
+            "border-[var(--color-text)]",
+            "bg-[var(--color-text)]",
+            "text-white",
+          );
+          t.classList.remove(
+            "border-[var(--color-border)]",
+            "text-[var(--color-text-muted)]",
+          );
+        } else {
+          t.classList.remove(
+            "border-[var(--color-text)]",
+            "bg-[var(--color-text)]",
+            "text-white",
+          );
+          t.classList.add(
+            "border-[var(--color-border)]",
+            "text-[var(--color-text-muted)]",
+          );
+        }
+      }
+      for (const p of panels) {
+        p.classList.toggle("hidden", p.dataset.vizPanel !== name);
+      }
+    }
+
+    for (const t of tabs) {
+      t.addEventListener("click", () => setActive(t.dataset.vizTab));
+    }
+  })();
+</script>
