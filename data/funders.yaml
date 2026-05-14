@@ -173,14 +173,306 @@ funders:
     focus_layers: [agents, protocols, governance]
     notable_recent: "Founded Dec 9, 2025 with platinum tier AWS, Anthropic, Block, Bloomberg, Cloudflare, Google, Microsoft, OpenAI. David Nalley as chair. 97 new members by Feb 24, 2026."
 
-  - slug: protocol-labs
-    name: "Protocol Labs / Filecoin Foundation"
-    region: Multi
+  - slug: filecoin-foundation
+    name: Filecoin Foundation
+    region: Global
     type: foundation
-    mission: "Decentralized storage; data layer; increasingly cross-cutting into AI."
-    funding_range: "$5K-$10K dev grants; larger Open Grants."
-    cadence: "Tri-monthly review cycle."
-    process: "Open application for dev grants; structured rounds for Open Grants."
+    mission: "Funds development on decentralized storage and adjacent infrastructure for the open web, including AI-agent storage, verifiable data, and reputation systems."
+    funding_range: "Up to $50K per project (FIL Builder Next Steps)"
+    cadence: "Rolling with periodic deadlines"
+    process: "GitHub-based dev grants plus FIL-PGF community grants."
     url: "https://fil.org/grants"
-    focus_layers: [data, compute, sovereignty-decentralization]
-    notable_recent: "Filecoin AI data layer thesis emerging. Specific 2025-2026 AI grantees not yet verified in public sources."
+    focus_layers: [data, retrieval-memory, sovereignty-decentralization]
+    notable_recent: "Recall (AI-agent reputation), Eastore, UCAN tooling among 2025 grantees."
+
+  # ============================================================
+  # Cypherpunk-adjacent and individual-sovereignty funders
+  # ============================================================
+
+  - slug: foresight-institute
+    name: Foresight Institute
+    region: US
+    type: foundation
+    mission: "Funds frontier safety and security research for advanced AI, computer security, neurotech, and cryptography to keep emerging tech beneficial and decentralized."
+    funding_range: "$10K - $300K+"
+    cadence: "Rolling, quarterly deadlines (Mar/Jun/Sep/Dec)"
+    process: "Open application across four AI safety categories; peer review; ~$5M distributed annually."
+    url: "https://foresight.org/grants/grants-ai-for-science-safety/"
+    focus_layers: [safety-guardrails, identity-trust, sovereignty-decentralization, evaluation]
+    notable_recent: "AI for Safety and Science Nodes 2026 launching in San Francisco and Berlin with up to $3M; quarterly AI Safety Grant rounds throughout 2025."
+
+  - slug: cosmos-institute
+    name: Cosmos Institute
+    region: US
+    type: foundation
+    mission: "Backs philosopher-builders making prototypes, essays, and projects at the intersection of AI and human flourishing, with emphasis on reason, decentralization, and individual autonomy."
+    funding_range: "$1K - $10K (fast grants); larger for exceptional cases"
+    cadence: "Rolling fast grants; periodic themed cohorts"
+    process: "Open application; rapid decisions; 90-day prototype window. Themed rounds run with partners (FIRE for truth-seeking, IHS for scholarship)."
+    url: "https://cosmosgrants.org/"
+    focus_layers: [agents, evaluation, sovereignty-decentralization, governance]
+    notable_recent: "$1M Truth-seeking AI round with FIRE in 2025; 27 inaugural and 24 second-cohort winners; Institute for Decentralized AI launched September 2025."
+
+  - slug: cosmos-fire
+    name: Cosmos x FIRE Truth-seeking AI Grants
+    region: US
+    type: consortium
+    mission: "$1M cash and Prime Intellect compute round backing open-source AI projects that defend a marketplace of ideas and promote truth-seeking through inquiry."
+    funding_range: "$1K - $10K plus compute credits"
+    cadence: "One-off 2025 round (concluded), follow-on cohorts continuing"
+    process: "Open application; selection by Cosmos and FIRE staff and fellows."
+    url: "https://cosmosgrants.org/truth"
+    focus_layers: [evaluation, identity-trust, sovereignty-decentralization, governance]
+    notable_recent: "27 inaugural winners and 24 second-cohort winners in 2025; total over 51 funded projects."
+
+  - slug: hrf
+    name: Human Rights Foundation
+    region: Global
+    type: foundation
+    mission: "Funds open-source AI tools that put inference, agentic capability, and private compute into the hands of dissidents and civil society under authoritarian regimes."
+    funding_range: "Undisclosed (small to mid five-figure range typical)"
+    cadence: "Annual RFP rounds with rolling acceptance"
+    process: "Open RFP via dedicated portal; peer review by HRF freedom-tech team."
+    url: "https://hrf.org/program/ai-for-individual-rights/"
+    focus_layers: [sovereignty-decentralization, identity-trust, runtime, agents]
+    notable_recent: "First round of AI for Individual Rights grants announced Nov 2025: eight projects including Maple, Routstr, OpenCode, PayPerQ, CANVAS, Bridge Project."
+
+  - slug: opensats
+    name: OpenSats
+    region: Global
+    type: foundation
+    mission: "501c3 funding free and open-source contributors in Bitcoin, Lightning, and Nostr ecosystems; supports AI projects when integrated with sovereign protocols."
+    funding_range: "$10K - $250K (long-term grants typically multi-year)"
+    cadence: "Rolling waves throughout the year"
+    process: "Open application; board and external review committees per program (Bitcoin, Nostr, General Fund)."
+    url: "https://opensats.org/apply"
+    focus_layers: [sovereignty-decentralization, protocols, identity-trust]
+    notable_recent: "$5.6M+ in non-LTS grants in 2025; 150+ active grantees in 40+ countries; AI-adjacent funding to Orchard (Ollama + Lightning + Cashu)."
+
+  - slug: block-goose
+    name: Block (codename goose)
+    region: US
+    type: corporate
+    mission: "Funds external builders extending goose, Block's open-source agentic AI framework, with emphasis on local-first deployment and arbitrary-model interoperability."
+    funding_range: "Up to $100K"
+    cadence: "Rolling"
+    process: "Open application via Block's Open Source Program Office."
+    url: "https://block.xyz/inside/introducing-the-goose-grant-program"
+    focus_layers: [agents, runtime, protocols]
+    notable_recent: "Goose grant program launched 2025 supporting integrations, tooling, and infrastructure on the open agent platform."
+
+  # ============================================================
+  # AI safety and longtermist funders
+  # ============================================================
+
+  - slug: future-of-life-institute
+    name: Future of Life Institute
+    region: Global
+    type: foundation
+    mission: "Funds research, public engagement, and multistakeholder projects working to make advanced AI safe, beneficial, and democratically governed."
+    funding_range: "$15K - $500K"
+    cadence: "Annual themed RFPs"
+    process: "Letter of intent then full proposal; external review."
+    url: "https://futureoflife.org/our-work/grantmaking-work/"
+    focus_layers: [governance, safety-guardrails, evaluation]
+    notable_recent: "$5M Multistakeholder Engagement program launched January 2025; 16 problem-solving AI grants of $15K each in 2024."
+
+  - slug: survival-and-flourishing-fund
+    name: Survival and Flourishing Fund
+    region: Global
+    type: foundation
+    mission: "Distributes funds from Jaan Tallinn and other donors to projects working on long-term survival and flourishing of sentient life, with heavy weight to technical AI safety and AI governance."
+    funding_range: "$25K - $5M"
+    cadence: "Annual S-Process round plus rolling Speculation Grants"
+    process: "Multi-evaluator S-Process; recommendations published; donor discretion on final transfers."
+    url: "https://survivalandflourishing.fund/"
+    focus_layers: [safety-guardrails, governance, evaluation]
+    notable_recent: "$34.9M recommended in SFF-2025, with ~$29M to AI safety and governance organizations."
+
+  - slug: manifund
+    name: Manifund
+    region: US
+    type: foundation
+    mission: "Operates an AI safety regranting program that gives expert regrantors $100K+ budgets to make fast, low-friction grants to early-stage technical and policy projects."
+    funding_range: "$5K - $200K typical"
+    cadence: "Rolling"
+    process: "Regrantors initiate; Manifund acts as fiscal sponsor; all grants public on the platform."
+    url: "https://manifund.org/about/regranting"
+    focus_layers: [safety-guardrails, evaluation, governance]
+    notable_recent: "10 regrantors with $2M+ to deploy in 2025; supports Timaeus, ChinaTalk, Epoch AI benchmark pilot, SaferAI, others."
+
+  - slug: lightspeed-grants
+    name: Lightspeed Grants
+    region: Global
+    type: foundation
+    mission: "Longtermist grant-maker created in 2022 making fast grants to projects reducing existential risk, with concentration on AI safety, alignment, and ecosystem infrastructure."
+    funding_range: "$50K - $500K"
+    cadence: "Open application windows announced periodically"
+    process: "Online application; quick turnaround target."
+    url: "https://lightspeedgrants.org/"
+    focus_layers: [safety-guardrails, governance]
+    notable_recent: "Initial $5M round funded Robert Miles, Manifold Markets, Fund for Alignment Research, others."
+
+  - slug: longview-philanthropy
+    name: Longview Philanthropy
+    region: UK
+    type: foundation
+    mission: "Advises high-net-worth donors on grants reducing existential risk; runs the Frontier AI Fund and Digital Sentience Fund focused on safety, governance, and welfare research."
+    funding_range: "$100K - $5M+"
+    cadence: "Rolling for advised donors"
+    process: "Donor-advised; staff recommendations from internal AI grantmaking team."
+    url: "https://www.longview.org/artificial-intelligence/"
+    focus_layers: [safety-guardrails, governance, evaluation]
+    notable_recent: "Over $133M directed toward AI risk reduction by March 2026; Frontier AI Fund launched for $100K+ donors."
+
+  - slug: cooperative-ai-foundation
+    name: Cooperative AI Foundation
+    region: UK
+    type: foundation
+    mission: "Funds research that improves AI agents' capacity for cooperation with each other and with humans, including measurement of cooperation-relevant capabilities and propensities."
+    funding_range: "Up to ~£200K per grant"
+    cadence: "Annual Research Grants RFP plus PhD Fellowship"
+    process: "Public RFP; peer review; updated 2025 process to focus on two named priority areas."
+    url: "https://www.cooperativeai.com/grants/2025"
+    focus_layers: [agents, evaluation, safety-guardrails]
+    notable_recent: "FOCAL lab established at CMU; first early-career track grant to Sophia Hatz at Uppsala; 2024 round funded ~£660K across three proposals."
+
+  - slug: center-for-ai-safety
+    name: Center for AI Safety (CAIS)
+    region: US
+    type: foundation
+    mission: "Provides free compute access to academic AI safety researchers and runs ML safety education and benchmark efforts to accelerate technical alignment work."
+    funding_range: "Compute-in-kind (no direct cash grants typically)"
+    cadence: "Rolling, restricted to Schmidt-Sciences-funded researchers"
+    process: "Email request to compute@safe.ai with grant credentials."
+    url: "https://safe.ai/work/compute-cluster"
+    focus_layers: [compute, safety-guardrails, evaluation]
+    notable_recent: "200+ external researchers across ~20 labs supported on the cluster; 6x growth in 18 months."
+
+  # ============================================================
+  # Open-science and open-source-AI accelerators
+  # ============================================================
+
+  - slug: astera-institute
+    name: Astera Institute
+    region: US
+    type: foundation
+    mission: "Funds high-agency open-science residencies producing public-good research and tools, with an emphasis on AI applied to scientific discovery and open biology."
+    funding_range: "$125K-$250K salary plus up to $1.5M project budget"
+    cadence: "Rolling residency applications"
+    process: "Selective residency interview; mandatory open publication of all outputs (code, data, presentations)."
+    url: "https://astera.org/foundation/"
+    focus_layers: [data, training, weights, evaluation]
+    notable_recent: "Spun out Radial AI Science in March 2026 with $500M to modernize the scientific process for the AI era; Voltage Park H100 compute access provided to residents."
+
+  - slug: a16z-open-source-ai
+    name: a16z Open Source AI Grants
+    region: US
+    type: corporate
+    mission: "No-strings funding for individual maintainers and small teams building important open-source AI infrastructure, models, and tooling."
+    funding_range: "Undisclosed; typical individual maintainer-scale grants"
+    cadence: "Periodic batches"
+    process: "Nominations and direct outreach by a16z Infra/AI partners."
+    url: "https://a16z.com/announcing-our-latest-open-source-ai-grants/"
+    focus_layers: [training, weights, runtime, evaluation]
+    notable_recent: "Multiple grant batches since 2023 funding LLM and visual-AI maintainers including Jon Durbin (Airoboros)."
+
+  - slug: ai-grant
+    name: AI Grant (Friedman / Gross)
+    region: Global
+    type: corporate
+    mission: "Distributed AI research lab and accelerator backing early-stage AI startups and open-source projects with cash, compute, and Microsoft Azure credits."
+    funding_range: "$5K-$50K (open source) or $250K SAFE (accelerator)"
+    cadence: "Annual batches"
+    process: "Application; selection by Nat Friedman, Daniel Gross, and partners."
+    url: "https://aigrant.org/"
+    focus_layers: [training, weights, agents, runtime]
+    notable_recent: "Batch 4 (2025) included Goodfire, Silurian, Inception Labs, Haize Labs, Artificial Analysis, others."
+
+  - slug: emergent-ventures
+    name: Emergent Ventures (Mercatus Center)
+    region: Global
+    type: foundation
+    mission: "Tyler Cowen's discretionary grant program at George Mason University's Mercatus Center; funds individuals working on under-supplied ideas including AI tools, AI policy, and AI for science."
+    funding_range: "$1K - $50K"
+    cadence: "Rolling"
+    process: "Single-page application; Cowen as sole gatekeeper."
+    url: "https://www.mercatus.org/emergent-ventures"
+    focus_layers: [data, agents, evaluation, governance]
+    notable_recent: "AI-tagged 2025 grants include 'open source math for the AIs' (Reyansh Sharma), privacy-preserving ML (Jessie Chen), 'data for the AIs' (Laura Ryan)."
+
+  # ============================================================
+  # Public-interest and humanities-grounded funders
+  # ============================================================
+
+  - slug: humanity-ai
+    name: Humanity AI Coalition
+    region: US
+    type: consortium
+    mission: "$500M five-year pooled philanthropic initiative across Mellon, Ford, MacArthur, Mozilla, Omidyar, Packard, Doris Duke, Lumina, Kapor, Siegel ensuring AI serves the public interest."
+    funding_range: "$100K - $5M"
+    cadence: "Periodic open calls"
+    process: "Coalition partner review; first round $18M to 12 grantees; $10M open call in 2026."
+    url: "https://humanityai.ai/"
+    focus_layers: [governance, data, evaluation]
+    notable_recent: "Inaugural $18M announcement in 2026 covering democratic institutions, worker rights, journalism, education; new $3M AI Civics program."
+
+  - slug: stanford-hai
+    name: Stanford HAI Hoffman-Yee Grants
+    region: US
+    type: foundation
+    mission: "Reid Hoffman and Michelle Yee endowed program at Stanford HAI funding interdisciplinary research teams tackling significant scientific or societal challenges with AI."
+    funding_range: "$500K Year 1, up to $2M two-year extension"
+    cadence: "Annual; LOI due January, decisions in spring"
+    process: "Letter of intent then full proposal; HAI faculty and Hoffman-Yee committee selection."
+    url: "https://hai.stanford.edu/hoffman-yee-research-grants-0"
+    focus_layers: [training, weights, evaluation]
+    notable_recent: "$27.6M cumulative; 2025 extension to five 2024 teams including Brian Hie's Evo open biology foundation models."
+
+  - slug: templeton-world
+    name: Templeton World Charity Foundation
+    region: Global
+    type: foundation
+    mission: "Funds research at the intersection of artificial intelligence, cognitive science, and biological intelligence under its Diverse Intelligences program."
+    funding_range: "Multi-year hub grants up to seven figures; postdoctoral fellowships"
+    cadence: "Periodic open calls and hub-led seed rounds"
+    process: "RFP for hubs; emerging-scholars fellowship application."
+    url: "https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences"
+    focus_layers: [evaluation, governance]
+    notable_recent: "2025 funded four global Diverse Intelligences hubs at Princeton, Indiana, Macquarie, and St Andrews."
+
+  - slug: plurality-institute
+    name: Plurality Institute
+    region: US
+    type: foundation
+    mission: "Glen Weyl-led nonprofit funding plural-technology research and prototypes that strengthen collaborative diversity, deliberation, and democratic discourse, often with LLMs."
+    funding_range: "Small early-stage grants (under $50K typical)"
+    cadence: "Rolling"
+    process: "Direct collaboration with Plurality fellows and partners (Jigsaw, Google.org, universities)."
+    url: "https://www.plurality.institute/"
+    focus_layers: [governance, agents, identity-trust]
+    notable_recent: "BridgingBot RCT and open-sourcing; LLM Map of 70+ deliberative AI tools released February 2025."
+
+  - slug: mellon-foundation
+    name: Mellon Foundation
+    region: US
+    type: foundation
+    mission: "Largest US humanities funder; channels AI-related grantmaking primarily through the Humanity AI coalition and Higher Learning calls oriented toward humanities-grounded AI research."
+    funding_range: "$100K - $1M+"
+    cadence: "Annual calls"
+    process: "Open call for concepts; invited full proposals."
+    url: "https://www.mellon.org/"
+    focus_layers: [governance, data]
+    notable_recent: "Convened Humanity AI's $500M five-year initiative; $14M+ in humanities-grounded research grants in 2025."
+
+  - slug: berkman-klein
+    name: Berkman Klein Center (Harvard)
+    region: US
+    type: foundation
+    mission: "Harvard's interdisciplinary internet and society center awarding fellowships to scholars, technologists, and policymakers researching AI governance, open-source AI, and digital rights."
+    funding_range: "Up to $75K annual stipend"
+    cadence: "Annual fellowship cycle (December deadline)"
+    process: "Open call; faculty review; cohort-based residency."
+    url: "https://cyber.harvard.edu/getinvolved/fellowships"
+    focus_layers: [governance, evaluation]
+    notable_recent: "2026-2027 fellowship cycle open through December 2025 with explicit AI research agenda."
