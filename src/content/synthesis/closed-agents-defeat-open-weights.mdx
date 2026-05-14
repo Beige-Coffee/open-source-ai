@@ -1,0 +1,110 @@
+---
+slug: closed-agents-defeat-open-weights
+title: Closed agents defeat open weights
+summary: The third of three load-bearing claims. The agent layer is where most of the user-visible AI experience lives in 2026. Whoever owns the agent owns the user relationship, the workflow integration, the data trail, and the model-substitution decision. Open weights without open agents is a museum exhibit.
+related_layers: [agents, weights, retrieval-memory, sovereignty-decentralization]
+tags: [load-bearing, lock-in-vectors]
+updated: 2026-05-13
+---
+
+The third of three lock-in-vector claims. Companion to (Essay:
+closed-silicon-defeats-open-weights) and (Essay: closed-runtime-defeats-open-silicon).
+
+This is the sharpest of the three. The other two are about back-end
+economics. This one is about who the user is actually talking to.
+
+## The claim
+
+In 2026 most user-visible AI happens through agents. Cursor, Claude
+Code, Devin, ChatGPT, Replit Agent, Lovable, v0. Goose, OpenHands,
+Aider, Cline, Continue on the open side. The "model" the user thinks
+they are using is increasingly invisible to them; the agent is what
+they see and the agent is what they form a habit around.
+
+So even if you have open silicon, open runtime, and open weights, if
+every user touches AI through a closed agent, the closed-agent vendor
+owns the workflow and chooses what models they expose. The user is
+"using AI" but is locked into one vendor's surface. The model
+substitutability that open weights promised dies at the agent layer.
+
+## Three structural lock-ins at this layer
+
+**Model and decision lock-in.** The vendor picks the model. They can
+swap it tomorrow. The user has no signal whether the swap improved
+things or degraded them, and no path to choose a different model
+themselves.
+
+**Data surveillance.** Closed agents see everything: prompts, code,
+file contents, conversation history, tool calls. The closed-agent
+vendor's product roadmap is informed by all of it. The user's data is
+the product, even when the product is paid.
+
+**Accumulated context.** This is the deepest one and the least talked
+about. Closed agents build memory about the user (Cursor remembers
+your codebase, ChatGPT remembers your style, Claude Code remembers
+how you typically structure work). That memory is typically not
+exportable. Even if a better open agent ships tomorrow, switching
+means starting over from zero context. Sunk-context cost is the
+deepest reason people do not switch.
+
+## The open landscape in 2026
+
+The open agent landscape has a few strong projects, mostly coding-focused.
+
+(Project: goose) is the most explicitly sovereignty-positioned open
+agent: extension-based, runs anywhere, BYOK on the model, MCP-native.
+Originally from Block; now under the Linux Foundation's AAIF.
+
+(Project: openhands) (formerly OpenDevin) is an open coding agent with
+a sandboxed execution environment that competes head-to-head with
+Devin.
+
+(Project: aider) is the terminal-native open coding agent, written by
+Paul Gauthier; the simplest production-quality open agent and one of
+the most loved.
+
+(Project: cline) is a VS Code-native open agent. (Project: continue)
+is an open IDE coding agent.
+
+(Project: claude-code) is Anthropic's first-party closed agent.
+(Project: cursor) is closed-source with deeply integrated agentic
+features. (Project: devin) is the closed autonomous-software-engineer
+pitch.
+
+The structural difference: open agents are typically thin wrappers
+around BYOK model access. Closed agents own the full stack
+(subscription plus workflow plus model). The closed agent has more
+leverage to capture data, lock in workflows, and selectively expose
+model capabilities. The open agent is interchangeable with the model
+behind it.
+
+## What the AI Scrutiny project would do for this
+
+There is no equivalent of WalletScrutiny for AI agents. There should
+be. Two industry blind spots that an "AI Scrutiny" project would
+document:
+
+- **Memory portability.** Which agents export your accumulated
+  context, in what format, with what fidelity. None of the closed
+  ones do well here.
+- **Model substitutability.** Which agents let you bring your own
+  model, with what limits. The open ones generally do; the closed
+  ones generally do not, except behind enterprise contracts.
+
+This was discussed and saved as a summit deliverable candidate during
+the light course (concept 1.7). It belongs at the agent layer because
+the layer is where the lock-in is least visible to users.
+
+## What follows
+
+Open agents are necessary but not sufficient for sovereignty. Even an
+open agent fails the sovereignty test if it depends on closed
+runtime, closed silicon, or closed-only weights. So this claim chains
+back to the other two: an open agent on closed silicon and closed
+runtime is half-sovereign. An open agent on open silicon and open
+runtime is the actual finished argument.
+
+(Layer: agents) is where this lives operationally. The retrieval and
+memory layer (Layer: retrieval-memory) is where the
+accumulated-context portion of this lock-in physically lives, which
+is why the two are tightly coupled.

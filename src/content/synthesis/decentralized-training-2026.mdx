@@ -1,0 +1,130 @@
+---
+slug: decentralized-training-2026
+title: Decentralized training in 2026, real progress and real ceiling
+summary: Distributed-over-the-internet training has stopped being theoretical. INTELLECT-1, Templar's 72B run, and Nous DisTrO show the technique works. The honest limit is that it remains an order of magnitude behind centralized frontier training and is unlikely to close the gap before 2027. The interesting question is what specifically gets unlocked at the current capability tier.
+related_layers: [training, compute, sovereignty-decentralization, weights]
+tags: [decentralized-training, distributed-systems, sovereignty]
+updated: 2026-05-13
+---
+
+For most of the LLM era, training a frontier-class model required a
+hyperscaler-class cluster: tens of thousands of GPUs in one
+datacenter with high-bandwidth NVLink interconnects between them. The
+sovereignty argument has always assumed this would change. In 2026 it
+has, partially. This essay names where it has and where it has not.
+
+## The technical reason it was hard
+
+Frontier training is dominated by two operations: forward passes
+(through the network to compute loss) and backward passes (computing
+gradients, then synchronizing them across workers so the next forward
+pass starts from the same weights). The gradient synchronization step
+moves tens to hundreds of gigabytes per training step across the
+cluster. A typical step takes seconds to minutes; the network has to
+keep up.
+
+Inside a datacenter, NVLink and NVSwitch give you 900 GB/s+ between
+GPUs. Between racks, InfiniBand or 400G Ethernet gives you 400-800
+Gbps. Between datacenters or across the public internet, you get
+bandwidth that varies from "fine for a video call" to "sometimes
+nothing" with high latency.
+
+Naive distributed training over the public internet falls over not
+because the math is wrong but because the gradient sync step takes
+longer than the forward pass it is supposed to enable.
+
+## What changed (the techniques that actually work)
+
+Three categories of techniques have made distributed training over
+the internet feasible at non-frontier scale.
+
+**Bandwidth-efficient gradient compression.** Instead of sending
+full-precision gradients, send compressed approximations. Lossy
+algorithms reduce bandwidth requirements 100-1000x with acceptable
+training quality loss. (Reading: DisTrO: Distributed Training Over-the-Internet)
+from Nous Research is the best-documented current technique.
+
+**Asynchronous local training.** Each node trains for many local
+steps before synchronizing with peers. Reduces synchronization
+frequency by orders of magnitude. Trade-off: workers diverge between
+syncs and the convergence dynamics are not as well understood as
+synchronous training.
+
+**Hybrid topologies.** A small set of well-connected anchor nodes
+plus many lower-bandwidth peripheral nodes. Anchors do the heavy
+synchronization; peripherals do local work and contribute back
+periodically.
+
+## The current public results
+
+(Project: prime-intellect)'s INTELLECT-1 (released November 2024) was
+the first decentralized training run of a 10B+ model across
+continents, on commodity hardware over the public internet. Reproducible
+methodology published. (Reading: INTELLECT-1 Technical Report)
+
+Prime Intellect's INTELLECT-2 followed (mid-2025) at 32B parameters
+with reinforcement-learning post-training distributed globally.
+(Reading: INTELLECT-2: 32B Globally-Distributed RL)
+
+(Project: templar) (Bittensor subnet) ran a 72B distributed pretrain
+from scratch on Bittensor, the most ambitious distributed training
+run to date.
+
+(Project: pluralis), (Project: gensyn) are at earlier stages with
+adjacent-but-distinct technical approaches. The Bittensor compute
+subnets and the Akash GPU marketplace provide the underlying compute
+substrate for many of these runs.
+
+## The honest ceiling
+
+What works in 2026:
+
+- Pretraining 10-70B models on globally distributed commodity
+  hardware. Achievable by any sufficiently-funded coordinator.
+- Post-training (RLHF, DPO, RL) on distributed infrastructure.
+  Less bandwidth-intensive than pretraining; works at the same
+  scale.
+
+What does not work in 2026:
+
+- Frontier-scale pretraining (1T+ parameters in 2026 numbers).
+  The bandwidth and synchronization requirements still exceed what
+  the public internet provides at acceptable cost.
+- Catching up to centralized frontier training on iso-cost,
+  iso-time. Centralized clusters use the bandwidth-efficient
+  techniques too, so the gap stays roughly an order of magnitude on
+  current evidence.
+
+The interesting question is not whether decentralized training will
+displace centralized frontier training (it will not in 2026, probably
+not in 2027). The interesting question is **what specific category of
+model becomes feasible to train without hyperscaler approval at the
+current capability tier.**
+
+## What this unlocks
+
+Three things become possible at the current decentralized-training
+capability tier:
+
+**Domain-specialized models.** A 30-70B model trained on a specific
+corpus (legal, medical, scientific, regional language) without
+hyperscaler dependency. Sovereignty matters here because the corpus
+itself may not be transferable to a hyperscaler (privacy, licensing,
+strategic value).
+
+**Frontier-shadowing community models.** A community of researchers
+or a nation-state that wants a model in the same generation as the
+frontier without paying hyperscaler economics. INTELLECT-1 is the
+existence proof. The model is not as capable as the contemporary
+frontier but it is independent of any hyperscaler relationship.
+
+**Recovery infrastructure.** If a frontier lab takes a model offline
+or restricts access (geography, terms-of-use), a community can train
+a near-equivalent without that lab's permission. The capability is
+not the point; the existence of the option is.
+
+For the broader sovereignty argument that this connects to, see
+(Essay: closed-silicon-defeats-open-weights). For the operational
+funding picture for distributed-training projects, see (Essay:
+bitcoin-oss-funder-crossing) and the (Layer:
+sovereignty-decentralization) page.

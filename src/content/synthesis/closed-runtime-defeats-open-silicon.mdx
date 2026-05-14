@@ -1,0 +1,115 @@
+---
+slug: closed-runtime-defeats-open-silicon
+title: Closed runtime defeats open silicon
+summary: The second of three load-bearing claims. Even if open silicon ships at parity, closed runtime that targets only closed silicon keeps the open ecosystem inside the incumbent perimeter. The good news is that open runtime in 2026 is actually winning at the technical layer.
+related_layers: [runtime, silicon, weights, sovereignty-decentralization]
+tags: [load-bearing, lock-in-vectors]
+updated: 2026-05-13
+---
+
+The second of three lock-in-vector claims. Companion to (Essay:
+closed-silicon-defeats-open-weights) and (Essay:
+closed-agents-defeat-open-weights). They chain.
+
+## The claim
+
+Imagine the open-silicon counter-bet succeeds. Tenstorrent and RISC-V
+ship at parity. AMD's MI series catches up. The hardware is no longer
+the chokepoint. Are we sovereign yet?
+
+Not if the only economical way to serve open weights at production
+scale is on closed runtime that targets the closed silicon. The
+runtime is the engine that takes the model and produces tokens. It is
+the layer most invisible to end users and most decisive for production
+economics. The same Llama 3 70B model can cost ten times more on a
+poorly-tuned runtime than a well-tuned one.
+
+If TensorRT-LLM is the only way to extract acceptable cost-per-token
+from a model, you are inside NVIDIA's perimeter even on a Tenstorrent
+board, because the kernels you need have not been written for open
+runtime against open silicon. The lock-in moves up one layer.
+
+## Why this layer matters more than people realize
+
+Most public discussion of the open AI stack stops at weights. Open
+weights are visible (you can download them, you can fine-tune them).
+Runtime is invisible (it is what makes the API call return tokens
+quickly). But runtime is where most of the production cost is incurred
+and most of the production lock-in lives.
+
+Two technical realities make runtime decisive:
+
+**Inference is memory-bandwidth-bound at batch size 1.** For a single
+user, you read every weight in the model to predict every token. The
+ceiling on tokens per second is bandwidth divided by model size. The
+runtime's job is to be near that ceiling. A poor runtime is not near
+it. (Reading: Efficient Memory Management for Large Language Model Serving with PagedAttention)
+is the foundational paper on why this matters.
+
+**Production inference is batched, and batching is hard.** With many
+users, the runtime can amortize each weight read across many output
+tokens. The unsolved problems are continuous batching (different
+queries finish at different times), KV-cache management (the
+attention cache for ongoing requests has to live in finite GPU memory),
+and structured generation (when the output has to satisfy a JSON
+schema). vLLM's PagedAttention and (Reading: SGLang: Efficient Execution of Structured Language Model Programs)'s
+RadixAttention are the two production-grade open answers.
+
+## The good news
+
+This is the layer where the open ecosystem is genuinely winning at the
+technical layer.
+
+(Project: vllm) is the dominant production-grade open inference engine.
+Apache 2.0. Built originally at Berkeley by Woosuk Kwon and team, now
+its own project under the LF AI and Data umbrella. Supports NVIDIA,
+AMD ROCm, Intel, and increasingly TPU. Production parity with
+TensorRT-LLM on NVIDIA hardware. Better than TensorRT-LLM on
+non-NVIDIA hardware because TensorRT-LLM does not target it.
+
+(Project: sglang) is the leading vLLM alternative, from the LMSYS
+team. Apache 2.0. Central technical contribution: RadixAttention
+(KV-cache sharing across requests with a shared prefix tree), plus
+structured generation primitives.
+
+(Project: llama-cpp) is Georgi Gerganov's project, the local-first
+inference engine. C++, runs on CPU, on Apple Silicon, on small GPUs.
+Defines the GGUF file format. MIT license. The only major engine that
+runs well on hardware you own outright.
+
+(Project: tensorrt-llm) is the closed counterpart, NVIDIA's
+tightly-optimized inference engine. Often the fastest on NVIDIA
+hardware. NVIDIA-only. Closed source.
+
+Hyperscalers running first-party inference inside AWS Bedrock, Azure
+AI, or Google Vertex are running closed inference stacks; you do not
+see what runs underneath the API. So even though open runtime is
+winning at the technical layer, the production-inference economy at
+scale still routes mostly through hyperscaler hosted services running
+whatever they want underneath.
+
+## The bad news
+
+The open-runtime victory is not yet visible in the inference economy's
+gross numbers. The hyperscalers do not publish what they run
+underneath their hosted-inference APIs; they could be running vLLM,
+TensorRT-LLM, custom forks, or something else entirely. Public open
+runtime is winning the technical argument; closed runtime is still
+winning the revenue argument.
+
+For sovereignty specifically, the win that matters is local: a person
+who wants to run open weights on hardware they own can do so via vLLM,
+SGLang, or llama.cpp without touching closed runtime. That works
+today. (Layer: runtime).
+
+## What follows
+
+The argument does not collapse if runtime stays open. It also does not
+collapse if silicon stays open. It collapses only when one of them
+goes closed in a way that the other cannot route around. The
+operational risk in 2026: a TensorRT-LLM-class closed runtime ships
+for a credible non-NVIDIA accelerator (AMD's most recent moves point
+this direction), making the open-silicon path easier and the closed-
+runtime path simultaneously stickier. The constructive position: open
+runtime needs to keep being production-quality on every credible
+accelerator, or the silicon argument collapses one layer up.
