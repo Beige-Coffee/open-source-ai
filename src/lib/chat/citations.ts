@@ -91,8 +91,8 @@ export function citationHref(c: ParsedCitation): string {
       // No per-project page; deep-link the layer page.
       return `/stack`;
     case "reading":
-      // No per-reading page; deep-link the learn hub.
-      return `/learn`;
+      // No per-reading page; deep-link the stack overview.
+      return `/stack`;
   }
 }
 

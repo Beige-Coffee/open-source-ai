@@ -666,14 +666,6 @@ readings:
     layers: [sovereignty-decentralization]
     description: "Honest inventory of which crypto-native AI primitives actually work in production vs. which are roadmap items."
 
-  - title: "Sovereign AI: A Working Definition"
-    source: open-source-ai.tech (this site)
-    url: "/learn/sovereign-ai-definition"
-    type: post
-    year: 2026
-    layers: [sovereignty-decentralization, governance]
-    description: "Our own working definition of sovereign AI and how it differs from 'national AI', 'open AI', and 'decentralized AI'."
-
   # Recent additions (2025-2026 refresh)
   # Curated for layer pages where the older catalog read stale.
 

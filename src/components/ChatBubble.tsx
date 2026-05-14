@@ -34,17 +34,14 @@ function derivePageContext(): PageContext {
     entity = { kind: "funder", slug: r[1] };
   } else if ((r = m(/^\/news\/([^/]+)\/?$/))) {
     entity = { kind: "news", date: r[1] };
-  } else if ((r = m(/^\/learn\/([^/]+)\/?$/))) {
-    entity = { kind: "layer", slug: r[1] };
   }
   return { pathname, entity };
 }
 
-function defaultModeFor(ctx: PageContext): Mode {
-  // Socratic on /learn; Answer everywhere else.
-  if (ctx.pathname.startsWith("/learn")) {
-    return "socratic";
-  }
+function defaultModeFor(_ctx: PageContext): Mode {
+  // Answer mode is the default everywhere. Socratic mode is opt-in
+  // via the toggle in the chat header. (Earlier the /learn and
+  // /essays routes triggered Socratic by default; both are now gone.)
   return "answer";
 }
 

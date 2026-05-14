@@ -112,10 +112,6 @@ const TARGETS = [
     kind: "astro",
   },
   {
-    path: "src/pages/learn.astro",
-    kind: "astro",
-  },
-  {
     path: "src/pages/about.astro",
     kind: "astro",
   },

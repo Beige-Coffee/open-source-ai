@@ -105,7 +105,7 @@ open-source-ai-stack/
       BaseLayout.astro   # mounts ChatBubble globally
     pages/
       index.astro
-      stack/, grants/, learn/, news/
+      stack/, grants/, news/
       settings.astro     # the BYOK settings page
       predictions.astro
       about.astro, today.astro
@@ -333,9 +333,10 @@ resizable side panel.
 - **Answer mode** (default on `/stack/<slug>`, `/grants`, `/news`,
   `/predictions`, `/today`, `/`): factual, neutral-observational,
   cites sources inline, uses tools to ground every claim.
-- **Socratic mode** (default on `/learn`, `/learn/<slug>`): asks one
+- **Socratic mode** (opt-in via toggle in the chat header): asks one
   question at a time, pushes the user to think, refuses to give the
-  answer when the question is "explain X to me."
+  answer when the question is "explain X to me." No page-context
+  default triggers this mode; the user has to flip the toggle.
 
 User can toggle between modes via a switch in the chat header.
 

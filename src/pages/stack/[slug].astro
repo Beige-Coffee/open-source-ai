@@ -10,6 +10,7 @@ import {
 import {
   loadReadingsForLayer,
   typeLabel,
+  type ReadingType,
 } from "../../lib/reading-lists";
 import {
   loadPredictionsForLayer,
@@ -40,12 +41,32 @@ const tierColor =
     : "var(--color-tier-meta)";
 
 const projects = loadProjectsForLayer(entry.data.slug);
-// Layer-page "Learn more" shows most-recent first so the user sees
-// fresh material (2025-2026) before foundational primary sources fall
-// into view. Full year-grouped reading list lives at /learn/<slug>.
-const readings = [...loadReadingsForLayer(entry.data.slug)]
-  .sort((a, b) => b.year - a.year)
-  .slice(0, 8);
+
+// Reading list: group by type, recent-first within each group.
+// /stack/<slug> is the canonical destination for the layer's reading
+// list; there is no longer a separate /learn/<slug>.
+const allReadings = loadReadingsForLayer(entry.data.slug);
+const readingTypeOrder: ReadingType[] = [
+  "paper",
+  "post",
+  "talk",
+  "podcast",
+  "book",
+  "docs",
+  "thread",
+];
+const readingsByType: Record<string, typeof allReadings> = {};
+for (const r of allReadings) {
+  if (!readingsByType[r.type]) readingsByType[r.type] = [];
+  readingsByType[r.type].push(r);
+}
+for (const t of Object.keys(readingsByType)) {
+  readingsByType[t].sort((a, b) => b.year - a.year);
+}
+const readingTypeKeys = readingTypeOrder.filter(
+  (t) => readingsByType[t] && readingsByType[t].length > 0,
+);
+
 const predictions = loadPredictionsForLayer(entry.data.slug);
 
 // Pull latest news bucket count for this layer from the most recent
@@ -303,47 +324,46 @@ const orderedProjects = [...projects].sort(
         )
       }
 
-      <!-- Learn more: curated reading list. -->
+      <!-- Reading list: full curated list, grouped by type. -->
       {
-        readings.length > 0 && (
+        allReadings.length > 0 && (
           <section class="mb-12">
-            <h2 class="font-sans text-xl font-semibold mb-1">Learn more</h2>
+            <h2 class="font-sans text-xl font-semibold mb-1">Reading list</h2>
             <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
-              {readings.length} most recent &middot; full grouped list at /learn/{entry.data.slug}
+              {allReadings.length} hand-picked &middot; primary sources first &middot; recent within each group
             </p>
-            <ul class="space-y-3">
-              {readings.map((r) => (
-                <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)]">
-                  <div class="flex items-start justify-between gap-3 mb-1 flex-wrap">
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener"
-                      class="font-medium no-underline hover:underline text-[var(--color-text)]"
-                    >
-                      {r.title}
-                    </a>
-                    <span class="font-mono text-xs whitespace-nowrap text-[var(--color-text-subtle)]">
-                      {typeLabel(r.type)} &middot; {r.year}
-                    </span>
-                  </div>
-                  <p class="text-xs text-[var(--color-text-subtle)] mb-1 font-mono">
-                    {r.source}
-                  </p>
-                  <p class="text-sm text-[var(--color-text-muted)] leading-snug">
-                    {r.description}
-                  </p>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-3 text-xs font-mono">
-              <a
-                href={`/learn/${entry.data.slug}`}
-                class="no-underline hover:underline"
-              >
-                See full reading list at this layer &rarr;
-              </a>
-            </p>
+            {readingTypeKeys.map((t) => (
+              <div class="mb-6">
+                <h3 class="font-sans text-sm font-semibold uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+                  {typeLabel(t)}s
+                </h3>
+                <ul class="space-y-3">
+                  {readingsByType[t].map((r) => (
+                    <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)]">
+                      <div class="flex items-start justify-between gap-3 mb-1 flex-wrap">
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noopener"
+                          class="font-medium no-underline hover:underline text-[var(--color-text)]"
+                        >
+                          {r.title}
+                        </a>
+                        <span class="font-mono text-xs whitespace-nowrap text-[var(--color-text-subtle)]">
+                          {r.year}
+                        </span>
+                      </div>
+                      <p class="text-xs text-[var(--color-text-subtle)] mb-1 font-mono">
+                        {r.source}
+                      </p>
+                      <p class="text-sm text-[var(--color-text-muted)] leading-snug">
+                        {r.description}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </section>
         )
       }
