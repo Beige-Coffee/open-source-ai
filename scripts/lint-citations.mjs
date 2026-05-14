@@ -92,7 +92,7 @@ const TARGETS = [
     path: "data/projects.yaml",
     kind: "yaml",
     record_array: "projects",
-    text_fields: ["description"],
+    text_fields: ["description", "explainer"],
   },
   {
     path: "data/reading-lists.yaml",

@@ -16,6 +16,11 @@ interface LayerEntry {
   body?: string;
 }
 
+interface ProjectSource {
+  title: string;
+  url: string;
+}
+
 interface Project {
   slug: string;
   name: string;
@@ -26,6 +31,10 @@ interface Project {
   url: string;
   github?: string;
   description: string;
+  /** Optional 200-400 word explainer; only on high-priority projects. */
+  explainer?: string;
+  /** Sources for claims in the explainer. */
+  sources?: ProjectSource[];
 }
 
 interface Funder {

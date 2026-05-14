@@ -145,7 +145,10 @@ const orderedProjects = [...projects].sort(
         <Content />
       </section>
 
-      <!-- Key projects: medium cards seeded from data/projects.yaml. -->
+      <!-- Key projects: medium cards seeded from data/projects.yaml.
+           Per-project "Ask about this" button dispatches a chat-trigger
+           event that ChatBubble listens for. High-priority projects
+           have an inline expandable explainer with cited sources. -->
       {
         projects.length > 0 && (
           <section class="mb-12">
@@ -153,7 +156,7 @@ const orderedProjects = [...projects].sort(
               Key projects
             </h2>
             <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
-              {projects.length} catalogued &middot; ordered open first
+              {projects.length} catalogued &middot; ordered open first &middot; click "Ask" for an in-context chat
             </p>
             <ul class="grid gap-3 sm:grid-cols-2">
               {orderedProjects.map((p) => (
@@ -177,7 +180,39 @@ const orderedProjects = [...projects].sort(
                   <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-2">
                     {p.description}
                   </p>
-                  <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)] font-mono">
+                  {p.explainer && (
+                    <details class="mb-2 group/explainer">
+                      <summary class="cursor-pointer list-none select-none font-mono text-xs text-[var(--color-text-subtle)] hover:text-[var(--color-text)]">
+                        <span class="group-open/explainer:hidden">Read more &darr;</span>
+                        <span class="hidden group-open/explainer:inline">Show less &uarr;</span>
+                      </summary>
+                      <div class="mt-2 text-sm text-[var(--color-text-muted)] leading-relaxed space-y-2 whitespace-pre-line">
+                        {p.explainer}
+                      </div>
+                      {p.sources && p.sources.length > 0 && (
+                        <div class="mt-3 text-xs">
+                          <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+                            Sources
+                          </p>
+                          <ul class="space-y-0.5">
+                            {p.sources.map((s) => (
+                              <li>
+                                <a
+                                  href={s.url}
+                                  target="_blank"
+                                  rel="noopener"
+                                  class="no-underline hover:underline text-[var(--color-text-muted)]"
+                                >
+                                  {s.title}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </details>
+                  )}
+                  <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)] font-mono flex-wrap">
                     <span>{p.license}</span>
                     <span>&middot;</span>
                     <span>{p.maturity}</span>
@@ -194,6 +229,16 @@ const orderedProjects = [...projects].sort(
                         </a>
                       </>
                     )}
+                    <button
+                      type="button"
+                      class="ml-auto px-2 py-0.5 rounded border border-[var(--color-border)] hover:border-[var(--color-text)] hover:text-[var(--color-text)] cursor-pointer transition-colors"
+                      data-ask-project={p.slug}
+                      data-ask-project-name={p.name}
+                      data-ask-layer={entry.data.slug}
+                      data-ask-layer-title={entry.data.title}
+                    >
+                      Ask &rarr;
+                    </button>
                   </div>
                 </li>
               ))}
@@ -436,3 +481,30 @@ const orderedProjects = [...projects].sort(
     </aside>
   </div>
 </BaseLayout>
+
+<script is:inline>
+  // Per-project "Ask" buttons. Each carries data-ask-project,
+  // data-ask-project-name, data-ask-layer, data-ask-layer-title.
+  // Click dispatches CustomEvent("chat-trigger", {detail: {prompt}})
+  // which ChatBubble listens for. Pre-fills a prompt asking the chat
+  // to explain that project in the context of this layer.
+  (function () {
+    const buttons = document.querySelectorAll("[data-ask-project]");
+    for (const btn of buttons) {
+      btn.addEventListener("click", () => {
+        const slug = btn.getAttribute("data-ask-project");
+        const name = btn.getAttribute("data-ask-project-name");
+        const layer = btn.getAttribute("data-ask-layer");
+        const layerTitle = btn.getAttribute("data-ask-layer-title");
+        const prompt =
+          `Tell me about ${name} (slug: ${slug}) in the context of the ${layerTitle} layer (slug: ${layer}). ` +
+          `Cover: what it is, how it compares to other projects at this layer, why it matters for open-source AI, ` +
+          `who is actually using it, and whether it is production-ready. Call read_project first, then compare ` +
+          `against the siblings it returns. Keep the answer tight: 3-5 short paragraphs.`;
+        window.dispatchEvent(
+          new CustomEvent("chat-trigger", { detail: { prompt } }),
+        );
+      });
+    }
+  })();
+</script>

@@ -135,12 +135,22 @@ meta:
 
 ### `data/projects.yaml` — project catalog
 
-Schema: `slug, name, layers (array), license, focus, maturity, url, github (optional), description (one line)`.
+Schema: `slug, name, layers (array), license, focus, maturity, url, github (optional), description (one line), explainer (optional, multi-paragraph), sources (optional, [{title, url}])`.
 
 Focus values: `open` (OSI-approved), `open-weights` (source-available
 weights), `source-available`, `proprietary`, `standard` (specification).
 
 Maturity values: `stable | beta | alpha | research | maintenance | new`.
+
+**`explainer` (optional, high-priority projects only)**: a 200-400
+word deeper writeup with four parts: (1) what it is, (2) how it
+compares to siblings at the same layer, (3) why it matters for
+open-source AI specifically, (4) who is actually using it and
+production-readiness. Every numerical or factual claim must be
+traceable to `sources` per the citation-discipline rule. Renders as
+an expandable disclosure on the layer page card; the chat agent reads
+it via the `read_project` tool. Aim for ~20-30 priority projects
+total; do not write an explainer for every project.
 
 ### `data/funders.yaml` — grant funder profiles
 
@@ -355,9 +365,32 @@ has a per-turn rate limit and a dedup cache (per
 | `read_layer(slug)` | Fetch full layer overview + projects + readings + predictions | 3 |
 | `read_funder(slug)` | Fetch full funder profile + grants | 3 |
 | `read_grant(title)` | Fetch full grant entry by title | 3 |
+| `read_project(slug)` | Fetch full project entry (incl. explainer + sources) + siblings at the same primary layer | 4 |
 | `read_prediction(layer)` | Fetch predictions for a layer | 2 |
 | `today_news()` | Fetch the latest daily issue | 1 |
 | `search(query)` | MiniSearch over everything as fallback | 2 |
+
+### Chat triggers (from page elements)
+
+Any element on a page can open the chat with a pre-filled prompt by
+dispatching a custom event:
+
+```js
+window.dispatchEvent(
+  new CustomEvent("chat-trigger", {
+    detail: { prompt: "Tell me about RISC-V at the silicon layer..." },
+  }),
+);
+```
+
+`ChatBubble` listens for this and:
+1. Opens the panel (`setOpen(true)`)
+2. Sends the prompt after a 50ms tick so the panel has mounted
+3. Skips silently if a stream is already in flight
+
+Used for the per-project "Ask" buttons on `/stack/<slug>` pages.
+Anywhere a "talk to the chat about this" affordance is added, use
+this event rather than wiring custom state.
 
 ### Citation format
 

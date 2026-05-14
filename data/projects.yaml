@@ -47,6 +47,39 @@ projects:
     url: "https://tenstorrent.com/"
     github: "https://github.com/tenstorrent/tt-metal"
     description: "Open-trending AI accelerators on RISC-V; Jim Keller-led; tt-metal and tt-forge open."
+    explainer: |
+      Tenstorrent designs AI accelerators that combine RISC-V CPU
+      cores with their Tensix tensor compute units. The current
+      product line is Wormhole (shipping) and Blackhole (recently
+      launched). Led by CEO Jim Keller, a well-known chip architect
+      whose prior work included AMD's Zen and Apple's A4 / A5.
+
+      Tenstorrent is the rare datapoint in 2026 trying to make both
+      the ISA and the accelerator open at the AI-accelerator level.
+      The tt-metal low-level kernel framework and tt-forge model
+      compiler are open-sourced under Apache 2.0. Compare to NVIDIA's
+      H100 line, where the ISA, the accelerator, and the entire CUDA
+      software stack are proprietary; or AMD's MI300X, where the
+      hardware is proprietary but ROCm is mostly open. Tenstorrent
+      sits further along the open spectrum than either.
+
+      Production-readiness: shipping for real workloads, but the
+      software ecosystem is years behind CUDA. Customers willing to
+      do their own kernel work (national labs, sovereign-compute
+      programs, research groups) can use it; mainstream production
+      AI inference is still on NVIDIA. The strategic question for
+      Tenstorrent is whether the open-ISA + open-accelerator argument
+      attracts enough early customers and contributors to close the
+      software gap before NVIDIA's lock-in compounds further.
+    sources:
+      - title: "Tenstorrent — Products"
+        url: "https://tenstorrent.com/hardware/"
+      - title: "tt-metal on GitHub"
+        url: "https://github.com/tenstorrent/tt-metal"
+      - title: "tt-forge on GitHub"
+        url: "https://github.com/tenstorrent/tt-forge"
+      - title: "Tenstorrent — Vision"
+        url: "https://tenstorrent.com/vision"
 
   - slug: risc-v
     name: RISC-V
@@ -56,6 +89,42 @@ projects:
     maturity: stable
     url: "https://riscv.org/"
     description: "Open instruction set architecture; royalty-free; substrate for open silicon (CPUs and emerging AI accelerators)."
+    explainer: |
+      RISC-V is an open Instruction Set Architecture governed by a
+      Swiss non-profit, RISC-V International. Royalty-free, no
+      licensing fees, no single-vendor control. Anyone can build a
+      RISC-V chip without permission. This is the foundational layer
+      that makes "open silicon" possible at all; the other two major
+      ISAs (x86 and ARM) are proprietary and tied to specific licensors.
+
+      For the open-source AI conversation, RISC-V matters because the
+      AI hardware stack is dominated by NVIDIA's proprietary GPU ISA
+      on top of NVIDIA-controlled hardware. Even if the weights and
+      runtime above are open, the silicon underneath remains a
+      chokepoint. RISC-V is the only credible path to an open
+      accelerator stack that does not depend on one company's
+      goodwill. The lead bet at the AI-accelerator level is Tenstorrent,
+      whose Wormhole and Blackhole accelerators combine RISC-V CPU
+      cores with their Tensix tensor units.
+
+      Production-ready as an ISA, yes; it ships in embedded and
+      microcontroller chips at very high volume already. As a
+      substrate for AI training or inference at frontier scale, not
+      yet; the software ecosystem (compilers, optimized kernels, AI
+      frameworks targeting it) lags NVIDIA's CUDA stack by years.
+      SiFive is the leading commercial RISC-V CPU IP vendor; Tenstorrent
+      is the leading RISC-V-anchored AI accelerator bet. Status:
+      foundational, real, and slow to mature into the AI-frontier role
+      its open-stack advocates want for it.
+    sources:
+      - title: "RISC-V International — About"
+        url: "https://riscv.org/about/"
+      - title: "RISC-V Specifications"
+        url: "https://riscv.org/specifications/"
+      - title: "SiFive — RISC-V CPU IP"
+        url: "https://www.sifive.com/"
+      - title: "Tenstorrent — Vision (RISC-V positioning)"
+        url: "https://tenstorrent.com/vision"
 
   - slug: cerebras-cs3
     name: Cerebras CS-3
@@ -330,6 +399,42 @@ projects:
     maturity: stable
     url: "https://allenai.org/olmo"
     description: "The only major model family meeting the strictest reading of OSAID: data (Dolma), training code, and weights all published."
+    explainer: |
+      OLMo is a family of open language models from the Allen Institute
+      for AI (AI2). What makes OLMo distinctive is not the capability
+      ceiling, which is below the frontier, but the disclosure depth.
+      Apache 2.0 weights, full training data (Dolma corpus), training
+      code, evaluation suite, intermediate checkpoints, and training
+      logs are all published. The training pipeline is reproducible
+      end-to-end. No other major model family in 2026 meets this bar.
+
+      OLMo matters because it answers the question "what does 'open
+      source AI' actually look like at the strictest reading of OSAID
+      v1.0?" Llama, Mistral, Qwen, DeepSeek, and Gemma all publish
+      weights, but the training data is closed for all of them. Under
+      the Open Source Initiative's published definition, only OLMo
+      qualifies as fully open. This makes OLMo the existence proof
+      that frontier-class training-data disclosure is feasible at all,
+      and the reference example anyone arguing for stricter open-AI
+      definitions can point to.
+
+      Production-ready as a research and reference model. OLMo 2 (32B,
+      Mar 2025) and OLMo 3 family (Nov 2025) closed much of the
+      capability gap with similar-size open-weights peers, though not
+      with the frontier. Strong for academic use, reproducibility
+      research, post-training experimentation. Less competitive with
+      Llama 3 / Qwen 3 / DeepSeek for raw application performance.
+      Stewarded by AI2; long-term direction depends on AI2's continued
+      funding for the program.
+    sources:
+      - title: "OLMo at AI2"
+        url: "https://allenai.org/olmo"
+      - title: "OLMo 2 Release"
+        url: "https://allenai.org/blog/olmo2"
+      - title: "Dolma Corpus"
+        url: "https://huggingface.co/datasets/allenai/dolma"
+      - title: "Open Source AI Definition (OSI)"
+        url: "https://opensource.org/ai/open-source-ai-definition"
 
   - slug: gemma
     name: Gemma (Google)
@@ -386,6 +491,41 @@ projects:
     url: "https://docs.vllm.ai/"
     github: "https://github.com/vllm-project/vllm"
     description: "Dominant open production inference engine; PagedAttention and continuous batching; NVIDIA / AMD / Intel / TPU support."
+    explainer: |
+      vLLM is an open inference engine for large language models,
+      originally built at UC Berkeley by Woosuk Kwon and collaborators.
+      Apache 2.0. Now stewarded by an independent vLLM project team
+      and hosted under the LF AI and Data foundation. The central
+      technical contribution is PagedAttention, an attention-cache
+      memory manager that treats GPU KV-cache as virtual memory pages,
+      allowing high utilization under varied-length requests.
+
+      vLLM matters because runtime is the layer that decides how
+      cheaply weights become tokens. The same Llama 3 70B model can
+      cost an order of magnitude more on a poorly-tuned runtime than
+      a well-tuned one. vLLM has repeatedly demonstrated parity with
+      or improvement over NVIDIA's closed TensorRT-LLM, and it works
+      on AMD ROCm, Intel Gaudi, and increasingly TPU. The closed
+      counterpart, TensorRT-LLM, is NVIDIA-only. Within the open set,
+      SGLang is the leading alternative (different attention scheme,
+      strong on structured generation); llama.cpp is the local-first
+      sibling (CPU and Apple Silicon, not server-grade GPU).
+
+      Production-ready and widely deployed. It is the default open
+      production inference engine in 2026: shipped behind multiple
+      hosted LLM services, used by self-hosters running 7B-70B
+      models on commodity GPUs, and the reference engine that other
+      open work compares itself against. The v1 architectural refresh
+      landed in early 2025 and reset the performance baseline.
+    sources:
+      - title: "vLLM Documentation"
+        url: "https://docs.vllm.ai/"
+      - title: "Efficient Memory Management for LLM Serving with PagedAttention (Kwon et al., 2023)"
+        url: "https://arxiv.org/abs/2309.06180"
+      - title: "vLLM v1 Architecture Announcement"
+        url: "https://blog.vllm.ai/"
+      - title: "vLLM on GitHub"
+        url: "https://github.com/vllm-project/vllm"
 
   - slug: sglang
     name: SGLang
@@ -546,6 +686,40 @@ projects:
     url: "https://block.github.io/goose/"
     github: "https://github.com/block/goose"
     description: "Block's open agent; under the Linux Foundation's AAIF since Dec 2025; MCP-native; BYOK; extension-based."
+    explainer: |
+      Goose is an on-machine, open agent originally built at Block.
+      Apache 2.0. Extension-based architecture: capabilities are added
+      as MCP servers the agent connects to at runtime. BYOK on the
+      model side: it works with any Anthropic / OpenAI / OpenRouter
+      provider, plus local models via Ollama. Donated to the Linux
+      Foundation's Agentic AI Foundation (AAIF) in December 2025 as
+      part of the founding cohort alongside MCP itself.
+
+      Goose matters because the agent layer is where most user-visible
+      AI lives in 2026, and where most users meet AI through closed
+      products (Claude Code, Cursor, Devin). An open, extension-based,
+      BYOK, on-machine agent is the structural counter-bet. Compared
+      to siblings: OpenHands is the strongest open coding agent with
+      a sandboxed execution environment; Aider is the minimal terminal-
+      native coding agent that many people love for being simple;
+      Cline and Continue are VS Code-native open agents. Goose's
+      distinctive angle is its origins at Block (cypherpunk-adjacent)
+      and its explicit positioning as the "agent you run, not the
+      agent that runs you."
+
+      Production-ready as of 2025. Used by Block internally and by
+      thousands of external developers; Databricks bundles it. Block
+      runs a grant program (up to $100K) for external builders
+      extending Goose with new integrations or tooling.
+    sources:
+      - title: "Goose Documentation"
+        url: "https://block.github.io/goose/"
+      - title: "Goose on GitHub"
+        url: "https://github.com/block/goose"
+      - title: "Linux Foundation Agentic AI Foundation Announcement"
+        url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
+      - title: "Goose Grant Program (Block)"
+        url: "https://block.xyz/inside/introducing-the-goose-grant-program"
 
   - slug: openhands
     name: OpenHands
@@ -654,6 +828,41 @@ projects:
     url: "https://modelcontextprotocol.io/"
     github: "https://github.com/modelcontextprotocol/modelcontextprotocol"
     description: "Anthropic-seeded protocol for tool and context exchange; donated to the Linux Foundation's AAIF Dec 2025; de facto standard."
+    explainer: |
+      MCP is a wire protocol that lets a model or agent talk to tools
+      and context sources in a standardized way. An MCP server exposes
+      capabilities (read files, query a database, call an API); an
+      MCP client (the model or agent) discovers and invokes them. The
+      spec, reference SDKs in TypeScript / Python / Go / Rust, and a
+      large community-maintained ecosystem of servers all live in the
+      open under MIT. Originally seeded by Anthropic; donated to the
+      Linux Foundation's Agentic AI Foundation (AAIF) in December 2025.
+
+      MCP matters because protocols at the integration layer end up
+      owning the ecosystem. HTTP, SMTP, BGP, and TCP are the analogous
+      historical examples; their openness allowed the internet to be
+      a platform anyone could build on. The sibling protocols are A2A
+      (Google-seeded, agent-to-agent rather than agent-to-tool;
+      complementary not competing) and ACP (less widely adopted). MCP
+      has become the de facto standard for tool access by agents in
+      2025-2026: supported by Claude Code natively, by Goose, by
+      OpenHands, by Cursor, and increasingly by hosted services that
+      want to expose themselves as MCP servers.
+
+      Production-ready and broadly deployed. The interesting open
+      question is whether MCP's evolution stays community-driven now
+      that it sits under AAIF, or whether Anthropic's seeded status
+      continues to influence the spec's direction. So far it has been
+      treated as a published standard rather than a controlled product.
+    sources:
+      - title: "MCP Specification (modelcontextprotocol.io)"
+        url: "https://modelcontextprotocol.io/"
+      - title: "MCP on GitHub"
+        url: "https://github.com/modelcontextprotocol"
+      - title: "Awesome MCP Servers"
+        url: "https://github.com/modelcontextprotocol/servers"
+      - title: "AAIF Founding Announcement (Linux Foundation)"
+        url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
 
   - slug: a2a
     name: Agent-to-Agent (A2A)
@@ -683,6 +892,43 @@ projects:
     url: "https://docs.lightning.engineering/lightning-network-tools/lnd/l402"
     github: "https://github.com/lightninglabs/L402"
     description: "Lightning Labs payment protocol pairing HTTP 402 with Lightning Network invoices; the original agentic-payments rail."
+    explainer: |
+      L402 is a payment protocol that combines the long-dormant HTTP
+      402 "Payment Required" status code with Lightning Network
+      invoices and a macaroon-based capability token. A client requests
+      a resource; the server replies 402 with a Lightning invoice; the
+      client pays the invoice and gets back a token that authorizes
+      subsequent requests. The whole exchange is permissionless, no
+      account or API key required.
+
+      L402 matters for the open-source AI conversation because AI
+      agents are becoming economic actors (paying for tool calls,
+      inference, data) and the rails they pay on determine who can
+      become an economic agent without permission. The sibling
+      protocols are x402 (Coinbase's 2025 stablecoin-anchored revival
+      of HTTP 402, on-chain settlement instead of Lightning) and
+      various early MCP commerce extensions that propose paying for
+      MCP tool calls directly. The closed counterpart is Stripe Agent
+      SDK, which works fine but binds the agent to a Stripe account.
+
+      Production-ready spec since 2020. Used by Lightning Labs' own
+      Loop / Pool / Aperture services, by HRF-funded projects like
+      Routstr (an LLM routing marketplace on Nostr that uses L402 for
+      payment) and PayPerQ (a chatbot gateway that accepts Lightning),
+      and by an emerging set of agent-payment startups. The honest
+      limit: adoption is still concentrated in the Bitcoin-Lightning
+      ecosystem; broader AI-agent adoption depends on whether the
+      ecosystem treats Lightning as a viable rail or moves to on-chain
+      stablecoin alternatives.
+    sources:
+      - title: "L402 Documentation (Lightning Labs)"
+        url: "https://docs.lightning.engineering/lightning-network-tools/lnd/l402"
+      - title: "L402 on GitHub"
+        url: "https://github.com/lightninglabs/L402"
+      - title: "HRF AI for Individual Rights — Routstr"
+        url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
+      - title: "HTTP 402 (W3C)"
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402"
 
   - slug: x402
     name: x402

@@ -156,6 +156,25 @@ export default function ChatBubble() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  // Per-project / per-anything chat triggers. Any element on the page
+  // can dispatch CustomEvent("chat-trigger", { detail: { prompt } }) to
+  // open the chat and send a pre-filled prompt. Used by the per-project
+  // "Ask about this" buttons on /stack/<slug>.
+  const sendRef = useRef<((prompt: string) => void) | null>(null);
+  useEffect(() => {
+    function handler(e: Event) {
+      const detail = (e as CustomEvent<{ prompt?: string }>).detail;
+      if (!detail || !detail.prompt) return;
+      setOpen(true);
+      // Defer one tick so the panel mounts before send runs.
+      setTimeout(() => {
+        if (sendRef.current) sendRef.current(detail.prompt!);
+      }, 50);
+    }
+    window.addEventListener("chat-trigger", handler);
+    return () => window.removeEventListener("chat-trigger", handler);
+  }, []);
+
   // Persist + restore width.
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -201,9 +220,13 @@ export default function ChatBubble() {
     setError(null);
     if (!promptText.trim()) return;
     if (!hasKey()) {
+      setOpen(true);
       setError("No API key set. Open Settings to add one.");
       return;
     }
+    // Skip if a stream is already in flight; prevents double-send when
+    // the chat-trigger event fires while a prior turn is still running.
+    if (thread.isStreaming) return;
     const key = activeKey();
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
@@ -292,6 +315,9 @@ export default function ChatBubble() {
     setInput("");
     send(text);
   }
+
+  // Keep the chat-trigger event handler pointed at the latest send.
+  sendRef.current = send;
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (enterToSend && e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

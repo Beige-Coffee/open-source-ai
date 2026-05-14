@@ -106,6 +106,18 @@ export const TOOLS = [
     },
   },
   {
+    name: "read_project",
+    description:
+      "Fetch the full record for one project: its description, license, focus, maturity, primary url, github (if any), the layers it sits in, and (for high-priority projects) a multi-paragraph explainer with cited sources covering what it is, how it compares to siblings at the same layer, why it matters, who uses it, and production-readiness. ALSO returns sibling projects at the same primary layer so you can compare. Use this when the user asks about a specific named project. Limit: 4 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slug: { type: "string", description: "Project slug, e.g. 'risc-v', 'vllm', 'goose'." },
+      },
+      required: ["slug"],
+    },
+  },
+  {
     name: "read_grant",
     description:
       "Fetch a single grant by exact title. Use when the user asks about a specific named grant. Limit: 3 calls per turn.",
@@ -161,6 +173,7 @@ const LIMITS: Record<string, number> = {
   read_layer: 3,
   read_funder: 3,
   read_grant: 3,
+  read_project: 4,
   read_predictions: 2,
   today_news: 1,
   search: 2,
@@ -405,6 +418,43 @@ export async function executeTool(
           const attributed = grants.filter((g) => g.funder === slug);
           attributed.sort((a, b) => String(b.date).localeCompare(String(a.date)));
           result = { ...f, grants: attributed };
+        }
+        break;
+      }
+
+      case "read_project": {
+        const slug = String(call.input.slug ?? "").trim();
+        const projects = await getProjects();
+        const p = projects.find((x) => x.slug === slug);
+        if (!p) {
+          // Suggest near matches.
+          const close = projects
+            .filter((x) =>
+              x.slug.includes(slug.toLowerCase()) ||
+              x.name.toLowerCase().includes(slug.toLowerCase()),
+            )
+            .slice(0, 5)
+            .map((x) => `${x.slug} (${x.name})`);
+          result = {
+            error: `No project with slug '${slug}'.`,
+            suggestions: close,
+          };
+        } else {
+          const primaryLayer = p.layers[0];
+          const siblings = projects
+            .filter((x) => x.slug !== p.slug && x.layers.includes(primaryLayer))
+            .map((x) => ({
+              slug: x.slug,
+              name: x.name,
+              focus: x.focus,
+              maturity: x.maturity,
+              description: x.description,
+            }));
+          result = {
+            ...p,
+            primary_layer: primaryLayer,
+            siblings_at_primary_layer: siblings,
+          };
         }
         break;
       }

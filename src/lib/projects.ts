@@ -33,8 +33,18 @@ export interface Project {
   github?: string;
   description: string;
   /**
-   * Additional sources beyond `url` / `github`. Most projects do not
-   * need this because their `url` is the canonical project page.
+   * Optional 200-400 word explainer for high-priority projects.
+   * Covers: what it is, how it compares to siblings at the same
+   * layer, why it matters for open-source AI, who is using it, and
+   * whether it is production-ready. Every numerical or factual
+   * claim must be traceable to `sources` per CLAUDE.md citation rule.
+   * Renders as an expandable section on the layer page card; the
+   * chat agent reads it via the read_project tool.
+   */
+  explainer?: string;
+  /**
+   * Additional sources beyond `url` / `github`. Required when
+   * `explainer` is populated and contains specific factual claims.
    */
   sources?: ProjectSource[];
 }
