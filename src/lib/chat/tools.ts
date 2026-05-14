@@ -26,10 +26,11 @@ export const TOOLS = [
   {
     name: "find_grants",
     description:
-      "Filter the grants catalog by funder, layer, region, amount range, or recency. Use whenever the user asks about grants matching some criteria. Returns up to 12 grants with title, funder, recipient, date, amount, layers, region, url, description. Limit: 3 calls per turn.",
+      "Filter the grants catalog by kind, funder, layer, region, amount, or recency. 'kind' is the most important filter: 'project' = a specific named project that got money (Maple AI, Goose, BridgingBot); 'program' = a cohort, fellowship, RFP, or aggregate announcement (AI Safety Fund Dec 2025 round, SFF-2025 allocations, Anthropic Fellows). Default to projects unless the user is asking about programs to apply to. Returns up to 12 grants. Limit: 3 calls per turn.",
     input_schema: {
       type: "object",
       properties: {
+        kind: { type: "string", enum: ["project", "program"], description: "Filter to specific projects vs cohort/program announcements." },
         funder: { type: "string", description: "Funder slug, e.g. 'hrf', 'cosmos-institute', 'foresight-institute'." },
         layer: { type: "string", description: "Layer slug, e.g. 'silicon', 'identity-trust', 'sovereignty-decentralization'." },
         region: { type: "string", enum: ["US", "EU", "UK", "Global", "Asia", "Africa", "LatAm"] },
@@ -284,6 +285,7 @@ export async function executeTool(
     switch (call.name) {
       case "find_grants": {
         const args = call.input as {
+          kind?: string;
           funder?: string;
           layer?: string;
           region?: string;
@@ -293,6 +295,7 @@ export async function executeTool(
         };
         const grants = await getGrants();
         let hits = grants.filter((g) => {
+          if (args.kind && g.kind !== args.kind) return false;
           if (args.funder && g.funder !== args.funder) return false;
           if (args.layer && !g.layers.includes(args.layer)) return false;
           if (args.region && g.region !== args.region) return false;

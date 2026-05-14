@@ -153,7 +153,23 @@ Type: `government | foundation | corporate | consortium`.
 
 ### `data/grants.yaml` — individual grants
 
-Schema: `title, funder (slug ref), recipient, date (string YYYY or YYYY-MM or YYYY-MM-DD), amount_usd (optional), amount_label, layers (array), region, url, description (2-4 sentences)`.
+Schema: `title, kind, funder (slug ref), recipient, date (string YYYY or YYYY-MM or YYYY-MM-DD), amount_usd (optional), amount_label, layers (array), region, url, description (2-4 sentences)`.
+
+`kind` is the most important field. Two values:
+
+- **`project`**: a specific named project that received money. You can
+  look it up and see what it does. (Maple AI, Goose, BridgingBot,
+  individual Mozilla Builders projects.) The /grants page defaults to
+  this view.
+- **`program`**: a cohort, RFP, fellowship round, or aggregate funder
+  announcement. The "thing" here is the program itself, and the audience
+  is potential applicants or other funders. (Anthropic Fellows May 2026
+  cohort, AI Safety Fund Dec 2025 round, SFF-2025 allocations,
+  Hoffman-Yee continuation, Multistakeholder Engagement program.)
+
+When in doubt: if the entry could plausibly link to a project website
+or product, it's a project; if it links to the funder's program page,
+it's a program.
 
 The `amount_label` is human-readable ("$25K", "Undisclosed", "$1M / 10
 teams"). `amount_usd` is numeric for the amount-bucket filter; null

@@ -44,6 +44,7 @@ interface Funder {
 
 interface Grant {
   title: string;
+  kind: "project" | "program";
   funder: string;
   recipient: string;
   date: string;

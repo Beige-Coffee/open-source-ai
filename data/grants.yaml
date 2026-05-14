@@ -11,6 +11,7 @@
 
 grants:
   - title: "Open Multimodal AI Infrastructure (OMAI) partnership"
+    kind: project
     funder: nsf
     recipient: "Allen Institute for AI"
     date: "2025-08"
@@ -22,6 +23,7 @@ grants:
     description: "First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage."
 
   - title: "Technical AI Safety RFP"
+    kind: program
     funder: open-philanthropy
     recipient: "Multiple grantees"
     date: "2025-04"
@@ -33,6 +35,7 @@ grants:
     description: "Closed April 15, 2025. Distributed across 21 technical safety areas."
 
   - title: "FAR.AI / FAR.Futures field-building grant"
+    kind: project
     funder: open-philanthropy
     recipient: "FAR.AI"
     date: "2025-04"
@@ -44,6 +47,7 @@ grants:
     description: "Field-building grant for AI safety research community."
 
   - title: "Alignment Project cohort"
+    kind: program
     funder: aisi-alignment-project
     recipient: "60+ projects (UK)"
     date: "2025"
@@ -55,6 +59,7 @@ grants:
     description: "60+ alignment projects funded; individual grants up to £1M."
 
   - title: "AI2050 Fellows cohort"
+    kind: program
     funder: schmidt-sciences
     recipient: "Multiple researchers"
     date: "2025"
@@ -66,6 +71,7 @@ grants:
     description: "Annual AI2050 fellowships program."
 
   - title: "AI Safety Science program"
+    kind: program
     funder: schmidt-sciences
     recipient: "27 projects"
     date: "2025-02"
@@ -77,6 +83,7 @@ grants:
     description: "Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project."
 
   - title: "AI Safety Fund Dec 2025 round"
+    kind: program
     funder: frontier-model-forum-aisf
     recipient: "11 grantees including Apollo Research, Caltech BioSentinel, Institute for Decentralized AI, Faculty AI"
     date: "2025-12"
@@ -88,6 +95,7 @@ grants:
     description: "Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming."
 
   - title: "Democracy x AI Cohort 2026"
+    kind: program
     funder: mozilla
     recipient: "10 teams"
     date: "2026-02"
@@ -99,6 +107,7 @@ grants:
     description: "10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure."
 
   - title: "NGI Zero Commons Fund April 2026 round"
+    kind: program
     funder: nlnet
     recipient: "57 projects"
     date: "2026-04"
@@ -110,6 +119,7 @@ grants:
     description: "Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware."
 
   - title: "Claude for Open Source program"
+    kind: program
     funder: anthropic
     recipient: "10,000+ OSS maintainers"
     date: "2026-02"
@@ -120,6 +130,7 @@ grants:
     description: "Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026."
 
   - title: "Anthropic Fellows May 2026 cohort"
+    kind: program
     funder: anthropic
     recipient: "Safety researchers"
     date: "2026-05"
@@ -130,6 +141,7 @@ grants:
     description: "Compute-heavy fellowship program for alignment research."
 
   - title: "OLMo 3 / Molmo 2 release line"
+    kind: project
     funder: ai2
     recipient: "AI2 internal teams"
     date: "2025-11"
@@ -140,6 +152,7 @@ grants:
     description: "OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage."
 
   - title: "Common Pile v0.1"
+    kind: project
     funder: ai2
     recipient: "EleutherAI"
     date: "2025-06"
@@ -150,6 +163,7 @@ grants:
     description: "License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma."
 
   - title: "OpenEuroLLM consortium kickoff"
+    kind: project
     funder: eu-horizon
     recipient: "Multi-partner EU consortium"
     date: "2025-Q4"
@@ -161,6 +175,7 @@ grants:
     description: "Open multilingual European LLM consortium funded under Horizon Europe."
 
   - title: "Mistral Compute / ASML / Ministry of Armed Forces"
+    kind: project
     funder: eu-horizon
     recipient: "Mistral AI"
     date: "2026"
@@ -171,6 +186,7 @@ grants:
     description: "European sovereign-compute partnership with strategic-industry implications. Specifics evolving."
 
   - title: "AISI Inspect framework"
+    kind: project
     funder: aisi-alignment-project
     recipient: "Open release"
     date: "2025"
@@ -181,6 +197,7 @@ grants:
     description: "Open-sourced evaluation harness from UK AISI; available for community use."
 
   - title: "Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance"
+    kind: program
     funder: sovereign-tech-fund
     recipient: "Foundational open-source maintainers"
     date: "2024-2026"
@@ -192,6 +209,7 @@ grants:
     description: "Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools."
 
   - title: "MCP donation to Linux Foundation AAIF"
+    kind: project
     funder: linux-foundation-aaif
     recipient: "Model Context Protocol project"
     date: "2025-12"
@@ -206,6 +224,7 @@ grants:
   # ============================================================
 
   - title: "Maple AI"
+    kind: project
     funder: hrf
     recipient: "OpenSecret"
     date: "2025-11-24"
@@ -216,6 +235,7 @@ grants:
     description: "Open-source, end-to-end encrypted AI assistant built by OpenSecret using secure enclaves and confidential computing. Activists in authoritarian environments can use frontier LLMs without their queries being scanned, stored, or handed to governments. HRF support funds capability improvements and new features for activist research workflows."
 
   - title: "Routstr"
+    kind: project
     funder: hrf
     recipient: "Sovereign Engineering / Routstr team"
     date: "2025-11-24"
@@ -226,6 +246,7 @@ grants:
     description: "LLM routing marketplace built on the Nostr decentralized communications protocol. Users connect pseudonymously to buy and sell access to each other's AI accounts in an uncensorable peer-to-peer marketplace, giving activists inference even when governments or corporate providers block them."
 
   - title: "OpenCode"
+    kind: project
     funder: hrf
     recipient: "OpenCode"
     date: "2025-11-24"
@@ -236,6 +257,7 @@ grants:
     description: "Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable for civil-society teams under authoritarian rule."
 
   - title: "PayPerQ"
+    kind: project
     funder: hrf
     recipient: "PayPerQ"
     date: "2025-11-24"
@@ -246,6 +268,7 @@ grants:
     description: "Pay-per-query gateway to leading chatbots that requires no account and accepts Bitcoin, Lightning, or credit card. Lets dissidents and journalists use frontier AI without leaving an identifiable trail tied to a corporate account."
 
   - title: "CANVAS Global Education for Nonviolent Engagement (GENE)"
+    kind: project
     funder: hrf
     recipient: "CANVAS"
     date: "2025-11-24"
@@ -256,6 +279,7 @@ grants:
     description: "AI-powered tool trained on decades of frontline nonviolent organizing experience. Helps activists plan campaigns, coordinate action, and respond in moments of crisis with strategy guidance grounded in CANVAS's documented case archive."
 
   - title: "The Bridge Project"
+    kind: project
     funder: hrf
     recipient: "The Bridge Project"
     date: "2025-11-24"
@@ -266,6 +290,7 @@ grants:
     description: "Provides hands-on consultation to activists in HRF's network, helping them refine prototypes into deployable applications. Acts as a bridge between human-rights defenders and the technical talent needed to launch tools in production."
 
   - title: "Stringer Safety"
+    kind: project
     funder: hrf
     recipient: "Anjan Sundaram et al. (AI Hack for Freedom)"
     date: "2026-01-18"
@@ -276,6 +301,7 @@ grants:
     description: "Safety app for journalists in high-risk environments. Reporters maintain a trusted contact network with shared location and status; a one-click SOS triggers response recommendations using the encrypted Maple AI assistant."
 
   - title: "Pathos"
+    kind: project
     funder: hrf
     recipient: "Leopoldo López and team (AI Hack for Freedom)"
     date: "2026-01-18"
@@ -290,6 +316,7 @@ grants:
   # ============================================================
 
   - title: "Computational virtue ethics framework"
+    kind: project
     funder: cosmos-institute
     recipient: "Rocco Hu"
     date: "2024-09-04"
@@ -300,6 +327,7 @@ grants:
     description: "Oxford-trained philosopher-computer-scientist developing a computational theory of virtue ethics for AI alignment, building grounded approaches to AI value learning rooted in Aristotelian rather than utilitarian frames."
 
   - title: "Decentralized AI commons for live arts (The Sphere)"
+    kind: project
     funder: cosmos-institute
     recipient: "Erik Bordeleau"
     date: "2024-09-04"
@@ -310,6 +338,7 @@ grants:
     description: "Researcher building The Sphere, an AI commons for preserving and remixing live performance art. Explores how decentralized governance and AI can sustain non-commercial creative work."
 
   - title: "Bio-inspired AI swarm simulation platform"
+    kind: project
     funder: cosmos-institute
     recipient: "Alfaxad Eyembe"
     date: "2024-09-04"
@@ -320,6 +349,7 @@ grants:
     description: "Open simulation platform for studying multi-agent coordination patterns inspired by biological swarms, intended as a substrate for cooperative-AI experiments."
 
   - title: "AI-driven digital wargaming platform"
+    kind: project
     funder: cosmos-institute
     recipient: "Jake Birdwell"
     date: "2024-09-04"
@@ -330,6 +360,7 @@ grants:
     description: "AI-driven wargaming platform for exploring policy and strategic decisions involving advanced AI, treating wargames as a deliberation tool for human decision-makers."
 
   - title: "Silicon Valley ideology seminar series"
+    kind: project
     funder: cosmos-institute
     recipient: "Nadia Asparouhova and Tim Hwang"
     date: "2024-10-01"
@@ -344,6 +375,7 @@ grants:
   # ============================================================
 
   - title: "Metalens"
+    kind: project
     funder: cosmos-fire
     recipient: "Johanna Einsiedler"
     date: "2025-07-01"
@@ -354,6 +386,7 @@ grants:
     description: "Open-source scientific research platform combining AI summarization with structured human checks, intended to help researchers see beyond hype and identify reliable claims in dense literature."
 
   - title: "Perplex"
+    kind: project
     funder: cosmos-fire
     recipient: "Steven Molotnikov"
     date: "2025-07-01"
@@ -364,6 +397,7 @@ grants:
     description: "Tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference models. Aims to give independent reviewers a way to audit proprietary deployments."
 
   - title: "Policy Explorer"
+    kind: project
     funder: cosmos-fire
     recipient: "Caleb Maresca"
     date: "2025-07-01"
@@ -374,6 +408,7 @@ grants:
     description: "AI tool for analyzing the impacts and assumptions embedded in regulatory and policy proposals, geared toward helping civil-society analysts surface what a rule actually does."
 
   - title: "Argument Debugger"
+    kind: project
     funder: cosmos-fire
     recipient: "Nada Amin"
     date: "2025-07-01"
@@ -384,6 +419,7 @@ grants:
     description: "AI assistant that finds gaps in chains of reasoning and suggests repairs, framed as a tool for better arguments rather than persuasive ones. Built by a Harvard CS faculty member."
 
   - title: "Remarker"
+    kind: project
     funder: cosmos-fire
     recipient: "Jonas Kgomo"
     date: "2025-07-01"
@@ -394,6 +430,7 @@ grants:
     description: "Open-source Wikipedia-like reference for exploring truth-seeking behavior in LLMs. Curates examples and methods so other researchers can build on a shared corpus."
 
   - title: "Reward Hacking Benchmark"
+    kind: project
     funder: cosmos-fire
     recipient: "Kunvar Thaman"
     date: "2025-07-01"
@@ -404,6 +441,7 @@ grants:
     description: "Open benchmark that systematically tests LLM agents for reward hacking and deceptive behavior, providing a public-good evaluation rather than relying on lab-internal red teams."
 
   - title: "Socratic Mirror"
+    kind: project
     funder: cosmos-fire
     recipient: "Zhongying Qiao"
     date: "2025-07-01"
@@ -414,6 +452,7 @@ grants:
     description: "AI thought partner designed to interrogate the user rather than answer them, modelling Socratic questioning to push deeper thinking instead of optimizing for satisfaction."
 
   - title: "Socratica"
+    kind: project
     funder: cosmos-fire
     recipient: "Jasmine Cui"
     date: "2025-07-01"
@@ -428,6 +467,7 @@ grants:
   # ============================================================
 
   - title: "Praxis-based AI alignment values"
+    kind: project
     funder: cosmos-institute
     recipient: "Peli Grietzer"
     date: "2025-08-01"
@@ -438,6 +478,7 @@ grants:
     description: "Harvard-trained researcher bridging philosophy, AI, and literary humanities. Defines praxis-based values inspired by virtue ethics to guide AI alignment beyond rule-based approaches."
 
   - title: "Variable-binding interpretability infrastructure"
+    kind: project
     funder: cosmos-institute
     recipient: "Raphaël Millière"
     date: "2025-08-01"
@@ -448,6 +489,7 @@ grants:
     description: "Macquarie University philosopher of mind developing open infrastructure for AI interpretability research, focused on how neural networks bind variables, a long-standing question in cognitive science."
 
   - title: "Public AI digital library"
+    kind: project
     funder: cosmos-institute
     recipient: "Sam Klein (Public AI Network)"
     date: "2025-08-01"
@@ -458,6 +500,7 @@ grants:
     description: "Cofounder of Public AI Network and longtime Wikipedian mapping how a public-good global digital library powered by generative AI could be built and governed."
 
   - title: "Open agent economy infrastructure"
+    kind: project
     funder: cosmos-institute
     recipient: "Seth Lazar"
     date: "2025-08-01"
@@ -468,6 +511,7 @@ grants:
     description: "Australian National University political philosopher developing technical and regulatory groundwork for an open agent economy that resists centralization by the largest agent platform companies."
 
   - title: "Institute for Decentralized AI launch"
+    kind: project
     funder: cosmos-institute
     recipient: "Samuele Marro (Cosmos Incubation Fellow)"
     date: "2025-09-15"
@@ -482,6 +526,7 @@ grants:
   # ============================================================
 
   - title: "Goose grant program launch"
+    kind: program
     funder: block-goose
     recipient: "Multiple external builders"
     date: "2025-06-01"
@@ -496,6 +541,7 @@ grants:
   # ============================================================
 
   - title: "Orchard"
+    kind: project
     funder: opensats
     recipient: "Orchard developers"
     date: "2025-06-01"
@@ -510,6 +556,7 @@ grants:
   # ============================================================
 
   - title: "Ente Photos"
+    kind: project
     funder: mozilla
     recipient: "Ente"
     date: "2024-09-23"
@@ -521,6 +568,7 @@ grants:
     description: "Open-source on-device semantic search and image recognition for private photo storage. Mozilla Builders Accelerator cohort 1 (local AI theme); avoids cloud dependency for personal photo libraries."
 
   - title: "Transformer Lab"
+    kind: project
     funder: mozilla
     recipient: "Transformer Lab"
     date: "2024-09-23"
@@ -532,6 +580,7 @@ grants:
     description: "Cross-platform desktop application for building, training, fine-tuning, evaluating, and exporting local LLMs on Windows, macOS, and Linux. Ships in Mozilla's first Builders Accelerator local-AI cohort."
 
   - title: "Sartify (Swahili LLM)"
+    kind: project
     funder: mozilla
     recipient: "Sartify"
     date: "2024-09-23"
@@ -543,6 +592,7 @@ grants:
     description: "Foundation-model and tooling work for Swahili-speaking regions. Creates general and domain-specific AI capabilities for a language poorly served by major commercial models."
 
   - title: "Ersilia Model Hub"
+    kind: project
     funder: mozilla
     recipient: "Ersilia"
     date: "2024-09-23"
@@ -554,6 +604,7 @@ grants:
     description: "Curated catalog of AI/ML drug-discovery models that operate locally. Targets researchers in low- and middle-income countries who cannot rely on US cloud platforms."
 
   - title: "Foyle"
+    kind: project
     funder: mozilla
     recipient: "Foyle"
     date: "2024-09-23"
@@ -565,6 +616,7 @@ grants:
     description: "AI copilot for operations and automation work. Uses a notebook format to capture continuous human feedback so the assistant improves on the operator's actual workflows."
 
   - title: "Theia AI IDE"
+    kind: project
     funder: mozilla
     recipient: "Eclipse Foundation / Theia"
     date: "2024-09-23"
@@ -576,6 +628,7 @@ grants:
     description: "Extension of the Eclipse Theia editor giving developers a transparent, customizable AI experience with the freedom to choose and self-host language models."
 
   - title: "Latent Scope"
+    kind: project
     funder: mozilla
     recipient: "Latent Scope"
     date: "2024-09-23"
@@ -587,6 +640,7 @@ grants:
     description: "Local pipeline and visualization environment for embedding, clustering, and categorizing datasets with LLMs. Operates entirely on the user's machine."
 
   - title: "Nx (Elixir machine learning)"
+    kind: project
     funder: mozilla
     recipient: "Nx project / DockYard"
     date: "2024-09-23"
@@ -598,6 +652,7 @@ grants:
     description: "Distributed machine-learning framework leveraging Elixir's concurrency and fault-tolerance properties as an alternative to Python-centric stacks."
 
   - title: "Tölvera"
+    kind: project
     funder: mozilla
     recipient: "Tölvera"
     date: "2024-09-23"
@@ -613,6 +668,7 @@ grants:
   # ============================================================
 
   - title: "Multistakeholder Engagement for Safe and Prosperous AI program"
+    kind: program
     funder: future-of-life-institute
     recipient: "Multiple grantees (program-level)"
     date: "2025-06-01"
@@ -624,6 +680,7 @@ grants:
     description: "FLI grant program for projects that engage, educate, and activate stakeholder groups and the public on AI futures. Letters of intent due February 2025; decisions June 2025."
 
   - title: "Problem-solving AI grants (16 awards)"
+    kind: program
     funder: future-of-life-institute
     recipient: "16 researchers across UN SDG and global governance tracks"
     date: "2024-12-01"
@@ -635,6 +692,7 @@ grants:
     description: "Sixteen $15K grants for research on AI applied to UN SDG topics (maternal mortality, climate education, labor, poverty) and on global governance institution design (CERN for AI, Fair Trade AI, Global AGI agency)."
 
   - title: "AI Safety Index Winter 2025"
+    kind: program
     funder: future-of-life-institute
     recipient: "FLI internal team (third-party expert panel)"
     date: "2025-12-01"
@@ -649,6 +707,7 @@ grants:
   # ============================================================
 
   - title: "Scoping Developmental Interpretability (Timaeus first funding)"
+    kind: project
     funder: manifund
     recipient: "Jesse Hoogland (Timaeus)"
     date: "2024-03-01"
@@ -659,6 +718,7 @@ grants:
     description: "First funding for the Timaeus team's developmental interpretability research program. Manifund regrant accelerated their research by months and seeded what is now an established alignment lab."
 
   - title: "China and AI deep coverage"
+    kind: project
     funder: manifund
     recipient: "ChinaTalk (Jordan Schneider)"
     date: "2024-06-01"
@@ -669,6 +729,7 @@ grants:
     description: "Support for ChinaTalk's coverage of Chinese AI policy and the DeepSeek lab, ahead of the curve on what became major US policy debates."
 
   - title: "Frontier AI benchmark pilot"
+    kind: project
     funder: manifund
     recipient: "Epoch AI"
     date: "2024-09-01"
@@ -684,6 +745,7 @@ grants:
   # ============================================================
 
   - title: "SFF-2025 AI safety allocations"
+    kind: program
     funder: survival-and-flourishing-fund
     recipient: "Multiple AI safety and governance organizations"
     date: "2025-12-01"
@@ -695,6 +757,7 @@ grants:
     description: "Approximately $29M of SFF's $34.9M 2025 round directed to AI safety and governance work, with smaller allocations to biosecurity, longevity, forecasting, math, and EA infrastructure."
 
   - title: "Hoffman-Yee 2025 continuation grants"
+    kind: program
     funder: stanford-hai
     recipient: "Five Stanford research teams from 2024 cohort"
     date: "2025-04-01"
@@ -706,6 +769,7 @@ grants:
     description: "Five interdisciplinary Stanford teams from the 2024 Hoffman-Yee cohort received up to $2M each to continue their research over two more years. Notable recipient Brian Hie's group continues open biological foundation models with the Evo project."
 
   - title: "Diverse Intelligences Hubs (4 universities)"
+    kind: program
     funder: templeton-world
     recipient: "Princeton, Indiana, Macquarie, St Andrews"
     date: "2025-09-16"
@@ -716,6 +780,7 @@ grants:
     description: "Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science. Each hub administers seed funding for early-career researchers and international collaborations."
 
   - title: "Inaugural Humanity AI grants ($18M to 12 organizations)"
+    kind: program
     funder: humanity-ai
     recipient: "12 inaugural grantee organizations"
     date: "2026-04-01"
@@ -731,6 +796,7 @@ grants:
   # ============================================================
 
   - title: "FOCAL lab at Carnegie Mellon"
+    kind: project
     funder: cooperative-ai-foundation
     recipient: "Carnegie Mellon FOCAL lab"
     date: "2024-08-01"
@@ -741,6 +807,7 @@ grants:
     description: "Establishes a research lab laying decision- and game-theoretic foundations for advancing AI cooperation. Includes workshops, online seminar series, and visitor programs."
 
   - title: "Coercion-capability measurement project"
+    kind: project
     funder: cooperative-ai-foundation
     recipient: "CAIF 2025 grantee"
     date: "2025-04-01"
@@ -751,6 +818,7 @@ grants:
     description: "Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with different levels of those capabilities."
 
   - title: "Norm-learning agents"
+    kind: project
     funder: cooperative-ai-foundation
     recipient: "CAIF 2025 grantee"
     date: "2025-04-01"
@@ -761,6 +829,7 @@ grants:
     description: "Funded research on enhancing AI agents' ability to learn the norms, conventions, and preferences of other agents so they can rapidly adapt and cooperate more effectively."
 
   - title: "Multi-party negotiation support for humanitarian crises"
+    kind: project
     funder: cooperative-ai-foundation
     recipient: "CAIF 2025 grantee"
     date: "2025-04-01"
@@ -775,6 +844,7 @@ grants:
   # ============================================================
 
   - title: "Goodfire (Batch 4)"
+    kind: project
     funder: ai-grant
     recipient: "Goodfire"
     date: "2025-03-01"
@@ -786,6 +856,7 @@ grants:
     description: "Mechanistic interpretability tooling for production LLM deployments. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
 
   - title: "Inception Labs (Batch 4)"
+    kind: project
     funder: ai-grant
     recipient: "Inception Labs"
     date: "2025-03-01"
@@ -797,6 +868,7 @@ grants:
     description: "Diffusion-based large language models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
 
   - title: "Haize Labs (Batch 4)"
+    kind: project
     funder: ai-grant
     recipient: "Haize Labs"
     date: "2025-03-01"
@@ -808,6 +880,7 @@ grants:
     description: "Adversarial AI evaluation and red-teaming infrastructure. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
 
   - title: "Artificial Analysis (Batch 4)"
+    kind: project
     funder: ai-grant
     recipient: "Artificial Analysis"
     date: "2025-03-01"
@@ -823,6 +896,7 @@ grants:
   # ============================================================
 
   - title: "Open source math for the AIs"
+    kind: project
     funder: emergent-ventures
     recipient: "Reyansh Sharma"
     date: "2025-09-01"
@@ -833,6 +907,7 @@ grants:
     description: "Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort Emergent Ventures award."
 
   - title: "Privacy-preserving ML on encrypted data"
+    kind: project
     funder: emergent-ventures
     recipient: "Jessie Chen"
     date: "2025-09-01"
@@ -843,6 +918,7 @@ grants:
     description: "Privacy-preserving machine-learning models that operate directly on encrypted data without exposing the underlying inputs. 46th cohort Emergent Ventures award."
 
   - title: "Data for the AIs"
+    kind: project
     funder: emergent-ventures
     recipient: "Laura Ryan"
     date: "2025-12-01"
@@ -857,6 +933,7 @@ grants:
   # ============================================================
 
   - title: "Astera Residency Program"
+    kind: program
     funder: astera-institute
     recipient: "Multiple residents"
     date: "2025-01-01"
@@ -867,6 +944,7 @@ grants:
     description: "One-year fully-funded residency for scientists and engineers building open-science public goods, including AI for biology and other research domains. Residents receive Voltage Park H100 compute access and must publish all code, data, and outputs openly."
 
   - title: "Recall (AI agent reputation)"
+    kind: project
     funder: filecoin-foundation
     recipient: "Recall"
     date: "2025-04-01"
@@ -877,6 +955,7 @@ grants:
     description: "Reputation system for AI agents that ensures they operate on high-integrity, verifiable data. Integrates Filecoin decentralized storage as the substrate for agent state and provenance."
 
   - title: "BridgingBot"
+    kind: project
     funder: plurality-institute
     recipient: "Plurality Institute (with Harvard, UC Berkeley, Jigsaw, Google.org)"
     date: "2025-02-01"
@@ -887,6 +966,7 @@ grants:
     description: "LLM-powered social-media moderator designed to foster constructive online dialogue. Includes a randomized controlled trial and full open-sourcing of code and methods."
 
   - title: "LLM Map of deliberative AI tools"
+    kind: project
     funder: plurality-institute
     recipient: "Plurality Institute community"
     date: "2025-02-01"

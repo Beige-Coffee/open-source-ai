@@ -17,9 +17,17 @@ export interface Funder {
 }
 
 export type Region = "US" | "EU" | "UK" | "Global" | "Asia" | "Africa" | "LatAm";
+export type GrantKind = "project" | "program";
 
 export interface Grant {
   title: string;
+  /**
+   * "project": a specific named project that received money. You can
+   *            look it up and see what it does.
+   * "program": a cohort, RFP, fellowship round, or aggregate funder
+   *            announcement. The "thing" here is the program itself.
+   */
+  kind: GrantKind;
   funder: string;
   recipient: string;
   date: string;

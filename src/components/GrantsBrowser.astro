@@ -58,14 +58,51 @@ const grantsWithMeta = grants.map((g) => ({
   recency_bucket: recencyBucket(g.date, today),
   funder_obj: findFunder(g.funder),
 }));
+
+// Counts for the tab toggle labels.
+const projectCount = grantsWithMeta.filter((g) => g.kind === "project").length;
+const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
 ---
 
 <section class="max-w-6xl mx-auto px-6 my-16" id="grants-browser">
   <h2 class="font-serif text-2xl mb-2">All grants</h2>
-  <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
-    Every grant tracked, filterable by funder, layer, amount, region,
-    and recency. {grantsWithMeta.length} entries total.
+  <p class="text-sm text-[var(--color-text-muted)] mb-4 max-w-prose">
+    Two kinds: specific projects that received money, and cohorts /
+    programs you could apply to or model your own funding after. Toggle
+    between them; filters apply within each.
   </p>
+
+  <!-- Tab toggle: only one section visible at a time, default projects. -->
+  <div
+    role="tablist"
+    aria-label="Grant kind"
+    class="flex gap-2 mb-6 border-b border-[var(--color-border)]"
+  >
+    <button
+      type="button"
+      role="tab"
+      data-grants-tab="project"
+      aria-selected="true"
+      class="px-4 py-2 -mb-px border-b-2 border-[var(--color-accent)] font-medium text-sm text-[var(--color-accent)] bg-transparent cursor-pointer"
+    >
+      Projects funded
+      <span class="font-mono text-xs text-[var(--color-text-subtle)] ml-1">
+        ({projectCount})
+      </span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      data-grants-tab="program"
+      aria-selected="false"
+      class="px-4 py-2 -mb-px border-b-2 border-transparent font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] bg-transparent cursor-pointer"
+    >
+      Cohorts &amp; programs
+      <span class="font-mono text-xs text-[var(--color-text-subtle)] ml-1">
+        ({programCount})
+      </span>
+    </button>
+  </div>
 
   <div class="grid gap-6 md:grid-cols-[240px_1fr] items-start">
     <!-- Sticky filter sidebar -->
@@ -227,10 +264,9 @@ const grantsWithMeta = grants.map((g) => ({
       >
         <p class="font-mono text-sm text-[var(--color-text-muted)]">
           Showing
-          <span data-grants-visible-count class="font-semibold"
-            >{grantsWithMeta.length}</span
-          >
-          of {grantsWithMeta.length}
+          <span data-grants-visible-count class="font-semibold">{projectCount}</span>
+          of
+          <span data-grants-total-count>{projectCount}</span>
         </p>
         <div
           data-grants-active-chips
@@ -255,6 +291,7 @@ const grantsWithMeta = grants.map((g) => ({
             <li
               class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
               data-grant
+              data-kind={g.kind}
               data-funder={g.funder}
               data-layers={g.layers.join(",")}
               data-amount={g.amount_bucket}
@@ -330,10 +367,15 @@ const grantsWithMeta = grants.map((g) => ({
     const checkboxes = Array.from(
       root.querySelectorAll("[data-grants-filter]"),
     );
+    const tabButtons = Array.from(root.querySelectorAll("[data-grants-tab]"));
     const visibleCountEl = root.querySelector("[data-grants-visible-count]");
+    const totalCountEl = root.querySelector("[data-grants-total-count]");
     const chipsEl = root.querySelector("[data-grants-active-chips]");
     const emptyEl = root.querySelector("[data-grants-empty-state]");
     const clearAllBtn = root.querySelector("[data-grants-clear-all]");
+
+    // Active tab: "project" (default) or "program".
+    let activeKind = "project";
 
     const labelFor = (key, value) => {
       const el = root.querySelector(
@@ -355,6 +397,8 @@ const grantsWithMeta = grants.map((g) => ({
     }
 
     function matchesGrant(node, state) {
+      // Active tab gates everything: only show grants of the current kind.
+      if (node.dataset.kind !== activeKind) return false;
       if (state.funder.length && !state.funder.includes(node.dataset.funder))
         return false;
       if (state.amount.length && !state.amount.includes(node.dataset.amount))
@@ -405,18 +449,40 @@ const grantsWithMeta = grants.map((g) => ({
     function apply() {
       const state = readState();
       let visible = 0;
+      let totalForKind = 0;
       for (const node of grantNodes) {
+        if (node.dataset.kind === activeKind) totalForKind++;
         const ok = matchesGrant(node, state);
         node.style.display = ok ? "" : "none";
         if (ok) visible++;
       }
       if (visibleCountEl) visibleCountEl.textContent = String(visible);
+      if (totalCountEl) totalCountEl.textContent = String(totalForKind);
       if (emptyEl) emptyEl.classList.toggle("hidden", visible !== 0);
       renderChips(state);
     }
 
+    function setActiveTab(kind) {
+      activeKind = kind;
+      for (const btn of tabButtons) {
+        const isActive = btn.dataset.grantsTab === kind;
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
+        if (isActive) {
+          btn.classList.add("border-[var(--color-accent)]", "text-[var(--color-accent)]");
+          btn.classList.remove("border-transparent", "text-[var(--color-text-muted)]");
+        } else {
+          btn.classList.remove("border-[var(--color-accent)]", "text-[var(--color-accent)]");
+          btn.classList.add("border-transparent", "text-[var(--color-text-muted)]");
+        }
+      }
+      apply();
+    }
+
     for (const cb of checkboxes) {
       cb.addEventListener("change", apply);
+    }
+    for (const btn of tabButtons) {
+      btn.addEventListener("click", () => setActiveTab(btn.dataset.grantsTab));
     }
     if (clearAllBtn) {
       clearAllBtn.addEventListener("click", () => {
@@ -425,7 +491,7 @@ const grantsWithMeta = grants.map((g) => ({
       });
     }
 
-    // Initial render (idempotent; nothing checked at boot).
+    // Initial render: project tab active by default.
     apply();
   })();
 </script>
