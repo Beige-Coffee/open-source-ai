@@ -190,57 +190,68 @@ const totalDocumentedUsd = grants.reduce(
         <p
           class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose"
         >
-          {underfunded.length} specific gaps in the open-source AI stack
-          where credible project shapes exist and no existing funder is
-          sustainably covering the work. Sorted by priority. Layer
-          attribution maps back to{" "}
-          <a href="/stack" class="no-underline hover:underline">the stack</a>.
+          {underfunded.length} specific gaps where credible project
+          shapes exist and no existing funder is sustainably covering
+          the work. Sorted by priority. Each entry: the gap, why it
+          matters, and concrete project shapes a new grant could fund.
         </p>
-        <ul class="space-y-6">
+        <ul class="space-y-4">
           {
             underfunded.map((u) => {
               const layer = findLayer(u.layer);
-              const priorityColor =
+              // Solid black chip for high, outlined for medium, ghost
+              // for low. Monochrome distinction by weight, not hue.
+              const priorityChipClass =
                 u.priority === "high"
-                  ? "var(--color-accent)"
+                  ? "bg-[var(--color-text)] text-white border-[var(--color-text)]"
                   : u.priority === "medium"
-                    ? "var(--color-tier-meta)"
-                    : "var(--color-text-subtle)";
+                    ? "border-[var(--color-text-muted)] text-[var(--color-text-muted)]"
+                    : "border-[var(--color-border-strong)] text-[var(--color-text-subtle)]";
               return (
-                <li
-                  class="border-l-4 pl-4"
-                  style={`border-color: ${priorityColor}`}
-                >
-                  <div class="flex flex-wrap items-baseline gap-3 mb-1">
+                <li class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-5">
+                  <!-- Header row: priority + layer chip on the left, room for future actions on the right -->
+                  <div class="flex flex-wrap items-center gap-2 mb-3">
                     <span
-                      class="font-mono text-[10px] uppercase tracking-wider"
-                      style={`color: ${priorityColor}`}
+                      class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border ${priorityChipClass}`}
                     >
-                      {u.priority} priority
+                      {u.priority}
                     </span>
                     {layer && (
                       <a
                         href={`/stack/${layer.slug}`}
-                        class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] no-underline hover:underline"
+                        class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-text)] hover:text-[var(--color-text)] no-underline transition-colors"
                       >
                         {layer.title}
                       </a>
                     )}
                   </div>
-                  <h3 class="font-medium text-base text-[var(--color-text)] mb-2">
+
+                  <!-- Title -->
+                  <h3 class="font-serif text-lg text-[var(--color-text)] mb-2 leading-snug">
                     {u.title}
                   </h3>
-                  <p class="text-sm text-[var(--color-text-muted)] mb-3 max-w-prose">
+
+                  <!-- Description -->
+                  <p class="text-sm text-[var(--color-text-muted)] mb-4 leading-relaxed">
                     {u.description}
                   </p>
-                  <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-                    Project shapes
-                  </p>
-                  <ul class="list-disc list-inside text-sm text-[var(--color-text-muted)] space-y-1">
-                    {u.project_shapes.map((shape) => (
-                      <li>{shape}</li>
-                    ))}
-                  </ul>
+
+                  <!-- Project shapes: divider-separated block, numbered list -->
+                  <div class="border-t border-[var(--color-border)] pt-3 mt-3">
+                    <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+                      A new grant could fund:
+                    </p>
+                    <ol class="space-y-1.5 text-sm text-[var(--color-text)]">
+                      {u.project_shapes.map((shape, i) => (
+                        <li class="flex gap-2">
+                          <span class="font-mono text-xs text-[var(--color-text-subtle)] tabular-nums shrink-0 w-5">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span class="leading-snug">{shape}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
                 </li>
               );
             })
