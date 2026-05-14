@@ -28,6 +28,38 @@ projects:
     maturity: stable
     url: "https://www.nvidia.com/en-us/data-center/h100/"
     description: "Hyperscaler-class AI accelerator with CUDA software moat; default frontier-training and frontier-inference hardware."
+    explainer: |
+      The H100 (Hopper) and H200 are NVIDIA's data-center AI
+      accelerators. Closed silicon, closed ISA (PTX as the published
+      intermediate, SASS as the actual hardware ISA), tightly bound
+      to the CUDA software ecosystem. The H100 ships with 80GB of
+      HBM3 memory; the H200 was refreshed with 141GB of HBM3e and
+      higher bandwidth.
+
+      Why it dominates: not just the hardware. The CUDA software
+      stack (cuDNN, cuBLAS, NCCL, TensorRT-LLM) has compounded
+      developer attention for fifteen years. Every framework, every
+      inference engine, every research codebase assumes CUDA as the
+      default backend. The competing accelerators (AMD MI300X,
+      Tenstorrent, Intel Gaudi) lag by years on per-framework
+      optimization not because the hardware is worse on paper, but
+      because the kernels have not been written. This is the lock-in
+      pattern named in the silicon-defeats-open-weights argument.
+
+      Production-ready as the de facto frontier accelerator. The vast
+      majority of frontier training runs in 2024-2026 used H100s or
+      H200s; subsequent Blackwell-series accelerators (B100/B200) are
+      shipping but H100/H200 remain the workhorse fleet. Available
+      via every major hyperscaler and dedicated AI clouds (CoreWeave,
+      Lambda, etc.). Street price typically $25-40K for an H100; not
+      sold to individuals at scale.
+    sources:
+      - title: "NVIDIA H100 Product Page"
+        url: "https://www.nvidia.com/en-us/data-center/h100/"
+      - title: "NVIDIA H200 Product Page"
+        url: "https://www.nvidia.com/en-us/data-center/h200/"
+      - title: "CUDA Toolkit Documentation"
+        url: "https://docs.nvidia.com/cuda/"
 
   - slug: amd-mi300x
     name: AMD MI300X / MI325X
@@ -37,6 +69,35 @@ projects:
     maturity: stable
     url: "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
     description: "Highest-memory accelerator on the market (192 GB+ HBM); ROCm software stack open-source-adjacent."
+    explainer: |
+      AMD's data-center AI accelerator line. MI300X shipped late 2023
+      with 192GB of HBM3 (more memory than any other accelerator at
+      the time); MI325X refreshed to 256GB HBM3e. Closed hardware,
+      but the surrounding ROCm software stack is open-source-leaning
+      (most of ROCm is publicly licensed, unlike CUDA's source).
+
+      Compared to NVIDIA H100/H200: MI300X has substantially more
+      memory per accelerator (192GB vs 80GB for H100), so it can
+      hold larger models without sharding. Raw FLOPS are competitive.
+      The gap is on software: ROCm lags CUDA by years on per-framework
+      optimization. vLLM and other open runtimes support AMD, but
+      production deployments still skew NVIDIA. AMD's positioning is
+      "the credible non-NVIDIA option for inference at scale," not
+      "the leader."
+
+      Production-ready and shipping at scale. Major hyperscaler
+      deployments confirmed (Microsoft Azure, Meta have publicly run
+      MI300X clusters for inference). Hugging Face supports ROCm
+      first-class. The strategic question for AMD is whether ROCm
+      closes the software gap fast enough to break NVIDIA's lock-in
+      before the next generation extends it.
+    sources:
+      - title: "AMD Instinct MI300X Product Page"
+        url: "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+      - title: "ROCm Documentation"
+        url: "https://rocm.docs.amd.com/"
+      - title: "Microsoft Azure ND MI300X Announcement"
+        url: "https://azure.microsoft.com/en-us/blog/azure-announces-new-ai-optimized-vm-series-featuring-amds-flagship-mi300x-gpu/"
 
   - slug: tenstorrent
     name: Tenstorrent (Wormhole, Blackhole)
@@ -152,6 +213,41 @@ projects:
     maturity: stable
     url: "https://www.apple.com/mac/m4-pro/"
     description: "Unified memory architecture; closed silicon, but the strongest on-device inference platform via llama.cpp and MLX."
+    explainer: |
+      Apple's M-series chips (M1, M2, M3, M4 across Pro, Max, Ultra
+      tiers) are SoCs designed for laptops and desktops. Closed
+      silicon on a custom ARM-based ISA, closed accelerator (the
+      Neural Engine plus the GPU). What makes them load-bearing for
+      open-source AI is the unified memory architecture: CPU, GPU,
+      and Neural Engine share the same physical memory, so a 192GB
+      Mac Studio has 192GB of "VRAM" for inference purposes.
+
+      For local AI specifically (single user, batch size 1), inference
+      is bandwidth-bound: tokens per second is capped by memory
+      bandwidth divided by model size in bytes. Apple's wide LPDDR5X
+      bus delivers 273-800 GB/s depending on tier (M4 Pro to M2/M3
+      Ultra). That, combined with high memory capacity, makes Macs
+      the only consumer hardware on the market that can hold a 70B
+      model and run it at usable speed. NVIDIA's consumer cards
+      (4090, 5090) cap memory capacity well below what 70B models
+      need. AMD's Strix Halo (96GB unified memory) is the first
+      credible non-Apple alternative.
+
+      Production-ready and the de facto local-AI substrate in 2026.
+      Used by llama.cpp (Apple Silicon backend is among the most
+      optimized), Ollama (which wraps llama.cpp), and MLX (Apple's
+      open ML framework specifically targeting Apple Silicon). The
+      sovereignty critique: Apple's closed-everything ecosystem
+      means "local AI on a Mac" still ties you to Apple's hardware
+      and software roadmap. Genuinely open local-AI silicon at this
+      capability remains a future bet (Tenstorrent, Strix Halo).
+    sources:
+      - title: "Apple M4 Pro / Max Specifications"
+        url: "https://www.apple.com/newsroom/2024/10/new-macbook-pro-features-m4-family-of-chips-and-apple-intelligence/"
+      - title: "Apple MLX Framework"
+        url: "https://github.com/ml-explore/mlx"
+      - title: "llama.cpp (Apple Silicon backend)"
+        url: "https://github.com/ggml-org/llama.cpp"
 
   # Compute
   - slug: akash
@@ -163,6 +259,40 @@ projects:
     url: "https://akash.network/"
     github: "https://github.com/akash-network/node"
     description: "Cosmos-based decentralized GPU and CPU marketplace; AKT token; reverse-auction matching."
+    explainer: |
+      Akash is a decentralized compute marketplace built on the Cosmos
+      SDK. Providers (anyone with spare GPUs or CPUs) list capacity;
+      tenants (anyone with workloads) submit bids; a reverse-auction
+      mechanism matches them. Settlement happens in the AKT token.
+      The whole stack is open source under Apache 2.0; the network is
+      permissionless.
+
+      Akash matters because it is the longest-running, most-mature
+      decentralized compute marketplace. Compared to siblings: io.net
+      (Solana-based, more focused on GPU aggregation), Hyperbolic
+      (marketplace + hosted inference), Bittensor compute subnets
+      (TAO-incentivized, tighter coupling to model training), Gensyn
+      (cryptographic verification of compute, earlier stage). Akash's
+      distinctive angle is the longer track record, the reverse-auction
+      mechanism (tenants set max price, providers compete down), and
+      first-mover position in the Cosmos ecosystem.
+
+      Production-ready for inference workloads at small-to-medium
+      scale. Used by hosted-inference providers and self-hosters who
+      want non-hyperscaler GPU access. Limits: bandwidth and cross-
+      provider coordination make Akash unsuited to frontier-scale
+      training; spot-availability and SLA characteristics are looser
+      than AWS / Lambda / CoreWeave. The strategic question for
+      decentralized compute generally (Akash included) is whether
+      tooling matures enough to bridge the experiment-vs-production
+      gap.
+    sources:
+      - title: "Akash Network Documentation"
+        url: "https://akash.network/docs/"
+      - title: "Akash on GitHub"
+        url: "https://github.com/akash-network/node"
+      - title: "AKT Tokenomics"
+        url: "https://akash.network/token/"
 
   - slug: io-net
     name: io.net
@@ -182,6 +312,38 @@ projects:
     url: "https://bittensor.com/"
     github: "https://github.com/opentensor/bittensor"
     description: "TAO-incentivized compute subnets inside the Bittensor protocol; emission-based rewards."
+    explainer: |
+      Bittensor is a peer-to-peer protocol with a token-incentive
+      design (TAO) and a subnet architecture: each subnet defines a
+      task, miners compete to do that task well, validators score the
+      results, and TAO emissions reward both. Compute-focused subnets
+      let miners contribute GPU cycles for various AI workloads;
+      Subnet 27 is the canonical compute subnet, and several others
+      focus on training, inference, or specialized compute.
+
+      Bittensor matters because it is the only decentralized AI
+      protocol that has shipped a working token-incentivized network
+      operating continuously since 2021. Compared to Akash (compute
+      marketplace, reverse-auction settlement) Bittensor's compute
+      subnets offer emission-based rewards: miners contribute
+      capacity and earn TAO from the protocol's emission schedule
+      rather than from direct payments. That makes the economics
+      different (and more crypto-native).
+
+      Production-readiness varies sharply by subnet. The protocol
+      itself is mature; individual subnets range from research-grade
+      to actively-deployed. Used by Templar (subnet that ran a 72B
+      distributed pretrain from scratch) and various inference and
+      training experiments. Limits: TAO economics are volatile,
+      subnet quality is uneven, and the path from "miner contributing
+      compute" to "stable production workload" still has friction.
+    sources:
+      - title: "Bittensor Documentation"
+        url: "https://docs.bittensor.com/"
+      - title: "Bittensor Whitepaper"
+        url: "https://bittensor.com/whitepaper"
+      - title: "Bittensor on GitHub"
+        url: "https://github.com/opentensor/bittensor"
 
   - slug: hyperbolic
     name: Hyperbolic
@@ -219,6 +381,41 @@ projects:
     url: "https://www.primeintellect.ai/"
     github: "https://github.com/PrimeIntellect-ai/prime"
     description: "Distributed training framework and compute aggregation (INTELLECT-1, INTELLECT-2)."
+    explainer: |
+      Prime Intellect is a startup focused on decentralized training
+      of frontier-scale AI models. They aggregate compute across
+      providers (their own and partners) and ship open frameworks for
+      bandwidth-efficient distributed training over the public
+      internet. Their `prime` repo packages the training stack.
+
+      Prime Intellect matters because they are the leading datapoint
+      on whether you can train a competitive open-weights model
+      without a hyperscaler-class cluster. INTELLECT-1 (released
+      November 2024) was the first reproducible decentralized pretrain
+      of a 10B+ model across continents. INTELLECT-2 (mid-2025)
+      followed at 32B with reinforcement-learning post-training
+      distributed globally. Compared to other distributed-training
+      bets: Nous Research (DisTrO optimizer, similar bandwidth-
+      efficient theme), Templar (Bittensor subnet that ran a 72B
+      distributed pretrain), Pluralis and Gensyn (earlier-stage with
+      different technical approaches).
+
+      Production-readiness is research-to-pilot. The technique works
+      and ships models; the honest ceiling is roughly an order of
+      magnitude behind centralized frontier training on iso-cost,
+      iso-time. Prime Intellect's strategic angle is "make distributed
+      training real, then push toward parity." Funded by venture
+      capital plus partnerships; the open framework is independent of
+      the company's commercial roadmap.
+    sources:
+      - title: "Prime Intellect"
+        url: "https://www.primeintellect.ai/"
+      - title: "INTELLECT-1 Release Post"
+        url: "https://www.primeintellect.ai/blog/intellect-1-release"
+      - title: "INTELLECT-2 Announcement"
+        url: "https://www.primeintellect.ai/blog/intellect-2"
+      - title: "prime framework on GitHub"
+        url: "https://github.com/PrimeIntellect-ai/prime"
 
   # Data
   - slug: common-crawl
@@ -238,6 +435,42 @@ projects:
     maturity: stable
     url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
     description: "HuggingFace 15T-token filtered Common Crawl; FineWeb-Edu is the higher-quality educational subset."
+    explainer: |
+      FineWeb is HuggingFace's open pretraining dataset. ~15 trillion
+      tokens after filtering Common Crawl with a series of quality
+      classifiers and dedup steps. Released under ODC-By 1.0 (Open
+      Data Commons attribution license). FineWeb-Edu is a higher-
+      quality educational subset filtered with an LLM classifier;
+      smaller (~1.3T tokens) but reliably stronger for training small-
+      to-mid models. FineWeb 2 (late 2024) extended the work to
+      multilingual coverage across ~1000 languages.
+
+      FineWeb matters because data-filtering is where the open-data
+      ecosystem has caught up most visibly to closed-data labs. The
+      released ablations show that careful filtering of Common Crawl
+      can produce a corpus that trains models competitive with what
+      the closed labs publish, at sizes where the comparison is
+      possible. Compared to siblings: The Pile (foundational, smaller),
+      Dolma (AI2, OLMo's training corpus), DCLM (open competitive
+      benchmark for filtering methodology), Common Pile (license-clean
+      angle), RedPajama (open Llama 1 replication corpus). FineWeb is
+      the largest of the well-documented open corpora and the one
+      modern open-weights training runs most often start from.
+
+      Production-ready and used by many open-weights training projects
+      in 2024-2026. The catch: it is not license-clean (ODC-By does
+      not solve the underlying copyright question for web-scraped
+      content), so it does not satisfy the strictest reading of
+      open-source AI. For that, see Common Pile.
+    sources:
+      - title: "FineWeb on HuggingFace"
+        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
+      - title: "FineWeb Blog Post (HuggingFace)"
+        url: "https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1"
+      - title: "FineWeb-Edu Dataset"
+        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu"
+      - title: "FineWeb 2 Multilingual"
+        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
 
   - slug: dolma
     name: Dolma
@@ -283,6 +516,41 @@ projects:
     maturity: new
     url: "https://blog.eleuther.ai/common-pile-v0/"
     description: "EleutherAI's June 2025 license-clean pretraining corpus; one of few entries doing this work at scale."
+    explainer: |
+      Common Pile v0.1 is an 8TB pretraining corpus assembled by
+      EleutherAI in collaboration with around 30 partner
+      organizations, released June 2025. The distinguishing feature
+      is license-cleanness: every text source in the corpus is either
+      explicitly under a permissive license (Creative Commons, public
+      domain) or has documented permission for redistribution and
+      retraining. EleutherAI also trained two reference models from
+      it (Comma 7B variants) to demonstrate the corpus is usable.
+
+      Common Pile matters because the open-source AI conversation
+      hinges on whether you can train a competitive model without
+      relying on web-scraped content of ambiguous license status.
+      Compared to FineWeb (15T tokens, but not license-clean) and
+      The Pile (the original 800GB EleutherAI corpus, 2021), Common
+      Pile is smaller but comes with a credible license claim. This
+      directly addresses the OSAID v1.0 contested clause: under the
+      strictest reading of "open source AI," only models trained on
+      license-clean data can qualify.
+
+      Production-readiness: shipping and used by the reference Comma
+      7B models, but no frontier-class model has trained on Common
+      Pile at scale yet (as of this entry's update). The honest
+      ceiling: 8TB is a reasonable substrate for 7-30B-scale models,
+      but pushing to 70B+ would require either a much larger v1.0 or
+      mixing with non-license-clean sources. Common Pile is the
+      existence proof; whether it scales to frontier remains the
+      open question.
+    sources:
+      - title: "Common Pile v0.1 Announcement (EleutherAI)"
+        url: "https://blog.eleuther.ai/common-pile-v0/"
+      - title: "Common Pile on HuggingFace"
+        url: "https://huggingface.co/blog/stas/common-pile-v01"
+      - title: "OSAID v1.0 (data clause)"
+        url: "https://opensource.org/ai/open-source-ai-definition"
 
   # Training
   - slug: unsloth
@@ -294,6 +562,38 @@ projects:
     url: "https://unsloth.ai/"
     github: "https://github.com/unslothai/unsloth"
     description: "2-30x faster fine-tuning with 70% less VRAM; consumer-GPU-friendly LoRA / QLoRA; free open-source tier."
+    explainer: |
+      Unsloth is an open-source fine-tuning framework built by Daniel
+      and Michael Han. The headline claim is dramatically faster fine-
+      tuning (2-30x depending on the configuration) with substantially
+      less GPU memory (~70% reduction vs the HuggingFace TRL baseline),
+      achieved via custom Triton kernels and careful memory management.
+      The free tier is Apache 2.0 and complete; paid Pro and Enterprise
+      tiers add multi-GPU and managed-platform features.
+
+      Unsloth matters because it is the most practical entry point for
+      individuals and small teams to fine-tune frontier-class
+      open-weights models on hardware they can afford. Pre-Unsloth,
+      fine-tuning Llama 3 8B realistically required an A100; with
+      Unsloth, a 4090 or even a Mac (via MPS) is enough. Compared to
+      siblings: HuggingFace TRL (the canonical reference; Unsloth is a
+      drop-in replacement that's much faster), Axolotl (more
+      configuration-driven, supports more methods), LLaMA-Factory
+      (Chinese-open-source equivalent, very feature-rich).
+
+      Production-ready and widely used. The free notebooks ship as
+      ready-to-run Colab and Kaggle notebooks; thousands of
+      fine-tuned models on HuggingFace cite Unsloth in their model
+      cards. The strategic question: how much of the fine-tuning
+      ecosystem migrates to Unsloth as the default vs stays on TRL
+      for compatibility with the rest of the HuggingFace stack.
+    sources:
+      - title: "Unsloth Documentation"
+        url: "https://docs.unsloth.ai/"
+      - title: "Unsloth on GitHub"
+        url: "https://github.com/unslothai/unsloth"
+      - title: "Unsloth Performance Benchmarks"
+        url: "https://unsloth.ai/blog/mistral-benchmark"
 
   - slug: axolotl
     name: Axolotl
@@ -353,6 +653,41 @@ projects:
     maturity: research
     url: "https://nousresearch.com/"
     description: "Decentralized training optimizer that reduces gradient-sync bandwidth 100-1000x; enables training over commodity internet."
+    explainer: |
+      DisTrO (Distributed Training Over-the-Internet) is a family of
+      bandwidth-efficient training optimizers from Nous Research. The
+      central idea: instead of synchronizing full-precision gradients
+      between workers each step (which requires hyperscaler-class
+      networking), use lossy compression of gradient updates.
+      Reductions on the order of 100-1000x in inter-node bandwidth
+      with acceptable convergence.
+
+      DisTrO matters because it is the strongest open candidate for
+      training-over-commodity-internet, which is the foundation any
+      serious decentralized-training story needs. Compared to
+      siblings: Prime Intellect's `prime` framework (similar overall
+      goal, used in INTELLECT-1 and INTELLECT-2; some technical
+      overlap), Pluralis (different topology approach), Gensyn
+      (cryptographic verification angle, less mature on the
+      bandwidth-efficiency side).
+
+      Production-readiness: research-to-pilot. The technique works at
+      modest scale and has shipped reproducible results; whether it
+      scales to true frontier (1T+ parameters) over the public
+      internet is the open question. Used in Nous Research's own
+      training experiments and increasingly cited in the broader
+      decentralized-training literature. Honest limit: an order of
+      magnitude behind centralized frontier training on iso-cost,
+      iso-time. The interesting role for DisTrO is enabling models
+      that simply could not exist otherwise (community-trained,
+      regional, sovereignty-anchored), not racing the frontier.
+    sources:
+      - title: "Nous Research"
+        url: "https://nousresearch.com/"
+      - title: "DisTrO on GitHub"
+        url: "https://github.com/NousResearch/DisTrO"
+      - title: "DisTrO Technical Report"
+        url: "https://github.com/NousResearch/DisTrO/blob/main/A_Preliminary_Report_on_DisTrO.pdf"
 
   # Weights
   - slug: llama
@@ -363,6 +698,42 @@ projects:
     maturity: stable
     url: "https://ai.meta.com/llama/"
     description: "Meta's open-weights family; dominant in usage; license carries a 700M-MAU clause and acceptable-use restrictions."
+    explainer: |
+      Llama is Meta's open-weights model family. Llama 1 (Feb 2023,
+      research-only), Llama 2 (Jul 2023, first commercial release),
+      Llama 3 (Apr 2024), Llama 3.1 (Jul 2024 with 405B), Llama 3.3
+      70B (Dec 2024). The model files are downloadable; the license
+      is the Llama Community License, not an OSI-approved open-source
+      license.
+
+      Llama matters because it is the most-downloaded open-weights
+      family by a wide margin and the practical foundation for most
+      open AI work in 2023-2025. The Open Source Initiative's
+      published position is that Llama is NOT open source under their
+      definition, citing the license's field-of-use discrimination
+      (the 700M-MAU clause that requires Meta's separate license for
+      large competitors), the unilateral acceptable-use policy, and
+      the no-competing-models clause. Compared to siblings: Mistral
+      (smaller models historically Apache 2.0, flagships drifting to
+      restrictive terms), Qwen (often Apache 2.0 across sizes, very
+      open posture), DeepSeek (MIT, open posture), OLMo (truly open
+      including data and code, smaller capability ceiling).
+
+      Production-ready and dominant in deployment count. The honest
+      framing: "open weights" is necessary but not sufficient for
+      sovereign AI; the question is which license you actually got.
+      Llama's license is conditionally permissive and Meta-controlled,
+      not durably open. For the operative analysis of which clauses
+      actually bind in your situation, see the OSI's annotated take.
+    sources:
+      - title: "Llama at Meta AI"
+        url: "https://ai.meta.com/llama/"
+      - title: "Llama Community License Text"
+        url: "https://www.llama.com/llama3/license/"
+      - title: "OSI: Meta Llama License Still Not Open Source"
+        url: "https://opensource.org/blog/meta-llama-license-still-not-open-source"
+      - title: "Llama 3 Herd of Models (Meta AI, 2024)"
+        url: "https://arxiv.org/abs/2407.21783"
 
   - slug: mistral
     name: Mistral / Mixtral
@@ -372,6 +743,44 @@ projects:
     maturity: stable
     url: "https://mistral.ai/"
     description: "French lab; older open releases under Apache 2.0; flagships increasingly API-only or under research-tier licenses."
+    explainer: |
+      Mistral AI is a French frontier-AI startup founded in 2023 by
+      researchers from Meta and Google DeepMind. The early releases
+      (Mistral 7B in 2023, Mixtral 8x7B in late 2023, Mixtral 8x22B
+      in 2024) shipped under Apache 2.0 and reset the open-weights
+      capability ceiling for several months. Mistral 7B in particular
+      established the "small model that punches above its weight"
+      pattern that subsequent open-weights releases iterated on
+      (sliding-window attention, grouped-query attention).
+
+      Mistral matters for two reasons. First, it is the credible
+      European frontier-AI presence; sovereignty conversations in the
+      EU specifically often cite Mistral as the existence proof that
+      European AI does not have to depend on US labs. Second, the
+      drift in their licensing posture is the canonical example of
+      "open at the start, restrictive at the flagship" that other
+      open-weights labs have followed. Mistral Large, their most
+      capable model, is API-only and not open-weights. Compared to
+      siblings: Llama (similar drift), Qwen (more durably open),
+      DeepSeek (similar Mistral-style openness for the moment), OLMo
+      (truly open across data and code).
+
+      Production-readiness varies by tier. The Apache 2.0 small
+      models are durable and widely deployed. The flagship API-only
+      models compete with closed peers (Claude, GPT) but lock you
+      into Mistral's roadmap if you depend on them. Strategic
+      question for Mistral: does the European-sovereignty pitch
+      sustain the company without the open releases that built its
+      reputation in the first place?
+    sources:
+      - title: "Mistral AI"
+        url: "https://mistral.ai/"
+      - title: "Mistral 7B Paper"
+        url: "https://arxiv.org/abs/2310.06825"
+      - title: "Mixtral of Experts (Mixtral 8x7B paper)"
+        url: "https://arxiv.org/abs/2401.04088"
+      - title: "Mistral Models on HuggingFace"
+        url: "https://huggingface.co/mistralai"
 
   - slug: qwen
     name: Qwen (Alibaba)
@@ -381,6 +790,40 @@ projects:
     maturity: stable
     url: "https://qwenlm.github.io/"
     description: "Alibaba's aggressive open-weights series (Qwen 2.5 / 3); Apache 2.0 across most sizes; full-precision weights available."
+    explainer: |
+      Qwen is Alibaba Cloud's model family. Qwen 2.5 (late 2024) and
+      Qwen 3 (2025) shipped a wide range of sizes (0.5B to 72B+)
+      under Apache 2.0, including specialty variants for code, math,
+      and very-long-context. Qwen has been notably aggressive at the
+      open-permissive end: full-precision weights, Apache 2.0 across
+      most sizes, no field-of-use restrictions like Llama's MAU
+      clause.
+
+      Qwen matters because it has emerged as the most-downloaded open-
+      weights family in 2025-2026, displacing Llama at the top of
+      HuggingFace's monthly download counts in many months. The
+      capability is competitive with Llama and Mistral peers at the
+      same size class. Compared to siblings: Llama (similar size
+      coverage but the Community License is restrictive), DeepSeek
+      (MIT, frontier-class reasoning, similar open posture but
+      smaller release cadence), Mistral (early Apache 2.0 then drift),
+      OLMo (truly open including data, smaller capability ceiling).
+      Qwen's distinctive angle is "Apache 2.0 across the family
+      including the flagships, with strong math and code variants."
+
+      Production-ready and widely deployed in 2026. Used as the base
+      for many fine-tunes on HuggingFace; the long-context Qwen
+      variants are popular for retrieval-heavy use. Strategic
+      question: does Qwen's open posture survive future regulatory
+      pressure on Chinese AI exports, and does the West's "do we
+      trust models from a Chinese lab" debate affect adoption.
+    sources:
+      - title: "Qwen on GitHub (QwenLM)"
+        url: "https://github.com/QwenLM"
+      - title: "Qwen2.5 Technical Report"
+        url: "https://arxiv.org/abs/2412.15115"
+      - title: "Qwen Models on HuggingFace"
+        url: "https://huggingface.co/Qwen"
 
   - slug: deepseek
     name: DeepSeek V3 / R1
@@ -390,6 +833,44 @@ projects:
     maturity: stable
     url: "https://www.deepseek.com/"
     description: "Cost-quality reset; V3 papers documented architectural innovations (MoE, MLA, aux-loss-free MoE); R1 open reasoning model."
+    explainer: |
+      DeepSeek is a Chinese frontier-AI lab. Their open releases
+      reset two ceilings in late 2024-early 2025. DeepSeek-V3 (Dec
+      2024) demonstrated frontier-class capability trained for an
+      order of magnitude less than US frontier labs were spending,
+      using a Mixture-of-Experts architecture with multiple
+      architectural innovations (Multi-head Latent Attention,
+      auxiliary-loss-free MoE balancing). DeepSeek-R1 (Jan 2025) was
+      the first openly-released frontier-class reasoning model, with
+      R1-Zero showing that pure reinforcement-learning post-training
+      could produce strong reasoning without the typical SFT step.
+
+      DeepSeek matters because it forced a re-evaluation of what
+      open-weights labs can accomplish on a constrained compute
+      budget. Compared to siblings: Llama (similar capability ceiling
+      but restrictive license vs DeepSeek's MIT), Qwen (similar
+      Chinese-lab open posture but different architectural choices),
+      OLMo (truly open including data, smaller capability ceiling).
+      DeepSeek's distinctive angle is "frontier capability on
+      permissive license (MIT), at a cost structure that breaks the
+      hyperscaler-budget assumption."
+
+      Production-ready; widely served by hosted-inference providers
+      and self-hosters. Subsequent V3.1 (mid-2025) introduced hybrid
+      reasoning (one model with thinking and non-thinking modes).
+      Caveats: training data is not disclosed (does not satisfy
+      strict OSAID), and the trust questions about data provenance
+      and political content filtering apply as they do to any closed-
+      data lab.
+    sources:
+      - title: "DeepSeek"
+        url: "https://www.deepseek.com/"
+      - title: "DeepSeek-V3 Technical Report"
+        url: "https://arxiv.org/abs/2412.19437"
+      - title: "DeepSeek-R1 Reasoning Paper"
+        url: "https://arxiv.org/abs/2501.12948"
+      - title: "DeepSeek Models on HuggingFace"
+        url: "https://huggingface.co/deepseek-ai"
 
   - slug: olmo
     name: OLMo (AI2)
@@ -536,6 +1017,39 @@ projects:
     url: "https://sglang.ai/"
     github: "https://github.com/sgl-project/sglang"
     description: "RadixAttention plus structured generation; from the LMSYS team; gains for shared-prefix and agent workloads."
+    explainer: |
+      SGLang is an open inference engine for large language models
+      from the LMSYS team (the same group behind Chatbot Arena).
+      Apache 2.0. The central technical contribution is RadixAttention,
+      a KV-cache sharing scheme that reuses computation across
+      requests with shared prefixes (system prompts, few-shot examples,
+      multi-turn agent conversations) by storing the cache in a
+      radix-tree structure. SGLang also has strong primitives for
+      structured generation (constraining output to a JSON schema, a
+      grammar, or a regex).
+
+      SGLang matters as the leading vLLM alternative on the open
+      runtime side. Compared to vLLM (PagedAttention, broader hardware
+      support, larger ecosystem), SGLang's distinctive wins are
+      scenarios with heavy prompt-prefix sharing (agent loops, multi-
+      turn chat with long system prompts) and structured-output
+      requirements. llama.cpp is the local-first sibling for hardware
+      you own; SGLang and vLLM target server-class GPUs. TensorRT-LLM
+      is the closed NVIDIA-only counterpart.
+
+      Production-ready. Used by xAI for Grok, by hosted-inference
+      providers for shared-prefix workloads, and increasingly by
+      teams running agent fleets where prefix caching pays off. The
+      strategic position is not "displace vLLM" but "be the right
+      engine for workloads where RadixAttention matters." Both vLLM
+      and SGLang continue to converge on each other's strengths.
+    sources:
+      - title: "SGLang Project"
+        url: "https://sglang.ai/"
+      - title: "SGLang on GitHub"
+        url: "https://github.com/sgl-project/sglang"
+      - title: "SGLang Paper (Efficient Execution of Structured LM Programs)"
+        url: "https://arxiv.org/abs/2312.07104"
 
   - slug: llama-cpp
     name: llama.cpp
@@ -546,6 +1060,43 @@ projects:
     url: "https://github.com/ggml-org/llama.cpp"
     github: "https://github.com/ggml-org/llama.cpp"
     description: "Georgi Gerganov's local-first inference engine; defines the GGUF format; the on-device standard."
+    explainer: |
+      llama.cpp is Georgi Gerganov's open inference engine for large
+      language models. Pure C/C++ with no required runtime
+      dependencies, MIT-licensed. The project also defines the GGUF
+      file format, which has become the de facto standard for
+      distributing quantized open-weights models. Backend support
+      includes CPU SIMD, NVIDIA CUDA, AMD ROCm, Apple Metal, Vulkan,
+      and more, with the Apple Silicon backend particularly well-
+      tuned.
+
+      llama.cpp matters because it is the only major inference engine
+      designed first for hardware you actually own. Where vLLM and
+      SGLang target server-class NVIDIA GPUs, llama.cpp targets
+      laptops, desktops, Macs, Raspberry Pis, and small-VRAM consumer
+      cards. Combined with Apple Silicon's unified-memory bandwidth,
+      llama.cpp is the substrate that makes "a 70B model running on
+      your Mac at usable speed" possible. Compared to siblings:
+      Ollama is the polished UX layer wrapping llama.cpp, MLC-LLM is
+      a cross-platform compilation play, MLX is Apple's first-party
+      ML framework. llama.cpp is the engine the others build on or
+      compete with directly.
+
+      Production-ready and the on-device standard. Used by Ollama,
+      LM Studio, Jan, Faraday, and many other consumer AI apps that
+      run inference on the user's machine. Maintained by an
+      energetic community led by Gerganov; the project's pace is
+      among the fastest in open AI infrastructure. The quiet
+      strategic significance: llama.cpp is the layer that makes the
+      sovereignty-anchored "buy your own hardware, run your own
+      models" thesis operational today.
+    sources:
+      - title: "llama.cpp on GitHub"
+        url: "https://github.com/ggml-org/llama.cpp"
+      - title: "GGUF Format Specification"
+        url: "https://github.com/ggml-org/ggml/blob/master/docs/gguf.md"
+      - title: "ggml (the underlying tensor library)"
+        url: "https://github.com/ggml-org/ggml"
 
   - slug: ollama
     name: Ollama
@@ -556,6 +1107,41 @@ projects:
     url: "https://ollama.com/"
     github: "https://github.com/ollama/ollama"
     description: "Local model runner; Docker-style UX over llama.cpp; the easiest way to run open weights on your machine."
+    explainer: |
+      Ollama is a local model runner that wraps llama.cpp with a
+      Docker-style command-line and HTTP API. Install Ollama, run
+      `ollama pull llama3.3` and `ollama run llama3.3`, and you have
+      a local model serving over a localhost API endpoint. MIT-
+      licensed. Ships native installers for macOS, Linux, and
+      Windows.
+
+      Ollama matters because it makes local inference accessible to
+      developers who do not want to learn the llama.cpp build flags
+      and quantization settings. The model library handles GGUF
+      downloads from a curated registry; the API speaks an
+      OpenAI-compatible shape (with extensions) so existing client
+      code works against Ollama with a baseURL change. Compared to
+      siblings: llama.cpp is the engine underneath (more flexibility,
+      more setup), LM Studio is a GUI alternative, MLX is Apple's
+      direct API for Apple Silicon. Ollama is the most-deployed local
+      runner among developers who want minimal friction.
+
+      Production-ready for development and personal use. Used as the
+      backend for many local-AI applications, IDE plugins, and
+      personal-AI projects (HRF-funded Orchard pairs Ollama with
+      Lightning and Cashu). The strategic position: Ollama is the
+      "easy button" for local AI; for production-scale serving you
+      generally move to vLLM or SGLang. The growing question is
+      whether Ollama's commercialization plans (paid tiers, hosted
+      services) preserve the open-source character that made it
+      useful in the first place.
+    sources:
+      - title: "Ollama"
+        url: "https://ollama.com/"
+      - title: "Ollama on GitHub"
+        url: "https://github.com/ollama/ollama"
+      - title: "Ollama API Documentation"
+        url: "https://github.com/ollama/ollama/blob/main/docs/api.md"
 
   - slug: tgi
     name: Text Generation Inference (TGI)
@@ -646,6 +1232,40 @@ projects:
     url: "https://github.com/pgvector/pgvector"
     github: "https://github.com/pgvector/pgvector"
     description: "Vector similarity search inside PostgreSQL; lets existing Postgres deployments add RAG without a separate database."
+    explainer: |
+      pgvector is a PostgreSQL extension by Andrew Kane that adds
+      vector data types and similarity-search operators to standard
+      Postgres. Released under the PostgreSQL license. Once installed,
+      you can store vectors alongside any other data in your tables,
+      query them with HNSW or IVFFlat indexes, and combine vector
+      search with normal SQL filters in one query.
+
+      pgvector matters because most teams deploying RAG do not need
+      a dedicated vector database; they need vector search bolted
+      onto the database they already run. Compared to siblings:
+      Pinecone (closed managed service, fast, no self-host),
+      Qdrant / Weaviate / Milvus / Chroma (purpose-built open vector
+      DBs, more features and better at billion-scale), LanceDB
+      (Lakehouse-style, columnar storage). pgvector's distinctive
+      angle is "you already run Postgres; the vector store is one
+      extension and one ALTER TABLE away." The boring-tech path.
+
+      Production-ready and widely deployed in 2026. AWS RDS, Supabase,
+      Neon, and most managed Postgres providers ship pgvector
+      pre-installed. For workloads under ~10M vectors with mixed
+      filter-and-search queries, pgvector is the default
+      recommendation. The strategic question: as model context
+      windows grow (1M+ tokens) and as vector DBs add filtering
+      sophistication, the line between "use Postgres + pgvector"
+      and "use a dedicated vector DB" keeps moving. pgvector keeps
+      winning the small-to-medium case.
+    sources:
+      - title: "pgvector on GitHub"
+        url: "https://github.com/pgvector/pgvector"
+      - title: "pgvector Tutorial (Supabase)"
+        url: "https://supabase.com/docs/guides/database/extensions/pgvector"
+      - title: "pgvector Performance Notes"
+        url: "https://github.com/pgvector/pgvector#performance"
 
   - slug: letta
     name: Letta (formerly MemGPT)
@@ -656,6 +1276,40 @@ projects:
     url: "https://letta.com/"
     github: "https://github.com/letta-ai/letta"
     description: "Memory-stateful agent framework; OS-like memory hierarchy; persistent context across sessions."
+    explainer: |
+      Letta (formerly MemGPT) is an open framework for building
+      stateful AI agents with persistent memory. The original MemGPT
+      paper proposed treating an LLM's context window like main
+      memory in an operating system: the agent can page memories in
+      and out, archive long-term context, and recall it later. Letta
+      packages this into a library and an open server with a managed
+      cloud option. Apache 2.0.
+
+      Letta matters because the deepest agent lock-in is accumulated
+      memory. Closed agents (Claude Code, ChatGPT, Cursor) build
+      memories about you that are typically not exportable; switching
+      to a different agent means starting over. Letta is the leading
+      open answer: an agent backed by a memory store you control,
+      with the memory itself in your database. Compared to siblings:
+      mem0 (similar mission, different memory-tier design), Zep (also
+      open, focused on developer agents), the memory features baked
+      into closed agents (the same idea but server-side and locked to
+      the vendor).
+
+      Production-readiness: beta. The framework works and ships;
+      production deployments at scale are emerging. Used by developers
+      building stateful chatbots, personal-AI assistants, and
+      research agents. Strategic significance: if open agents are
+      going to displace closed ones, the memory layer is one of the
+      hardest gaps to close, and Letta is the best current open bet
+      on closing it.
+    sources:
+      - title: "Letta"
+        url: "https://letta.com/"
+      - title: "Letta on GitHub"
+        url: "https://github.com/letta-ai/letta"
+      - title: "MemGPT Paper (Towards LLMs as Operating Systems)"
+        url: "https://arxiv.org/abs/2310.08560"
 
   - slug: mem0
     name: mem0
@@ -730,6 +1384,40 @@ projects:
     url: "https://all-hands.dev/"
     github: "https://github.com/All-Hands-AI/OpenHands"
     description: "Formerly OpenDevin; sandboxed open coding agent; strong SWE-bench Verified performance."
+    explainer: |
+      OpenHands (formerly OpenDevin) is an open-source coding agent
+      with a sandboxed execution environment. MIT-licensed. The agent
+      runs commands inside a Docker sandbox, edits files, navigates
+      a codebase, runs tests, and iterates. Architectural inspiration
+      from Cognition Labs's Devin announcement, but built entirely
+      in the open and led by an academic collaboration (UIUC, CMU,
+      others).
+
+      OpenHands matters because it is the strongest fully-open
+      coding agent with a sandboxed execution loop. Strong SWE-bench
+      Verified scores against the major closed competitors. Compared
+      to siblings: Goose (extension-based, more about general agentic
+      tooling than just coding; AAIF-housed), Aider (terminal-native,
+      simpler design, very loved), Cline and Continue (VS Code-native).
+      Closed counterparts: Claude Code, Devin, Cursor's agent mode.
+      OpenHands's distinctive angle is "the open Devin": full agentic
+      coding loop with execution, not just chat-and-suggest.
+
+      Production-ready and used by developers running it locally and
+      teams running it in CI-style flows. Available as a Docker image,
+      a hosted service, and via the All Hands AI cloud. The strategic
+      question for OpenHands and the open-coding-agent category
+      generally: can they keep up with the rapid feature pace of the
+      closed alternatives (Cursor and Claude Code in particular),
+      especially on the polish-and-defaults dimension where closed
+      products usually win.
+    sources:
+      - title: "OpenHands Documentation"
+        url: "https://docs.all-hands.dev/"
+      - title: "OpenHands on GitHub"
+        url: "https://github.com/All-Hands-AI/OpenHands"
+      - title: "OpenHands Paper (Open Platform for AI Software Developers)"
+        url: "https://arxiv.org/abs/2407.16741"
 
   - slug: aider
     name: Aider
@@ -740,6 +1428,41 @@ projects:
     url: "https://aider.chat/"
     github: "https://github.com/Aider-AI/aider"
     description: "Paul Gauthier's terminal-native open coding agent; BYOK; git-aware diffs; widely loved for its directness."
+    explainer: |
+      Aider is a terminal-native open coding agent built by Paul
+      Gauthier. Apache 2.0. Architectural choices that make it
+      distinctive: BYOK on the model (any OpenAI / Anthropic /
+      OpenRouter / local provider), git-aware (every edit becomes a
+      proper git commit, so the user always has an undo), no
+      sandbox (runs against your real working tree by design), and
+      a deliberately small surface area (do one thing well: edit
+      code based on conversation).
+
+      Aider matters because it is the most-loved minimal open coding
+      agent. The design philosophy is "smallest sharp tool that
+      works"; the project consistently lands near the top of
+      community SWE-bench-style leaderboards despite shipping less
+      machinery than the bigger frameworks. Compared to siblings:
+      OpenHands (more elaborate, sandboxed, more feature surface),
+      Goose (extension-based, broader scope than just coding), Cline
+      / Continue (IDE-integrated). Aider's distinctive angle is the
+      terminal-first, git-as-undo, do-one-thing-well stance.
+
+      Production-ready and widely used by developers who prefer the
+      terminal over an IDE, by anyone wanting a model-agnostic coding
+      agent without a hosted service in the loop, and by users on
+      Mac / Linux who want something that works against local models
+      via Ollama. The community is active, the maintainer is
+      responsive, and the project's small surface keeps it healthy
+      to maintain. A frequent recommendation when "what should I
+      use as a starting point for AI-assisted coding" comes up.
+    sources:
+      - title: "Aider Documentation"
+        url: "https://aider.chat/docs/"
+      - title: "Aider on GitHub"
+        url: "https://github.com/Aider-AI/aider"
+      - title: "Aider Leaderboards"
+        url: "https://aider.chat/docs/leaderboards/"
 
   - slug: cline
     name: Cline
@@ -769,6 +1492,41 @@ projects:
     maturity: stable
     url: "https://www.anthropic.com/claude-code"
     description: "Anthropic's first-party CLI coding agent; closed-source; subscription model; the dominant closed coding agent in 2026."
+    explainer: |
+      Claude Code is Anthropic's first-party coding agent. CLI-based
+      (with IDE integrations), proprietary, distributed primarily via
+      the Anthropic Claude subscription tiers (Pro, Max, Team,
+      Enterprise). MCP-native: integrates with the same MCP server
+      ecosystem that the open agents use.
+
+      Claude Code matters because it is the dominant closed coding
+      agent in 2026 by deployment count among professional developers
+      and the most direct demonstration of what a frontier-lab-built,
+      tightly-integrated agent can do. Compared to siblings: Cursor
+      (closed IDE with agent mode, large user base), Devin (Cognition
+      Labs, fully autonomous pitch), Replit Agent / v0 / Lovable
+      (closed product agents). Open counterparts: Goose, OpenHands,
+      Aider, Cline, Continue. The structural difference is what the
+      lock-in vector essay describes: Claude Code owns the workflow,
+      the accumulated context (it remembers your codebase patterns),
+      and the model-substitution decision (you cannot point it at a
+      non-Anthropic model).
+
+      Production-ready and widely deployed. Anthropic's "Claude for
+      Open Source" program offers eligible OSS maintainers free
+      Claude Max access. Strategic significance for the
+      open-source-AI conversation: Claude Code is the strongest
+      existence proof that a closed agent can win on user experience
+      against an open agent at the same model-capability tier. The
+      open-agent ecosystem competes on substitutability and
+      sovereignty, not feature parity.
+    sources:
+      - title: "Claude Code (Anthropic)"
+        url: "https://www.anthropic.com/claude-code"
+      - title: "Claude Code Documentation"
+        url: "https://docs.claude.com/en/docs/claude-code/overview"
+      - title: "Claude for Open Source Program"
+        url: "https://claude.com/contact-sales/claude-for-oss"
 
   - slug: cursor
     name: Cursor
@@ -873,6 +1631,40 @@ projects:
     url: "https://a2a-protocol.org/"
     github: "https://github.com/a2aproject/A2A"
     description: "Google-seeded protocol for inter-agent communication; under Linux Foundation; 150+ org signatories."
+    explainer: |
+      A2A (Agent-to-Agent) is a protocol for inter-agent communication
+      seeded by Google in 2024 and donated to the Linux Foundation in
+      2025. Where MCP standardizes how an agent talks to tools and
+      resources, A2A standardizes how two agents talk to each other:
+      capability discovery (each agent publishes a structured
+      "agent card" describing what it can do), task delegation, and
+      result reporting.
+
+      A2A matters because as agent ecosystems mature, agents will
+      increasingly need to negotiate work with other agents rather
+      than just call tools. The complementary positioning is the
+      important framing: MCP is agent-to-tool, A2A is agent-to-agent,
+      and both are needed for a multi-agent ecosystem that is not
+      controlled by a single platform. Compared to siblings: MCP is
+      the mature complement at the same wire layer; ACP (Agent Client
+      Protocol) is an earlier-stage spec focused on agent-to-client
+      surfaces (chat UIs, IDEs); various proprietary agent-platform
+      protocols exist but lack the open-spec character of A2A.
+
+      Production-readiness: shipping and adopted by a broad signatory
+      list including Salesforce, SAP, ServiceNow. Real usage is still
+      thinner than MCP usage; the boundary between "this should be an
+      MCP server call" and "this should be an A2A agent call" remains
+      fuzzy in practice and a topic of ongoing spec discussion. The
+      strategic question is whether A2A becomes the durable inter-
+      agent layer or whether agent-platform vendors fork their own.
+    sources:
+      - title: "A2A Protocol"
+        url: "https://a2a-protocol.org/"
+      - title: "A2A on GitHub"
+        url: "https://github.com/a2aproject/A2A"
+      - title: "Linux Foundation A2A Announcement"
+        url: "https://www.linuxfoundation.org/press/announcing-the-agent2agent-protocol-a2a"
 
   - slug: aaif
     name: Agentic AI Foundation (AAIF)
@@ -939,6 +1731,41 @@ projects:
     url: "https://www.x402.org/"
     github: "https://github.com/coinbase/x402"
     description: "Coinbase's HTTP 402 revival with on-chain settlement; under the Linux Foundation; Stripe shipped an x402 integration in 2026."
+    explainer: |
+      x402 is Coinbase's revival of the long-dormant HTTP 402 "Payment
+      Required" status code. Open spec under Apache 2.0. The
+      mechanism: a client requests a resource; the server replies 402
+      with payment instructions referencing an on-chain stablecoin
+      payment (USDC primarily); the client pays; the server returns
+      the resource on confirmation. Released in 2025 and donated to
+      the Linux Foundation.
+
+      x402 matters because it is the on-chain-settlement counterpart
+      to L402's Lightning-anchored approach to the same problem
+      (paying for agent-accessed resources without an account). The
+      design choice is the interesting tradeoff: Lightning offers
+      sub-second settlement and very low fees but locks you to the
+      Bitcoin ecosystem; on-chain stablecoin settlement is more
+      familiar to web2 builders and integrates with existing payment
+      infrastructure but settles slower and has higher per-tx fees.
+      Compared to L402 (Lightning, Bitcoin-anchored, longer track
+      record), x402 (stablecoin, web2-friendlier, newer), and Stripe
+      Agent SDK (closed, very polished, ties you to Stripe).
+
+      Production-readiness: shipping and adopted by a growing set of
+      AI infrastructure providers. Stripe announced an x402
+      integration in 2026, which is a strong signal of acceptance at
+      the payments-incumbent layer. The strategic question for x402
+      and L402 jointly: which agentic-payment rail wins matters more
+      than people realize, because the rails determine who can become
+      an economic agent in the agentic web without permission.
+    sources:
+      - title: "x402.org"
+        url: "https://www.x402.org/"
+      - title: "x402 on GitHub (Coinbase)"
+        url: "https://github.com/coinbase/x402"
+      - title: "Linux Foundation x402 Announcement"
+        url: "https://www.linuxfoundation.org/press/coinbase-contributes-x402-payment-standard-to-the-linux-foundation"
 
   - slug: acp
     name: Agent Client Protocol (ACP)
@@ -1107,6 +1934,42 @@ projects:
     url: "https://ezkl.xyz/"
     github: "https://github.com/zkonduit/ezkl"
     description: "Zero-knowledge proofs for ML inference; ZKML toolkit; converts ONNX models to ZK circuits."
+    explainer: |
+      EZKL is an open toolkit for generating zero-knowledge proofs of
+      machine-learning inference. Apache 2.0. The workflow: convert
+      an ONNX model into a ZK circuit, generate a proof that a
+      specific input produced a specific output under that model,
+      let anyone verify the proof without seeing the model weights
+      or the input. This makes private inference auditable and lets
+      provers attest to model outputs without revealing inputs.
+
+      EZKL matters because it is one of the leading bets on
+      cryptographic, silicon-agnostic verifiable inference. Compared
+      to siblings: Modulus Labs (similar mission, different
+      cryptographic backend), Lagrange (ZK coprocessor with the
+      DeepProve product line, more recent and well-funded), and the
+      hardware-attestation alternative (TEEs like NVIDIA H100
+      Confidential Computing, Apple PCC, Phala). The trade is
+      structural: hardware-attestation is fast but ties trust to the
+      silicon vendor; ZKML is silicon-agnostic but slow.
+
+      Production-readiness: beta for small models, research-grade for
+      anything approaching frontier scale. The honest performance
+      ceiling: ZK-proven inference of a 7B model is currently 100x+
+      slower than plaintext inference. Used in production at small
+      scale by specific verifiable-AI applications (model marketplaces,
+      auditable inference services). The strategic question for
+      ZKML: do the cryptography optimizations close the perf gap
+      enough to make this practical at frontier scale, or does
+      hardware-attested confidential compute win the verifiable-AI
+      conversation by default.
+    sources:
+      - title: "EZKL"
+        url: "https://ezkl.xyz/"
+      - title: "EZKL on GitHub"
+        url: "https://github.com/zkonduit/ezkl"
+      - title: "EZKL Documentation"
+        url: "https://docs.ezkl.xyz/"
 
   - slug: modulus-labs
     name: Modulus Labs
@@ -1153,6 +2016,44 @@ projects:
     maturity: stable
     url: "https://security.apple.com/blog/private-cloud-compute/"
     description: "Apple's verifiable cloud inference architecture; Secure Enclave anchored; published security guarantees."
+    explainer: |
+      Private Cloud Compute (PCC) is Apple's architecture for running
+      Apple Intelligence requests that exceed on-device capability,
+      while preserving the security and privacy posture of the
+      on-device case. Proprietary. The core technical claim: every
+      server image is signed and attested, Apple itself cannot
+      retrieve user data, and security researchers can verify by
+      inspecting the production binaries (which are published) and
+      comparing against attestation.
+
+      PCC matters because it is the most technically-detailed public
+      account of a production confidential-AI deployment from any
+      large vendor. Compared to siblings: NVIDIA H100 Confidential
+      Computing (TEE-based, vendor-specific, requires NVIDIA), Phala
+      Network (TEE-as-a-service marketplace), AWS Nitro Enclaves and
+      similar hyperscaler offerings, ZKML approaches like EZKL
+      (silicon-agnostic but slow). PCC's distinctive angle is the
+      systems-design depth: Apple published the full architecture
+      including the threat model, the attestation chain, and the
+      researcher-verifiable production-build commitment.
+
+      Production-ready and shipping at consumer scale since 2024
+      across the Apple Intelligence rollout. Reverse engineering by
+      independent security researchers has been broadly consistent
+      with Apple's published claims, though the verification depends
+      on Apple's continued cooperation and key custody. Strategic
+      significance: PCC is the existence proof that "verifiable
+      private inference at scale" is technically achievable. The
+      sovereignty critique is that it works for Apple users
+      specifically, and the rest of the market has nothing
+      comparable.
+    sources:
+      - title: "Apple Private Cloud Compute (security.apple.com)"
+        url: "https://security.apple.com/blog/private-cloud-compute/"
+      - title: "PCC Security Documentation"
+        url: "https://security.apple.com/documentation/private-cloud-compute"
+      - title: "PCC Virtual Research Environment"
+        url: "https://security.apple.com/blog/pcc-security-research/"
 
   - slug: dids
     name: Decentralized Identifiers (DIDs)
@@ -1229,6 +2130,43 @@ projects:
     maturity: research
     url: "https://www.primeintellect.ai/blog/intellect-1"
     description: "10B-parameter model trained across distributed compute via the PRIME framework; first public proof that decentralized frontier-ish training is feasible."
+    explainer: |
+      INTELLECT-1 is a 10B-parameter language model that Prime
+      Intellect trained across distributed compute spanning multiple
+      continents, released November 2024. Apache 2.0. The training
+      run used Prime Intellect's PRIME framework with bandwidth-
+      efficient gradient synchronization to make training over
+      commodity internet links practical at this scale. The model
+      itself is open-weights with full training methodology published.
+
+      INTELLECT-1 matters because it is the first reproducible public
+      proof that decentralized pretraining of a 10B+ model is
+      feasible at all. Before this, "decentralized training" was
+      mostly theoretical. INTELLECT-1 was followed by INTELLECT-2
+      (32B with reinforcement-learning post-training) in 2025. Compared
+      to siblings: Templar Covenant-72B (Bittensor subnet, larger
+      model, different incentive design), Pluralis and Gensyn
+      (earlier-stage research bets with distinct technical approaches),
+      Nous Research's DisTrO (the bandwidth-efficient optimizer
+      family used by several of these projects).
+
+      Production-readiness: the model itself is shipped and usable;
+      the methodology is reproducible by anyone with similar compute
+      partners; capability remains a generation behind centralized
+      frontier training at iso-cost. The interesting role for
+      INTELLECT-1 is not to compete with frontier labs on raw
+      capability but to show that an alternative training topology
+      is technically possible. Strategic significance for the
+      sovereignty conversation: a community that wants a model
+      independent of any hyperscaler relationship now has a concrete
+      template to follow.
+    sources:
+      - title: "INTELLECT-1 Release Post (Prime Intellect)"
+        url: "https://www.primeintellect.ai/blog/intellect-1-release"
+      - title: "INTELLECT-1 Technical Report"
+        url: "https://www.primeintellect.ai/blog/intellect-1"
+      - title: "INTELLECT-1 on HuggingFace"
+        url: "https://huggingface.co/PrimeIntellect/INTELLECT-1-Instruct"
 
   - slug: templar-covenant-72b
     name: Templar Covenant-72B
@@ -1238,6 +2176,46 @@ projects:
     maturity: research
     url: "https://github.com/tplr-ai/templar"
     description: "Bittensor subnet for decentralized training; produced Covenant-72B in 2026; on-chain coordination plus incentivized compute."
+    explainer: |
+      Templar is a Bittensor subnet that ran a 72-billion-parameter
+      language model pretraining from scratch across an incentivized
+      decentralized network. The training run produced Covenant-72B
+      in early 2026. Apache 2.0. The architecture combines on-chain
+      coordination (Bittensor subnet for incentive distribution and
+      validator scoring) with off-chain bandwidth-efficient training
+      (using techniques in the DisTrO / DiLoCo family). Miners
+      contribute GPU cycles, validators score contributions, TAO
+      emissions reward both.
+
+      Templar matters because it is the most ambitious distributed
+      pretraining run to date by parameter count. Compared to
+      siblings: INTELLECT-1 (10B, single-org coordination via Prime
+      Intellect), INTELLECT-2 (32B, similar coordination), Pluralis
+      (different topology, earlier stage). Templar's distinctive
+      angle is the combination of token-incentivized contributor
+      network (Bittensor) with frontier-ish parameter scale (72B).
+      The 72B size matters because it is roughly where Llama 3 70B
+      sits, so the comparison to centralized frontier-class open
+      weights is direct.
+
+      Production-readiness: research-grade. The training run completed
+      and the model is published; whether Covenant-72B competes with
+      Llama 3 70B or Qwen 72B on capability benchmarks is the
+      operative question, and the published results suggest it
+      reaches a credible-but-behind level. Strategic significance:
+      this is the existence proof that token-incentivized
+      decentralized pretraining can produce a frontier-class-size
+      open model, not just a research toy. The honest limit: an
+      order of magnitude behind centralized frontier training on
+      time-to-result, and dependent on TAO economics continuing to
+      reward miners adequately.
+    sources:
+      - title: "Templar on GitHub"
+        url: "https://github.com/tplr-ai/templar"
+      - title: "Templar (project page)"
+        url: "https://www.tplr.ai/"
+      - title: "Bittensor Subnet Architecture"
+        url: "https://docs.bittensor.com/learn/subnets-and-blocks"
 
   - slug: pluralis
     name: Pluralis Research
