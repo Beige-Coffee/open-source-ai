@@ -91,7 +91,7 @@ a:hover {
   color: var(--color-text);
 }
 
-/* Editorial prose for layer pages and synthesis pages. */
+/* Editorial prose for layer pages. */
 .prose {
   max-width: 68ch;
   font-family: var(--font-serif);

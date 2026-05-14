@@ -50,26 +50,6 @@ const layers = defineCollection({
 });
 
 /**
- * Synthesis content collection. The load-bearing essays of the site:
- * cross-cutting arguments, framings, and positions that the chat
- * agent grounds in via read_essay(). Files at src/content/synthesis/.
- */
-const synthesis = defineCollection({
-  loader: glob({
-    pattern: "**/*.mdx",
-    base: "./src/content/synthesis",
-  }),
-  schema: z.object({
-    slug: z.string(),
-    title: z.string(),
-    summary: z.string(),
-    related_layers: z.array(z.string()).default([]),
-    tags: z.array(z.string()).default([]),
-    updated: z.coerce.date(),
-  }),
-});
-
-/**
  * News content collection. One MDX file per published day, ingested by
  * the daily scheduled agent in Week 2. Each item inside a day has a
  * layer tag so per-layer feeds can filter.
@@ -89,6 +69,5 @@ const news = defineCollection({
 
 export const collections = {
   layers,
-  synthesis,
   news,
 };

@@ -7,7 +7,6 @@
  *   (Grant: Maple AI)
  *   (Project: vllm)
  *   (Reading: Building Effective Agents)
- *   (Essay: closed-silicon-defeats-open-weights)
  *   (News: 2026-05-13)
  */
 
@@ -17,7 +16,6 @@ export type CitationKind =
   | "grant"
   | "project"
   | "reading"
-  | "essay"
   | "news";
 
 export interface ParsedCitation {
@@ -29,7 +27,7 @@ export interface ParsedCitation {
 }
 
 const PATTERN =
-  /\((Layer|Funder|Grant|Project|Reading|Essay|News):\s*([^)]+)\)/g;
+  /\((Layer|Funder|Grant|Project|Reading|News):\s*([^)]+)\)/g;
 
 export function parseCitations(text: string): ParsedCitation[] {
   const hits: ParsedCitation[] = [];
@@ -84,8 +82,6 @@ export function citationHref(c: ParsedCitation): string {
       return `/stack/${c.ref}`;
     case "funder":
       return `/grants/funder/${c.ref}`;
-    case "essay":
-      return `/essays/${c.ref}`;
     case "news":
       return `/news/${c.ref}`;
     case "grant":

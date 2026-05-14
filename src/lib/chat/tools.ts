@@ -13,7 +13,6 @@ import {
   getPredictions,
   getLayers,
   getLayerContent,
-  getSynthesis,
   getTodayNews,
 } from "./data";
 import { searchAll } from "./retrieve";
@@ -131,18 +130,6 @@ export const TOOLS = [
     },
   },
   {
-    name: "read_essay",
-    description:
-      "Fetch a full synthesis essay (the load-bearing arguments). Use when the user asks about a concept covered in an essay. Limit: 3 calls per turn.",
-    input_schema: {
-      type: "object",
-      properties: {
-        slug: { type: "string", description: "Essay slug." },
-      },
-      required: ["slug"],
-    },
-  },
-  {
     name: "today_news",
     description:
       "Fetch today's daily news roundup. Returns date, editorial letter, layer buckets (which layers had items), and the body. Use when user asks about recent news. Limit: 1 call per turn.",
@@ -151,7 +138,7 @@ export const TOOLS = [
   {
     name: "search",
     description:
-      "Full-text search across grants, funders, projects, readings, layer overviews, and essays. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
+      "Full-text search across grants, funders, projects, readings, and layer overviews. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
     input_schema: {
       type: "object",
       properties: {
@@ -175,7 +162,6 @@ const LIMITS: Record<string, number> = {
   read_funder: 3,
   read_grant: 3,
   read_predictions: 2,
-  read_essay: 3,
   today_news: 1,
   search: 2,
 };
@@ -450,21 +436,6 @@ export async function executeTool(
         const all = await getPredictions();
         const hits = all.filter((p) => p.layer === layer);
         result = { layer, count: hits.length, predictions: hits };
-        break;
-      }
-
-      case "read_essay": {
-        const slug = String(call.input.slug ?? "").trim();
-        const essays = await getSynthesis();
-        const e = essays.find((x) => x.slug === slug);
-        if (!e) {
-          result = {
-            error: `No essay with slug '${slug}'.`,
-            available: essays.map((x) => x.slug),
-          };
-        } else {
-          result = e;
-        }
         break;
       }
 

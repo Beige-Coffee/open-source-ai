@@ -18,7 +18,6 @@ const ROOT = resolve(__dirname, "..");
 const DATA_DIR = resolve(ROOT, "data");
 const OUT_DIR = resolve(ROOT, "public/data");
 const NEWS_DIR = resolve(ROOT, "src/content/news");
-const SYNTHESIS_DIR = resolve(ROOT, "src/content/synthesis");
 const LAYERS_DIR = resolve(ROOT, "src/content/layers");
 
 mkdirSync(OUT_DIR, { recursive: true });
@@ -75,27 +74,6 @@ try {
   total++;
 } catch (e) {
   console.warn(`[build-data] layer content skipped: ${e.message}`);
-}
-
-// Parse synthesis essays for the read_essay() tool.
-const synthesisEntries = [];
-try {
-  for (const f of readdirSync(SYNTHESIS_DIR)) {
-    if (extname(f) !== ".mdx") continue;
-    const text = readFileSync(resolve(SYNTHESIS_DIR, f), "utf8");
-    const { frontmatter, body } = parseFrontmatter(text);
-    synthesisEntries.push({ ...frontmatter, body });
-  }
-  writeFileSync(
-    resolve(OUT_DIR, "synthesis.json"),
-    JSON.stringify(synthesisEntries, null, 0),
-  );
-  console.log(`[build-data] synthesis/*.mdx -> public/data/synthesis.json (${synthesisEntries.length})`);
-  total++;
-} catch (e) {
-  // Synthesis dir may not exist yet on first run; that is fine.
-  writeFileSync(resolve(OUT_DIR, "synthesis.json"), "[]");
-  console.log(`[build-data] synthesis dir empty or missing -> empty json`);
 }
 
 // Parse the latest news MDX into structured form for today_news().

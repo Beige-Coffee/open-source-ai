@@ -11,7 +11,6 @@ export interface PageContext {
   entity?:
     | { kind: "layer"; slug: string }
     | { kind: "funder"; slug: string }
-    | { kind: "essay"; slug: string }
     | { kind: "news"; date: string };
 }
 

@@ -32,8 +32,6 @@ function derivePageContext(): PageContext {
     entity = { kind: "layer", slug: r[1] };
   } else if ((r = m(/^\/grants\/funder\/([^/]+)\/?$/))) {
     entity = { kind: "funder", slug: r[1] };
-  } else if ((r = m(/^\/essays\/([^/]+)\/?$/))) {
-    entity = { kind: "essay", slug: r[1] };
   } else if ((r = m(/^\/news\/([^/]+)\/?$/))) {
     entity = { kind: "news", date: r[1] };
   } else if ((r = m(/^\/learn\/([^/]+)\/?$/))) {
@@ -43,8 +41,8 @@ function derivePageContext(): PageContext {
 }
 
 function defaultModeFor(ctx: PageContext): Mode {
-  // Socratic on /learn and /essays; Answer everywhere else.
-  if (ctx.pathname.startsWith("/learn") || ctx.pathname.startsWith("/essays")) {
+  // Socratic on /learn; Answer everywhere else.
+  if (ctx.pathname.startsWith("/learn")) {
     return "socratic";
   }
   return "answer";

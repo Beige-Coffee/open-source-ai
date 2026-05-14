@@ -75,16 +75,6 @@ interface Prediction {
   filed: string;
 }
 
-interface SynthesisEssay {
-  slug: string;
-  title: string;
-  summary: string;
-  related_layers?: string[];
-  tags?: string[];
-  updated?: string;
-  body: string;
-}
-
 interface NewsIssue {
   date: string;
   editorial_letter: string;
@@ -143,10 +133,6 @@ export async function getPredictions(): Promise<Prediction[]> {
   return root.predictions;
 }
 
-export async function getSynthesis(): Promise<SynthesisEssay[]> {
-  return getJson<SynthesisEssay[]>("synthesis");
-}
-
 export async function getTodayNews(): Promise<NewsIssue | null> {
   return getJson<NewsIssue | null>("today-news");
 }
@@ -158,6 +144,5 @@ export type {
   Grant,
   Reading,
   Prediction,
-  SynthesisEssay,
   NewsIssue,
 };

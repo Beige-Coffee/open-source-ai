@@ -83,7 +83,6 @@ open-source-ai-stack/
     content/
       layers/<slug>.mdx  # 14 layer pages (3-5 sentence intros)
       news/YYYY-MM-DD.mdx # daily news issues from the scheduled routine
-      synthesis/<slug>.mdx # cross-cutting essays (the load-bearing arguments)
     lib/
       layers.ts, projects.ts, grants.ts, predictions.ts, reading-lists.ts
       chat/              # agent infrastructure
@@ -107,7 +106,6 @@ open-source-ai-stack/
     pages/
       index.astro
       stack/, grants/, learn/, news/
-      essays/[slug].astro # synthesis essays
       settings.astro     # the BYOK settings page
       predictions.astro
       about.astro, today.astro
@@ -185,13 +183,6 @@ Type: `paper | post | talk | podcast | book | thread | docs`.
 
 Schema: `layer, claim, horizon (date), confidence (1-5), resolves_when, filed (date)`.
 
-### `src/content/synthesis/<slug>.mdx` — load-bearing essays
-
-Cross-cutting arguments that span multiple layers. Each carries
-frontmatter: `slug, title, summary, related_layers, tags, updated`.
-These are the deepest wiki entries; the chat agent pulls from them
-constantly.
-
 ### `src/content/news/<date>.mdx` — daily news issues
 
 Append-only log written by the scheduled news routine. Frontmatter:
@@ -220,9 +211,9 @@ auto-publish.
 
 ### Manual append flows
 
-For projects, funders, grants, readings, predictions, and synthesis
-essays: edit the YAML / MDX directly, then commit. There is no
-scheduled write to these files.
+For projects, funders, grants, readings, and predictions: edit the
+YAML directly, then commit. For layer pages: edit the MDX directly.
+There is no scheduled write to these files.
 
 ### Build pipeline
 
@@ -245,11 +236,13 @@ scheduled write to these files.
 - **Neutral observational voice** is the default for all explanatory
   content (layer pages, project descriptions, grant writeups). Read
   like Bloomberg, not like a marketing post.
-- **Editorial point of view is allowed in synthesis essays.** That's
-  the point of those entries. Argue. Make the load-bearing claim.
-  Distinguish from the description-only voice elsewhere.
 - **Every interpretive claim cites a source.** Layer overview pages,
-  synthesis essays, project descriptions all link to primary sources.
+  project descriptions, grant entries, and funder profiles all link
+  to primary sources via the `url` field or inline links.
+- **No standalone editorial essays.** Synthesis-style arguments are
+  not authored here. The chat agent is permitted to synthesize from
+  the underlying data at query time, but the synthesis is never
+  cached on disk as an authoritative essay.
 - **Prefer primary sources** (project docs, release notes from
   maintainers, original papers) over secondary commentary.
 
@@ -273,10 +266,9 @@ resizable side panel.
 - **Answer mode** (default on `/stack/<slug>`, `/grants`, `/news`,
   `/predictions`, `/today`, `/`): factual, neutral-observational,
   cites sources inline, uses tools to ground every claim.
-- **Socratic mode** (default on `/learn`, `/learn/<slug>`,
-  `/essays/<slug>`): asks one question at a time, pushes the user
-  to think, refuses to give the answer when the question is "explain
-  X to me."
+- **Socratic mode** (default on `/learn`, `/learn/<slug>`): asks one
+  question at a time, pushes the user to think, refuses to give the
+  answer when the question is "explain X to me."
 
 User can toggle between modes via a switch in the chat header.
 
@@ -296,7 +288,6 @@ has a per-turn rate limit and a dedup cache (per
 | `read_funder(slug)` | Fetch full funder profile + grants | 3 |
 | `read_grant(title)` | Fetch full grant entry by title | 3 |
 | `read_prediction(layer)` | Fetch predictions for a layer | 2 |
-| `read_essay(slug)` | Fetch a synthesis essay | 3 |
 | `today_news()` | Fetch the latest daily issue | 1 |
 | `search(query)` | MiniSearch over everything as fallback | 2 |
 
@@ -309,7 +300,6 @@ Agent must cite sources inline with these markers:
 - `(Grant: Maple AI)` — links to the grant's URL or to a per-grant page
 - `(Project: vllm)` — links to the project URL or layer page
 - `(Reading: <title>)` — links to the reading URL
-- `(Essay: <slug>)` — links to `/essays/<slug>`
 - `(News: 2026-05-13)` — links to `/news/2026-05-13`
 
 Citations are parsed in `src/lib/chat/citations.ts` and rendered as

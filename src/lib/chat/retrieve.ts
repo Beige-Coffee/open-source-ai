@@ -11,12 +11,11 @@ import {
   getProjects,
   getReadings,
   getLayerContent,
-  getSynthesis,
 } from "./data";
 
 interface SearchDoc {
   id: string;
-  kind: "grant" | "funder" | "project" | "reading" | "layer" | "essay";
+  kind: "grant" | "funder" | "project" | "reading" | "layer";
   title: string;
   body: string;
   // Optional cargo for the agent to know what to do next with a hit.
@@ -36,16 +35,13 @@ async function buildIndex() {
   if (index) return { index, docs };
   if (buildPromise) return buildPromise;
   buildPromise = (async () => {
-    const [grants, funders, projects, readings, layers, essays] = await Promise.all(
-      [
-        getGrants(),
-        getFunders(),
-        getProjects(),
-        getReadings(),
-        getLayerContent(),
-        getSynthesis(),
-      ],
-    );
+    const [grants, funders, projects, readings, layers] = await Promise.all([
+      getGrants(),
+      getFunders(),
+      getProjects(),
+      getReadings(),
+      getLayerContent(),
+    ]);
 
     const all: SearchDoc[] = [];
     for (const g of grants) {
@@ -99,17 +95,6 @@ async function buildIndex() {
         slug: l.slug,
         url: `/stack/${l.slug}`,
         layers: [l.slug],
-      });
-    }
-    for (const e of essays) {
-      all.push({
-        id: `essay:${e.slug}`,
-        kind: "essay",
-        title: e.title,
-        body: `${e.summary}. ${e.body}`,
-        slug: e.slug,
-        url: `/essays/${e.slug}`,
-        layers: e.related_layers ?? [],
       });
     }
 

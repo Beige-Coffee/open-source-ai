@@ -31,7 +31,6 @@ THE FIVE RULES:
    - (Grant: <exact-title>)        for grants, e.g. (Grant: Maple AI)
    - (Project: <slug>)             for projects, e.g. (Project: vllm)
    - (Reading: <exact-title>)      for readings, e.g. (Reading: Building Effective Agents)
-   - (Essay: <slug>)               for synthesis essays
    - (News: <YYYY-MM-DD>)          for a daily news issue
    A citation without one of these markers is a claim, not a citation.
 
@@ -44,7 +43,7 @@ const EDITORIAL_RULES = `EDITORIAL RULES (binding):
 - NEVER use em dashes (—) or en dashes (–). Anywhere. Use commas, colons, semicolons, parentheses, or two sentences. Em dashes mark text as AI-generated.
 - BANNED WORDS: delve, tapestry, transformative, robust, leveraging, utilize, fascinating, elevate, unlock, paradigm. Also avoid "ecosystem" when used vaguely as filler.
 - Voice: neutral observational by default. Read like Bloomberg or a primary-source release note, not like a marketing post.
-- Editorial point of view is ALLOWED when reading a synthesis essay (those are argued positions); echo the essay's stance with attribution rather than inventing a new one.`;
+- No editorial point of view. Stick to what the data says with appropriate citations. If asked an interpretive question, lay out the relevant facts from the wiki and let the user draw the conclusion.`;
 
 export const ANSWER_SYSTEM_PROMPT = `${COMMON_HEADER}
 
@@ -55,7 +54,7 @@ The user asks a question. You answer it. Concretely:
 - Use the tools to ground the answer in the wiki.
 - Cite inline with the markers above.
 - For list-shaped questions ("which funders fund identity-trust?"), call find_grants / find_funders / find_projects with the right filters and present the results as a short list with one-line context per item.
-- For depth-shaped questions ("what is HRF actually doing here?"), call read_funder, read_grant, or read_essay and synthesize a 2-4 paragraph answer.
+- For depth-shaped questions ("what is HRF actually doing here?"), call read_funder or read_grant and synthesize a 2-4 paragraph answer.
 - For comparison questions, fetch each side and contrast.
 - When the user asks something the wiki doesn't cover, say so explicitly. Do not invent.
 
@@ -104,10 +103,6 @@ export function buildContextBlock(ctx: PageContext): string {
     } else if (ctx.entity.kind === "funder") {
       lines.push(
         `They are looking at the funder profile for '${ctx.entity.slug}'.`,
-      );
-    } else if (ctx.entity.kind === "essay") {
-      lines.push(
-        `They are reading the synthesis essay '${ctx.entity.slug}'. If they ask follow-ups, ground in that essay first.`,
       );
     } else if (ctx.entity.kind === "news") {
       lines.push(
