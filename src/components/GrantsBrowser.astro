@@ -256,8 +256,40 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
       </details>
     </aside>
 
-    <!-- Results column -->
-    <div>
+    <!-- Results column. overflow-anchor:none stops the browser from
+         snapping the scroll position when the visible-grants set
+         shrinks. style="overflow-anchor: none" is inlined because
+         Tailwind v4 has no utility for this. -->
+    <div style="overflow-anchor: none;">
+      <!-- Search input. Filters across title, recipient, description
+           within the active tab. -->
+      <div class="mb-3">
+        <label class="sr-only" for="grants-search">Search grants</label>
+        <div class="relative">
+          <input
+            id="grants-search"
+            type="search"
+            data-grants-search
+            placeholder="Search by title, recipient, or description..."
+            class="w-full pl-8 pr-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] focus:outline-none focus:border-[var(--color-accent)] placeholder:text-[var(--color-text-subtle)]"
+            autocomplete="off"
+          />
+          <svg
+            aria-hidden="true"
+            class="absolute left-2.5 top-2.5 w-4 h-4 text-[var(--color-text-subtle)]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </div>
+      </div>
+
       <!-- Active filter chips + count -->
       <div
         class="flex flex-wrap items-baseline gap-3 mb-4 pb-3 border-b border-[var(--color-border)]"
@@ -294,6 +326,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
               data-kind={g.kind}
               data-funder={g.funder}
               data-layers={g.layers.join(",")}
+              data-search={`${g.title} ${g.recipient} ${g.description}`.toLowerCase()}
               data-amount={g.amount_bucket}
               data-region={g.region}
               data-recency={g.recency_bucket}
@@ -368,6 +401,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
       root.querySelectorAll("[data-grants-filter]"),
     );
     const tabButtons = Array.from(root.querySelectorAll("[data-grants-tab]"));
+    const searchInput = root.querySelector("[data-grants-search]");
     const visibleCountEl = root.querySelector("[data-grants-visible-count]");
     const totalCountEl = root.querySelector("[data-grants-total-count]");
     const chipsEl = root.querySelector("[data-grants-active-chips]");
@@ -376,6 +410,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
 
     // Active tab: "project" (default) or "program".
     let activeKind = "project";
+    let searchQuery = "";
 
     const labelFor = (key, value) => {
       const el = root.querySelector(
@@ -415,6 +450,10 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
         const overlap = state.layer.some((l) => grantLayers.includes(l));
         if (!overlap) return false;
       }
+      if (searchQuery) {
+        const blob = node.dataset.search || "";
+        if (!blob.includes(searchQuery)) return false;
+      }
       return true;
     }
 
@@ -447,6 +486,13 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     }
 
     function apply() {
+      // Anchor the user's view to the top of the grants browser to
+      // prevent the browser from snapping their scroll position when
+      // the page height shrinks. Save the offset from the section top
+      // before mutating, then restore it after.
+      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
+      const userOffset = window.scrollY - sectionTop;
+
       const state = readState();
       let visible = 0;
       let totalForKind = 0;
@@ -460,6 +506,28 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
       if (totalCountEl) totalCountEl.textContent = String(totalForKind);
       if (emptyEl) emptyEl.classList.toggle("hidden", visible !== 0);
       renderChips(state);
+
+      // Restore the user's relative position. If they were below the
+      // section before filtering, keep them at the same offset; if
+      // their offset is now past the new section bottom, clamp to top.
+      if (userOffset > 0) {
+        const newSectionTop = root.getBoundingClientRect().top + window.scrollY;
+        const newSectionHeight = root.offsetHeight;
+        const maxOffset = Math.max(0, newSectionHeight - window.innerHeight);
+        const targetOffset = Math.min(userOffset, maxOffset);
+        window.scrollTo({ top: newSectionTop + targetOffset, behavior: "instant" });
+      }
+    }
+
+    // Debounce search input so typing doesn't fire apply() on every keystroke.
+    let searchTimer = null;
+    function onSearchInput(e) {
+      const value = (e.target.value || "").trim().toLowerCase();
+      if (searchTimer) window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(() => {
+        searchQuery = value;
+        apply();
+      }, 120);
     }
 
     function setActiveTab(kind) {
@@ -484,9 +552,14 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     for (const btn of tabButtons) {
       btn.addEventListener("click", () => setActiveTab(btn.dataset.grantsTab));
     }
+    if (searchInput) {
+      searchInput.addEventListener("input", onSearchInput);
+    }
     if (clearAllBtn) {
       clearAllBtn.addEventListener("click", () => {
         for (const cb of checkboxes) cb.checked = false;
+        if (searchInput) searchInput.value = "";
+        searchQuery = "";
         apply();
       });
     }

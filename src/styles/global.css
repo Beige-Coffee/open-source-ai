@@ -50,6 +50,18 @@
   --leading-prose: 1.65;
 }
 
+/*
+ * Disable browser scroll anchoring globally. Otherwise, when a
+ * filterable list (the grants browser) hides items, the page height
+ * shrinks and the browser snaps the user's scroll position downward
+ * to maintain "what they were looking at." That snap is disorienting.
+ * With overflow-anchor: none, the user simply stays where they were.
+ */
+html,
+body {
+  overflow-anchor: none;
+}
+
 html {
   background: var(--color-bg);
   color: var(--color-text);
