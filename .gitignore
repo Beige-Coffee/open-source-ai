@@ -2,6 +2,8 @@
 dist/
 # generated types
 .astro/
+# generated data for the chat agent (built from data/*.yaml + src/content/**)
+public/data/
 
 # dependencies
 node_modules/
