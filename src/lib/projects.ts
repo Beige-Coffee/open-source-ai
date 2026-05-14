@@ -17,6 +17,11 @@ export type ProjectMaturity =
   | "maintenance"
   | "new";
 
+export interface ProjectSource {
+  title: string;
+  url: string;
+}
+
 export interface Project {
   slug: string;
   name: string;
@@ -27,6 +32,11 @@ export interface Project {
   url: string;
   github?: string;
   description: string;
+  /**
+   * Additional sources beyond `url` / `github`. Most projects do not
+   * need this because their `url` is the canonical project page.
+   */
+  sources?: ProjectSource[];
 }
 
 /**

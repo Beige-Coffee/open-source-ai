@@ -7,12 +7,13 @@
   },
   "scripts": {
     "predev": "node scripts/build-data.mjs",
-    "prebuild": "node scripts/build-data.mjs",
+    "prebuild": "node scripts/lint-citations.mjs && node scripts/build-data.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build-data": "node scripts/build-data.mjs"
+    "build-data": "node scripts/build-data.mjs",
+    "lint": "node scripts/lint-citations.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

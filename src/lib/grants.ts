@@ -2,6 +2,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import yaml from "js-yaml";
 
+export interface Source {
+  title: string;
+  url: string;
+}
+
 export interface Funder {
   slug: string;
   name: string;
@@ -14,6 +19,12 @@ export interface Funder {
   url: string;
   focus_layers: string[];
   notable_recent: string;
+  /**
+   * Additional sources for claims in mission / notable_recent that are
+   * NOT already documented at `url`. Per the citation-discipline rule
+   * in CLAUDE.md.
+   */
+  sources?: Source[];
 }
 
 export type Region = "US" | "EU" | "UK" | "Global" | "Asia" | "Africa" | "LatAm";
@@ -37,6 +48,11 @@ export interface Grant {
   region: Region;
   url: string;
   description: string;
+  /**
+   * Additional sources beyond `url`. Most grant entries do not need
+   * this because their `url` is the announcement.
+   */
+  sources?: Source[];
 }
 
 /**

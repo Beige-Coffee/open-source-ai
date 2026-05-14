@@ -246,6 +246,73 @@ There is no scheduled write to these files.
 - **Prefer primary sources** (project docs, release notes from
   maintainers, original papers) over secondary commentary.
 
+## Citation discipline (binding)
+
+The site is read by Austin and one other person, but the long-term
+risk is real: AI-generated content + AI-assisted maintenance =
+plausible-sounding facts that nobody verified. To prevent the next
+agent (or the next human in a hurry) from quietly introducing
+unsourced claims, this section is non-negotiable.
+
+### The rule
+
+Every specific numerical claim, percentage, dollar amount, count,
+specific date, bandwidth, latency, or factual assertion in any
+content file (YAML descriptions, MDX bodies, page copy) must either:
+
+1. Include an inline URL link to a primary source within the same
+   paragraph, OR
+2. Be derived from a typed schema field on a structured entry
+   (`amount_usd`, `date`, `year`, etc.) whose `url` field links to
+   where that value was announced, OR
+3. Be attributed inline to a named primary source whose link appears
+   nearby (e.g., "per the State of AI Report 2025, [link]"), OR
+4. Live in a `sources: [{title, url}]` array on the entry's schema.
+
+Soft assertions of fact without sources are prohibited. If a number
+or specific claim cannot be sourced to a primary, rewrite it as a
+qualitative observation ("a significant share") or remove it.
+
+### Out-of-scope (do not need citations)
+
+- Typed schema fields (`amount_usd`, `date`, `year`, etc.) that are
+  themselves the value; the entry's `url` documents the value.
+- Pure framings or labels with no specific claim ("vLLM is the
+  dominant open inference engine" is a framing; "vLLM serves X
+  tokens/sec on H100" is a claim).
+- Editorial voice and prose style.
+- Internal commit messages and engineering docs.
+
+### Enforcement
+
+A linter at `scripts/lint-citations.mjs` runs on every prebuild and
+on `npm run lint`. It scans YAML descriptions, MDX bodies, and page
+copy for the patterns above and fails the build if any specific
+numerical or factual claim lacks a nearby citation. The next agent
+literally cannot push uncited claims, because the build won't pass.
+
+If you intentionally need to break the rule (e.g., quoting a TODO
+list, an example, or an inline test), add an inline comment
+`<!-- lint-allow: reason -->` on the line above the claim. Such
+allowances should be rare.
+
+### The `sources` schema field
+
+For entries whose `description` or `mission` text makes claims
+beyond what their primary `url` documents, populate `sources`:
+
+```yaml
+sources:
+  - title: "State of AI Report 2024"
+    url: "https://www.stateof.ai/2024-report-launch"
+  - title: "a16z Enterprise AI Adoption Survey 2025"
+    url: "https://a16z.com/enterprise-ai-adoption-survey"
+```
+
+Funders and projects are the most common target: their profile text
+often summarizes aggregate activity. Grants and readings rarely
+need it because their `url` is the announcement.
+
 ## In-site chat agent
 
 The chat agent is a React island mounted in BaseLayout, available on
