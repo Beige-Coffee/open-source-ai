@@ -1,0 +1,51 @@
+---
+date: 2026-05-14
+editorial_letter: "Today the runtime layer carried three primary-source items: vLLM v0.21.0rc3, Ollama v0.24.0-rc0, and a Hugging Face write-up on asynchronous continuous batching that reports a 22% generation-time speedup on an 8B model. The agents layer logged Anthropic's $200M four-year Gates Foundation partnership and Latent Space's coverage of competitive shifts between OpenAI Codex and Claude API metering. The evaluation layer carried Allen AI's launch of AIMIP, a climate-model intercomparison effort joined by NVIDIA, Google Research, and several universities. The most significant primary release of the day is the Hugging Face transformers asynchronous-batching contribution, which delivers a measurable inference-throughput gain without new kernels."
+item_count: 6
+layer_buckets:
+  runtime: 3
+  agents: 2
+  evaluation: 1
+---
+
+## Runtime
+
+### vLLM v0.21.0rc3
+
+vLLM tagged v0.21.0rc3 on 2026-05-14, the third release candidate in the v0.21 line and the next bump after rc2 from the prior day. The release page did not render full notes at the time of this issue; the tag itself is verified against the project's GitHub releases atom feed.
+
+Source: [vLLM GitHub Releases](https://github.com/vllm-project/vllm/releases/tag/v0.21.0rc3)
+
+### Ollama v0.24.0-rc0
+
+Ollama cut v0.24.0-rc0 on 2026-05-14. The release notes list two changes: an mlx memory-trace logging addition and a Codex app integration at launch.
+
+Source: [Ollama GitHub Releases](https://github.com/ollama/ollama/releases/tag/v0.24.0-rc0)
+
+### Unlocking asynchronicity in continuous batching
+
+Rémi Ouazan Reboul, Pedro Cuenca, and Aritra Roy Gosthipaty published a Hugging Face post on 2026-05-14 documenting asynchronous continuous batching for LLM inference. By splitting CPU batch preparation and GPU compute across separate CUDA streams with double-buffered slots, they report a 22% generation-time speedup on an 8B model at batch size 32 generating 8K tokens. The implementation is in the Hugging Face transformers library and requires no new kernels or model changes.
+
+Source: [Hugging Face Blog](https://huggingface.co/blog/continuous_async)
+
+## Agents
+
+### Anthropic forms $200 million partnership with the Gates Foundation
+
+Anthropic announced on 2026-05-14 a four-year, $200M partnership with the Gates Foundation. The package combines grant funding, Claude usage credits, and technical support for programs in global health, life sciences, education, and economic mobility, targeting populations with limited access to these services.
+
+Source: [Anthropic News](https://www.anthropic.com/news/gates-foundation-partnership)
+
+### AINews: Codex Rises, Claude Meters Programmatic Usage
+
+Smol's AINews issue on 2026-05-14, syndicated through Latent Space, covered two coding-agent pricing shifts. Anthropic announced that Claude subscriptions now carry separate monthly API credits for programmatic usage, which developers read as a tightening of prior subsidies. OpenAI in parallel offered enterprise customers two months of free Codex usage for switching within 30 days. The piece frames both moves as competition for developer share in the coding-agent market.
+
+Source: [Latent Space](https://www.latent.space/p/ainews-codex-rises-claude-meters)
+
+## Evaluation
+
+### Introducing AIMIP: The AI weather and climate model intercomparison project
+
+Allen Institute for AI launched AIMIP, the AI Model Intercomparison Project, on 2026-05-13 in collaboration with NVIDIA, Google Research, and several universities. The project provides a shared benchmark experiment and dataset for evaluating AI climate-forecasting models. Phase 1 results show AI models reproduce historical climate patterns well but struggle to generalize to unseen greenhouse-gas-emission pathways. Routed to the evaluation layer rather than the source's default data layer because the primary deliverable is a shared benchmark.
+
+Source: [Allen Institute for AI](https://allenai.org/blog/aimip)

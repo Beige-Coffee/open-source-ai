@@ -1,11 +1,11 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-05-13T08:00:00-07:00",
+  "last_run_at": "2026-05-14T08:00:00-07:00",
   "sources": {
     "vllm-releases": {
-      "last_seen_tag": "v0.21.0rc2",
-      "last_seen_at": "2026-05-13"
+      "last_seen_tag": "v0.21.0rc3",
+      "last_seen_at": "2026-05-14"
     },
     "sglang-releases": {
       "last_seen_tag": "v0.5.11",
@@ -36,12 +36,12 @@
       "last_seen_at": "2026-05-07"
     },
     "latent-space": {
-      "last_seen_url": "https://www.latent.space/p/ainews-the-end-of-finetuning",
-      "last_seen_at": "2026-05-13"
+      "last_seen_url": "https://www.latent.space/p/ainews-codex-rises-claude-meters",
+      "last_seen_at": "2026-05-14"
     },
     "lmarena-blog": {
       "last_seen_at": null,
-      "note": "feed at blog.lmarena.ai/feed.xml 301-redirects to arena.ai/blog/feed.xml; sources.yaml entry may need a human update"
+      "note": "feed at blog.lmarena.ai/feed.xml 301-redirects to arena.ai/blog/feed.xml; arena.ai/blog/feed.xml returned 404 on 2026-05-14; sources.yaml entry needs human investigation"
     },
     "osi-blog": {
       "last_seen_url": "https://opensource.org/blog/listening-learning-and-building-together-at-osi",
@@ -58,6 +58,75 @@
     "ezkl-blog": {
       "last_seen_url": "https://blog.ezkl.xyz/post/defi3dot0/",
       "last_seen_at": "2025-04-10"
+    },
+    "ollama-releases": {
+      "last_seen_tag": "v0.24.0-rc0",
+      "last_seen_at": "2026-05-14"
+    },
+    "llama-cpp-releases": {
+      "last_seen_tag": "b9145",
+      "last_seen_at": "2026-05-14",
+      "note": "Nightly tag bumps; not published as items unless a milestone release is identified."
+    },
+    "huggingface-blog": {
+      "last_seen_url": "https://huggingface.co/blog/continuous_async",
+      "last_seen_at": "2026-05-14"
+    },
+    "anthropic-news": {
+      "last_seen_url": "https://www.anthropic.com/news/gates-foundation-partnership",
+      "last_seen_at": "2026-05-14"
+    },
+    "anthropic-research": {
+      "last_seen_url": "https://www.anthropic.com/research/teaching-claude-why",
+      "last_seen_at": "2026-05-08"
+    },
+    "ai2-blog": {
+      "last_seen_url": "https://allenai.org/blog/aimip",
+      "last_seen_at": "2026-05-13"
+    },
+    "trl-releases": {
+      "last_seen_tag": "v1.4.0",
+      "last_seen_at": "2026-05-09"
+    },
+    "lm-eval-harness-releases": {
+      "last_seen_tag": "v0.5.0.dev1",
+      "last_seen_at": "2026-05-11"
+    },
+    "openhands-releases": {
+      "last_seen_tag": "cloud-1.29.1",
+      "last_seen_at": "2026-05-12"
+    },
+    "aider-releases": {
+      "last_seen_tag": "v0.86.3.dev",
+      "last_seen_at": "2026-02-12"
+    },
+    "x402-releases": {
+      "last_seen_tag": "npm-@x402/next@v2.10.0",
+      "last_seen_at": "2026-04-13"
+    },
+    "nvidia-dev-blog": {
+      "last_seen_url": "https://developer.nvidia.com/blog/accelerated-x-ray-analysis-for-nanoscale-imaging-xani-of-novel-materials/",
+      "last_seen_at": "2026-05-13"
+    },
+    "mistral-news": {
+      "last_seen_url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5",
+      "last_seen_at": "2026-04-29"
+    },
+    "qwen-blog": {
+      "last_seen_at": "2026-05-14",
+      "note": "qwen.ai/blog returned a near-empty page on 2026-05-14; needs human investigation of the scrape source."
+    },
+    "qdrant-blog": {
+      "last_seen_at": null,
+      "note": "qdrant.tech/blog/feed.xml returned 404 on 2026-05-14; logged to fetch-errors.jsonl. First failure for this source."
+    },
+    "goose-blog": {
+      "last_seen_at": null,
+      "note": "block.github.io/goose/blog/rss.xml returned 404 on 2026-05-14; logged to fetch-errors.jsonl."
+    },
+    "prime-intellect-blog": {
+      "last_seen_url": "https://www.primeintellect.ai/blog/renderers",
+      "last_seen_at": "2026-05-12"
     },
     "grants_watch_frontier-model-forum-updates": {
       "last_seen_url": "https://www.frontiermodelforum.org/updates/fmf-announces-first-of-its-kind-information-sharing-agreement/",
@@ -118,7 +187,7 @@
     "grants_watch_ai2-blog-funding": {
       "last_seen_url": "https://allenai.org/blog/aimip",
       "last_seen_at": "2026-05-13",
-      "note": "Recent Ai2 blog posts are model/product releases (EMO, MolmoAct 2, AstaBench, OlmoEarth). No funding posts in window."
+      "note": "Recent Ai2 blog posts are model/product releases. AIMIP (May 13) is a benchmark project, not a funding announcement."
     },
     "grants_watch_huggingface-blog-grants": {
       "last_seen_url": "https://huggingface.co/blog/amazon/foundation-model-building-blocks",
