@@ -1,10 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import StackDiagram from "../components/StackDiagram.astro";
 ---
 
 <BaseLayout title="The Open-Source AI Stack">
-  <section class="max-w-4xl mx-auto px-6 pt-16 pb-4">
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-12">
     <p
       class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
     >
@@ -16,85 +15,101 @@ import StackDiagram from "../components/StackDiagram.astro";
       The Open-Source AI Stack
     </h1>
     <p
-      class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+      class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-4"
     >
-      Nine core layers, five cross-cutting meta-layers, and the projects,
-      news, and funding flowing through each. Updated once a day at 08:00
-      Pacific by a scheduled agent that reads about thirty layer-specific
-      feeds, dedupes, and routes each item to the layer it affects.
+      Nine core layers, five cross-cuts, and the projects, news, grants,
+      readings, and predictions flowing through each. A scheduled agent
+      reads about thirty feeds once a day at 08:00 Pacific and routes
+      each item to the layer it affects.
+    </p>
+    <p class="text-sm text-[var(--color-text-subtle)] leading-relaxed max-w-prose">
+      Click the bubble bottom-right to ask the in-site chat anything
+      about what is on this site. Pure BYOK; add a key on{" "}
+      <a href="/settings" class="no-underline hover:underline">settings</a>.
     </p>
   </section>
 
-  <StackDiagram />
-
-  <section class="max-w-4xl mx-auto px-6 my-16 grid gap-8 md:grid-cols-2">
-    <a
-      href="/today"
-      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
-    >
-      <p
-        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
-      >
-        Today
-      </p>
-      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
-        What moved at each layer today
-      </h2>
-      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-        Per-layer roundup. One editorial paragraph, then layer-by-layer items
-        with citations. Yesterday and the week archive linked from the page.
-      </p>
-    </a>
-    <a
-      href="/grants"
-      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
-    >
-      <p
-        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
-      >
-        Grants
-      </p>
-      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
-        Who funds what, and where the gaps are
-      </h2>
-      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-        Active funders. Recently funded projects with layer attribution.
-        Underfunded areas and concrete project shapes for new grantees.
-      </p>
-    </a>
-    <a
-      href="/predictions"
-      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
-    >
-      <p
-        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
-      >
-        Predictions
-      </p>
-      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
-        We track our own calls
-      </h2>
-      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-        Falsifiable predictions per layer with horizons and resolution
-        criteria. Filed publicly. Resolved openly. Vibes excluded.
-      </p>
-    </a>
-    <a
-      href="/about"
-      class="block border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-accent)] transition-colors bg-[var(--color-surface)] no-underline hover:no-underline group"
-    >
-      <p
-        class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2"
-      >
-        About
-      </p>
-      <h2 class="font-semibold text-xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-2">
-        How this site is built and updated
-      </h2>
-      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-        Open methodology. The scheduled agent that maintains the site, the
-        source feeds it reads, and the editorial rules it follows.
-      </p>
-    </a>
+  <section class="max-w-3xl mx-auto px-6 pb-24">
+    <ul class="space-y-5 border-t border-[var(--color-border)] pt-8">
+      <li>
+        <a
+          href="/stack"
+          class="block group no-underline hover:no-underline"
+        >
+          <h2
+            class="font-serif text-2xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-1"
+          >
+            The Stack &rarr;
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Fourteen layers from silicon up to protocols, with projects,
+            news, grants, predictions, and reading lists at each.
+          </p>
+        </a>
+      </li>
+      <li>
+        <a
+          href="/grants"
+          class="block group no-underline hover:no-underline"
+        >
+          <h2
+            class="font-serif text-2xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-1"
+          >
+            Grants &rarr;
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Who funds open-source AI, what they actually fund, and the
+            named gaps. Filterable by funder, layer, region, amount.
+          </p>
+        </a>
+      </li>
+      <li>
+        <a
+          href="/news"
+          class="block group no-underline hover:no-underline"
+        >
+          <h2
+            class="font-serif text-2xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-1"
+          >
+            News &rarr;
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Daily roundup, per layer. Auto-published once a day.
+          </p>
+        </a>
+      </li>
+      <li>
+        <a
+          href="/predictions"
+          class="block group no-underline hover:no-underline"
+        >
+          <h2
+            class="font-serif text-2xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-1"
+          >
+            Predictions &rarr;
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Falsifiable predictions per layer with horizons and
+            resolution criteria.
+          </p>
+        </a>
+      </li>
+      <li>
+        <a
+          href="/about"
+          class="block group no-underline hover:no-underline"
+        >
+          <h2
+            class="font-serif text-2xl text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-1"
+          >
+            About &rarr;
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            How this site is built, the scheduled agent, the editorial
+            and citation rules.
+          </p>
+        </a>
+      </li>
+    </ul>
   </section>
 </BaseLayout>

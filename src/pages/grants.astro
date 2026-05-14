@@ -66,38 +66,21 @@ const totalDocumentedUsd = grants.reduce(
     </p>
   </section>
 
-  <!-- Global stats summary; always visible. -->
-  <section
-    class="max-w-5xl mx-auto px-6 my-8 border-t border-b border-[var(--color-border)] py-5"
-  >
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-      <div>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Funders tracked
-        </p>
-        <p class="font-serif text-3xl mt-1">{funders.length}</p>
-      </div>
-      <div>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Grants documented
-        </p>
-        <p class="font-serif text-3xl mt-1">{grants.length}</p>
-      </div>
-      <div>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Underfunded gaps
-        </p>
-        <p class="font-serif text-3xl mt-1">{underfunded.length}</p>
-      </div>
-      <div>
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Documented USD
-        </p>
-        <p class="font-serif text-3xl mt-1">
-          {formatUsd(totalDocumentedUsd)}
-        </p>
-      </div>
-    </div>
+  <!-- Tight one-line stats strip. Was a 4-card grid; shrunk to a
+       single horizontal line of mono text so it does not eat the
+       fold above the tab bar. -->
+  <section class="max-w-5xl mx-auto px-6 mt-2">
+    <p
+      class="font-mono text-xs text-[var(--color-text-subtle)] flex flex-wrap gap-x-4 gap-y-1"
+    >
+      <span>{funders.length} funders</span>
+      <span class="text-[var(--color-border-strong)]">&middot;</span>
+      <span>{grants.length} grants</span>
+      <span class="text-[var(--color-border-strong)]">&middot;</span>
+      <span>{underfunded.length} named gaps</span>
+      <span class="text-[var(--color-border-strong)]">&middot;</span>
+      <span>{formatUsd(totalDocumentedUsd)} disclosed</span>
+    </p>
   </section>
 
   <!-- Top-level page tabs. Sticky on scroll so the user can switch
