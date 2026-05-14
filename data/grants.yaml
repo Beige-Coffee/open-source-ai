@@ -17,8 +17,9 @@ grants:
     amount_usd: 152000000
     amount_label: "$152M (NSF $75M + NVIDIA $77M)"
     layers: [weights, data, compute]
+    region: US
     url: "https://allenai.org/blog/nsf-nvidia"
-    notes: "First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage."
+    description: "First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage."
 
   - title: "Technical AI Safety RFP"
     funder: open-philanthropy
@@ -27,8 +28,9 @@ grants:
     amount_usd: 40000000
     amount_label: "$40M+"
     layers: [safety-guardrails, evaluation]
+    region: Global
     url: "https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/"
-    notes: "Closed April 15, 2025. Distributed across 21 technical safety areas."
+    description: "Closed April 15, 2025. Distributed across 21 technical safety areas."
 
   - title: "FAR.AI / FAR.Futures field-building grant"
     funder: open-philanthropy
@@ -37,8 +39,9 @@ grants:
     amount_usd: 6650000
     amount_label: "$6.65M over 2 years"
     layers: [safety-guardrails]
+    region: US
     url: "https://www.openphilanthropy.org/"
-    notes: "Field-building grant for AI safety research community."
+    description: "Field-building grant for AI safety research community."
 
   - title: "Alignment Project cohort"
     funder: aisi-alignment-project
@@ -47,8 +50,9 @@ grants:
     amount_usd: 35000000
     amount_label: "£27M (~$35M)"
     layers: [safety-guardrails, evaluation]
+    region: UK
     url: "https://alignmentproject.aisi.gov.uk/"
-    notes: "60+ alignment projects funded; individual grants up to £1M."
+    description: "60+ alignment projects funded; individual grants up to £1M."
 
   - title: "AI2050 Fellows cohort"
     funder: schmidt-sciences
@@ -57,8 +61,9 @@ grants:
     amount_usd: 18000000
     amount_label: "$18M cohort"
     layers: [safety-guardrails, evaluation, governance]
+    region: Global
     url: "https://www.schmidtsciences.org/2025-ai2050-fellows-announcement/"
-    notes: "Annual AI2050 fellowships program."
+    description: "Annual AI2050 fellowships program."
 
   - title: "AI Safety Science program"
     funder: schmidt-sciences
@@ -67,8 +72,9 @@ grants:
     amount_usd: 10000000
     amount_label: "$10M / 27 projects"
     layers: [safety-guardrails]
+    region: Global
     url: "https://www.schmidtsciences.org/trustworthy-ai/"
-    notes: "Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project."
+    description: "Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project."
 
   - title: "AI Safety Fund Dec 2025 round"
     funder: frontier-model-forum-aisf
@@ -77,8 +83,9 @@ grants:
     amount_usd: 5000000
     amount_label: ">$5M / 11 grantees"
     layers: [safety-guardrails, agents]
+    region: Global
     url: "https://www.frontiermodelforum.org/updates/announcement-of-new-ai-safety-fund-grantees/"
-    notes: "Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming."
+    description: "Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming."
 
   - title: "Democracy x AI Cohort 2026"
     funder: mozilla
@@ -87,8 +94,9 @@ grants:
     amount_usd: 1250000
     amount_label: "$1M / 10 teams + $250K Sustain Track"
     layers: [governance, agents, sovereignty-decentralization]
+    region: Global
     url: "https://www.mozillafoundation.org/en/what-we-do/grantmaking/incubator/democracy-ai-cohort/"
-    notes: "10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure."
+    description: "10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure."
 
   - title: "NGI Zero Commons Fund April 2026 round"
     funder: nlnet
@@ -97,8 +105,9 @@ grants:
     amount_usd: 1500000
     amount_label: "€1.4M (~$1.5M) across 57 projects"
     layers: [protocols, identity-trust, governance]
+    region: EU
     url: "https://nlnet.nl/news/2026/20260409-announce-commons-fund.html"
-    notes: "Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware."
+    description: "Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware."
 
   - title: "Claude for Open Source program"
     funder: anthropic
@@ -106,8 +115,9 @@ grants:
     date: "2026-02"
     amount_label: "Free Claude Max for eligible OSS maintainers (compute credits not cash)"
     layers: [runtime, agents]
+    region: Global
     url: "https://claude.com/contact-sales/claude-for-oss"
-    notes: "Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026."
+    description: "Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026."
 
   - title: "Anthropic Fellows May 2026 cohort"
     funder: anthropic
@@ -115,8 +125,9 @@ grants:
     date: "2026-05"
     amount_label: "$3,850/week + ~$15K/month compute, 4 months"
     layers: [safety-guardrails]
+    region: Global
     url: "https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/"
-    notes: "Compute-heavy fellowship program for alignment research."
+    description: "Compute-heavy fellowship program for alignment research."
 
   - title: "OLMo 3 / Molmo 2 release line"
     funder: ai2
@@ -124,8 +135,9 @@ grants:
     date: "2025-11"
     amount_label: "Internal Ai2 funding"
     layers: [weights, data]
+    region: US
     url: "https://allenai.org/blog"
-    notes: "OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage."
+    description: "OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage."
 
   - title: "Common Pile v0.1"
     funder: ai2
@@ -133,8 +145,9 @@ grants:
     date: "2025-06"
     amount_label: "Compute + collaboration"
     layers: [data]
+    region: US
     url: "https://www.eleuther.ai/research"
-    notes: "License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma."
+    description: "License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma."
 
   - title: "OpenEuroLLM consortium kickoff"
     funder: eu-horizon
@@ -143,8 +156,9 @@ grants:
     amount_usd: 60000000
     amount_label: "€55M+ (~$60M) for OpenEuroLLM"
     layers: [weights, data]
+    region: EU
     url: "https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies"
-    notes: "Open multilingual European LLM consortium funded under Horizon Europe."
+    description: "Open multilingual European LLM consortium funded under Horizon Europe."
 
   - title: "Mistral Compute / ASML / Ministry of Armed Forces"
     funder: eu-horizon
@@ -152,8 +166,9 @@ grants:
     date: "2026"
     amount_label: "Compute partnership, scale undisclosed"
     layers: [compute, weights]
+    region: EU
     url: "https://mistral.ai/news"
-    notes: "European sovereign-compute partnership with strategic-industry implications. Specifics evolving."
+    description: "European sovereign-compute partnership with strategic-industry implications. Specifics evolving."
 
   - title: "AISI Inspect framework"
     funder: aisi-alignment-project
@@ -161,8 +176,9 @@ grants:
     date: "2025"
     amount_label: "Internal funding; open release"
     layers: [safety-guardrails, evaluation]
+    region: UK
     url: "https://www.aisi.gov.uk/work"
-    notes: "Open-sourced evaluation harness from UK AISI; available for community use."
+    description: "Open-sourced evaluation harness from UK AISI; available for community use."
 
   - title: "Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance"
     funder: sovereign-tech-fund
@@ -171,8 +187,9 @@ grants:
     amount_usd: 24900000
     amount_label: "€23M+ (~$24.9M) across 60 technologies in 2 years"
     layers: [runtime, governance]
+    region: EU
     url: "https://www.sovereigntechfund.de/"
-    notes: "Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools."
+    description: "Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools."
 
   - title: "MCP donation to Linux Foundation AAIF"
     funder: linux-foundation-aaif
@@ -180,5 +197,6 @@ grants:
     date: "2025-12"
     amount_label: "In-kind / governance handoff"
     layers: [protocols]
+    region: Global
     url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
-    notes: "Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and AGENTS.md (OpenAI). Industry-consortium governance model."
+    description: "Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and AGENTS.md (OpenAI). Industry-consortium governance model."

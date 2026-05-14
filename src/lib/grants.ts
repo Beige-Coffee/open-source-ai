@@ -16,6 +16,8 @@ export interface Funder {
   notable_recent: string;
 }
 
+export type Region = "US" | "EU" | "UK" | "Global" | "Asia" | "Africa" | "LatAm";
+
 export interface Grant {
   title: string;
   funder: string;
@@ -24,8 +26,41 @@ export interface Grant {
   amount_usd?: number;
   amount_label: string;
   layers: string[];
+  region: Region;
   url: string;
-  notes: string;
+  description: string;
+}
+
+/**
+ * Bucket a grant amount for the amount-range filter.
+ * Returns one of: "undisclosed" | "<100K" | "100K-1M" | "1M-10M" | ">10M"
+ */
+export function amountBucket(amount: number | undefined | null): string {
+  if (!amount || amount <= 0) return "undisclosed";
+  if (amount < 100_000) return "<100K";
+  if (amount < 1_000_000) return "100K-1M";
+  if (amount < 10_000_000) return "1M-10M";
+  return ">10M";
+}
+
+/**
+ * Bucket a grant date string (YYYY-MM-DD or YYYY-MM or YYYY) for the
+ * recency filter. Returns one of: "30d" | "90d" | "1y" | "older"
+ */
+export function recencyBucket(date: string, today: Date = new Date()): string {
+  // Normalize: accept YYYY, YYYY-MM, YYYY-MM-DD
+  const parts = String(date).split("-");
+  const y = parseInt(parts[0], 10);
+  const m = parts[1] ? parseInt(parts[1], 10) - 1 : 0;
+  const d = parts[2] ? parseInt(parts[2], 10) : 1;
+  const grantDate = new Date(y, m, d);
+  if (isNaN(grantDate.getTime())) return "older";
+  const diffMs = today.getTime() - grantDate.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  if (diffDays <= 30) return "30d";
+  if (diffDays <= 90) return "90d";
+  if (diffDays <= 365) return "1y";
+  return "older";
 }
 
 export interface UnderfundedArea {

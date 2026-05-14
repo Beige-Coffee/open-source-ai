@@ -1,0 +1,431 @@
+---
+import {
+  loadFunders,
+  loadGrants,
+  amountBucket,
+  recencyBucket,
+} from "../lib/grants";
+import { loadLayers } from "../lib/layers";
+
+const grants = loadGrants();
+const funders = loadFunders();
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+
+const findFunder = (slug: string) => funders.find((f) => f.slug === slug);
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+
+// Build filter facets in the order they should render in the sidebar.
+const funderFacets = [...funders]
+  .filter((f) => grants.some((g) => g.funder === f.slug))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const layerFacets = allLayers.filter((l) =>
+  grants.some((g) => g.layers.includes(l.slug)),
+);
+
+const amountFacets = [
+  { key: ">10M", label: "More than $10M" },
+  { key: "1M-10M", label: "$1M to $10M" },
+  { key: "100K-1M", label: "$100K to $1M" },
+  { key: "<100K", label: "Less than $100K" },
+  { key: "undisclosed", label: "Undisclosed" },
+];
+
+const regionFacets = [
+  { key: "US", label: "United States" },
+  { key: "EU", label: "European Union" },
+  { key: "UK", label: "United Kingdom" },
+  { key: "Global", label: "Global / multi-region" },
+  { key: "Asia", label: "Asia" },
+  { key: "Africa", label: "Africa" },
+  { key: "LatAm", label: "Latin America" },
+];
+
+const recencyFacets = [
+  { key: "30d", label: "Last 30 days" },
+  { key: "90d", label: "Last 90 days" },
+  { key: "1y", label: "Last 12 months" },
+  { key: "older", label: "Older than 12 months" },
+];
+
+const today = new Date();
+
+// Pre-compute attributes for each grant for the data-* tags.
+const grantsWithMeta = grants.map((g) => ({
+  ...g,
+  amount_bucket: amountBucket(g.amount_usd),
+  recency_bucket: recencyBucket(g.date, today),
+  funder_obj: findFunder(g.funder),
+}));
+---
+
+<section class="max-w-6xl mx-auto px-6 my-16" id="grants-browser">
+  <h2 class="font-serif text-2xl mb-2">All grants</h2>
+  <p class="text-sm text-[var(--color-text-muted)] mb-6 max-w-prose">
+    Every grant tracked, filterable by funder, layer, amount, region,
+    and recency. {grantsWithMeta.length} entries total.
+  </p>
+
+  <div class="grid gap-6 md:grid-cols-[240px_1fr] items-start">
+    <!-- Sticky filter sidebar -->
+    <aside
+      class="md:sticky md:top-20 md:self-start border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-4 text-sm"
+    >
+      <div class="flex items-baseline justify-between mb-3">
+        <h3
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]"
+        >
+          Filters
+        </h3>
+        <button
+          type="button"
+          data-grants-clear-all
+          class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-accent)] hover:underline bg-transparent border-0 cursor-pointer p-0"
+        >
+          Clear all
+        </button>
+      </div>
+
+      <details open class="mb-3">
+        <summary
+          class="cursor-pointer font-medium text-[var(--color-text)] mb-2 list-none select-none flex items-center justify-between"
+        >
+          <span>Funder</span>
+          <span class="font-mono text-xs text-[var(--color-text-subtle)]"
+            >({funderFacets.length})</span
+          >
+        </summary>
+        <ul class="space-y-1 max-h-48 overflow-y-auto pr-1">
+          {
+            funderFacets.map((f) => (
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                  <input
+                    type="checkbox"
+                    data-grants-filter="funder"
+                    value={f.slug}
+                    class="accent-[var(--color-accent)]"
+                  />
+                  <span class="text-xs leading-snug">{f.name}</span>
+                </label>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <details open class="mb-3">
+        <summary
+          class="cursor-pointer font-medium text-[var(--color-text)] mb-2 list-none select-none flex items-center justify-between"
+        >
+          <span>Layer</span>
+          <span class="font-mono text-xs text-[var(--color-text-subtle)]"
+            >({layerFacets.length})</span
+          >
+        </summary>
+        <ul class="space-y-1 max-h-48 overflow-y-auto pr-1">
+          {
+            layerFacets.map((l) => (
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                  <input
+                    type="checkbox"
+                    data-grants-filter="layer"
+                    value={l.slug}
+                    class="accent-[var(--color-accent)]"
+                  />
+                  <span class="text-xs leading-snug">{l.title}</span>
+                </label>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <details open class="mb-3">
+        <summary
+          class="cursor-pointer font-medium text-[var(--color-text)] mb-2 list-none select-none"
+        >
+          Amount
+        </summary>
+        <ul class="space-y-1">
+          {
+            amountFacets.map((a) => (
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                  <input
+                    type="checkbox"
+                    data-grants-filter="amount"
+                    value={a.key}
+                    class="accent-[var(--color-accent)]"
+                  />
+                  <span class="text-xs leading-snug">{a.label}</span>
+                </label>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <details class="mb-3">
+        <summary
+          class="cursor-pointer font-medium text-[var(--color-text)] mb-2 list-none select-none"
+        >
+          Region
+        </summary>
+        <ul class="space-y-1">
+          {
+            regionFacets.map((r) => (
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                  <input
+                    type="checkbox"
+                    data-grants-filter="region"
+                    value={r.key}
+                    class="accent-[var(--color-accent)]"
+                  />
+                  <span class="text-xs leading-snug">{r.label}</span>
+                </label>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <details>
+        <summary
+          class="cursor-pointer font-medium text-[var(--color-text)] mb-2 list-none select-none"
+        >
+          Recency
+        </summary>
+        <ul class="space-y-1">
+          {
+            recencyFacets.map((r) => (
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                  <input
+                    type="checkbox"
+                    data-grants-filter="recency"
+                    value={r.key}
+                    class="accent-[var(--color-accent)]"
+                  />
+                  <span class="text-xs leading-snug">{r.label}</span>
+                </label>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+    </aside>
+
+    <!-- Results column -->
+    <div>
+      <!-- Active filter chips + count -->
+      <div
+        class="flex flex-wrap items-baseline gap-3 mb-4 pb-3 border-b border-[var(--color-border)]"
+      >
+        <p class="font-mono text-sm text-[var(--color-text-muted)]">
+          Showing
+          <span data-grants-visible-count class="font-semibold"
+            >{grantsWithMeta.length}</span
+          >
+          of {grantsWithMeta.length}
+        </p>
+        <div
+          data-grants-active-chips
+          class="flex flex-wrap gap-1.5 flex-1 min-w-0"
+        >
+          <!-- Chips inserted by client script -->
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <p
+        data-grants-empty-state
+        class="hidden italic text-[var(--color-text-subtle)] py-8 text-center"
+      >
+        No grants match the current filters.
+      </p>
+
+      <!-- Grants list -->
+      <ul class="space-y-4" data-grants-list>
+        {
+          grantsWithMeta.map((g) => (
+            <li
+              class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+              data-grant
+              data-funder={g.funder}
+              data-layers={g.layers.join(",")}
+              data-amount={g.amount_bucket}
+              data-region={g.region}
+              data-recency={g.recency_bucket}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
+                <a
+                  href={g.url}
+                  class="font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:no-underline text-base"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {g.title}
+                </a>
+                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+                  {g.date} &middot; {g.amount_label}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] mb-2">
+                {g.recipient}
+                {g.funder_obj && (
+                  <>
+                    {" "}
+                    &middot; funded by{" "}
+                    <a
+                      href={`/grants/funder/${g.funder_obj.slug}`}
+                      class="no-underline hover:underline"
+                    >
+                      {g.funder_obj.name}
+                    </a>
+                  </>
+                )}
+                <span class="text-[var(--color-text-subtle)]">
+                  {" "}
+                  &middot; {g.region}
+                </span>
+              </p>
+              <p class="text-sm text-[var(--color-text)] mb-3">
+                {g.description}
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                {g.layers.map((slug) => {
+                  const layer = findLayer(slug);
+                  if (!layer) return null;
+                  return (
+                    <a
+                      href={`/stack/${layer.slug}`}
+                      class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-[var(--color-border)] rounded no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] text-[var(--color-text-muted)]"
+                    >
+                      {layer.title}
+                    </a>
+                  );
+                })}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // Client-side filter logic for the grants browser.
+  // Reads checkbox state, hides non-matching <li data-grant> entries,
+  // updates the visible count, manages active-filter chips.
+  (function () {
+    const root = document.getElementById("grants-browser");
+    if (!root) return;
+
+    const grantNodes = Array.from(root.querySelectorAll("[data-grant]"));
+    const checkboxes = Array.from(
+      root.querySelectorAll("[data-grants-filter]"),
+    );
+    const visibleCountEl = root.querySelector("[data-grants-visible-count]");
+    const chipsEl = root.querySelector("[data-grants-active-chips]");
+    const emptyEl = root.querySelector("[data-grants-empty-state]");
+    const clearAllBtn = root.querySelector("[data-grants-clear-all]");
+
+    const labelFor = (key, value) => {
+      const el = root.querySelector(
+        `input[data-grants-filter="${key}"][value="${value}"]`,
+      );
+      if (!el) return value;
+      const span = el.parentElement && el.parentElement.querySelector("span");
+      return span ? span.textContent.trim() : value;
+    };
+
+    function readState() {
+      const state = { funder: [], layer: [], amount: [], region: [], recency: [] };
+      for (const cb of checkboxes) {
+        if (cb.checked) {
+          state[cb.dataset.grantsFilter].push(cb.value);
+        }
+      }
+      return state;
+    }
+
+    function matchesGrant(node, state) {
+      if (state.funder.length && !state.funder.includes(node.dataset.funder))
+        return false;
+      if (state.amount.length && !state.amount.includes(node.dataset.amount))
+        return false;
+      if (state.region.length && !state.region.includes(node.dataset.region))
+        return false;
+      if (state.recency.length && !state.recency.includes(node.dataset.recency))
+        return false;
+      if (state.layer.length) {
+        const grantLayers = (node.dataset.layers || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const overlap = state.layer.some((l) => grantLayers.includes(l));
+        if (!overlap) return false;
+      }
+      return true;
+    }
+
+    function renderChips(state) {
+      if (!chipsEl) return;
+      chipsEl.innerHTML = "";
+      const allSelected = [];
+      for (const key of ["funder", "layer", "amount", "region", "recency"]) {
+        for (const value of state[key]) {
+          allSelected.push({ key, value });
+        }
+      }
+      for (const { key, value } of allSelected) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className =
+          "font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-accent-soft)] hover:bg-white cursor-pointer";
+        chip.textContent = labelFor(key, value) + " ×";
+        chip.addEventListener("click", () => {
+          const cb = root.querySelector(
+            `input[data-grants-filter="${key}"][value="${value}"]`,
+          );
+          if (cb) {
+            cb.checked = false;
+            apply();
+          }
+        });
+        chipsEl.appendChild(chip);
+      }
+    }
+
+    function apply() {
+      const state = readState();
+      let visible = 0;
+      for (const node of grantNodes) {
+        const ok = matchesGrant(node, state);
+        node.style.display = ok ? "" : "none";
+        if (ok) visible++;
+      }
+      if (visibleCountEl) visibleCountEl.textContent = String(visible);
+      if (emptyEl) emptyEl.classList.toggle("hidden", visible !== 0);
+      renderChips(state);
+    }
+
+    for (const cb of checkboxes) {
+      cb.addEventListener("change", apply);
+    }
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", () => {
+        for (const cb of checkboxes) cb.checked = false;
+        apply();
+      });
+    }
+
+    // Initial render (idempotent; nothing checked at boot).
+    apply();
+  })();
+</script>

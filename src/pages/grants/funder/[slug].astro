@@ -70,7 +70,7 @@ const funderGrants = grants.filter((g) => g.funder === funder.slug);
                   <p class="text-xs text-[var(--color-text-muted)] mb-2">
                     Recipient: {g.recipient}
                   </p>
-                  <p class="text-sm text-[var(--color-text)] mb-2">{g.notes}</p>
+                  <p class="text-sm text-[var(--color-text)] mb-2">{g.description}</p>
                   <div class="flex flex-wrap gap-1">
                     {g.layers.map((layerSlug) => {
                       const layer = findLayer(layerSlug);
