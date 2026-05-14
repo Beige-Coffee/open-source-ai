@@ -88,8 +88,11 @@ export function citationHref(c: ParsedCitation): string {
       // No per-grant page; deep-link the grants section.
       return `/grants#grants-browser`;
     case "project":
-      // No per-project page; deep-link the layer page.
-      return `/stack`;
+      // Per-project pages exist for ~35 high-priority projects with
+      // explainers. For projects without an explainer the route is a
+      // 404; that is acceptable for now (the agent's citation makes
+      // the slug visible inline, which is the load-bearing signal).
+      return `/projects/${c.ref}`;
     case "reading":
       // No per-reading page; deep-link the stack overview.
       return `/stack`;

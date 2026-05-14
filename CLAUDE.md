@@ -106,9 +106,10 @@ open-source-ai-stack/
     pages/
       index.astro
       stack/, grants/, news/
+      projects/[slug].astro # per-project pages for the ~35 with explainers
       settings.astro     # the BYOK settings page
       predictions.astro
-      about.astro, today.astro
+      about.astro
     styles/global.css
 ```
 
@@ -399,7 +400,7 @@ Agent must cite sources inline with these markers:
 - `(Layer: silicon)` — links to `/stack/silicon`
 - `(Funder: hrf)` — links to `/grants/funder/hrf`
 - `(Grant: Maple AI)` — links to the grant's URL or to a per-grant page
-- `(Project: vllm)` — links to the project URL or layer page
+- `(Project: vllm)` — links to `/projects/vllm` (the dedicated project page; only ~35 priority projects with `explainer` get a page, others 404)
 - `(Reading: <title>)` — links to the reading URL
 - `(News: 2026-05-13)` — links to `/news/2026-05-13`
 

@@ -1,0 +1,310 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  loadProjects,
+  focusLabel,
+  focusColor,
+} from "../../lib/projects";
+import { loadLayers } from "../../lib/layers";
+import { loadGrants, formatUsd } from "../../lib/grants";
+
+export async function getStaticPaths() {
+  // Only generate pages for projects that have an explainer; the
+  // catalog one-liner alone does not justify a dedicated route.
+  const projects = loadProjects().filter((p) => Boolean(p.explainer));
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
+
+const primaryLayerSlug = project.layers[0];
+const primaryLayer = findLayer(primaryLayerSlug);
+
+// Sibling projects at the same primary layer (other open / source-available
+// / proprietary projects on the same layer; useful for orientation).
+const siblings = loadProjects()
+  .filter(
+    (p) => p.slug !== project.slug && p.layers[0] === primaryLayerSlug,
+  )
+  .sort((a, b) => {
+    const order = {
+      open: 0,
+      "open-weights": 1,
+      "source-available": 2,
+      standard: 3,
+      proprietary: 4,
+    } as const;
+    return (
+      ((order as Record<string, number>)[a.focus] ?? 99) -
+      ((order as Record<string, number>)[b.focus] ?? 99)
+    );
+  });
+
+// Grants attributed to this project. Recipients in grants.yaml are
+// free-text strings; do a case-insensitive substring match against the
+// project name.
+const projNameLower = project.name.toLowerCase();
+// Strip parentheticals from the project name for a cleaner match
+// ("Tenstorrent (Wormhole, Blackhole)" -> "tenstorrent").
+const projShortLower = project.name
+  .replace(/\s*\(.*\)\s*/g, "")
+  .toLowerCase()
+  .trim();
+const attributedGrants = loadGrants().filter((g) => {
+  const blob = `${g.title} ${g.recipient}`.toLowerCase();
+  return (
+    blob.includes(projShortLower) ||
+    (projNameLower !== projShortLower && blob.includes(projNameLower))
+  );
+});
+---
+
+<BaseLayout
+  title={project.name}
+  description={project.description}
+>
+  <section class="max-w-3xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider mb-2">
+      <a
+        href="/stack"
+        class="no-underline hover:underline text-[var(--color-text-subtle)]"
+      >
+        The Stack
+      </a>
+      <span class="text-[var(--color-text-subtle)]"> &middot; </span>
+      {primaryLayer && (
+        <a
+          href={`/stack/${primaryLayer.slug}`}
+          class="no-underline hover:underline text-[var(--color-text-subtle)]"
+        >
+          {primaryLayer.title}
+        </a>
+      )}
+      <span class="text-[var(--color-text-subtle)]"> &middot; </span>
+      <span style={`color: ${focusColor(project.focus)};`}>
+        {focusLabel(project.focus)}
+      </span>
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-4"
+    >
+      {project.name}
+    </h1>
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      {project.description}
+    </p>
+
+    <!-- Quick metadata row -->
+    <div
+      class="flex flex-wrap items-center gap-3 mt-4 text-xs text-[var(--color-text-subtle)] font-mono"
+    >
+      <span>{project.license}</span>
+      <span>&middot;</span>
+      <span>{project.maturity}</span>
+      <span>&middot;</span>
+      <a
+        href={project.url}
+        target="_blank"
+        rel="noopener"
+        class="no-underline hover:underline"
+      >
+        Project site &rarr;
+      </a>
+      {project.github && (
+        <>
+          <span>&middot;</span>
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener"
+            class="no-underline hover:underline"
+          >
+            GitHub &rarr;
+          </a>
+        </>
+      )}
+    </div>
+  </section>
+
+  <article class="max-w-3xl mx-auto px-6 my-8 prose">
+    <p class="whitespace-pre-line">{project.explainer}</p>
+  </article>
+
+  {
+    project.sources && project.sources.length > 0 && (
+      <section class="max-w-3xl mx-auto px-6 mb-12">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Sources
+        </h2>
+        <ul class="space-y-1.5 text-sm">
+          {project.sources.map((s) => (
+            <li>
+              <a
+                href={s.url}
+                target="_blank"
+                rel="noopener"
+                class="no-underline hover:underline text-[var(--color-text)]"
+              >
+                {s.title}
+              </a>
+              <span class="block text-xs text-[var(--color-text-subtle)] font-mono">
+                {s.url}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- Ask about this -->
+  <section class="max-w-3xl mx-auto px-6 mb-12">
+    <div
+      class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+    >
+      <p class="text-sm text-[var(--color-text-muted)] mb-3">
+        Want a follow-up? Ask the chat about {project.name} in context.
+        It will compare to siblings at the same layer and ground every
+        claim in the wiki.
+      </p>
+      <button
+        type="button"
+        class="px-3 py-1.5 rounded-md border border-[var(--color-text)] bg-[var(--color-text)] text-white hover:bg-[var(--color-text-muted)] cursor-pointer text-sm font-medium"
+        data-ask-project={project.slug}
+        data-ask-project-name={project.name}
+        data-ask-layer={primaryLayerSlug}
+        data-ask-layer-title={primaryLayer?.title ?? primaryLayerSlug}
+      >
+        Ask the chat &rarr;
+      </button>
+    </div>
+  </section>
+
+  <!-- Sibling projects at the same primary layer -->
+  {
+    siblings.length > 0 && primaryLayer && (
+      <section class="max-w-3xl mx-auto px-6 mb-12">
+        <h2 class="font-sans text-xl font-semibold mb-1">
+          Other projects at the {primaryLayer.title} layer
+        </h2>
+        <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+          {siblings.length} sibling{siblings.length === 1 ? "" : "s"}{" "}
+          &middot; ordered open first
+        </p>
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {siblings.map((p) => (
+            <li class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                {p.explainer ? (
+                  <a
+                    href={`/projects/${p.slug}`}
+                    class="font-semibold no-underline hover:underline text-[var(--color-text)]"
+                  >
+                    {p.name}
+                  </a>
+                ) : (
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener"
+                    class="font-semibold no-underline hover:underline text-[var(--color-text)]"
+                  >
+                    {p.name}
+                  </a>
+                )}
+                <span
+                  class="font-mono text-xs whitespace-nowrap"
+                  style={`color: ${focusColor(p.focus)};`}
+                >
+                  {focusLabel(p.focus)}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] leading-snug">
+                {p.description}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- Grants attributed to this project -->
+  {
+    attributedGrants.length > 0 && (
+      <section class="max-w-3xl mx-auto px-6 mb-12">
+        <h2 class="font-sans text-xl font-semibold mb-1">
+          Grants attributed
+        </h2>
+        <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
+          {attributedGrants.length} match
+          {attributedGrants.length === 1 ? "" : "es"} from{" "}
+          <a href="/grants" class="no-underline hover:underline">/grants</a>
+        </p>
+        <ul class="space-y-2">
+          {attributedGrants.map((g) => (
+            <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)]">
+              <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
+                <a
+                  href={g.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="font-medium no-underline hover:underline"
+                >
+                  {g.title}
+                </a>
+                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+                  {g.date} &middot; {g.amount_label}
+                </span>
+              </div>
+              <p class="text-xs text-[var(--color-text-subtle)] mb-1">
+                {g.recipient}
+                {" "}&middot; funded by{" "}
+                <a
+                  href={`/grants/funder/${g.funder}`}
+                  class="no-underline hover:underline"
+                >
+                  {g.funder}
+                </a>
+              </p>
+              <p class="text-sm text-[var(--color-text-muted)]">
+                {g.description}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<script is:inline>
+  // Reuse the same chat-trigger pattern as the layer-page Ask buttons.
+  (function () {
+    const buttons = document.querySelectorAll("[data-ask-project]");
+    for (const btn of buttons) {
+      btn.addEventListener("click", () => {
+        const slug = btn.getAttribute("data-ask-project");
+        const name = btn.getAttribute("data-ask-project-name");
+        const layer = btn.getAttribute("data-ask-layer");
+        const layerTitle = btn.getAttribute("data-ask-layer-title");
+        const prompt =
+          `Tell me about ${name} (slug: ${slug}) in the context of the ${layerTitle} layer (slug: ${layer}). ` +
+          `Cover: what it is, how it compares to other projects at this layer, why it matters for open-source AI, ` +
+          `who is actually using it, and whether it is production-ready. Call read_project first, then compare ` +
+          `against the siblings it returns. Keep the answer tight: 3-5 short paragraphs.`;
+        window.dispatchEvent(
+          new CustomEvent("chat-trigger", { detail: { prompt } }),
+        );
+      });
+    }
+  })();
+</script>
