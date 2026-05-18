@@ -314,6 +314,57 @@ function esc(s) {
   return String(s ?? "").replace(/\|/g, "/").replace(/\n/g, " ").trim();
 }
 
+// Bulk auto-verdict pass: handles rows that don't require any LLM
+// judgment (framing, prediction, no-source, no-snapshot). These all
+// have deterministic verdicts under the audit rules.
+function cmdAutoVerdict() {
+  const state = loadLedger();
+  const today = new Date().toISOString().slice(0, 10);
+  const updates = [];
+  const counts = { consistent: 0, pending_horizon: 0, needs_source: 0, source_unreachable: 0, skipped: 0 };
+  for (const row of state.rows) {
+    if (row.verdict !== "needs_verification") continue;
+    let verdict = null;
+    let notes = "";
+    if (row.lane === "framing") {
+      verdict = "consistent";
+      notes = "framing; consistency-check Layer 4 will re-check quarterly";
+    } else if (row.lane === "prediction") {
+      verdict = "pending_horizon";
+      notes = "prediction; horizon resolver routine handles";
+    } else if (!row.citedSources || row.citedSources === "" || row.citedSources === "—") {
+      verdict = "needs_source";
+      notes = "no cited source on row; cannot verify";
+    } else {
+      // Factual with cited sources. Check if at least one snapshot exists.
+      const sources = row.citedSources.split(",").map((s) => s.trim()).filter(Boolean);
+      let hasSnapshot = false;
+      for (const src of sources) {
+        const snap = loadSnapshot(src);
+        if (snap && snap.extracted_text) {
+          hasSnapshot = true;
+          break;
+        }
+      }
+      if (!hasSnapshot) {
+        verdict = "source_unreachable";
+        notes = "no snapshot available for any cited source";
+      }
+    }
+    if (verdict) {
+      updates.push({ ...row, verdict, lastVerified: today, notes });
+      counts[verdict] = (counts[verdict] ?? 0) + 1;
+    } else {
+      counts.skipped++;
+    }
+  }
+  writeLedgerWithUpdates(state, updates);
+  console.log(`[auto-verdict] processed ${updates.length} row(s):`);
+  for (const [k, v] of Object.entries(counts)) {
+    if (v > 0) console.log(`  ${k.padEnd(22)} ${v}`);
+  }
+}
+
 function cmdSummarize() {
   const { rows } = loadLedger();
   const counts = {};
@@ -336,6 +387,7 @@ switch (sub) {
   case "batch": cmdBatch(rest); break;
   case "update": cmdUpdate(rest); break;
   case "summarize": case "summary": cmdSummarize(); break;
+  case "auto-verdict": cmdAutoVerdict(); break;
   default:
     console.error(`Usage: verify_entailment.mjs <subcommand>
 
