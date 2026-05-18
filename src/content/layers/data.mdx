@@ -10,13 +10,15 @@ related_layers: [training, weights, governance]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The training corpora. The text, code, images, audio, and synthetic data
-that go into pretraining and fine-tuning. This is the layer where "open"
+that go into <G term="pretraining">pretraining</G> and <G term="fine-tuning">fine-tuning</G>. This is the layer where "open"
 is most ambiguous: almost every open-weights model keeps its training
 data secret or only partially discloses it. Genuinely open data exists
-for a small set of models (OLMo and Dolma, RedPajama, FineWeb, Common
-Pile), built mostly as filtered subsets of Common Crawl. The legal and
+for a small set of models (OLMo and Dolma, <G term="redpajama">RedPajama</G>, <G term="fineweb">FineWeb</G>, Common
+<G term="the-pile">Pile</G>), built mostly as filtered subsets of <G term="common-crawl">Common Crawl</G>. The legal and
 licensing landscape is the binding constraint: licensed-data deals are
-non-transferable, NYT v. OpenAI is unresolved, and the OSAID debate
+non-transferable, NYT v. OpenAI is unresolved, and the <G term="osaid">OSAID</G> debate
 hinges on whether disclosure of data is required for a release to be
 "open source" at all.

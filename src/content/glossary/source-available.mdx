@@ -1,0 +1,31 @@
+---
+term: source-available
+aliases: [source available]
+primary_layer: weights
+secondary_layers: [governance]
+summary: A license category that lets users read and modify the code or weights but imposes restrictions (use limits, non-compete, MAU thresholds) that exclude it from the strict open-source definition.
+sources:
+  - title: "Source-available software (Wikipedia)"
+    url: "https://en.wikipedia.org/wiki/Source-available_software"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A license category that sits between fully open and fully proprietary.
+The source (or the weights, for models) are downloadable and editable.
+The license imposes restrictions that the <G term="osi">OSI</G> rejects as
+non-open-source: <G term="field-of-use">field-of-use</G> clauses, <G term="mau">MAU</G> thresholds, non-compete
+clauses, license-revocation hooks.
+
+For models, this is how most Meta, Google, and Microsoft open releases
+work. <G term="llama">Llama</G>'s Community License with the 700M `MAU` cap is source-
+available, not open source. <G term="gemma">Gemma</G>'s terms with the <G term="acceptable-use">acceptable-use</G>
+revocation hook are source-available. The technique is to capture the
+PR benefit of "open" while retaining the legal levers of proprietary.
+
+For an end user the practical effect is conditional permission. A
+hobbyist or small startup gets effectively-open access. A competitor
+or a large enterprise gets a contract negotiation. The mental model
+is not "free for everyone" but "free for the licensor's chosen field
+of use."

@@ -10,15 +10,17 @@ related_layers: [data, weights, runtime]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The tools that take open data plus an architecture and produce weights.
-Two related ecosystems share this layer: pretraining infrastructure
-(Megatron-LM, DeepSpeed, FSDP, JAX-based stacks) used by frontier labs
-to build base models from scratch, and fine-tuning infrastructure
-(Unsloth, Axolotl, LLaMA-Factory, HuggingFace TRL) used by individuals
+Two related ecosystems share this layer: <G term="pretraining">pretraining</G> infrastructure
+(<G term="megatron">Megatron-LM</G>, <G term="deepspeed">DeepSpeed</G>, FSDP, JAX-based stacks) used by <G term="frontier">frontier</G> labs
+to build base models from scratch, and <G term="fine-tuning">fine-tuning</G> infrastructure
+(<G term="unsloth">Unsloth</G>, <G term="axolotl">Axolotl</G>, <G term="llama">LLaMA</G>-Factory, <G term="hugging-face">HuggingFace</G> <G term="trl">TRL</G>) used by individuals
 and small teams to adapt existing open-weights models. A third
-sub-cluster is decentralized training (Prime Intellect, Nous DisTrO,
+sub-cluster is <G term="decentralized-training">decentralized training</G> (Prime Intellect, Nous DisTrO,
 Templar, Pluralis), which is still slower than centralized
-frontier training but is shipping working models. The single cleanest
-sovereignty story of 2026 lives here: fine-tuning Llama-class models
-went from "A100 only" to "consumer GPU plus a Mac," and the open
-fine-tuning ecosystem is what made that happen.
+<G term="frontier">frontier</G> training but is shipping working models. The single cleanest
+sovereignty story of 2026 lives here: <G term="fine-tuning">fine-tuning</G> <G term="llama">Llama</G>-class models
+went from "A100 only" to "consumer <G term="gpu">GPU</G> plus a Mac," and the open
+<G term="fine-tuning">fine-tuning</G> ecosystem is what made that happen.

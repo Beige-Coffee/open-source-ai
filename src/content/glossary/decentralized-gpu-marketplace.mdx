@@ -1,0 +1,36 @@
+---
+term: decentralized GPU marketplace
+aliases: [decentralized compute marketplace, GPU marketplace]
+primary_layer: infrastructure
+secondary_layers: [sovereignty-decentralization, protocols]
+summary: A protocol market matching GPU supply from many independent providers to AI demand, settled on a token rail; Akash, io.net, Bittensor compute, and Hyperbolic are canonical.
+sources:
+  - title: "Akash Network"
+    url: "https://akash.network/"
+  - title: "io.net documentation"
+    url: "https://docs.io.net/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A market where any provider with spare <G term="gpu">GPU</G> capacity can list it,
+tenants bid or accept fixed prices, and settlement happens on a
+shared protocol layer (a blockchain or a federated ledger). Akash
+uses a reverse-auction on Cosmos with the AKT token; io.net
+aggregates pre-existing GPU clusters into a single API on Solana;
+Bittensor compute subnets (Subnet 27 and others) price compute via
+TAO emissions tied to provider reputation.
+
+The architectural bet is that aggregated independent capacity can
+match the unit economics of hyperscaler clouds. Through 2025 to 2026
+these markets have demonstrated they can serve <G term="inference">inference</G> and small-
+scale <G term="fine-tuning">fine-tuning</G> competitively. The harder gap is <G term="frontier">frontier</G> training:
+distributed training across loosely-connected nodes is research-grade
+(Prime Intellect, Templar, Pluralis); commercial production training
+on decentralized marketplaces remains rare.
+
+For the sovereignty argument these markets are the most direct
+counterweight to hyperscaler concentration. Whether they reach the
+scale where they constrain hyperscaler pricing or remain niche
+alternatives is one of the load-bearing questions through 2026.

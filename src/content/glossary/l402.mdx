@@ -1,0 +1,29 @@
+---
+term: L402
+aliases: [lightning HTTP 402]
+primary_layer: protocols
+secondary_layers: [sovereignty-decentralization]
+summary: A Lightning-Labs protocol that pairs HTTP 402 Payment Required with Lightning Network invoices, enabling sub-cent metered payments for APIs and content.
+sources:
+  - title: "L402 specification (Lightning Labs)"
+    url: "https://docs.lightning.engineering/the-lightning-network/l402"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The Lightning-native predecessor of `x402`. A server returns HTTP 402
+with a macaroon credential and a Lightning invoice in the headers; the
+client pays the invoice, presents the now-signed macaroon, and the
+server grants access. Pricing per request can be fractions of a cent
+because Lightning settles off-chain.
+
+L402 originated at Lightning Labs in 2020 as "LSAT," renamed to L402
+in 2022. It saw real use for paid API gateways in the Bitcoin and
+Lightning ecosystems but never broke out into the broader web.
+
+The protocol assumes a counterparty already in a Lightning-capable
+state, which limits the addressable population. <G term="x402">x402</G> reuses the HTTP
+402 framing but stays rail-agnostic, betting on stablecoins as the
+common settlement layer. The two protocols cover overlapping ground;
+which becomes the convention is unsettled.

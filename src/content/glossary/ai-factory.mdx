@@ -1,0 +1,33 @@
+---
+term: AI factory
+aliases: [AI factory, purpose-built training facility]
+primary_layer: infrastructure
+secondary_layers: [compute]
+summary: A purpose-built data center optimized for AI training rather than general cloud workloads, characterized by liquid-cooled high-density GPU racks, gigawatt-scale single-tenant power, and tightly-coupled networking.
+sources:
+  - title: "Jensen Huang on AI factories (NVIDIA GTC 2024 keynote)"
+    url: "https://www.nvidia.com/gtc/keynote/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A data center designed from the ground up for AI training, not for
+mixed cloud workloads. The architectural differences from a
+conventional hyperscaler facility are concrete: 80+ kW per rack
+versus 10 to 20 kW; direct-to-chip liquid cooling as standard;
+all-to-all <G term="nvlink">NVLink</G> and <G term="infiniband">InfiniBand</G> fabrics; single-tenant operation;
+power draw measured in gigawatts.
+
+The term entered mainstream usage with Jensen Huang's 2024 framing of
+NVIDIA's H100 and Blackwell deployments as AI factories rather than
+data centers. The framing emphasizes that the output is tokens (or
+trained models), not virtualized compute hours, and the economics
+follow factory logic: continuous capacity utilization, large fixed
+costs amortized over <G term="throughput">throughput</G>.
+
+For sovereign / open-source AI, the AI-factory model is the
+centralizing pressure. The capital threshold to build one is high
+enough that the natural number of operators is small, which is part
+of why decentralized-training research (Pluralis, Templar, Prime
+Intellect) matters as a counterweight.

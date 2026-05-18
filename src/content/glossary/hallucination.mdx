@@ -1,0 +1,35 @@
+---
+term: hallucination
+aliases: [confabulation]
+primary_layer: safety-guardrails
+secondary_layers: [evaluation]
+summary: A model output that is fluent and plausible-sounding but factually wrong, ranging from invented citations and APIs to fabricated names, dates, and quotes.
+sources:
+  - title: "Survey of Hallucination in Natural Language Generation (Ji et al., 2022)"
+    url: "https://arxiv.org/abs/2202.03629"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A model generates a confident assertion that sounds right but is
+false. The pattern is not "the model does not know," it is "the model
+generates text that pattern-matches knowledge without being grounded."
+Classic examples: invented academic citations, fabricated API method
+names, hallucinated court cases that lawyers have cited and been
+sanctioned for, and convincing-sounding biographical detail about real
+people.
+
+Mitigations stack at different layers. <G term="rag">Retrieval-augmented generation</G>
+grounds answers in fetched documents. Tool calls verify facts against
+authoritative sources. Self-consistency sampling reduces some classes
+of error. Refusal training teaches the model to decline rather than
+fabricate when uncertain. Reasoning-mode models verify intermediate
+steps. None of these eliminates hallucination; together they reduce
+the rate.
+
+For verification systems (citation linters, fact-check pipelines, the
+audit work in this site), hallucination is the failure mode the
+infrastructure exists to catch. The cost of one hallucinated number in
+authoritative-looking prose is much higher than the cost of saying
+"I do not know."

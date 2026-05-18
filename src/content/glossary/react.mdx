@@ -1,0 +1,31 @@
+---
+term: ReAct
+aliases: [ReAct prompting]
+primary_layer: agents
+secondary_layers: []
+summary: An agent loop where the model alternates between reasoning steps (thought) and acting steps (tool call), explicitly interleaving free-form deliberation with structured tool use.
+sources:
+  - title: "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)"
+    url: "https://arxiv.org/abs/2210.03629"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The pattern that proposed combining `chain of thought` with `tool use`
+in one explicit loop. The model emits a Thought (free-text reasoning),
+then an Action (a tool call), gets an Observation (the tool result), and
+repeats. The thought step is what distinguishes ReAct from pure tool
+calling: it gives the model a place to plan, hypothesize, and self-
+correct between actions.
+
+Most modern agent frameworks implement some descendant of ReAct.
+<G term="langchain">LangChain</G>'s classic agent, <G term="autogen">AutoGen</G>'s assistant pattern, and the
+research agents at Anthropic and OpenAI all do thought-action-
+observation loops in different packaging.
+
+Whether the thought-action labels need to be explicit in the output
+depends on the model. Reasoning models (o1, R1) internalize the thought
+step into their hidden chain-of-thought; non-reasoning models often
+benefit from the explicit ReAct prompting scaffold to keep the loop
+coherent.

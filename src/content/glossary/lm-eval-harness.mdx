@@ -1,0 +1,30 @@
+---
+term: lm-eval-harness
+aliases: [lm-evaluation-harness, EleutherAI eval harness]
+primary_layer: evaluation
+secondary_layers: []
+summary: EleutherAI's open-source evaluation framework that runs hundreds of standardized benchmarks against any Hugging Face or OpenAI-compatible model, the de facto reference harness behind the Open LLM Leaderboard.
+sources:
+  - title: "lm-evaluation-harness (EleutherAI GitHub)"
+    url: "https://github.com/EleutherAI/lm-evaluation-harness"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+EleutherAI's evaluation harness. It implements a couple hundred
+standardized <G term="benchmark">benchmark</G> tasks (<G term="mmlu">MMLU</G>, ARC, HellaSwag, GSM8K, IFEval,
+GPQA, MUSR, BBH, and many more) with a unified runner that supports
+<G term="hugging-face">Hugging Face</G> models, OpenAI-compatible APIs, <G term="vllm">vLLM</G>-served models, and
+several other backends.
+
+The harness is the reference implementation behind the Open LLM
+<G term="leaderboard">Leaderboard</G> and behind most "we ran <G term="mmlu">MMLU</G> on our model and got 78.4"
+claims in the open-weights community. Running standardized harness
+results is the table-stakes evaluation step for any model release.
+
+Two things to know. Version pinning matters: harness updates have
+changed scoring conventions in ways that shift reported numbers by
+several points. And the harness measures what it measures: an aggregate
+of academic benchmarks. Agent and real-task evaluation needs separate
+tooling (SWE-Bench harness, τ-bench harness, etc).

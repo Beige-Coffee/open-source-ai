@@ -1,0 +1,33 @@
+---
+term: ColBERT
+aliases: [contextualized late interaction]
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: A retrieval model that produces per-token embeddings for documents and queries, then ranks by summing the maximum similarity across query tokens, more accurate than single-vector retrieval.
+sources:
+  - title: "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT (Khattab and Zaharia, 2020)"
+    url: "https://arxiv.org/abs/2004.12832"
+  - title: "ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction (Santhanam et al., 2021)"
+    url: "https://arxiv.org/abs/2112.01488"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A retrieval architecture that produces a vector per token rather than a
+single vector per document. At query time it computes, for each query
+token, the maximum similarity against any document token, then sums
+those maxima. The "late interaction" name distinguishes it from cross-
+encoders (early interaction, more accurate but slow) and from single-
+vector retrievers (early aggregation, fast but coarse).
+
+ColBERT quality sits between bi-encoders and cross-encoder rerankers,
+with cost much closer to bi-encoders if a specialized index (PLAID
+or similar) is used. It handles compositional queries and proper-noun
+retrieval better than single-vector dense retrieval because the per-
+token granularity preserves more lexical signal.
+
+It has stayed a research-grade tool more than a production default,
+partly because the multi-<G term="vector-database">vector index</G> needs custom infrastructure that
+most teams skip in favor of single-vector plus reranker. The tradeoff
+is worth knowing when single-vector retrieval underperforms on a corpus.

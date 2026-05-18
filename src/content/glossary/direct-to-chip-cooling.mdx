@@ -1,0 +1,32 @@
+---
+term: direct-to-chip cooling
+aliases: [DLC, direct liquid cooling]
+primary_layer: infrastructure
+secondary_layers: [silicon]
+summary: A cooling architecture that pipes liquid coolant directly to a cold plate on each processor, evacuating the 700+ watts per GPU that air cooling cannot handle.
+sources:
+  - title: "Open Compute Project: Advanced Cooling Solutions"
+    url: "https://www.opencompute.org/projects/advanced-cooling-solutions"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A cooling design where liquid coolant flows through a cold plate
+bolted to each <G term="gpu">GPU</G> or CPU, removing heat at the source rather than by
+moving air through the rack. The mechanical complexity is real (each
+chip is plumbed to a coolant loop) but the thermal capacity is much
+higher than air: a single rack can dissipate 100+ kW of heat reliably,
+versus 30 to 40 kW with the best air cooling.
+
+For AI data centers DLC became mainstream in 2024 with NVIDIA Hopper
+H200 and Blackwell B100/B200 deployments. Blackwell's GB200 NVL72
+rack architecture is liquid-cooled by design and cannot be air-cooled
+at full power. New <G term="ai-factory">AI factory</G> builds are universally DLC-ready or
+DLC-required; retrofitting older air-cooled facilities is involved
+and often economically marginal versus new construction.
+
+A related variant, immersion cooling, fully submerges the chips in
+dielectric fluid. Immersion has higher thermal capacity still but
+adds operational complexity; direct-to-chip is the production
+standard through 2026.

@@ -1,0 +1,33 @@
+---
+term: local-first
+aliases: [local-first AI, on-prem AI]
+primary_layer: sovereignty-decentralization
+secondary_layers: [runtime, agents]
+summary: An architecture stance where inference (and increasingly memory and agent state) runs on the user's own device rather than a remote API, prioritizing privacy, latency, and offline operation.
+sources:
+  - title: "Local-first software (Kleppmann et al., 2019)"
+    url: "https://www.inkandswitch.com/local-first/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A design principle. <G term="inference">Inference</G> happens on the user's hardware (laptop,
+phone, edge device). The user keeps custody of prompts, outputs, and
+any retrieved data. Sync to the cloud, if any, is opt-in and
+end-to-end encrypted. The reference point is the 2019 Ink & Switch
+essay on local-first software, predating modern LLMs but mapping
+cleanly onto them.
+
+For LLMs the practical limit is model size. <G term="llama">Llama</G>-3-8B and <G term="mistral">Mistral</G>-7B
+run well on consumer hardware via `llama.cpp` and `Ollama`; <G term="llama">Llama</G>-3-70B
+fits on a high-end Mac or pair of consumer GPUs; <G term="frontier">frontier</G>-scale models
+(400B+ parameters) do not. The trend through 2024 to 2026 of smaller-
+but-capable models (Phi, <G term="qwen">Qwen</G>-7B, <G term="gemma">Gemma</G>-3) has expanded what local-
+first can credibly serve.
+
+The sovereignty case is direct. Local-first <G term="inference">inference</G> means no third
+party sees the user's queries. The Apple Intelligence design (mostly
+<G term="on-device">on-device</G>, with confidential-compute fallback) and the Maple AI
+posture (local-first plus <G term="tee">TEE</G> fallback) are the two most prominent
+2026 productizations of the pattern.

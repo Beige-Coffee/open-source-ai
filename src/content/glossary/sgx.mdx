@@ -1,0 +1,32 @@
+---
+term: SGX
+aliases: [Intel SGX, Software Guard Extensions]
+primary_layer: identity-trust
+secondary_layers: [silicon]
+summary: Intel's earliest mainstream trusted execution environment, the predecessor to TDX, with smaller enclave sizes and a history of side-channel vulnerabilities that limited its deployment for AI.
+sources:
+  - title: "Intel SGX documentation"
+    url: "https://www.intel.com/content/www/us/en/architecture-and-technology/software-guard-extensions.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Intel's first-generation <G term="tee">trusted execution environment</G>, introduced
+in 2015. SGX enclaves are isolated regions of memory the host OS
+cannot read, with hardware-rooted <G term="attestation">attestation</G> that a known measurement
+of code is running inside. SGX served as the practical reference <G term="tee">TEE</G>
+for over a decade.
+
+Its limitations are why it has been largely superseded for AI
+workloads. Enclave size is capped at modest gigabytes, which fits
+embeddings or small classifiers but not large-language-model weights.
+The threat model assumes the host is hostile but trusts the CPU; a
+parade of side-channel attacks (Foreshadow, Plundervolt, SGAxe) has
+required microcode updates and complicates the trust story.
+
+For AI confidential-computing work in 2026, Intel TDX (per-VM
+isolation, much larger memory, similar <G term="attestation">attestation</G> primitives) is the
+spiritual successor and the more common deployment target. SGX still
+appears in legacy workloads and in specialized scenarios where small
+isolated enclaves suffice.

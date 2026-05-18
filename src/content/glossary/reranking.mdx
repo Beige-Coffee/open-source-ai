@@ -1,0 +1,33 @@
+---
+term: reranking
+aliases: [rerank, cross-encoder reranking]
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: A second-pass scoring step that takes the top-k candidates from initial retrieval and rescores them with a more expensive but more accurate cross-encoder model.
+sources:
+  - title: "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction (Khattab and Zaharia, 2020)"
+    url: "https://arxiv.org/abs/2004.12832"
+  - title: "Cohere Rerank documentation"
+    url: "https://docs.cohere.com/docs/rerank-2"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A two-stage retrieval pattern. Stage one (the "retriever") uses a
+cheap method like `BM25` or bi-encoder `embedding` similarity to fetch
+50 to 200 candidates from a large corpus. Stage two (the "reranker")
+uses a cross-encoder model that takes a query and a candidate together
+as a single input and predicts a relevance score, more expensive per
+candidate but much more accurate.
+
+Reranking exists because the retrieval-quality versus <G term="latency">latency</G> trade-off
+asymmetric. <G term="embedding">Embedding</G> similarity is fast over millions of documents but
+imprecise. Cross-encoder rerankers are precise but too slow to apply at
+corpus scale. Pairing them gets near-cross-encoder quality at near-bi-
+encoder cost.
+
+Open reranker models: BGE-Reranker, MixedBread mxbai-rerank, Jina
+Reranker, Cohere Rerank (closed API but commonly used). The MTEB
+<G term="benchmark">benchmark</G> includes a reranker <G term="leaderboard">leaderboard</G>; quality has improved steadily
+since 2023.

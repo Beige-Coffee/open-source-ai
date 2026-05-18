@@ -1,0 +1,32 @@
+---
+term: MMLU
+aliases: [Massive Multitask Language Understanding]
+primary_layer: evaluation
+secondary_layers: []
+summary: A multiple-choice benchmark covering 57 academic and professional subjects, once the default capability score, now largely saturated by frontier models above 88% accuracy.
+sources:
+  - title: "Measuring Massive Multitask Language Understanding (Hendrycks et al., 2020)"
+    url: "https://arxiv.org/abs/2009.03300"
+  - title: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark"
+    url: "https://arxiv.org/abs/2406.01574"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A multiple-choice exam with 14,000+ questions across 57 subjects,
+ranging from elementary math to professional law. The <G term="benchmark">benchmark</G> was
+designed as a capability proxy: a single number per model that summed
+breadth of knowledge. From 2020 to 2023 MMLU was the dominant headline
+score on every model release.
+
+By 2024 leading models exceeded 88% on MMLU and the <G term="benchmark">benchmark</G> stopped
+discriminating well at the top. The follow-up MMLU-Pro (Wang et al.,
+2024) increased question difficulty and the option count from 4 to 10,
+reintroducing discrimination at the cost of comparability with the
+older score.
+
+The takeaway: a model "scoring high on MMLU" in 2026 is necessary but
+no longer sufficient. Practical model comparison has shifted to
+multi-benchmark suites (Open LLM <G term="leaderboard">Leaderboard</G>, HELM, Chatbot Arena) and
+to task-specific evaluation (coding, reasoning, agent behavior).

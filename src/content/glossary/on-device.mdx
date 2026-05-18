@@ -1,0 +1,35 @@
+---
+term: on-device
+aliases: [on-device inference, edge inference]
+primary_layer: sovereignty-decentralization
+secondary_layers: [runtime, silicon]
+summary: Running model inference on the user's local hardware (phone, laptop, embedded device), enabled by smaller models, FP8 quantization, and runtimes like llama.cpp and MLX.
+sources:
+  - title: "MLX framework (Apple)"
+    url: "https://ml-explore.github.io/mlx/build/html/index.html"
+  - title: "llama.cpp GitHub"
+    url: "https://github.com/ggml-org/llama.cpp"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The concrete implementation pattern behind `local-first` AI. <G term="inference">Inference</G>
+runs on the user's CPU, <G term="gpu">GPU</G>, NPU, or unified-memory chip rather than
+on a remote API. Three reference platforms exist in 2026: Apple
+Silicon (M-series and A-series), running via <G term="mlx">MLX</G> or `llama.cpp`;
+modern Android with NPU acceleration; and PC builds with consumer
+GPUs running <G term="ollama">Ollama</G> or <G term="lm-studio">LM Studio</G>.
+
+The model-size envelope has expanded faster than hardware. A
+high-end Mac Studio can run <G term="llama">Llama</G>-3-70B in <G term="fp8">FP8</G> at 15 to 25 tokens per
+second; a base M-series MacBook can run 8B models in real time; a
+Pixel phone can run 1B to 3B models for on-device assistants. The
+quality of those small models has grown to match GPT-3.5 levels and
+beyond.
+
+The remaining bottlenecks. Long context is expensive on local memory.
+Multi-turn agent loops with tools (the on-device equivalent of
+Claude Code) are an open research area. And <G term="frontier">frontier</G>-class
+intelligence (the largest reasoning models) still does not fit on
+consumer hardware.

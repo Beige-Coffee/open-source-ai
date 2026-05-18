@@ -1,0 +1,35 @@
+---
+term: sharding
+aliases: [parameter sharding, ZeRO sharding]
+primary_layer: training
+secondary_layers: [compute]
+summary: A distributed training pattern where parameters, gradients, and optimizer states are split across GPUs (and sometimes hosts) so the total memory footprint scales with the cluster, not with each GPU.
+sources:
+  - title: "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (Rajbhandari et al., 2019)"
+    url: "https://arxiv.org/abs/1910.02054"
+  - title: "PyTorch FSDP documentation"
+    url: "https://pytorch.org/docs/stable/fsdp.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A distributed training pattern that splits model state across GPUs.
+The constraints addressed: a 70B-parameter model needs roughly 1.4 TB
+of memory for parameters + gradients + optimizer state in mixed
+precision; no single <G term="gpu">GPU</G> has that. Sharding partitions the state so
+each <G term="gpu">GPU</G> holds 1/N of it and the cluster as a whole can train models
+much larger than any individual node.
+
+`ZeRO` (<G term="deepspeed">DeepSpeed</G>) and FSDP (PyTorch's native variant) are the
+dominant implementations in 2026. Both have multiple stages: stage 1
+shards optimizer states only, stage 2 adds gradient sharding, stage 3
+adds parameter sharding. Each stage adds memory savings and
+communication overhead.
+
+The composability with other distribution strategies matters.
+Sharding works alongside tensor parallelism, pipeline parallelism,
+data parallelism, and expert parallelism (for <G term="mixture-of-experts">MoE</G> models). <G term="megatron">Megatron</G>-
+LM and the various open distributed-training frameworks all combine
+these in different "3D parallelism" or "4D parallelism" recipes
+appropriate to cluster topology and model architecture.

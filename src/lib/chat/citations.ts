@@ -8,6 +8,7 @@
  *   (Project: vllm)
  *   (Reading: Building Effective Agents)
  *   (News: 2026-05-13)
+ *   (Glossary: mixture-of-experts)
  */
 
 export type CitationKind =
@@ -16,7 +17,8 @@ export type CitationKind =
   | "grant"
   | "project"
   | "reading"
-  | "news";
+  | "news"
+  | "glossary";
 
 export interface ParsedCitation {
   start: number;
@@ -27,7 +29,7 @@ export interface ParsedCitation {
 }
 
 const PATTERN =
-  /\((Layer|Funder|Grant|Project|Reading|News):\s*([^)]+)\)/g;
+  /\((Layer|Funder|Grant|Project|Reading|News|Glossary):\s*([^)]+)\)/g;
 
 export function parseCitations(text: string): ParsedCitation[] {
   const hits: ParsedCitation[] = [];
@@ -96,6 +98,8 @@ export function citationHref(c: ParsedCitation): string {
     case "reading":
       // No per-reading page; deep-link the stack overview.
       return `/stack`;
+    case "glossary":
+      return `/glossary/${c.ref}`;
   }
 }
 

@@ -1,0 +1,31 @@
+---
+term: MAU
+aliases: [monthly active users]
+primary_layer: governance
+secondary_layers: [weights]
+summary: A user-count metric used in restrictive open-weights licenses (notably Llama's Community License) to trigger a requirement to negotiate a separate commercial license at scale.
+sources:
+  - title: "Llama Community License Agreement"
+    url: "https://llama.meta.com/license/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The lever Meta uses to keep the <G term="llama">Llama</G> license restrictive without
+calling it proprietary. The license grants broad use and modification
+of the weights, but if the licensee's product reaches 700 million
+monthly active users, they must request a separate commercial license
+from Meta. The threshold is high enough that almost no team will hit
+it, but it is a license-level chokepoint that <G term="apache-2-0">Apache 2.0</G> does not have.
+
+The mechanism matters because <G term="osaid">OSAID</G> and the <G term="osi">OSI</G> both reject MAU
+clauses as incompatible with the Open Source Definition: a license
+that discriminates against a class of users (in this case, very large
+ones) is not free software in the canonical sense. So <G term="llama">Llama</G> with its
+700M MAU clause is "<G term="source-available">source-available</G>" or "<G term="open-weights">open-weight</G>," not "open
+source" by the strict definition.
+
+The 700M number is conspicuously sized to exclude exactly Meta's
+direct competitors (Google, Microsoft, ByteDance, Apple) while
+permitting essentially the whole rest of the market.

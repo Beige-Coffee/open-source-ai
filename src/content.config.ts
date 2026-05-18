@@ -26,6 +26,7 @@ const layers = defineCollection({
     order: z.number().int(),
     lock_in_vector: z
       .enum([
+        "infrastructure",
         "silicon",
         "runtime",
         "agents",
@@ -67,7 +68,46 @@ const news = defineCollection({
   }),
 });
 
+/**
+ * Glossary content collection. One MDX file per canonical term in
+ * `src/content/glossary/<slug>.mdx`. Body is a soft 4-part senior-
+ * engineer-voice paragraph (what / how / where / related) read by the
+ * full entry page; frontmatter's `summary` field is the 30-word hover-
+ * card definition. Aliases resolve via the <G> component's lookup
+ * (e.g. <G term="moe"> resolves to the "mixture-of-experts" entry).
+ *
+ * Cross-layer terms declare primary_layer plus secondary_layers; the
+ * entry surfaces under primary on the /glossary index but cross-
+ * references show on each secondary layer page.
+ */
+const LAYER_SLUGS = [
+  "infrastructure", "silicon", "compute", "data", "training", "weights", "runtime",
+  "retrieval-memory", "agents", "protocols",
+  "evaluation", "governance", "identity-trust",
+  "safety-guardrails", "sovereignty-decentralization",
+] as const;
+
+const glossary = defineCollection({
+  loader: glob({
+    pattern: "**/*.mdx",
+    base: "./src/content/glossary",
+  }),
+  schema: z.object({
+    term: z.string(),
+    aliases: z.array(z.string()).default([]),
+    primary_layer: z.enum(LAYER_SLUGS),
+    secondary_layers: z.array(z.enum(LAYER_SLUGS)).default([]),
+    summary: z.string().refine(
+      (s) => s.split(/\s+/).filter(Boolean).length <= 30,
+      { message: "summary must be 30 words or fewer (hover-card cap)" },
+    ),
+    sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
+    updated: z.coerce.date(),
+  }),
+});
+
 export const collections = {
   layers,
   news,
+  glossary,
 };

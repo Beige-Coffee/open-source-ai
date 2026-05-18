@@ -1,0 +1,31 @@
+---
+term: Unsloth
+aliases: []
+primary_layer: training
+secondary_layers: []
+summary: An open fine-tuning library that uses hand-written Triton kernels and a manual gradient implementation to run LoRA and QLoRA fine-tuning roughly 2x faster than the Hugging Face baseline.
+sources:
+  - title: "Unsloth"
+    url: "https://unsloth.ai/"
+  - title: "Unsloth GitHub"
+    url: "https://github.com/unslothai/unsloth"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A fast <G term="fine-tuning">fine-tuning</G> library that targets consumer-<G term="gpu">GPU</G> <G term="lora">LoRA</G> and <G term="qlora">QLoRA</G>
+workflows. Unsloth replaces several standard PyTorch operations in
+the training path with hand-written Triton kernels and a manually-
+implemented backward pass, giving ~2x speedup on supported models and
+slightly reduced memory.
+
+The use case is single-<G term="gpu">GPU</G> <G term="fine-tuning">fine-tuning</G> on consumer cards (RTX 4090,
+4080, A6000). Users can fit larger context windows or bigger <G term="lora">LoRA</G>
+ranks for the same VRAM budget. The library supports <G term="llama">Llama</G>, <G term="mistral">Mistral</G>,
+<G term="qwen">Qwen</G>, <G term="gemma">Gemma</G>, Phi, and other major <G term="open-weights">open-weight</G> families.
+
+<G term="apache-2-0">Apache 2.0</G> licensed core; some performance optimizations sit behind
+a paid Pro tier.
+
+Full coverage at [/projects/unsloth](/projects/unsloth).

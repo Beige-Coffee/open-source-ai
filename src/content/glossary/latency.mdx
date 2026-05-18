@@ -1,0 +1,30 @@
+---
+term: latency
+aliases: [time to first token, TTFT, TPOT]
+primary_layer: compute
+secondary_layers: [runtime, evaluation]
+summary: The time from request submission to response completion, broken down for LLMs into time-to-first-token and time-per-output-token, the user-facing speed metric.
+sources:
+  - title: "Anyscale: LLM inference performance engineering"
+    url: "https://www.anyscale.com/blog/reproducible-performance-metrics-for-llm-inference"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The user-perceived wait. For LLMs the standard breakdown is
+time-to-first-token (TTFT, dominated by prefill) and time-per-output-
+token (TPOT, dominated by decode). End-to-end latency is TTFT plus
+TPOT times output length.
+
+Latency budgets shape architecture choices. A chat UI needs TTFT under
+half a second to feel responsive; an agent loop tolerates seconds. An
+embedded code-completion needs full sub-100ms end-to-end; a long-form
+research agent can run for minutes.
+
+The tunable levers are prefill <G term="chunking">chunking</G> (caps TTFT regardless of
+prompt length), <G term="prefix-caching">prefix caching</G> (reuses prior prefill state),
+<G term="speculative-decoding">speculative decoding</G> (accelerates TPOT), model size (smaller models
+are faster end-to-end), and <G term="quantization">quantization</G> (smaller weights move
+faster). Production serving usually defines latency SLOs first and
+then optimizes <G term="throughput">throughput</G> under those bounds.

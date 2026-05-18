@@ -1,0 +1,35 @@
+---
+term: TEE
+aliases: [trusted execution environment]
+primary_layer: identity-trust
+secondary_layers: [silicon]
+summary: A hardware-isolated CPU region where code and data are protected from inspection by the host OS, used to run inference in a way the operator cannot read or modify.
+sources:
+  - title: "Intel TDX documentation"
+    url: "https://www.intel.com/content/www/us/en/developer/tools/trust-domain-extensions/overview.html"
+  - title: "AMD SEV-SNP whitepaper"
+    url: "https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A CPU mode where a guest workload runs in encrypted memory, with the
+hypervisor and host OS unable to read the contents. The four real-
+world implementations are Intel TDX, AMD SEV-SNP, ARM CCA, and NVIDIA
+H100/H200 Confidential Compute. Each provides hardware-rooted
+<G term="attestation">attestation</G> that the running code matches an expected measurement.
+
+For AI the relevant property is "the operator cannot see your prompt
+or read the model weights." A team running <G term="inference">inference</G> inside a TEE
+on a third-party cloud can give cryptographic evidence to their users
+that the operator did not collect prompts. This is the technical
+foundation for confidential AI products like Apple Private Cloud
+Compute, Anthropic's Confidential <G term="inference">Inference</G>, and several smaller open-
+source efforts (Maple AI, NEAR Confidential AI).
+
+The trust model is real but not absolute. TEEs trust the hardware
+vendor; side-channel attacks against TDX and SEV-SNP have been
+demonstrated; performance overhead is meaningful for <G term="gpu">GPU</G> workloads.
+Still, TEE-based serving is the only practical "operator-blind"
+inference architecture at production scale.

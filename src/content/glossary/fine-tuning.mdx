@@ -1,0 +1,31 @@
+---
+term: fine-tuning
+aliases: [fine-tune, finetune, finetuning]
+primary_layer: training
+secondary_layers: [weights]
+summary: Continued training of a pretrained base model on a smaller, task-specific dataset to specialize its behavior without retraining from scratch.
+sources:
+  - title: "Hugging Face: Fine-tuning a pretrained model"
+    url: "https://huggingface.co/docs/transformers/training"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Continuing gradient descent on a pretrained base model with a smaller,
+curated dataset to adapt the model to a domain, style, or task. The
+parameter updates are smaller and the run is shorter than <G term="pretraining">pretraining</G>,
+typically hours to days on a handful of GPUs instead of weeks on
+thousands.
+
+Three common shapes. Full fine-tuning updates every parameter. Parameter-
+efficient fine-tuning (<G term="peft">PEFT</G>) methods like `LoRA` and `QLoRA` update a
+small set of adapters with the base frozen. Instruction tuning is fine-
+tuning on instruction-response pairs to make a base model follow
+prompts; preference tuning via `DPO` is fine-tuning on ranked pairs to
+shape style and refusal behavior.
+
+Open-source training stacks (<G term="axolotl">Axolotl</G>, <G term="unsloth">Unsloth</G>, <G term="trl">TRL</G>, <G term="llama">LLaMA</G>-Factory) all
+target fine-tuning as the primary use case. The trade-off versus a
+hosted API: more control over what the model knows and refuses, at the
+cost of <G term="gpu">GPU</G> time and the data work to assemble a good fine-tuning set.

@@ -1,0 +1,31 @@
+---
+term: Hugging Face
+aliases: [HuggingFace, HF]
+primary_layer: training
+secondary_layers: [weights, data, evaluation]
+summary: The model hub, dataset hub, and open-source library suite (Transformers, Datasets, Tokenizers, Accelerate, PEFT, TRL) that anchors the open-AI ecosystem's distribution and tooling layer.
+sources:
+  - title: "Hugging Face Hub"
+    url: "https://huggingface.co/docs/hub/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The de facto distribution layer for open AI. Hugging Face Hub hosts
+hundreds of thousands of model checkpoints, datasets, and Spaces
+(hosted apps), with git-based versioning and a content-addressed
+download flow. The accompanying Python libraries (Transformers,
+Datasets, Tokenizers, Accelerate, <G term="peft">PEFT</G>, <G term="trl">TRL</G>, diffusers) cover the
+training, <G term="fine-tuning">fine-tuning</G>, and <G term="inference">inference</G> paths for most architectures.
+
+The company maintains the Open LLM <G term="leaderboard">Leaderboard</G>, MTEB, and the
+Open Reasoning <G term="leaderboard">Leaderboard</G>; runs <G term="inference">Inference</G> Endpoints (managed
+hosting) and Spaces; partners with model labs for first-party
+releases. The Hub itself is closed-source; the libraries and most
+infrastructure tooling are <G term="apache-2-0">Apache 2.0</G>.
+
+Hugging Face is the answer to "where does open AI happen
+operationally." The healthy concern is concentration: one company
+holds the distribution choke point, which makes its governance and
+business model load-bearing for the open ecosystem.

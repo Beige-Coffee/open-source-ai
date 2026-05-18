@@ -1,0 +1,32 @@
+---
+term: acceptable-use
+aliases: [acceptable use policy, AUP, use restriction]
+primary_layer: governance
+secondary_layers: [weights, safety-guardrails]
+summary: License or terms-of-service clauses that prohibit certain uses (weapons, surveillance, harassment, child sexual abuse material), common on open-weight licenses but rejected by the strict open-source definition.
+sources:
+  - title: "Llama Acceptable Use Policy"
+    url: "https://www.llama.com/llama3/use-policy/"
+  - title: "OSI: Why use restrictions are not open source"
+    url: "https://opensource.org/blog/the-rise-of-ethical-source"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A list of prohibited uses attached to many <G term="open-weights">open-weight</G> licenses. The
+<G term="llama">Llama</G> AUP bars use for weapons, CSAM, harassment, and impersonation,
+among others. <G term="gemma">Gemma</G>'s terms have a similar list. Most "ethical source"
+licenses (Hippocratic, Anti-996, OpenRAIL) work the same way.
+
+The clauses are non-controversial in spirit and controversial in form.
+On the substance, almost no one defends the prohibited uses. On the
+form, the <G term="osi">OSI</G> position is that any use restriction violates the Open
+Source Definition's "no discrimination against fields of endeavor"
+clause. The result: <G term="llama">Llama</G> and most ethical-source licenses are not
+<G term="osaid">OSAID</G>-compliant even when the prohibited list is uncontroversial.
+
+For users the practical implication is verification burden. A
+licensee accepting an acceptable-use clause is taking on enforcement
+risk if downstream use violates it; the licensor may revoke the
+license. <G term="apache-2-0">Apache 2.0</G> weights carry no such revocation hook.

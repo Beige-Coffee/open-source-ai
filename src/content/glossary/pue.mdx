@@ -1,0 +1,30 @@
+---
+term: PUE
+aliases: [Power Usage Effectiveness]
+primary_layer: infrastructure
+secondary_layers: []
+summary: Power Usage Effectiveness, the ratio of total data center facility power to power delivered to IT equipment; lower is better, with 1.0 the floor and 1.1 a strong target.
+sources:
+  - title: "Uptime Institute PUE history"
+    url: "https://uptimeinstitute.com/data-center-efficiency-metrics-tutorial"
+updated: 2026-05-18
+---
+
+The ratio of *total facility power* (IT + cooling + lighting + losses)
+to *IT power* (the GPUs, CPUs, networking gear, storage). A PUE of
+1.5 means half a watt of overhead for every watt delivered to the
+servers; a PUE of 1.1 means a tenth of a watt of overhead. The
+theoretical floor is 1.0; nobody achieves it.
+
+The industry has compressed PUE substantially over two decades.
+Enterprise data centers from 2010 averaged near 2.0; modern
+hyperscaler facilities (Google, Meta, Microsoft) publish fleet
+averages around 1.10 to 1.15. The improvement came from free-air
+cooling in temperate climates, hot-aisle / cold-aisle containment,
+higher-temperature operation (chips run hotter than they used to),
+and increasingly liquid cooling for high-density AI racks.
+
+PUE has limits as a metric. It does not capture water consumption
+(see WUE), grid-mix carbon intensity, or embodied carbon in the
+buildings and chips. A facility can have a great PUE and a bad
+sustainability profile.

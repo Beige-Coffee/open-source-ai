@@ -24,6 +24,7 @@
           "items": {
             "type": "string",
             "enum": [
+              "infrastructure",
               "silicon", "compute", "data", "training", "weights",
               "runtime", "retrieval-memory", "agents", "protocols",
               "evaluation", "governance", "identity-trust",

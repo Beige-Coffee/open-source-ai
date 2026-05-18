@@ -1,0 +1,33 @@
+---
+term: alignment
+aliases: [alignment tuning]
+primary_layer: training
+secondary_layers: [safety-guardrails, governance]
+summary: The training-and-evaluation work of shaping a model's behavior to match human intent, refuse harmful requests, and answer honestly, distinct from raw capability training.
+sources:
+  - title: "Constitutional AI: Harmlessness from AI Feedback (Bai et al., 2022)"
+    url: "https://arxiv.org/abs/2212.08073"
+  - title: "Training language models to follow instructions with human feedback (Ouyang et al., 2022)"
+    url: "https://arxiv.org/abs/2203.02155"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The cluster of techniques that turn a raw pretrained next-token predictor
+into a model that follows instructions, refuses unsafe requests, and
+produces answers in human-preferred styles. It is <G term="post-training">post-training</G> work:
+the base model already has the capability; alignment adds the behavioral
+shaping layer.
+
+The component techniques are familiar: supervised <G term="fine-tuning">fine-tuning</G> on
+demonstration data, preference learning via `RLHF` or `DPO`, red-teaming
+to surface failure modes, and constitutional approaches that train the
+model to critique and revise its own outputs against written principles.
+
+The term carries political weight: at <G term="frontier">frontier</G> labs it covers everything
+from "don't help build bioweapons" to "answer in a helpful tone."
+Critics observe that "alignment" elides real disagreements about what
+behaviors should be enforced, by whom, and against whose objections.
+Open-source projects increasingly publish their alignment datasets and
+training scripts so the choices are auditable.

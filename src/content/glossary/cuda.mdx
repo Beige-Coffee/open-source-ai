@@ -1,0 +1,32 @@
+---
+term: CUDA
+aliases: [Compute Unified Device Architecture]
+primary_layer: silicon
+secondary_layers: [runtime, training]
+summary: NVIDIA's parallel-computing platform and proprietary toolchain, the de facto programming model for GPU-accelerated machine learning since the late 2000s.
+sources:
+  - title: "NVIDIA CUDA Toolkit documentation"
+    url: "https://docs.nvidia.com/cuda/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The C++ extension, runtime, and library stack that lets developers
+program NVIDIA GPUs. CUDA has been NVIDIA's strategic moat for 15+
+years: every PyTorch, TensorFlow, JAX, and <G term="inference">inference</G>-runtime
+implementation targets it as the first-class backend. Tens of
+thousands of optimized kernels (cuBLAS, cuDNN, <G term="flash-attention">FlashAttention</G>,
+TransformerEngine) are tuned for it.
+
+CUDA's lock-in is one of the most-discussed structural issues in open
+AI. Training and <G term="inference">inference</G> code written for CUDA does not run on AMD,
+Intel, Apple, or <G term="risc-v">RISC-V</G> silicon without a translation layer (<G term="rocm">ROCm</G>'s
+HIP compatibility, OpenCL, OneAPI, <G term="mlx">MLX</G>). Each translation loses
+performance or coverage.
+
+The open-ecosystem response has two threads. AMD <G term="rocm">ROCm</G> targets CUDA
+source compatibility directly. Triton (OpenAI 2021) provides a higher-
+level kernel-authoring language that compiles to CUDA, ROCm, or
+custom backends. Whether either credibly displaces direct CUDA usage
+remains an open question.

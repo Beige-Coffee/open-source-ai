@@ -1,0 +1,33 @@
+---
+term: attention
+aliases: []
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: The transformer operation where each token computes a weighted average over all earlier tokens, with weights derived from learned similarity between query and key vectors.
+sources:
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The central operation in a <G term="transformer">transformer</G>. Each token produces three
+projections (query, key, value) from its hidden state. To compute the
+output for token i, take the dot product of its query against every
+prior key, softmax those scores, then take the weighted sum of the
+corresponding values. That gives the attention output for that position.
+
+Computationally, attention is the part of a <G term="transformer">transformer</G> that scales
+quadratically with sequence length, which is why long-context <G term="inference">inference</G>
+is hard. Most modern runtime optimizations target attention specifically:
+`FlashAttention` reorders the memory access pattern to avoid
+materializing the full attention matrix, `PagedAttention` manages the
+`KV cache` like virtual memory, and `GQA` reduces the number of distinct
+key/value heads to shrink the cache.
+
+Variants worth knowing: multi-head attention (the original), multi-query
+attention (MQA, one KV per head), <G term="gqa">grouped-query attention</G> (<G term="gqa">GQA</G>, shared
+KV across head groups), <G term="mla">multi-head latent attention</G> (<G term="mla">MLA</G>, used by
+<G term="deepseek">DeepSeek</G>-V3), and sliding-window attention (capped lookback for cheaper
+long-context).

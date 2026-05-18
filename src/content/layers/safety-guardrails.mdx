@@ -10,10 +10,12 @@ related_layers: [weights, agents, evaluation]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The tools and techniques for constraining what a model or agent is
 allowed to do. Constraints apply across the production pipeline: at
-training time (Constitutional AI, RLHF, DPO), at inference time (output
-classifiers like Llama Guard and NeMo Guardrails), and at agent runtime
+training time (<G term="constitutional-ai">Constitutional AI</G>, <G term="rlhf">RLHF</G>, <G term="dpo">DPO</G>), at <G term="inference">inference</G> time (output
+classifiers like <G term="llama-guard">Llama Guard</G> and <G term="nemo-guardrails">NeMo Guardrails</G>), and at agent runtime
 (sandbox-escape evaluations, capability-token enforcement). The open
 ecosystem here is growing but not yet at parity with closed labs'
 internal safety stacks, which are proprietary by design and increasingly

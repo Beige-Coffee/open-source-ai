@@ -1,0 +1,31 @@
+---
+term: spot instance
+aliases: [preemptible instance, spot GPU]
+primary_layer: compute
+secondary_layers: []
+summary: A discounted cloud instance that the provider can reclaim with little warning, used for fault-tolerant training and batch inference where interruption is cheaper than reservation cost.
+sources:
+  - title: "AWS Spot Instances documentation"
+    url: "https://aws.amazon.com/ec2/spot/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Cloud capacity that the provider sells at a deep discount to its
+on-demand price (often 60 to 90 percent off) on the condition that it
+can reclaim the instance with minutes of notice. AWS calls it Spot;
+Google calls it Preemptible; Azure calls it Spot VM. All three
+operate on similar economics.
+
+For AI workloads the use cases stratify. Production <G term="inference">inference</G>: rarely
+runs on spot because user-facing <G term="latency">latency</G> hates eviction. Batch
+<G term="inference">inference</G>: often runs on spot with retry-on-eviction handling. <G term="pretraining">Pretraining</G>
+research: runs on spot with frequent checkpointing and elastic
+scaling, since the discount swamps the operational complexity.
+
+The pattern matters for open-source AI economics. Renting H100 capacity
+at on-demand prices is unaffordable for most independent researchers;
+renting it on spot at one-fifth the price puts non-<G term="frontier">frontier</G>-but-still-
+serious work within reach. Whether spot capacity will stay available
+in the <G term="gpu">GPU</G>-scarcity era is itself an open question.

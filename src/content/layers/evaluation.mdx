@@ -10,15 +10,17 @@ related_layers: [data, weights, agents]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 How we measure progress. The benchmarks, harnesses, and leaderboards
 that decide which models are "better." This is a meta-layer rather than
 a stack layer because it observes the rest of the stack rather than
 sitting between two production-pipeline layers. The open ecosystem is in
-mostly-good shape here: lm-evaluation-harness is the de facto reference
+mostly-good shape here: <G term="lm-eval-harness">lm-evaluation-harness</G> is the de facto reference
 harness, HELM and AISI Inspect are the principled large-scale
 frameworks, and LMArena is the most-respected human-preference
 evaluation. The unsolved problems are not openness but contamination
 (models trained on eval data score artificially well) and saturation
-(most public benchmarks no longer distinguish frontier from
-near-frontier). HLE, GPQA Diamond, FrontierMath, and SWE-bench Verified
-are the current frontier-resistant benchmarks.
+(most public benchmarks no longer distinguish <G term="frontier">frontier</G> from
+near-<G term="frontier">frontier</G>). HLE, GPQA Diamond, FrontierMath, and SWE-bench Verified
+are the current <G term="frontier">frontier</G>-resistant benchmarks.

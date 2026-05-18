@@ -1,0 +1,31 @@
+---
+term: AGPL
+aliases: [Affero GPL, AGPLv3]
+primary_layer: governance
+secondary_layers: []
+summary: A strong-copyleft license that extends GPL's source-distribution requirement to network-served software, the strongest open-source license to deter proprietary SaaS deployment.
+sources:
+  - title: "GNU Affero General Public License v3.0"
+    url: "https://www.gnu.org/licenses/agpl-3.0.en.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The "if you run this as a network service, you must publish source"
+license. AGPL closes the GPL loophole where a company could fork GPL
+software, modify it, and serve it as SaaS without ever distributing
+binaries (and thus without triggering GPL's source-publication
+requirement). AGPL triggers on network use as well as distribution.
+
+For AI projects, AGPL is the license to pick when the goal is to
+prevent hyperscalers from forking your work into a proprietary hosted
+product. Several open-source database, search, and infrastructure
+projects (MongoDB pre-SSPL, Elasticsearch pre-Elastic-License, Grafana,
+Bagel-DB) have moved to AGPL for exactly this reason.
+
+In the LLM ecosystem AGPL appears on some retrieval and orchestration
+projects but is rare on model weights themselves. The model-license
+contest has been <G term="apache-2-0">Apache-2.0</G>-vs-custom-RAIL not <G term="apache-2-0">Apache-2.0</G>-vs-AGPL,
+since model weights are usually consumed as inputs to a wrapping
+service rather than redistributed directly.

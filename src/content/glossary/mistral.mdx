@@ -1,0 +1,26 @@
+---
+term: Mistral
+aliases: []
+primary_layer: weights
+secondary_layers: []
+summary: A French open-weight model family from Mistral AI, released mostly under Apache 2.0 with strong performance per parameter and notable MoE variants (Mixtral, Mixtral 8x22B).
+sources:
+  - title: "Mistral AI documentation"
+    url: "https://docs.mistral.ai/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The French <G term="open-weights">open-weight</G> contender. Mistral AI launched in 2023 with the
+7B-parameter base model under <G term="apache-2-0">Apache 2.0</G>, followed by `Mixtral` 8x7B
+(the first widely-used open <G term="mixture-of-experts">MoE</G>) and <G term="mixtral">Mixtral</G> 8x22B. Later models
+(Codestral, Mistral Large, Pixtral) span code, multimodal, and
+<G term="frontier">frontier</G>-class workloads with varied license terms.
+
+Mistral's license posture is more permissive than Meta's: most base
+weights are <G term="apache-2-0">Apache 2.0</G> with no <G term="mau">MAU</G> cap or <G term="acceptable-use">use restriction</G>. The newer
+flagship models have moved toward commercial licensing, narrowing
+the open part of the catalog over time.
+
+Full coverage at [/projects/mistral](/projects/mistral).

@@ -1,0 +1,28 @@
+---
+term: Llama Guard
+aliases: []
+primary_layer: safety-guardrails
+secondary_layers: [weights]
+summary: Meta's open content-moderation model line, designed to classify prompts and responses against a configurable taxonomy of harms, deployable as an input/output filter.
+sources:
+  - title: "Llama Guard documentation"
+    url: "https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-3/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A small open model trained to classify text against a taxonomy of
+unsafe categories (violence, hate, sexual content, weapons, criminal
+planning, etc). The intended deployment pattern is filtering both
+user prompts and model responses: a <G term="llama">Llama</G> Guard call wraps each
+generation, blocking or flagging outputs that violate the configured
+policy.
+
+The taxonomy is editable, and the model handles instruction-style
+policy definitions reasonably well, so a team can configure
+"acceptable" per their own use case rather than accepting Meta's
+defaults. <G term="llama">Llama</G> Guard 3 (2024) expanded language coverage to eight
+languages and added image-input support.
+
+Full coverage at [/projects/llama-guard](/projects/llama-guard).

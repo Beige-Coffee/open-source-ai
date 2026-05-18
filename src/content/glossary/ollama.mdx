@@ -1,0 +1,26 @@
+---
+term: Ollama
+aliases: []
+primary_layer: runtime
+secondary_layers: [sovereignty-decentralization]
+summary: A local inference runtime that wraps llama.cpp with a Docker-style developer experience, the easiest path to running open-weight models on a personal machine.
+sources:
+  - title: "Ollama"
+    url: "https://ollama.com/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="local-first">local-first</G> runtime that put <G term="open-weights">open-weight</G> <G term="inference">inference</G> within reach of
+non-specialists. `ollama pull llama3` downloads a quantized model and
+makes it queryable via a simple HTTP API; `ollama run llama3` opens an
+interactive shell. The model files are `GGUF` under the hood; the
+runtime is `llama.cpp`; Ollama is the management layer.
+
+The product matters because installation friction is the dominant
+barrier to <G term="local-first">local-first AI</G> adoption. By packaging models, runtimes, and
+configuration into one tool with one command per operation, Ollama
+turned what was a sysadmin task into a developer-tool task.
+
+Full coverage at [/projects/ollama](/projects/ollama).

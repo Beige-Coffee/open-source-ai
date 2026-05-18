@@ -1,0 +1,33 @@
+---
+term: embedding
+aliases: [text embedding, vector embedding]
+primary_layer: retrieval-memory
+secondary_layers: [training]
+summary: A fixed-size vector representation of a piece of text learned so semantically similar texts land near each other in the vector space, the basis for vector search and most RAG.
+sources:
+  - title: "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks (Reimers and Gurevych, 2019)"
+    url: "https://arxiv.org/abs/1908.10084"
+  - title: "MTEB: Massive Text Embedding Benchmark"
+    url: "https://huggingface.co/blog/mteb"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A vector of typically 384 to 4096 floats produced by an embedding model
+from a chunk of text. The model is trained so that texts with similar
+meaning produce vectors with high cosine similarity. The embedding
+becomes a queryable handle on the text: index a million chunks as
+vectors, embed a query, retrieve the nearest neighbors.
+
+The model that produces embeddings is separate from the generative
+model that consumes the retrieved text. Open embedding models (BGE,
+GTE, Nomic, mxbai) compete on the MTEB <G term="benchmark">benchmark</G>, which evaluates
+retrieval, classification, clustering, and <G term="reranking">reranking</G> quality across
+languages and domains.
+
+Dimensionality is a knob. Smaller vectors mean cheaper storage and
+faster nearest-neighbor search at some quality cost. The Matryoshka
+training approach (2024) produces embeddings whose first N dimensions
+are usable on their own, letting a single model serve multiple
+size-quality tradeoffs.

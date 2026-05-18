@@ -1,0 +1,32 @@
+---
+term: pretraining
+aliases: [pre-training]
+primary_layer: training
+secondary_layers: [data, weights]
+summary: The first and most compute-expensive training phase, where a base model learns general capabilities by predicting the next token on trillions of words of web and book data.
+sources:
+  - title: "Scaling Laws for Neural Language Models (Kaplan et al., 2020)"
+    url: "https://arxiv.org/abs/2001.08361"
+  - title: "Training Compute-Optimal Large Language Models (Hoffmann et al., 2022)"
+    url: "https://arxiv.org/abs/2203.15556"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The phase where a <G term="transformer">transformer</G> learns to predict the next token over a
+large unlabeled text corpus. No instruction-following, no preferences,
+no special tasks: just minimizing cross-entropy loss over trillions of
+tokens of web text, books, code, and scientific papers. The model that
+falls out is a base model, useful only as a starting point for the
+<G term="post-training">post-training</G> work that comes after.
+
+Pretraining is where the compute lives. A <G term="frontier">frontier model</G> spends tens of
+millions of dollars and weeks on thousands of GPUs in this phase. The
+Chinchilla scaling law (Hoffmann et al., 2022) found that the
+compute-optimal ratio is roughly 20 tokens per parameter, which guided
+the design of <G term="llama">Llama</G>, <G term="mistral">Mistral</G>, and most <G term="open-weights">open-weight</G> families since.
+
+In the open-source ecosystem pretraining is concentrated at a few labs
+with cluster access: Meta, <G term="mistral">Mistral</G>, <G term="qwen">Qwen</G>, <G term="deepseek">DeepSeek</G>, AI2 (OLMo). Most
+downstream open work starts from these released checkpoints.

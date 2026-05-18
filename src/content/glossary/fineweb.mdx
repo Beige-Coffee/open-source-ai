@@ -1,0 +1,26 @@
+---
+term: FineWeb
+aliases: []
+primary_layer: data
+secondary_layers: [training]
+summary: An open large-scale web text dataset from Hugging Face, the highest-quality permissively-licensed pretraining corpus by 2024 to 2026 with ~15 trillion tokens after deduplication and filtering.
+sources:
+  - title: "FineWeb: decanting the web for the finest text data at scale (Hugging Face)"
+    url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="pretraining">pretraining</G> dataset that displaced <G term="redpajama">RedPajama</G> and <G term="the-pile">The Pile</G> as the
+default open-corpus choice in 2024. FineWeb is built from Common
+Crawl with extensive quality filtering (language identification,
+deduplication, quality classifiers trained on edu-like content), and
+the FineWeb-Edu subset further filters for educational content.
+
+The release is permissively licensed and includes the full
+preprocessing pipeline (<G term="hugging-face">Hugging Face</G>'s datatrove library) so teams
+can reproduce or modify the filtering. OLMo 2, several open-research
+models, and many community fine-tunes train on FineWeb derivatives.
+
+Full coverage at [/projects/fineweb](/projects/fineweb).

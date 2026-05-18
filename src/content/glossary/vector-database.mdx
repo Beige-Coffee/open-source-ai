@@ -1,0 +1,30 @@
+---
+term: vector database
+aliases: [vector store, vector index]
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: A datastore optimized for approximate nearest-neighbor search over high-dimensional embedding vectors, the storage substrate for most RAG and recommendation pipelines.
+sources:
+  - title: "HNSW: Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs (Malkov and Yashunin, 2016)"
+    url: "https://arxiv.org/abs/1603.09320"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A specialized index over `embedding` vectors that answers "find the k
+vectors most similar to this query vector" in sublinear time. The
+canonical algorithms are HNSW (graph-based, fast and accurate) and IVF
+(inverted-file with product <G term="quantization">quantization</G>, memory-efficient).
+
+The choice space stratifies by where the index lives. Embedded-in-the-
+process (sqlite-vec, LanceDB, DuckDB-vss) suits <G term="local-first">local-first</G> and small
+deployments. Standalone servers (Qdrant, Weaviate, Milvus) suit
+production <G term="rag">RAG</G>. Cloud-hosted (Pinecone, MongoDB Atlas Vector Search)
+suits teams wanting a managed offering. Postgres extensions (pgvector)
+suit teams already on Postgres.
+
+In open-source AI the trend through 2024 to 2026 has been toward
+embedded vector indexes (LanceDB, sqlite-vec) for <G term="local-first">local-first</G> and edge
+deployments, with the standalone servers consolidating on enterprise
+features (multi-tenancy, hybrid search, observability).

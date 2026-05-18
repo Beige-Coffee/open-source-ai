@@ -10,14 +10,16 @@ related_layers: [silicon, weights, agents]
 updated: 2026-05-13
 ---
 
-How weights become inference. The engines that take a transformer model
+import G from "../../components/G.astro";
+
+How weights become <G term="inference">inference</G>. The engines that take a <G term="transformer">transformer</G> model
 and serve tokens efficiently on actual hardware. Runtime is the layer
 most invisible to end users but most decisive for production economics:
 the same model can cost ten times more on a poorly-tuned runtime than a
 well-tuned one. This is also the layer where the open ecosystem has done
-its most surprising work. vLLM (PagedAttention, production-grade),
-SGLang (RadixAttention, structured generation), and llama.cpp
-(local-first, GGUF) are open projects that repeatedly catch up to or
-beat closed equivalents like TensorRT-LLM, often within months. When the
+its most surprising work. <G term="vllm">vLLM</G> (<G term="paged-attention">PagedAttention</G>, production-grade),
+<G term="sglang">SGLang</G> (<G term="radix-attention">RadixAttention</G>, structured generation), and <G term="llama-cpp">llama.cpp</G>
+(<G term="local-first">local-first</G>, <G term="gguf">GGUF</G>) are open projects that repeatedly catch up to or
+beat closed equivalents like <G term="tensorrt-llm">TensorRT-LLM</G>, often within months. When the
 workload is well-defined, open runtime wins on technical merits even
 when closed runtime still dominates hyperscaler revenue.

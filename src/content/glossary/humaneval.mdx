@@ -1,0 +1,30 @@
+---
+term: HumanEval
+aliases: []
+primary_layer: evaluation
+secondary_layers: []
+summary: An OpenAI benchmark of 164 Python programming problems scored by whether unit tests pass, the default LLM-coding benchmark from 2021 until saturation in 2024.
+sources:
+  - title: "Evaluating Large Language Models Trained on Code (Chen et al., 2021)"
+    url: "https://arxiv.org/abs/2107.03374"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A coding <G term="benchmark">benchmark</G> with 164 hand-written Python problems, each with a
+function signature, docstring, and unit tests. The model generates a
+function body; the test harness runs the tests; "pass@1" is the
+fraction of problems where the first generated solution passes. The
+<G term="benchmark">benchmark</G> accompanied the OpenAI Codex paper and became the default
+LLM-coding score for several years.
+
+HumanEval has been functionally saturated since late 2024: leading
+models score above 95%. The follow-ups that replaced it for serious
+comparison are MBPP (more problems, harder), SWE-Bench (real GitHub
+issues on real repositories), and LiveCodeBench (rotates problems
+weekly to avoid contamination).
+
+Worth knowing as historical context for any model card published before
+2025. Treating HumanEval as a 2026 capability signal is reading the
+wrong meter.

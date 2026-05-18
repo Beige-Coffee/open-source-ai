@@ -1,0 +1,28 @@
+---
+term: LlamaIndex
+aliases: [llama-index, GPT Index]
+primary_layer: retrieval-memory
+secondary_layers: [agents]
+summary: An open-source RAG framework focused on connecting LLMs to external data, with strong document-ingestion tooling and a smaller surface area than LangChain.
+sources:
+  - title: "LlamaIndex documentation"
+    url: "https://docs.llamaindex.ai/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="rag">RAG</G>-focused alternative to <G term="langchain">LangChain</G>. LlamaIndex (originally GPT
+Index, renamed in 2023) specializes in data ingestion, indexing, and
+retrieval for LLM applications. Its API surface is smaller than
+<G term="langchain">LangChain</G>'s and its agent abstractions are thinner, by design: the
+framework targets "give an LLM access to your documents" cleanly
+without taking on the full agent-orchestration domain.
+
+LlamaIndex ships document loaders for hundreds of source types, a
+flexible <G term="chunking">chunking</G> and <G term="embedding">embedding</G> pipeline, vector-store and
+hybrid-search integrations, and a query engine that handles
+multi-step retrieval and synthesis. The framework is permissively
+licensed.
+
+Full coverage at [/projects/llama-index](/projects/llama-index).

@@ -1,0 +1,33 @@
+---
+term: FP8
+aliases: [8-bit floating point]
+primary_layer: silicon
+secondary_layers: [runtime, weights, training]
+summary: An 8-bit floating-point format used for AI inference and increasingly for training, halving memory and bandwidth versus FP16 with minimal quality loss on most workloads.
+sources:
+  - title: "FP8 Formats for Deep Learning (Micikevicius et al., 2022)"
+    url: "https://arxiv.org/abs/2209.05433"
+  - title: "NVIDIA Hopper Transformer Engine"
+    url: "https://www.nvidia.com/en-us/data-center/technologies/hopper-architecture/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An 8-bit floating-point number representation with two common variants:
+E4M3 (4 exponent bits, 3 mantissa bits, more precision, less range)
+and E5M2 (5 and 2, more range, less precision). FP8 emerged as a
+practical <G term="inference">inference</G> precision on NVIDIA Hopper (the <G term="transformer">Transformer</G> Engine)
+and is now common across Hopper, Blackwell, MI300X, and other 2024+
+accelerators.
+
+The motivation is straightforward. FP16 weights cost 2 bytes each;
+FP8 costs 1 byte. A 70B-parameter model goes from 140 GB to 70 GB,
+fitting comfortably on a single 80 GB H100. Memory bandwidth pressure
+on <G term="attention">attention</G> and matmul halves at the same time, improving <G term="throughput">throughput</G>.
+
+Training in FP8 is harder than <G term="inference">inference</G>: the lower precision makes
+gradient updates noisier and stability touchier. <G term="deepseek">DeepSeek</G>-V3 reported
+production FP8 training, and several open follow-ons have replicated
+the technique. The default in 2026 is FP8 inference, mixed-precision
+FP8/BF16 training, with full-precision rare.

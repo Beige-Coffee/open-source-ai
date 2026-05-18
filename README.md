@@ -1,6 +1,6 @@
 # The Open-Source AI Stack
 
-A public educational website organized around nine production-pipeline layers
+A public educational website organized around ten production-pipeline layers
 and five cross-cutting meta-layers of the open-source AI stack. Updated daily
 by a scheduled Claude agent that reads ~30 layer-specific feeds, dedupes via
 SimHash, classifies each item by layer, and publishes a per-layer roundup.
@@ -9,9 +9,9 @@ Live: https://open-source-ai.tech (once deployed; Week 1 in progress)
 
 ## What's here today (Week 1 foundations)
 
-- **The Stack** (`/stack`): canonical diagram + 14 per-layer pages
-  - 9 core layers: Silicon, Compute, Data, Training, Weights, Runtime,
-    Retrieval and Memory, Agents, Protocols
+- **The Stack** (`/stack`): canonical diagram + 15 per-layer pages
+  - 10 core layers: Infrastructure, Silicon, Compute, Data, Training, Weights,
+    Runtime, Retrieval and Memory, Agents, Protocols
   - 5 cross-cutting meta-layers: Evaluation, Governance, Identity and Trust,
     Safety and Guardrails, Sovereignty and Decentralization
 - **Today** (`/today`): daily news roundup landing page (automation wires up

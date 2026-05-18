@@ -1,0 +1,32 @@
+---
+term: attestation
+aliases: [remote attestation]
+primary_layer: identity-trust
+secondary_layers: [silicon]
+summary: A cryptographic protocol that lets a remote party verify which code is running inside a TEE, including which model is loaded and which build of the inference engine.
+sources:
+  - title: "Intel TDX Remote Attestation"
+    url: "https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/attestation-services.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The protocol that turns "trust me, this is running inside a <G term="tee">TEE</G>" into
+"here is a hardware-signed measurement of exactly what is running."
+The CPU produces a quote (signed by a hardware-rooted key) containing
+the hash of the currently-loaded code and configuration. A relying
+party verifies the signature against the hardware vendor's certificate
+chain and checks the hash against an expected value.
+
+For AI <G term="inference">inference</G> the attestation chain proves that: the expected model
+weights are loaded, the expected runtime version is running, the
+expected privacy-preserving configuration is in effect, and no other
+code is in the <G term="tee">TEE</G>. Without attestation, a TEE is just an opaque box.
+
+The user experience of attestation is one of the rougher parts of
+confidential AI today. Comparing a hardware measurement to a public
+reproducible-build hash is involved enough that most users delegate to
+a service (Cloudflare CapEm, Marlin TEE-Verifier, app-level UIs that
+hide the details). The underlying primitive is sound; the tooling is
+maturing.

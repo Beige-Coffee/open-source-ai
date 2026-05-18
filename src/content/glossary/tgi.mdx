@@ -1,0 +1,26 @@
+---
+term: TGI
+aliases: [Text Generation Inference]
+primary_layer: runtime
+secondary_layers: []
+summary: Hugging Face's production inference server, an early peer of vLLM that ceded throughput leadership in 2024 and now sits in maintenance mode behind vLLM and SGLang.
+sources:
+  - title: "Text Generation Inference"
+    url: "https://github.com/huggingface/text-generation-inference"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+<G term="hugging-face">Hugging Face</G>'s open <G term="inference">inference</G> server, released in 2022 as one of the
+first production-grade serving stacks for <G term="open-weights">open-weight</G> LLMs. TGI shipped
+Rust-based request handling, Python-based model code, and <G term="cuda">CUDA</G> kernels
+for <G term="transformer">transformer</G> <G term="attention">attention</G> and <G term="continuous-batching">continuous batching</G>.
+
+Through 2023 TGI was the credible alternative to NVIDIA's
+<G term="tensorrt-llm">TensorRT-LLM</G>. The release of <G term="vllm">vLLM</G> and the rapid maturation of <G term="sglang">SGLang</G>
+in 2024 narrowed the niche; by 2026 TGI is in maintenance mode within
+the <G term="hugging-face">Hugging Face</G> ecosystem, used mostly for legacy deployments and on
+Hugging Face's own <G term="inference">Inference</G> Endpoints product.
+
+Full coverage at [/projects/tgi](/projects/tgi).

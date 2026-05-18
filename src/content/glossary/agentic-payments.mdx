@@ -1,0 +1,33 @@
+---
+term: agentic payments
+aliases: []
+primary_layer: protocols
+secondary_layers: [sovereignty-decentralization]
+summary: The class of payment flows initiated and settled by autonomous AI agents on a user's behalf, distinct from human-initiated checkout flows.
+sources:
+  - title: "x402 protocol announcement (Coinbase, 2025)"
+    url: "https://www.coinbase.com/blog/x402-a-new-internet-payment-standard-and-an-open-source-protocol-for-internet-native-payments"
+  - title: "Google AP2 announcement"
+    url: "https://blog.google/products/google-cloud/agentic-payments-protocol-ap2/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A category-of-flow rather than a single protocol. The shared problem:
+a user delegates a task to an agent; the task requires paying for an
+API call, a piece of compute, a piece of content, or a third-party
+service; the agent must initiate and settle that payment without
+asking the user to type a card number on each call.
+
+Three competing protocol stacks address it. `x402` (Coinbase 2025) uses
+HTTP 402 Payment Required with stablecoin or Lightning settlement.
+`L402` (Lightning Labs 2020) is the Lightning-native predecessor.
+Google's AP2 framework (2025) layers cryptographically-signed payment
+authority on top of <G term="a2a">A2A</G> and <G term="mcp">MCP</G>, focused on intent and authorization
+rather than rails.
+
+The unsolved questions are economic and legal: who is liable when an
+agent overpays, how do refunds and disputes work for sub-cent metered
+calls, and how do enterprises grant agent-level spend authority. The
+protocols are racing ahead of the operational answers.

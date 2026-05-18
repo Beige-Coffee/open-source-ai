@@ -1,0 +1,32 @@
+---
+term: leaderboard
+aliases: []
+primary_layer: evaluation
+secondary_layers: []
+summary: A ranked listing of models scored on one benchmark or aggregate, with the Open LLM Leaderboard, LMArena, and SWE-Bench leaderboards being the main 2026 reference points.
+sources:
+  - title: "Open LLM Leaderboard v2 (Hugging Face)"
+    url: "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard"
+  - title: "LMArena"
+    url: "https://lmarena.ai/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The frontend of the <G term="benchmark">benchmark</G> ecosystem. A leaderboard ranks models on
+a fixed evaluation pipeline; sometimes it is a single <G term="benchmark">benchmark</G>, often
+it is a weighted aggregate of several. The visibility leaderboards
+provide is the practical mechanism by which a new open-weights model
+gets adopted.
+
+Three patterns of leaderboard exist. Static-benchmark leaderboards
+(Open LLM Leaderboard, MTEB) run a fixed evaluation suite. Arena-style
+leaderboards (LMArena, formerly Chatbot Arena) use pairwise human
+ranking across blind matchups. Task-specific leaderboards (SWE-Bench,
+GAIA, ARC-AGI) measure performance on one well-defined task.
+
+Each format has failure modes. Static benchmarks contaminate and
+saturate. Arena rankings reward style and tone over correctness.
+Task-specific leaderboards lose generality. The healthy view is to
+read several rather than trust any one.

@@ -801,17 +801,17 @@ grants:
     url: "https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences"
     description: "Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science. Each hub administers seed funding for early-career researchers and international collaborations."
 
-  - title: "Inaugural Humanity AI grants ($18M to 12 organizations)"
+  - title: "Inaugural Humanity AI grants ($18M total: $8M cohort + $10M open call)"
     kind: program
     funder: humanity-ai
-    recipient: "12 inaugural grantee organizations"
-    date: "2026-04-01"
+    recipient: "9+ inaugural grantee organizations (AI Now Institute, Center for Democracy and Technology, Council on Foreign Relations LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, Student Defense, plus AI Civics)"
+    date: "2026-05-12"
     amount_usd: 18000000
-    amount_label: "$18M total, ~$1.5M average"
+    amount_label: "$18M total ($8M cohort grants + $3M AI Civics + $10M open call coming)"
     layers: [governance, data, evaluation]
     region: US
     url: "https://humanityai.ai/humanity-ai-announces-more-than-18-million-in-new-grants-to-shape-ai-for-the-public-good/"
-    description: "First round of pooled grants from the ten-foundation Humanity AI coalition, covering work on democratic institutions, worker rights, journalism, and education in the AI era. Includes $3M for a new AI Civics program."
+    description: "First round of pooled grants from the Humanity AI coalition, covering democratic institutions, worker rights, journalism, and education. Named organizations awarded $500K each include AI Now Institute, Center for Democracy and Technology, CFR LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, and Student Defense. Includes $3M for a new AI Civics program led by Data & Society with Digital Public Library of America."
 
   # ============================================================
   # Cooperative AI Foundation grants

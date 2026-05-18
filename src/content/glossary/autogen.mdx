@@ -1,0 +1,29 @@
+---
+term: AutoGen
+aliases: []
+primary_layer: agents
+secondary_layers: []
+summary: A Microsoft Research framework for multi-agent systems, with a conversation-pattern API for orchestrating multiple specialized agents to solve tasks collaboratively.
+sources:
+  - title: "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation (Wu et al., 2023)"
+    url: "https://arxiv.org/abs/2308.08155"
+  - title: "AutoGen documentation"
+    url: "https://microsoft.github.io/autogen/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Microsoft Research's framework for building <G term="multi-agent">multi-agent</G> LLM systems.
+AutoGen abstracts agent interaction as a conversation: a UserProxy
+agent passes work to an Assistant agent or a GroupChat of multiple
+specialized agents; the framework manages turn-taking, <G term="tool-use">tool use</G>, and
+shared state.
+
+The release came at a moment of high enthusiasm for <G term="multi-agent">multi-agent</G>
+patterns. By 2026 the empirical case for multi-agent is contested
+(some research argues for, the Cognition essay argues against);
+AutoGen remains a useful reference implementation of the patterns
+either way. MIT licensed.
+
+Full coverage at [/projects/autogen](/projects/autogen).

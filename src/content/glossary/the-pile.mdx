@@ -1,0 +1,28 @@
+---
+term: The Pile
+aliases: [Pile]
+primary_layer: data
+secondary_layers: [training]
+summary: An 825 GB diverse-source pretraining dataset assembled by EleutherAI in 2020, the open-corpus precedent that the later RedPajama and FineWeb projects expanded on.
+sources:
+  - title: "The Pile: An 825GB Dataset of Diverse Text for Language Modeling (Gao et al., 2020)"
+    url: "https://arxiv.org/abs/2101.00027"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+EleutherAI's 2020 open <G term="pretraining">pretraining</G> corpus, mixing 22 sources including
+<G term="common-crawl">Common Crawl</G>, PubMed Central, ArXiv, GitHub, StackExchange, Wikipedia,
+books, and email archives. The Pile was the first widely-used open
+<G term="pretraining">pretraining</G> corpus for language models and the substrate for the
+GPT-Neo and GPT-J releases.
+
+Some constituent sub-datasets in The Pile have since been removed for
+copyright reasons (Books3 in particular). The Pile-CC and the cleaner
+subsets remain in use. Newer corpora (<G term="redpajama">RedPajama</G>, <G term="fineweb">FineWeb</G>, Dolma) have
+displaced The Pile for new pretraining runs, but the curation choices
+and the citation of source-mixture proportions in the original paper
+set the template.
+
+Full coverage at [/projects/the-pile](/projects/the-pile).

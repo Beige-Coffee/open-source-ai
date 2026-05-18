@@ -1,0 +1,32 @@
+---
+term: TPU
+aliases: [tensor processing unit]
+primary_layer: silicon
+secondary_layers: [compute]
+summary: Google's custom AI accelerator family, used internally for training Gemini and externally via Google Cloud, designed around dense matrix multiplication with a systolic array architecture.
+sources:
+  - title: "Cloud TPU documentation"
+    url: "https://cloud.google.com/tpu/docs"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Google's in-house alternative to GPUs. The architecture centers on a
+large systolic array of multiply-accumulate units that dataflow
+optimally for matrix-matrix multiplication, with on-chip memory bigger
+than <G term="gpu">GPU</G> caches and interconnect (ICI) designed for tightly-coupled
+pods of thousands of chips.
+
+TPUs are the substrate Google uses to train Gemini and serve consumer
+AI products. They are available externally through Google Cloud (v5e,
+v5p, Trillium, Ironwood generations). The software stack is JAX and
+XLA rather than <G term="cuda">CUDA</G>, which is the main reason TPUs do not dominate
+beyond Google: most open-source training and <G term="inference">inference</G> code targets
+<G term="cuda">CUDA</G> first.
+
+Worth knowing because the design choices in TPUs influence the broader
+silicon discussion: systolic arrays as the answer to "we only need
+matmul," tightly-coupled pods as the answer to "model parallelism is
+the bottleneck," and software-defined network topology as the answer
+to "we want to schedule trains and serves on the same fleet."

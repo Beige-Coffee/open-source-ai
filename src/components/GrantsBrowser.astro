@@ -295,10 +295,11 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
         class="flex flex-wrap items-baseline gap-3 mb-4 pb-3 border-b border-[var(--color-border)]"
       >
         <p class="font-mono text-sm text-[var(--color-text-muted)]">
-          Showing
-          <span data-grants-visible-count class="font-semibold">{projectCount}</span>
-          of
-          <span data-grants-total-count>{projectCount}</span>
+          <span data-grants-visible-count class="font-semibold text-[var(--color-text)]">{projectCount}</span>
+          <span data-grants-count-label>grants</span>
+          <span data-grants-count-suffix class="text-[var(--color-text-subtle)] hidden">
+            · <span data-grants-total-count>{projectCount}</span> total
+          </span>
         </p>
         <div
           data-grants-active-chips
@@ -404,6 +405,8 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     const searchInput = root.querySelector("[data-grants-search]");
     const visibleCountEl = root.querySelector("[data-grants-visible-count]");
     const totalCountEl = root.querySelector("[data-grants-total-count]");
+    const countLabelEl = root.querySelector("[data-grants-count-label]");
+    const countSuffixEl = root.querySelector("[data-grants-count-suffix]");
     const chipsEl = root.querySelector("[data-grants-active-chips]");
     const emptyEl = root.querySelector("[data-grants-empty-state]");
     const clearAllBtn = root.querySelector("[data-grants-clear-all]");
@@ -504,6 +507,14 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
       }
       if (visibleCountEl) visibleCountEl.textContent = String(visible);
       if (totalCountEl) totalCountEl.textContent = String(totalForKind);
+      if (countLabelEl) {
+        const kindLabel = activeKind === "project" ? "grants" : "programs";
+        const filtered = visible !== totalForKind;
+        countLabelEl.textContent = filtered ? `matching ${kindLabel}` : kindLabel;
+      }
+      if (countSuffixEl) {
+        countSuffixEl.classList.toggle("hidden", visible === totalForKind);
+      }
       if (emptyEl) emptyEl.classList.toggle("hidden", visible !== 0);
       renderChips(state);
 

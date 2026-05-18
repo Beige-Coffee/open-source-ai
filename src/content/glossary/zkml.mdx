@@ -1,0 +1,36 @@
+---
+term: ZKML
+aliases: [zero-knowledge machine learning]
+primary_layer: identity-trust
+secondary_layers: [runtime, sovereignty-decentralization]
+summary: Zero-knowledge proofs of correct machine-learning inference, letting a prover convince a verifier that a specific model produced a specific output without revealing model or input.
+sources:
+  - title: "EZKL framework"
+    url: "https://github.com/zkonduit/ezkl"
+  - title: "Modulus Labs: ZKML state of the art"
+    url: "https://ethresear.ch/t/zkml-state-of-the-art/14501"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Zero-knowledge proofs of correct <G term="inference">inference</G>. A prover (running the
+model) generates a succinct cryptographic proof that, given some
+specific weights, a specific input produces a specific output. A
+verifier checks the proof in milliseconds without seeing the inputs
+or running the <G term="inference">inference</G> themselves. The model, the input, or both
+can be private from the verifier.
+
+ZKML matters for on-chain agents, oracle networks, and verifiable
+content provenance, all of which need to prove off-chain compute
+without re-running it. The current limitation is performance.
+Proving correctness of a small CNN takes minutes; proving a
+<G term="transformer">transformer</G> forward pass at GPT-2 scale takes hours; <G term="frontier">frontier</G> models
+are still out of reach.
+
+The frameworks in active 2026 development: EZKL (compiles <G term="onnx">ONNX</G> to
+zkSNARK circuits), Modulus Labs (specialized provers), Risc Zero
+(general-purpose ZK virtual machine, used for ML workloads). The
+near-term use cases are small specialized models for content
+classification, fraud detection, and oracle <G term="attestation">attestation</G>, not <G term="frontier">frontier</G>
+LLM inference.

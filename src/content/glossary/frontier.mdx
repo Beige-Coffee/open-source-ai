@@ -1,0 +1,34 @@
+---
+term: frontier
+aliases: [frontier model, frontier AI]
+primary_layer: weights
+secondary_layers: [evaluation, governance]
+summary: The current capability envelope of AI, defined by the most capable models in deployment at any given time; an evolving label rather than a fixed threshold.
+sources:
+  - title: "Frontier Model Forum"
+    url: "https://www.frontiermodelforum.org/"
+  - title: "Anthropic: Responsible Scaling Policy"
+    url: "https://www.anthropic.com/news/anthropic-s-responsible-scaling-policy"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A moving target rather than a fixed line. "Frontier" labels the
+capability envelope set by the top models from the labs investing the
+most in <G term="pretraining">pretraining</G>: OpenAI's GPT and o series, Anthropic's Claude
+family, Google's Gemini, xAI's Grok at the top end. <G term="open-weights">Open-weight</G>
+families approach but rarely lead the frontier; <G term="deepseek">DeepSeek</G>-V3 was the
+clearest near-frontier open release through early 2025.
+
+The term carries governance weight. The UK and EU regulatory regimes,
+US executive orders, and the Frontier Model Forum's self-regulation
+all draw a line at "frontier" compute thresholds (often defined as
+training runs exceeding 10^25 or 10^26 floating-point operations) and
+apply specific reporting, evaluation, or safety-case obligations there.
+
+For open AI the implication is unsettling. The capability gap between
+frontier closed models and frontier <G term="open-weights">open weights</G> has been roughly six
+to twelve months through 2024 to 2026. Whether the gap closes,
+widens, or holds depends on questions about open compute, open data,
+and whether frontier labs continue to release weights at all.

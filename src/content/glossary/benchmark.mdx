@@ -1,0 +1,30 @@
+---
+term: benchmark
+aliases: [evaluation benchmark]
+primary_layer: evaluation
+secondary_layers: [training, weights]
+summary: A standardized dataset and scoring rubric used to compare model capability on a defined task, the unit of model evaluation since GLUE made the format the default.
+sources:
+  - title: "BIG-bench: Imitation Game (Srivastava et al., 2022)"
+    url: "https://arxiv.org/abs/2206.04615"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A fixed dataset paired with a scoring rubric, run across many models
+to produce comparable numbers. Benchmarks dominate model evaluation
+because they are reproducible and comparable across time and across
+labs, even if their construct validity is often debated.
+
+Two persistent problems. Saturation: as models improve, top benchmarks
+hit ceiling scores within a year or two of release (HellaSwag, GLUE,
+<G term="mmlu">MMLU</G> all saturated and gave way to harder successors). Contamination:
+benchmark questions leak into <G term="pretraining">pretraining</G> corpora, inflating scores
+without real capability gain.
+
+Hard-but-not-yet-saturated benchmarks in 2026 cover reasoning
+(ARC-AGI, FrontierMath, HLE), <G term="agentic">agentic</G> behavior (SWE-Bench Verified,
+τ-bench, GAIA), and long-context (RULER, NIAH). The "<G term="leaderboard">leaderboard</G>" view
+of model progress is downstream of which benchmarks are still
+meaningful at any given time.

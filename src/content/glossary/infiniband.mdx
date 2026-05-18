@@ -1,0 +1,31 @@
+---
+term: InfiniBand
+aliases: [IB]
+primary_layer: compute
+secondary_layers: [silicon]
+summary: A high-throughput, low-latency network fabric (Mellanox, now NVIDIA) used for inter-node communication in AI training clusters, supporting RDMA for direct GPU-to-GPU transfer across machines.
+sources:
+  - title: "NVIDIA InfiniBand documentation"
+    url: "https://www.nvidia.com/en-us/networking/products/infiniband/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A switched-fabric network technology designed for HPC and now the
+dominant inter-node fabric for AI training. Current generations
+(NDR, XDR, GDR) deliver 400 to 1600 Gbps per port. The standout
+property is `RDMA` (<G term="rdma">remote direct memory access</G>): a <G term="gpu">GPU</G> on one node
+can read or write memory on a <G term="gpu">GPU</G> on another node without involving
+the host CPUs, removing the kernel from the critical path.
+
+InfiniBand is the network behind nearly every announced large-scale
+training cluster: Meta's H100 clusters, xAI's Colossus, OpenAI's
+Stargate, <G term="frontier">frontier</G>-lab production fleets. The bandwidth is what makes
+large-scale data parallel and model parallel viable.
+
+The credible alternative is Ethernet-based <G term="rdma">RDMA</G> (RoCE), which has
+matured into a real competitor and lets clusters reuse standard
+Ethernet operations expertise. Whether InfiniBand stays dominant or
+loses to RoCE on price and openness is one of the more interesting
+infrastructure questions through 2026.

@@ -1,0 +1,35 @@
+---
+term: speculative decoding
+aliases: [speculative sampling]
+primary_layer: runtime
+secondary_layers: []
+summary: An inference acceleration technique where a small fast draft model proposes several tokens at once and the target model verifies them in parallel, giving 2-3x speedup with no quality loss.
+sources:
+  - title: "Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2023)"
+    url: "https://arxiv.org/abs/2211.17192"
+  - title: "Accelerating Large Language Model Decoding with Speculative Sampling (Chen et al., 2023)"
+    url: "https://arxiv.org/abs/2302.01318"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A two-model trick for exact-output acceleration of autoregressive
+generation. A small "draft" model produces a short sequence of candidate
+tokens greedily or by sampling. The large "target" model then evaluates
+that whole candidate sequence in one forward pass, accepting tokens
+where its own distribution agrees and rejecting from the first
+disagreement. Because the target's expensive forward pass produced a
+full distribution at every accepted position, decoding effectively
+advanced by however many tokens were accepted.
+
+The speedup depends on draft-target agreement and runs roughly 1.5x to
+3x in practice. The output is provably identical (in distribution) to
+sampling from the target alone, so it is a pure acceleration with no
+quality loss.
+
+Variants: Medusa adds multiple prediction heads to the target itself
+instead of a separate draft model; EAGLE uses an autoregressive
+draft head conditioned on the target's hidden states; Lookahead
+Decoding eliminates the draft model entirely. <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and TensorRT-
+LLM all support some form of speculative decoding as of 2026.

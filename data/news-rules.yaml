@@ -14,6 +14,7 @@
 
 layers:
   core:
+    - infrastructure
     - silicon
     - compute
     - data
@@ -29,6 +30,27 @@ layers:
     - identity-trust
     - safety-guardrails
     - sovereignty-decentralization
+
+# Layer-routing guidance (additive notes for the daily news agent):
+#
+# - infrastructure: data center construction, power generation deals
+#   (especially nuclear PPAs), hyperscaler capex announcements, sovereign-state
+#   AI infrastructure programs (G42, Humain, IndiaAI, EU AI Gigafactories),
+#   neocloud raises and capacity expansions (CoreWeave, Lambda, Voltage Park,
+#   Crusoe), decentralized compute markets (Akash, io.net, Bittensor compute,
+#   Hyperbolic), grid interconnect news, cooling architecture announcements.
+#   When an item is both an infrastructure deal AND a sovereignty story
+#   (a state-backed compute initiative, a decentralized-compute milestone),
+#   primary route to infrastructure; cross-tag sovereignty-decentralization.
+#
+# - compute: scheduling, networking, batching, throughput / latency
+#   improvements, NVLink / InfiniBand / RDMA generations, spot-instance market
+#   moves. The control plane above the physical substrate.
+#
+# - silicon: chips and ISAs (Hopper, Blackwell, MI300X, Trainium, Apple
+#   Silicon, Tenstorrent, Cerebras, Groq, RISC-V AI cores). Physical chips
+#   themselves; the buildings and power that house them belong to
+#   infrastructure.
 
 # ---------------------------------------------------------------------------
 # Anti-pattern blocklist

@@ -1,0 +1,29 @@
+---
+term: Llama
+aliases: [Llama family, LLaMA]
+primary_layer: weights
+secondary_layers: [governance]
+summary: Meta's open-weight model family, the most widely deployed open release through 2024 to 2026, released under the source-available Community License with an MAU cap and acceptable-use clause.
+sources:
+  - title: "Llama Community License"
+    url: "https://llama.meta.com/license/"
+  - title: "Llama 4 technical report"
+    url: "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The model family that anchored the <G term="open-weights">open-weight</G> ecosystem from the
+original 7B/13B/65B release in February 2023 onward. Llama 2 added
+chat-tuned variants and shipped under the Community License that is
+still in use; Llama 3 (April 2024) pushed competitive intelligence
+into 70B and then 405B; Llama 4 (2025) shifted to mixture-of-experts
+architecture.
+
+The license is the most-discussed aspect. The 700M `MAU` clause and
+the <G term="acceptable-use">acceptable-use</G> addendum exclude Llama from <G term="osaid">OSAID</G>-compliant "open
+source AI"; the practical effect on most users is none, but the
+governance signal matters.
+
+Full coverage on the project page at [/projects/llama](/projects/llama).

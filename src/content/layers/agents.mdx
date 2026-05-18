@@ -10,14 +10,16 @@ related_layers: [weights, runtime, retrieval-memory, protocols]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The orchestration layer that turns a model into an actor. An agent is a
 program that uses an LLM to decide which tools to call, in what
 sequence, until a goal is reached. The layer splits into agent
-frameworks (LangChain, LlamaIndex, AutoGen, CrewAI) and end-user agent
-products (Goose, OpenHands, Aider, Cline, Continue on the open side;
+frameworks (<G term="langchain">LangChain</G>, <G term="llama-index">LlamaIndex</G>, <G term="autogen">AutoGen</G>, CrewAI) and end-user agent
+products (<G term="goose">Goose</G>, OpenHands, Aider, Cline, Continue on the open side;
 Claude Code, Cursor, Devin on the closed side). This is the most
 contested layer for sovereignty because it is closest to the user:
 whoever owns the agent owns the workflow integration, the
 accumulated-context memory, and the ability to swap the underlying
-model. Closed agents defeat open weights at the user-experience layer,
+model. Closed agents defeat <G term="open-weights">open weights</G> at the user-experience layer,
 even when everything below them is open.

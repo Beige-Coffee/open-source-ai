@@ -1,0 +1,29 @@
+---
+term: ONNX
+aliases: [Open Neural Network Exchange]
+primary_layer: runtime
+secondary_layers: [governance]
+summary: An open interchange format for machine learning models, designed to let a model trained in one framework run in another via a portable graph representation.
+sources:
+  - title: "ONNX specification"
+    url: "https://onnx.ai/onnx/intro/concepts.html"
+  - title: "ONNX Runtime"
+    url: "https://onnxruntime.ai/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An open format for representing ML models as a computation graph plus
+weights, originally launched by Microsoft and Facebook in 2017. The
+goal was framework portability: train in PyTorch, deploy in a different
+runtime, run on hardware whose vendor optimized for ONNX rather than
+for every framework natively.
+
+In practice ONNX has had mixed adoption for LLMs. The format predates
+modern <G term="transformer">transformer</G> architectures and the operator coverage required
+extension for <G term="attention">attention</G>, <G term="kv-cache">KV cache</G>, and <G term="quantization">quantization</G>. ONNX Runtime
+(Microsoft) is the reference runtime and works for most production
+deployment patterns, particularly on Windows and edge devices. For
+on-Mac or on-Linux LLM serving, the <G term="gguf">GGUF</G> + <G term="llama-cpp">llama.cpp</G> path is more
+common.

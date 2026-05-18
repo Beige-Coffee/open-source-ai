@@ -1,0 +1,36 @@
+---
+term: BPE
+aliases: [byte-pair encoding, byte pair encoding]
+primary_layer: data
+secondary_layers: [training]
+summary: A subword tokenization algorithm that iteratively merges the most-frequent byte pairs in a corpus, producing a vocabulary that balances common-word coverage with arbitrary-text fallback.
+sources:
+  - title: "Neural Machine Translation of Rare Words with Subword Units (Sennrich et al., 2016)"
+    url: "https://arxiv.org/abs/1508.07909"
+  - title: "Language Models are Few-Shot Learners (Brown et al., 2020)"
+    url: "https://arxiv.org/abs/2005.14165"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An algorithm for learning a subword vocabulary. Starting from bytes
+(or characters), the procedure repeatedly counts adjacent token pairs
+in the training corpus, merges the most frequent pair into a new
+vocabulary entry, and continues until the vocabulary reaches the
+target size. The result is a vocabulary where common words become
+single tokens and rare words decompose into subword pieces.
+
+GPT-2 popularized byte-level BPE as the default <G term="tokenizer">tokenizer</G> for
+language modeling. <G term="llama">Llama</G>, <G term="mistral">Mistral</G>, <G term="qwen">Qwen</G>, and most modern <G term="open-weights">open-weight</G>
+families use BPE variants. The main alternative, SentencePiece's
+unigram model (Kudo, 2018), produces similar results via a different
+optimization criterion and is used in some Google-derived tokenizers.
+
+BPE's strength is graceful fallback: any unseen text decomposes to
+known subwords or bytes. Its weakness is that the merge decisions are
+fixed once trained; a <G term="tokenizer">tokenizer</G> trained mostly on English allocates
+most of its vocabulary to English at the expense of other languages.
+The 2024 to 2026 multilingual tokenizers (<G term="qwen">Qwen</G>, Aya) use much larger
+BPE vocabularies trained on balanced multilingual corpora to mitigate
+this.

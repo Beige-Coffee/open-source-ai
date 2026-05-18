@@ -19,6 +19,7 @@ const DATA_DIR = resolve(ROOT, "data");
 const OUT_DIR = resolve(ROOT, "public/data");
 const NEWS_DIR = resolve(ROOT, "src/content/news");
 const LAYERS_DIR = resolve(ROOT, "src/content/layers");
+const GLOSSARY_DIR = resolve(ROOT, "src/content/glossary");
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -74,6 +75,26 @@ try {
   total++;
 } catch (e) {
   console.warn(`[build-data] layer content skipped: ${e.message}`);
+}
+
+// Parse glossary MDX entries into structured JSON for the chat agent.
+const glossaryEntries = [];
+try {
+  for (const f of readdirSync(GLOSSARY_DIR)) {
+    if (extname(f) !== ".mdx") continue;
+    const text = readFileSync(resolve(GLOSSARY_DIR, f), "utf8");
+    const { frontmatter, body } = parseFrontmatter(text);
+    const slug = basename(f, ".mdx");
+    glossaryEntries.push({ slug, ...frontmatter, body });
+  }
+  writeFileSync(
+    resolve(OUT_DIR, "glossary.json"),
+    JSON.stringify(glossaryEntries, null, 0),
+  );
+  console.log(`[build-data] glossary/*.mdx -> public/data/glossary.json (${glossaryEntries.length})`);
+  total++;
+} catch (e) {
+  console.warn(`[build-data] glossary skipped: ${e.message}`);
 }
 
 // Parse the latest news MDX into structured form for today_news().

@@ -1,0 +1,33 @@
+---
+term: MCP
+aliases: [model context protocol, model-context-protocol]
+primary_layer: protocols
+secondary_layers: [agents]
+summary: An open protocol from Anthropic that standardizes how language models discover and call external tools, data sources, and prompts via a small JSON-RPC interface.
+sources:
+  - title: "Model Context Protocol specification"
+    url: "https://modelcontextprotocol.io/specification/latest"
+  - title: "Anthropic: Introducing the Model Context Protocol"
+    url: "https://www.anthropic.com/news/model-context-protocol"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A protocol layer between AI applications and the data, tools, and
+prompts they need. An MCP server exposes a set of capabilities
+(resources, tools, prompts) over JSON-RPC; an MCP client (the host
+application <G term="embedding">embedding</G> the model) discovers and invokes them. The point
+is to make tool integrations portable across models and across
+applications.
+
+Anthropic released the initial spec in late 2024; through 2025 the
+Linux Foundation took on stewardship, OpenAI and Google added client-
+side support, and an ecosystem of community servers emerged for
+filesystems, GitHub, databases, Slack, browsers, etc.
+
+The competing approach is provider-specific tool schemas. MCP's pitch
+is that one tool implementation works regardless of which model is
+asking. The tradeoff is an additional protocol layer to operate and
+secure: confused-deputy attacks and <G term="prompt-injection">prompt injection</G> through MCP tools
+have been the main reported vulnerabilities in 2025.

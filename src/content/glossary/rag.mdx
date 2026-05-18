@@ -1,0 +1,33 @@
+---
+term: RAG
+aliases: [retrieval-augmented generation]
+primary_layer: retrieval-memory
+secondary_layers: [agents]
+summary: A pattern where a model retrieves relevant documents from an external store at query time and conditions its answer on them, instead of relying only on parametric knowledge.
+sources:
+  - title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al., 2020)"
+    url: "https://arxiv.org/abs/2005.11401"
+  - title: "Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)"
+    url: "https://arxiv.org/abs/2307.03172"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The architectural pattern that bridges fixed-weight models and changing
+data. A user query is embedded, the <G term="embedding">embedding</G> is matched against a
+<G term="vector-database">vector database</G> of pre-embedded document chunks, the top-k chunks are
+inserted into the prompt as context, and the model generates conditioned
+on them. Citations naturally fall out as references to the retrieved
+chunks.
+
+RAG matters because it sidesteps the freshness problem (parametric
+knowledge is frozen at the training cutoff) and the source-attribution
+problem (a RAG answer can point at a specific paragraph). It is the
+backbone of nearly every production chatbot on proprietary data.
+
+Complications stack. <G term="chunking">Chunking</G> strategy matters: too small loses
+context, too large blunts retrieval. <G term="reranking">Reranking</G> is usually needed
+because vector similarity alone is noisy. Long-context models do not
+obsolete RAG: the "lost in the middle" effect means even a 1M-token
+window does not match precise retrieval into a smaller working context.

@@ -1,0 +1,32 @@
+---
+term: Common Crawl
+aliases: []
+primary_layer: data
+secondary_layers: []
+summary: A nonprofit-run repeated crawl of the public web maintained since 2008, the upstream raw source for nearly every open web-scale pretraining corpus.
+sources:
+  - title: "Common Crawl Foundation"
+    url: "https://commoncrawl.org/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A continuously-maintained crawl of the public web, packaged as WARC
+files in petabyte-scale monthly dumps. Common Crawl is the upstream
+raw source for <G term="fineweb">FineWeb</G>, <G term="redpajama">RedPajama</G>, C4, <G term="the-pile">The Pile</G> (partly), Dolma, and
+nearly every open large-scale web corpus.
+
+The Foundation is a US nonprofit; the data is offered under
+permissive terms for research and commercial use; the AWS Open Data
+program hosts the public bucket. Crawl-quality filtering, language
+identification, deduplication, and curriculum design are the work
+each downstream dataset adds on top.
+
+The dataset is contested. Copyright lawsuits against AI labs
+increasingly invoke Common Crawl content as evidence; the
+Foundation's response has been to clarify that hosting public web
+content is not training authorization. The legal status of
+<G term="pretraining">pretraining</G> on Common Crawl remains unsettled through 2026.
+
+Full coverage at [/projects/common-crawl](/projects/common-crawl).

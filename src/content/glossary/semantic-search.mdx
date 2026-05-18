@@ -1,0 +1,30 @@
+---
+term: semantic search
+aliases: []
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: Search that matches by meaning rather than literal terms, using embeddings to rank results by similarity to the query's intent rather than its surface tokens.
+sources:
+  - title: "Dense Passage Retrieval for Open-Domain Question Answering (Karpukhin et al., 2020)"
+    url: "https://arxiv.org/abs/2004.04906"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The retrieval pattern where "what is the capital of France" can find a
+document that contains the word "Paris" even if the document never uses
+the word "capital." Each document and query is embedded; ranking is
+cosine similarity. Compared to lexical search (`BM25`, TF-IDF) it
+handles synonyms, paraphrase, and cross-lingual cases far better.
+
+The cost is precision on exact-term queries. Searching for a specific
+function name or a product SKU often degrades under pure semantic
+search because the <G term="embedding">embedding</G> model summarizes meaning at a higher level
+than tokens. The standard fix is hybrid search: run lexical and
+semantic in parallel, fuse the scores (reciprocal rank fusion is the
+common choice).
+
+Modern <G term="rag">RAG</G> stacks default to hybrid plus a reranker on top: cheap
+recall from <G term="bm25">BM25</G> and semantic search, then a cross-encoder reranker
+picks the top few from a larger candidate pool.

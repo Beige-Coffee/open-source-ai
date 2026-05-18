@@ -1,0 +1,29 @@
+---
+term: GQA
+aliases: [grouped query attention, grouped-query attention]
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: An attention variant where multiple query heads share the same key and value heads, reducing KV cache size with little quality cost compared to full multi-head attention.
+sources:
+  - title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints (Ainslie et al., 2023)"
+    url: "https://arxiv.org/abs/2305.13245"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A middle ground between multi-head <G term="attention">attention</G> (one set of keys and
+values per query head, expensive `KV cache`) and multi-query <G term="attention">attention</G>
+(one set of keys and values shared across all query heads, smallest
+cache but quality drops). GQA groups query heads and shares KV pairs
+within each group. Typical configurations: 8 query heads sharing 2 KV
+heads (4-way grouping) or 32 query heads sharing 8 KV heads.
+
+Quality loss is small in practice. <G term="kv-cache">KV cache</G> memory drops in proportion
+to the grouping factor, which directly enables larger batches or longer
+contexts on the same hardware.
+
+GQA is the default in most modern <G term="open-weights">open-weight</G> families: <G term="llama">Llama</G> 3, <G term="llama">Llama</G>
+4, <G term="qwen">Qwen</G>, <G term="mistral">Mistral</G>, <G term="gemma">Gemma</G>, and <G term="deepseek">DeepSeek</G> base variants all use it. The
+related <G term="mla">multi-head latent attention</G> (<G term="mla">MLA</G>) in <G term="deepseek">DeepSeek</G>-V3 takes the idea
+further with a learned low-rank projection of the KV state.

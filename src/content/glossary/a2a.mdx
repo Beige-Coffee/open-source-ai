@@ -1,0 +1,30 @@
+---
+term: A2A
+aliases: [agent-to-agent protocol]
+primary_layer: protocols
+secondary_layers: [agents]
+summary: A Google-launched open protocol for agent-to-agent communication, letting agents from different vendors discover each other's capabilities and exchange structured messages.
+sources:
+  - title: "Google A2A protocol announcement"
+    url: "https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/"
+  - title: "A2A specification"
+    url: "https://a2a-protocol.org/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A protocol that addresses a different problem than `MCP`. <G term="mcp">MCP</G> lets a
+host application connect a model to tools and data. A2A lets agents
+themselves communicate, advertising capabilities and exchanging task
+state across vendor and runtime boundaries. The unit of interaction is
+agent-to-agent, not model-to-tool.
+
+Google released the initial spec in April 2025 with a set of partner
+companies. By late 2025 the Linux Foundation took stewardship and the
+spec converged with parts of <G term="mcp">MCP</G> for the tool-invocation layer.
+
+Whether A2A and MCP merge, layer, or compete is an open question
+through 2026. MCP plus A2A both reflect a recognition that the agent
+era needs interop layers it did not need when models were single-turn
+text APIs.

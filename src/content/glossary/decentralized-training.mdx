@@ -1,0 +1,34 @@
+---
+term: decentralized training
+aliases: [federated training, distributed open training]
+primary_layer: sovereignty-decentralization
+secondary_layers: [training, compute]
+summary: Training a model across many independently-operated nodes that are not tightly coupled, contrasted with single-cluster training; the architecture for community-owned model production.
+sources:
+  - title: "Petals: Collaborative Inference and Fine-tuning of Large Models (Borzunov et al., 2022)"
+    url: "https://arxiv.org/abs/2209.01188"
+  - title: "DiLoCo: Distributed Low-Communication Training of Language Models (Douillard et al., 2023)"
+    url: "https://arxiv.org/abs/2311.08105"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Training schemes designed to work across loosely-connected nodes
+rather than a tightly-coupled cluster. The shared problem: every node
+holds a partial model and a piece of data, and the bandwidth between
+nodes is far less than between GPUs in a single rack. Decentralized
+training reduces the per-step communication so that consumer-grade
+internet links between nodes do not bottleneck training.
+
+The research strands include DiLoCo and its descendants (large
+local steps, occasional global aggregation), federated learning (data
+stays local, only gradients are shared), and swarm-training schemes
+that route layer execution across volunteer nodes (`Petals`).
+
+The sovereignty argument: decentralized training is the architectural
+counterweight to the centralization of <G term="frontier">frontier model</G> production in
+five or six labs with hyperscaler clusters. The current limitation:
+no production-grade <G term="frontier">frontier model</G> has been trained this way. The
+techniques work; the coordination, governance, and capital structure
+have not been demonstrated at the scale that would matter.

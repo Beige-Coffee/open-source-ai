@@ -1,0 +1,31 @@
+---
+term: GGUF
+aliases: []
+primary_layer: weights
+secondary_layers: [runtime]
+summary: A binary container format for quantized model weights used by llama.cpp and its ecosystem; the dominant on-device LLM file format since 2023.
+sources:
+  - title: "GGUF specification (llama.cpp repository)"
+    url: "https://github.com/ggml-org/ggml/blob/master/docs/gguf.md"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A single-file container for quantized models, the successor to the
+older <G term="llama-cpp">GGML</G> format. A GGUF file packages weights, <G term="tokenizer">tokenizer</G>, prompt
+template, and metadata together, so a user can download one file and
+run it without further configuration.
+
+GGUF is the format of choice for <G term="on-device">on-device</G> deployment. `llama.cpp`,
+<G term="ollama">Ollama</G>, <G term="lm-studio">LM Studio</G>, GPT4All, and most other consumer-facing local
+runtimes consume it. <G term="hugging-face">Hugging Face</G>'s model hub now lists thousands of
+GGUF-format models, often community-quantized versions of the
+official safetensors releases.
+
+The format itself is unopinionated about the <G term="quantization">quantization</G> scheme.
+A typical <G term="llama">Llama</G>-3-70B might exist on the hub in a dozen <G term="quantization">quantization</G>
+variants (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, etc), each a
+trade-off between size and quality. The community has converged on
+Q4_K_M as the default for serious work and Q5_K_M or Q6_K for
+quality-sensitive tasks.

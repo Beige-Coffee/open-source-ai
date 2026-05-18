@@ -1,0 +1,33 @@
+---
+term: tool use
+aliases: [tool calling]
+primary_layer: agents
+secondary_layers: [protocols]
+summary: The general pattern of an LLM invoking external functions, APIs, or systems to fetch data or take action, distinct from generating an answer purely from its weights.
+sources:
+  - title: "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)"
+    url: "https://arxiv.org/abs/2210.03629"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A broader umbrella than `function calling`. <G term="function-calling">Function calling</G> is the
+specific structured protocol; tool use is the capability and the
+practice. A model "uses tools" when it decides to call a function,
+reads the result, and integrates it into its response. Whether the
+implementation is a JSON tool-call schema, a code-interpreter sandbox,
+a structured plan, or an inline shell command depends on the agent
+framework.
+
+The dimension models compete on is decision quality. Knowing when to
+call a tool versus when to answer from prior knowledge is harder than
+the call itself. Calling the right tool from a large catalog is harder
+than calling the only available tool. Recovering from a tool error
+gracefully is harder than success. Benchmarks like τ-bench and
+SWE-Bench measure these end-to-end agent behaviors directly.
+
+Tool use is the load-bearing capability for production agents (coding
+agents, customer-support agents, computer-use agents). It is also the
+primary attack surface: prompt-injected tool calls are the dominant
+agent-security failure mode.

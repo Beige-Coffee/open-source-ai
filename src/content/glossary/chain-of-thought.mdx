@@ -1,0 +1,34 @@
+---
+term: chain of thought
+aliases: [CoT, chain-of-thought prompting]
+primary_layer: agents
+secondary_layers: [evaluation]
+summary: A prompting and training technique where the model emits step-by-step intermediate reasoning before its final answer, improving accuracy on multi-step problems.
+sources:
+  - title: "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (Wei et al., 2022)"
+    url: "https://arxiv.org/abs/2201.11903"
+  - title: "Let's Verify Step by Step (Lightman et al., 2023)"
+    url: "https://arxiv.org/abs/2305.20050"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A technique with two lives. The original (Wei et al., 2022) was a
+prompting trick: append "Let's think step by step" to elicit
+intermediate reasoning, improving accuracy on math and logic
+benchmarks. The follow-up (post-2024) is a training pattern: the
+"reasoning models" (o1, <G term="deepseek">DeepSeek</G>-R1, <G term="qwen">Qwen</G>-R1, Gemini Thinking) are
+trained to emit long internal chains of thought that the user does not
+see, before answering.
+
+The mechanism is partly externalizing intermediate computation: the
+model uses its own previous tokens as scratchpad. The mechanism is also
+partly capability transfer: training on chain-of-thought traces seems
+to instill general reasoning behavior usable on unseen problems.
+
+In agent contexts CoT is usually combined with <G term="function-calling">tool calling</G>: the model
+reasons about which tool to call, calls it, reads the result, reasons
+about what to do next. <G term="react">ReAct</G> (Yao 2022) formalized this loop; modern
+agent frameworks (<G term="goose">Goose</G>, Claude Code's harness, <G term="autogen">AutoGen</G>) all use some
+variant.

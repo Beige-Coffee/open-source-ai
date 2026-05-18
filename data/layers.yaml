@@ -1,6 +1,6 @@
 # The Open-Source AI Stack taxonomy
 #
-# 9 core layers in production-pipeline order, plus 5 cross-cutting meta-layers.
+# 10 core layers in production-pipeline order, plus 5 cross-cutting meta-layers.
 # This file is the canonical source for the stack diagram and the per-layer
 # routing. The scheduled agent uses `slug` for tagging news items.
 #
@@ -8,56 +8,62 @@
 # rendered horizontally as observers / constraints on the core stack.
 
 core:
-  - slug: silicon
+  - slug: infrastructure
     order: 1
+    title: Infrastructure
+    short_description: Data centers, power, cooling, and the grid that runs the rest of the stack.
+    lock_in_vector: infrastructure
+
+  - slug: silicon
+    order: 2
     title: Silicon
     short_description: Chips and ISAs that execute the math.
     lock_in_vector: silicon
 
   - slug: compute
-    order: 2
+    order: 3
     title: Compute
     short_description: Where silicon physically runs and gets accessed.
     lock_in_vector: none
 
   - slug: data
-    order: 3
+    order: 4
     title: Data
     short_description: Training corpora, open and closed.
     lock_in_vector: data
 
   - slug: training
-    order: 4
+    order: 5
     title: Training
     short_description: Tools to pretrain and fine-tune on your own.
     lock_in_vector: none
 
   - slug: weights
-    order: 5
+    order: 6
     title: Weights
     short_description: Model artifacts and their license tiers.
     lock_in_vector: weights
 
   - slug: runtime
-    order: 6
+    order: 7
     title: Runtime
     short_description: Inference engines that serve tokens from weights.
     lock_in_vector: runtime
 
   - slug: retrieval-memory
-    order: 7
+    order: 8
     title: Retrieval and Memory
     short_description: Vector databases, embeddings, agent memory, RAG.
     lock_in_vector: retrieval
 
   - slug: agents
-    order: 8
+    order: 9
     title: Agents
     short_description: Frameworks plus user-facing agent products.
     lock_in_vector: agents
 
   - slug: protocols
-    order: 9
+    order: 10
     title: Protocols
     short_description: MCP, A2A, agentic payments, the integration wire.
     lock_in_vector: protocols

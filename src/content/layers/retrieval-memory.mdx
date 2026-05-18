@@ -10,9 +10,11 @@ related_layers: [weights, agents]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The infrastructure that lets a model recall, search, and remember beyond
-its context window. Three things live here: vector databases (Qdrant,
-Weaviate, Chroma, Milvus, LanceDB, pgvector), embedding models
+its <G term="context-window">context window</G>. Three things live here: vector databases (Qdrant,
+Weaviate, Chroma, Milvus, LanceDB, pgvector), <G term="embedding">embedding</G> models
 (sentence-transformers, BGE, jina-embeddings), and agent-memory
 frameworks (Letta, mem0, Zep). The open side is robust at every
 sub-layer; Pinecone is the closed counterpart and pgvector is the

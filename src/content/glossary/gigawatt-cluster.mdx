@@ -1,0 +1,35 @@
+---
+term: gigawatt-class cluster
+aliases: [gigawatt cluster, multi-gigawatt training cluster]
+primary_layer: infrastructure
+secondary_layers: [silicon, compute]
+summary: An AI training facility whose power draw is measured in gigawatts rather than megawatts, the scale at which siting decisions become grid-and-permitting problems rather than real-estate ones.
+sources:
+  - title: "Stargate announcement (OpenAI, January 2025)"
+    url: "https://openai.com/index/announcing-the-stargate-project/"
+  - title: "IEA Electricity 2024 (AI demand chapter)"
+    url: "https://www.iea.org/reports/electricity-2024"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A training cluster whose continuous power draw is one billion watts or
+more. Historic data centers ran at 10 to 50 MW; modern AI training
+clusters announced in 2024 to 2026 are sized at 1 to 5 GW, with
+multi-site campuses targeting 5 to 10 GW combined. Stargate's first
+Abilene site is planned in this class; xAI's Colossus has already
+crossed 100K H100s on a single power feed.
+
+Mechanically the shift moves the bottleneck. Below ~500 MW the limit
+is rack-level cooling and building permits. Above 1 GW the limit is
+grid interconnect: utility build-out lead times of 4 to 7 years,
+transmission corridor approvals, sometimes new generation capacity
+specifically procured to serve one customer. That is why hyperscalers
+are signing 20-year nuclear PPAs and building <G term="behind-the-meter">behind-the-meter</G>
+generation.
+
+In the open-source AI sovereignty argument this is the most
+centralizing layer of all. A few entities can afford GW-class
+buildouts; the rest of the field works at MW scale or rents capacity
+from those who can.

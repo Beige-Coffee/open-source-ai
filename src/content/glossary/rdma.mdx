@@ -1,0 +1,30 @@
+---
+term: RDMA
+aliases: [remote direct memory access]
+primary_layer: compute
+secondary_layers: [silicon]
+summary: A networking technique that lets a remote machine read or write local memory without involving the CPU, foundational for high-throughput distributed training over InfiniBand or RoCE.
+sources:
+  - title: "RDMA Aware Networks Programming User Manual (NVIDIA Mellanox)"
+    url: "https://docs.nvidia.com/networking/display/rdmaawareprogrammingv17"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A data-transfer mechanism where the network adapter writes directly
+into the remote machine's memory through DMA, bypassing the kernel
+and the receiving CPU. <G term="latency">Latency</G> drops by an order of magnitude
+compared to TCP/IP; <G term="throughput">throughput</G> approaches the wire speed.
+
+For AI training, RDMA is what makes cross-node collective operations
+(all-reduce, all-gather) viable. The NCCL library that PyTorch,
+<G term="deepspeed">DeepSpeed</G>, and <G term="megatron">Megatron</G> use to synchronize gradients depends on RDMA
+under the hood. Without it, the network would dominate iteration time.
+
+Two implementations matter in practice. <G term="infiniband">InfiniBand</G>-native RDMA is the
+default on most large training clusters. RoCE (RDMA over Converged
+Ethernet) runs the same semantics over standard Ethernet hardware,
+trading some performance for lower cost and easier operations. Most
+hyperscaler in-house clusters use RoCE; most research-lab clusters
+use <G term="infiniband">InfiniBand</G>; the lines are blurring.

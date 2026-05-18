@@ -1,0 +1,30 @@
+---
+term: context window
+aliases: [context length]
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: The maximum number of tokens a model can attend to in a single forward pass, set during pretraining and extended (sometimes) via fine-tuning or training-free extrapolation tricks.
+sources:
+  - title: "RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., 2021)"
+    url: "https://arxiv.org/abs/2104.09864"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The hard upper bound on sequence length the model can consume or
+produce in one pass. <G term="pretraining">Pretraining</G> defines a context length (8K, 32K,
+128K, 1M tokens); the positional encoding scheme (`RoPE`, `ALiBi`,
+NoPE) and the <G term="attention">attention</G> pattern (full, sliding window, <G term="attention">attention</G> sink)
+determine how gracefully the model handles or extends beyond it.
+
+Quality degrades as context lengthens. The "lost in the middle" finding
+(Liu et al., 2023) showed accuracy drops sharply on information placed
+in the middle of a long context window even when the model nominally
+supports the length. Long-context benchmarks like RULER and Needle-in-
+a-Haystack measure this directly.
+
+Practical implications for serving: the `KV cache` grows linearly with
+context length, so a 1M-token request costs roughly 125 times more
+memory than an 8K-token request. Most production deployments cap usable
+context far below the model's nominal limit for cost reasons.

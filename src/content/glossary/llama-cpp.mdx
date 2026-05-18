@@ -1,0 +1,26 @@
+---
+term: llama.cpp
+aliases: [llama-cpp, ggml]
+primary_layer: runtime
+secondary_layers: [sovereignty-decentralization]
+summary: Georgi Gerganov's C++ inference engine optimized for CPUs and consumer GPUs, the on-device standard and the engine behind Ollama, LM Studio, and most local-first AI products.
+sources:
+  - title: "llama.cpp GitHub"
+    url: "https://github.com/ggml-org/llama.cpp"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The reference <G term="local-first">local-first</G> LLM runtime. <G term="llama">llama</G>.cpp started as a weekend
+port of the original <G term="llama">LLaMA</G> model to C++ with hand-tuned ARM and AVX
+kernels; by 2024 it covered virtually every modern <G term="open-weights">open-weight</G> model,
+nearly every <G term="quantization">quantization</G> scheme via the `GGUF` format, <G term="gpu">GPU</G> offload
+via Metal, <G term="cuda">CUDA</G>, <G term="rocm">ROCm</G>, and Vulkan, and an HTTP server compatible with
+the OpenAI API.
+
+<G term="ollama">Ollama</G>, <G term="lm-studio">LM Studio</G>, GPT4All, Jan, and most other consumer-facing local
+runtimes are llama.cpp under different UIs. The project is permissively
+licensed and community-maintained.
+
+Full coverage at [/projects/llama-cpp](/projects/llama-cpp).

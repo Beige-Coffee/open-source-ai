@@ -1,0 +1,30 @@
+---
+term: throughput
+aliases: [tokens per second, t/s]
+primary_layer: compute
+secondary_layers: [runtime, evaluation]
+summary: The rate at which a model produces output tokens, usually quoted as tokens-per-second per GPU or aggregate, the headline number for serving-cost economics.
+sources:
+  - title: "vLLM performance documentation"
+    url: "https://docs.vllm.ai/en/latest/performance/optimization.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The aggregate rate of token output across all concurrent requests on a
+given hardware unit. A <G term="vllm">vLLM</G> server might do 5000 tokens/sec on an
+H100 at 70B <G term="llama">Llama</G> with <G term="fp8">FP8</G> weights; an MI300X might do 4000 tokens/sec
+on the same model; an <G term="ollama">Ollama</G> instance on a Mac Studio does 50 tokens/
+sec for a single user.
+
+Throughput trades against <G term="latency">latency</G>. Larger batches push throughput up
+at the cost of higher time-to-first-token and time-per-token for the
+individual request. Production serving usually picks a target <G term="latency">latency</G>
+budget and then tunes <G term="batching">batching</G>, <G term="quantization">quantization</G>, and <G term="prefix-caching">prefix caching</G> to
+maximize throughput under that budget.
+
+The relevant denominator depends on the question. Per-<G term="gpu">GPU</G> throughput
+is the unit of hardware planning. Aggregate cluster throughput is the
+unit of capacity planning. Tokens per dollar is the unit of business
+planning. The same model can rank differently on each.

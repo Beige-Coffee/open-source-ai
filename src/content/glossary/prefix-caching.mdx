@@ -1,0 +1,31 @@
+---
+term: prefix caching
+aliases: []
+primary_layer: runtime
+secondary_layers: []
+summary: A serving optimization that stores the KV cache for shared prompt prefixes (system prompts, few-shot examples) so subsequent requests reusing them skip the prefill compute.
+sources:
+  - title: "vLLM Automatic Prefix Caching"
+    url: "https://docs.vllm.ai/en/latest/automatic_prefix_caching/apc.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Most LLM traffic in production reuses long prompts. A chat product
+sends the same system message on every turn. An agent sends the same
+tool descriptions. A <G term="rag">RAG</G> pipeline sends the same instruction template.
+Prefix caching recognizes that prefix in the `KV cache` and reuses it,
+turning what would be a full prefill into a near-instant <G term="attention">attention</G>
+lookup.
+
+The cache is content-addressed by token sequence hash. A request's
+prefix is matched against the cache prefix by prefix until divergence;
+matched blocks skip prefill compute; divergent suffix is computed
+normally. Eviction is usually LRU.
+
+<G term="vllm">vLLM</G> ships automatic prefix caching since 0.4; `SGLang` builds it into
+`RadixAttention`; <G term="tensorrt-llm">TensorRT-LLM</G> and <G term="tgi">TGI</G> both support it as of 2026. The
+practical effect for prefix-heavy traffic is 2x to 10x <G term="latency">latency</G>
+reduction on time-to-first-token, depending on prefix length and cache
+hit rate.

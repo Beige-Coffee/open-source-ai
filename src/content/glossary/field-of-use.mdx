@@ -1,0 +1,33 @@
+---
+term: field-of-use
+aliases: [field of use restriction]
+primary_layer: governance
+secondary_layers: [weights]
+summary: License clauses that limit which industries or applications a model may be deployed in, restricting use to non-competitive, non-commercial, or non-government purposes.
+sources:
+  - title: "OSI: The Open Source Definition (no discrimination against fields of endeavor)"
+    url: "https://opensource.org/osd"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Restrictions on what kind of work the model may be used for. Distinct
+from acceptable-use clauses, which prohibit specific harmful uses.
+A field-of-<G term="acceptable-use">use restriction</G> might say: "for academic research only,"
+"not for use by entities with revenue over $X," "not for military
+applications," or "not in service of a competing product." The
+distinction between this and "<G term="open-weights">open weights</G>" is the work the clause
+blocks even when the use is otherwise lawful.
+
+Common in research-only releases (some early Gemini-Pro variants,
+several Microsoft DeepGEM releases) and in license-restricted academic
+weights. The Open Source Definition rejects field-of-use restrictions
+as incompatible with point 6 of the OSD: "no discrimination against
+fields of endeavor."
+
+For a user evaluating a model release, field-of-use is one of the
+first things to check. A "free for non-commercial use" label is a
+field-of-<G term="acceptable-use">use restriction</G> in plain English. The right question is
+whether the intended deployment is in the licensor's permitted set,
+not just whether weights are downloadable.

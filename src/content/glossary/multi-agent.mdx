@@ -1,0 +1,33 @@
+---
+term: multi-agent
+aliases: [multi-agent system, multi-agent orchestration]
+primary_layer: agents
+secondary_layers: []
+summary: Architectures where multiple LLM-driven agents collaborate or compete on a task, each with its own role, prompt, or specialization, coordinated by an orchestrator or message-passing protocol.
+sources:
+  - title: "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation (Wu et al., 2023)"
+    url: "https://arxiv.org/abs/2308.08155"
+  - title: "Anthropic: How we built our multi-agent research system"
+    url: "https://www.anthropic.com/engineering/built-multi-agent-research-system"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A system where two or more LLM agents communicate to solve a problem.
+Patterns vary: a planner agent splits work and delegates to specialist
+sub-agents; a debater pair argues toward a synthesis; a research lead
+spawns parallel investigators and aggregates their findings.
+
+The empirical case for multi-agent is contested. Anthropic's published
+research system uses one lead agent that spawns parallel sub-agents and
+reports gains over single-agent baselines on open-ended research tasks.
+Cognition's 2024 essay argues the opposite: that fragmenting state
+across agents loses critical context and that "do not build multi-
+agents" is the safer default for software tasks.
+
+Frameworks that target this shape: <G term="autogen">AutoGen</G>, CrewAI, LangGraph, AG2,
+MetaGPT. They differ on communication topology (group chat vs hub-spoke
+vs DAG) and on how shared state is represented. Whether multi-agent is
+genuinely useful or a wrapper around a more careful single-agent design
+is a live question through 2026.

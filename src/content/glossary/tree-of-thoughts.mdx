@@ -1,0 +1,30 @@
+---
+term: tree of thoughts
+aliases: [ToT]
+primary_layer: agents
+secondary_layers: []
+summary: A prompting pattern that has the model generate and evaluate multiple branching reasoning paths, then select or backtrack rather than committing to a single chain of thought.
+sources:
+  - title: "Tree of Thoughts: Deliberate Problem Solving with Large Language Models (Yao et al., 2023)"
+    url: "https://arxiv.org/abs/2305.10601"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An extension of `chain of thought` that turns reasoning into a search
+tree. At each step the model proposes multiple candidate next thoughts,
+self-evaluates them (which seems most promising?), and either expands
+the best branch or backtracks. The mechanics resemble classic AI search
+(BFS, DFS, beam search) but with an LLM at each node.
+
+The original paper demonstrated gains on the 24 game, creative writing,
+and crossword puzzles where the answer requires planning over multiple
+steps. The cost is many extra model calls per problem; the benefit is
+recovery from early wrong commits.
+
+In practice ToT remains more of a research idiom than a production
+default. Reasoning models (o1, R1) seem to have internalized similar
+search behavior during training, so explicit ToT prompting on top of
+them is often unnecessary. For non-reasoning models on planning-heavy
+problems it can still help, at the cost of <G term="latency">latency</G>.

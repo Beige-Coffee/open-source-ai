@@ -13,7 +13,7 @@ and the schema doc you are reading now.
 
 ## Project context
 
-The site is a living map of the open AI stack: 9 production-pipeline
+The site is a living map of the open AI stack: 10 production-pipeline
 layers and 5 cross-cutting meta-layers, with the projects, news, grants,
 predictions, and reading lists at each. Audience-of-one mode for now:
 Austin and one other person; not optimized for public traffic.
@@ -27,22 +27,23 @@ The site is paired with a sibling repo at `/Users/austinv2/code/sovereign-ai-wik
 which is Austin's private Karpathy-style wiki feeding the Sovereign AI
 Summit (Fall 2026). This repo is the public-facing form.
 
-## The 9 + 5 taxonomy (canonical)
+## The 10 + 5 taxonomy (canonical)
 
 Defined in `data/layers.yaml`. Slugs are stable identifiers used
 everywhere.
 
-**9 core layers** (production pipeline, silicon at the bottom, protocols at the top):
+**10 core layers** (production pipeline, infrastructure at the bottom, protocols at the top):
 
-1. `silicon` — Chips and ISAs that execute the math
-2. `compute` — Where silicon physically runs and gets accessed
-3. `data` — Training corpora, open and closed
-4. `training` — Tools to pretrain and fine-tune
-5. `weights` — Model artifacts and their license tiers
-6. `runtime` — Inference engines that serve tokens from weights
-7. `retrieval-memory` — Vector databases, embeddings, agent memory, RAG
-8. `agents` — Frameworks plus user-facing agent products
-9. `protocols` — MCP, A2A, agentic payments, the integration wire
+1. `infrastructure` — Data centers, power, cooling, grid interconnect; the physical substrate the rest of the stack runs on. Added 2026-05; covers hyperscaler capex, sovereign-state compute initiatives, decentralized compute markets, and the energy / siting decisions that constrain frontier training
+2. `silicon` — Chips and ISAs that execute the math
+3. `compute` — Where silicon physically runs and gets accessed (the control plane: scheduling, networking, batching; physical-plane projects sit at `infrastructure`)
+4. `data` — Training corpora, open and closed
+5. `training` — Tools to pretrain and fine-tune
+6. `weights` — Model artifacts and their license tiers
+7. `runtime` — Inference engines that serve tokens from weights
+8. `retrieval-memory` — Vector databases, embeddings, agent memory, RAG
+9. `agents` — Frameworks plus user-facing agent products
+10. `protocols` — MCP, A2A, agentic payments, the integration wire
 
 **5 cross-cutting meta-layers**:
 
@@ -50,7 +51,7 @@ everywhere.
 2. `governance` — Licensing, definitions, foundations, OSAID
 3. `identity-trust` — TEEs, confidential computing, verifiable inference, agent passports
 4. `safety-guardrails` — Llama Guard, NeMo Guardrails, sandbox-escape evals
-5. `sovereignty-decentralization` — Individual-vs-state framing, decentralized training, local-first patterns
+5. `sovereignty-decentralization` — Individual-vs-state framing, decentralized training, local-first patterns. Cross-references infrastructure for sovereign-state compute initiatives.
 
 ## Directory layout
 
@@ -81,7 +82,7 @@ open-source-ai-stack/
   src/
     content.config.ts    # Astro content collection schemas
     content/
-      layers/<slug>.mdx  # 14 layer pages (3-5 sentence intros)
+      layers/<slug>.mdx  # 15 layer pages (3-5 sentence intros)
       news/YYYY-MM-DD.mdx # daily news issues from the scheduled routine
     lib/
       layers.ts, projects.ts, grants.ts, predictions.ts, reading-lists.ts
@@ -115,7 +116,7 @@ open-source-ai-stack/
 
 ## Data schemas
 
-### `data/layers.yaml` — the 9+5 taxonomy
+### `data/layers.yaml` — the 10+5 taxonomy
 
 ```yaml
 core:
@@ -199,6 +200,43 @@ Schema: `layer, claim, horizon (date), confidence (1-5), resolves_when, filed (d
 Append-only log written by the scheduled news routine. Frontmatter:
 `date, editorial_letter, item_count, layer_buckets (record of
 layer-slug → count)`.
+
+### `src/content/glossary/<slug>.mdx` — technical term glossary
+
+Curated definitions for the ~130 technical concepts, protocols,
+projects, and standards that show up across the site. Frontmatter
+schema:
+
+```yaml
+term: "mixture of experts"      # canonical display form
+aliases: [moe, sparse moe]      # alternate forms; <G> resolves them
+primary_layer: weights          # one of the 15 layer slugs
+secondary_layers: [training, runtime]  # cross-layer attribution
+summary: "A transformer..."     # ≤30 words, enforced by zod + lint
+sources:                        # required for any factual claim in body
+  - title: "Mixtral of Experts (Jiang et al., 2024)"
+    url: "https://arxiv.org/abs/2401.04088"
+updated: 2026-05-18
+```
+
+Body is a 3-4 paragraph senior-engineer-voice explainer (soft what /
+how / where / related rhythm, not a heading template). Renders at
+`/glossary/<slug>`; the summary is what shows in hover-card popovers
+when a term is inline-tagged in prose.
+
+**Tagging in prose**: `<G term="moe">MoE</G>` wraps any glossary term
+in MDX or Astro pages. Authors import G at the top of the file
+(`import G from "../../components/G.astro";`). The `term` attribute
+accepts the canonical slug or any alias. First-occurrence-per-page is
+the editorial pattern. `scripts/lint-glossary.mjs` warns (advisory,
+build continues) when a known term is mentioned in prose without a
+`<G>` wrap. `scripts/bulk-tag-glossary.mjs` is the idempotent
+auto-tagger for first occurrences.
+
+**Chat-agent integration**: the `find_glossary` and `read_glossary`
+tools (in `src/lib/chat/tools.ts`) ground definition-style questions.
+The citation marker is `(Glossary: <slug>)`, which renders as a
+clickable pill in chat output.
 
 ## Operations
 
@@ -516,6 +554,8 @@ has a per-turn rate limit and a dedup cache (per
 | `read_grant(title)` | Fetch full grant entry by title | 3 |
 | `read_project(slug)` | Fetch full project entry (incl. explainer + sources) + siblings at the same primary layer | 4 |
 | `read_prediction(layer)` | Fetch predictions for a layer | 2 |
+| `find_glossary(filters)` | Filter glossary by layer or free-text query against term + summary | 3 |
+| `read_glossary(slug)` | Fetch a glossary entry by canonical slug or any alias (resolves "moe" → "mixture-of-experts") | 4 |
 | `today_news()` | Fetch the latest daily issue | 1 |
 | `search(query)` | MiniSearch over everything as fallback | 2 |
 
@@ -551,6 +591,7 @@ Agent must cite sources inline with these markers:
 - `(Project: vllm)` — links to `/projects/vllm` (the dedicated project page; only ~35 priority projects with `explainer` get a page, others 404)
 - `(Reading: <title>)` — links to the reading URL
 - `(News: 2026-05-13)` — links to `/news/2026-05-13`
+- `(Glossary: mixture-of-experts)` — links to `/glossary/mixture-of-experts`
 
 Citations are parsed in `src/lib/chat/citations.ts` and rendered as
 clickable pills in `ChatPanel.tsx`.

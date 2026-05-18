@@ -1,0 +1,32 @@
+---
+term: open weights
+aliases: [open-weight, open weight]
+primary_layer: weights
+secondary_layers: [governance]
+summary: A model release that publishes the trained parameters under some downloadable license, distinct from "open source" which (per OSAID) also requires data and training-code openness.
+sources:
+  - title: "OSI Open Source AI Definition"
+    url: "https://opensource.org/ai/open-source-ai-definition"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The 2024 to 2026 term-of-art for a model released as a downloadable
+weight file but without the training data, training code, or both.
+Most <G term="llama">Llama</G>, <G term="mistral">Mistral</G>, <G term="qwen">Qwen</G>, <G term="deepseek">DeepSeek</G>, and <G term="gemma">Gemma</G> releases are open-
+weight: the parameters are public, the rest is not. Under the <G term="osaid">OSAID</G>
+definition this does not qualify as open-source AI.
+
+The distinction matters in practice. With open weights you can run,
+<G term="fine-tuning">fine-tune</G>, and inspect the model. You cannot reproduce the training
+run, audit what the model was trained on, or replicate the safety and
+quality choices made during <G term="post-training">post-training</G>. For most research and
+deployment purposes this is acceptable; for legal compliance, audit,
+or scientific reproducibility it often is not.
+
+The label has come to function as a useful compromise term. Saying "open
+weights" is honest about what was and was not released, where "open
+source" tends to overclaim. The <G term="osi">OSI</G>'s position is that "open weights"
+is fine as a description; it is the upgrade to "open source AI" that
+requires more.

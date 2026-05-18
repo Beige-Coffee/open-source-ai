@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import G from "../components/G.astro";
 ---
 
 <BaseLayout
@@ -16,7 +17,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <h1>How this site is built and updated</h1>
 
     <p>
-      The Open-Source AI Stack is a living map of nine production-pipeline
+      The Open-Source AI Stack is a living map of ten production-pipeline
       layers and five cross-cutting meta-layers, with the projects, news,
       and funding flowing through each. A scheduled agent updates the news
       once a day at 08:00 Pacific.
@@ -39,7 +40,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <h2>What is on each layer page</h2>
     <p>
-      Each of the 14 layer pages is a five-in-one view. <strong>What it is</strong>:
+      Each of the 15 layer pages is a five-in-one view. <strong>What it is</strong>:
       a 3-5 sentence editorial intro. <strong>Key projects</strong>: a curated
       catalog (5-10 per layer, ordered open-first, with license, maturity,
       and a one-line description) sourced from
@@ -53,6 +54,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
       A sidebar carries quick-glance metadata: lock-in vector, sovereignty
       relevance, related layers.
+    </p>
+
+    <h2>Glossary</h2>
+    <p>
+      About 130 technical terms are defined at
+      <a href="/glossary">/glossary</a> (for example, <G term="mixture-of-experts">mixture of experts</G> or <G term="paged-attention">PagedAttention</G>), grouped by stack layer and
+      cross-referenced by alias. Each entry has a 30-word summary
+      (the hover-card definition) and a deeper page with a 3-4
+      paragraph senior-engineer explanation. Inline terms tagged in
+      prose show a definition on hover or tap; the card has a
+      "Chat about this" button that opens the in-site chat with the
+      term as context. The chat agent's <code>read_glossary</code>
+      tool fetches a term's full body by canonical slug or any alias.
     </p>
 
     <h2>Predictions tracker</h2>
@@ -86,7 +100,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       Per-layer feeds plus a few aggregators. AI News by smol AI
       (news.smol.ai) is the spine; SemiAnalysis, Interconnects, Latent
       Space, Import AI, and The Batch are the highest-signal newsletters
-      across layers. GitHub release feeds (vLLM, SGLang, llama.cpp, MCP,
+      across layers. GitHub release feeds (<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, <G term="llama-cpp">llama.cpp</G>, <G term="mcp">MCP</G>,
       OpenHands, Aider) plus vendor blogs cover the rest. Full source
       list is at <code>data/sources.yaml</code> in the repo.
     </p>
@@ -115,7 +129,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <p>
       <strong>Strong coverage</strong>: cypherpunk-adjacent and
       sovereignty-positioned funders (HRF, OpenSats, Cosmos Institute,
-      Foresight Institute, Block / Goose), major AI-safety funders
+      Foresight Institute, Block / <G term="goose">Goose</G>), major AI-safety funders
       (Open Philanthropy, FLI, SFF, Manifund, Lightspeed Grants),
       and major OSS infrastructure programs (NLnet NGI Zero, Sovereign
       Tech Fund, Mozilla Builders, Linux Foundation AAIF). For these

@@ -1,0 +1,28 @@
+---
+term: TRL
+aliases: [Transformer Reinforcement Learning, hf-trl]
+primary_layer: training
+secondary_layers: []
+summary: Hugging Face's library for preference and reinforcement learning on transformer models, the canonical open implementation of RLHF, DPO, KTO, ORPO, and related preference-tuning methods.
+sources:
+  - title: "TRL documentation"
+    url: "https://huggingface.co/docs/trl"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+<G term="hugging-face">Hugging Face</G>'s <G term="transformer">transformer</G> RL library. TRL implements the post-
+training methods that take a base or SFT model and add preference
+behavior: PPO-style <G term="rlhf">RLHF</G>, <G term="dpo">DPO</G>, KTO, ORPO, and several research
+variants. Each method is a trainer class with consistent API surface
+and broad model coverage via the Transformers library.
+
+The library lets a fine-tuner pick <G term="dpo">DPO</G>, KTO, or ORPO with a one-line
+config change and run a preference-tuning experiment. Combined with
+<G term="axolotl">Axolotl</G> (which wraps TRL behind a YAML interface) or <G term="unsloth">Unsloth</G> (which
+adds speed) it covers the open-source <G term="post-training">post-training</G> pipeline.
+
+<G term="apache-2-0">Apache 2.0</G> licensed.
+
+Full coverage at [/projects/hf-trl](/projects/hf-trl).

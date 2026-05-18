@@ -1,0 +1,33 @@
+---
+term: RLHF
+aliases: [reinforcement learning from human feedback]
+primary_layer: training
+secondary_layers: [safety-guardrails, governance]
+summary: A post-training pipeline that uses human preference rankings to train a reward model, then optimizes a base model against that reward via reinforcement learning.
+sources:
+  - title: "Training language models to follow instructions with human feedback (Ouyang et al., 2022)"
+    url: "https://arxiv.org/abs/2203.02155"
+  - title: "Deep reinforcement learning from human preferences (Christiano et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03741"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A three-stage recipe. Stage 1: supervised <G term="fine-tuning">fine-tuning</G> on human-written
+demonstrations. Stage 2: collect pairwise rankings of model outputs from
+human annotators and train a reward model to predict which response a
+human would prefer. Stage 3: use a reinforcement learning algorithm
+(historically PPO) to optimize the base model against the reward model,
+with a KL penalty to keep the policy near the SFT initialization.
+
+This was the canonical <G term="alignment">alignment</G> recipe behind InstructGPT, ChatGPT, and
+the first wave of Claude and <G term="llama">Llama</G>-Chat models. The reward model is the
+load-bearing piece: if it is miscalibrated, RL amplifies the
+miscalibration, producing "reward hacking" outputs that score high but
+fail in deployment.
+
+`DPO` and its variants replaced RLHF as the open-source default during
+2024 because they skip the reward model and the RL loop entirely, using
+the pairwise rankings directly as a contrastive training signal. RLHF is
+still common at <G term="frontier">frontier</G> labs but rare in open-source <G term="fine-tuning">fine-tuning</G> stacks.

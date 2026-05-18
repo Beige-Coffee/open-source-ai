@@ -1,0 +1,32 @@
+---
+term: agentic
+aliases: [agentic AI, agent-style]
+primary_layer: agents
+secondary_layers: [protocols]
+summary: An informal descriptor for AI systems that pursue multi-step goals via tool use, planning, and self-correction, rather than single-turn question-answering.
+sources:
+  - title: "Building Effective Agents (Anthropic, 2024)"
+    url: "https://www.anthropic.com/research/building-effective-agents"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A loose label that distinguishes systems that loop (plan, act, observe,
+revise) from systems that answer one question and stop. The
+constituent capabilities are <G term="function-calling">tool calling</G>, persistent memory, the
+ability to read the result of an action and decide what to do next, and
+sometimes the ability to spawn subagents.
+
+The label is fuzzy on purpose. Vendor marketing uses "agentic" for any
+chatbot that calls a tool; researchers reserve it for systems with
+genuine autonomous loops; the meaning slides between them in everyday
+discussion. Anthropic's 2024 "Building Effective Agents" essay
+distinguishes simple workflows (deterministic chains) from agents
+(LLM-driven control flow) and is a useful reference point.
+
+The architectural shift agentic systems require: tool definitions
+become as load-bearing as system prompts; observability needs traces
+across many model calls; cost and <G term="latency">latency</G> budgets per task replace
+per-call budgets; failure modes shift from wrong answers to unbounded
+loops and tool misuse.

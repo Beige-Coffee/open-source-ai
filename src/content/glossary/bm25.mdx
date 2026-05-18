@@ -1,0 +1,31 @@
+---
+term: BM25
+aliases: [Okapi BM25]
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: A classical lexical ranking function for information retrieval, based on term frequency and inverse document frequency with saturation, still the strong lexical baseline for hybrid search.
+sources:
+  - title: "The Probabilistic Relevance Framework: BM25 and Beyond (Robertson and Zaragoza, 2009)"
+    url: "https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A scoring function from 1990s information retrieval that scores a
+document against a query by summing term-frequency contributions, each
+weighted by inverse document frequency and saturated so very high
+counts do not dominate. The math is simple, the implementation is
+cheap, and the quality on keyword-style queries is hard to beat.
+
+BM25 stayed relevant after dense retrieval took over because it covers
+the failure modes of `semantic search` directly. Exact identifiers,
+proper nouns, code function names, technical jargon: lexical search
+finds them; <G term="embedding">embedding</G> search often does not. Hybrid search runs both
+and fuses the scores.
+
+Modern retrieval stacks (<G term="llama-index">LlamaIndex</G>, <G term="langchain">LangChain</G>, Haystack) make BM25 a
+default option alongside vector search; Elasticsearch, OpenSearch, and
+Lucene-based engines have BM25 built in. The work since has been on
+BM25-plus-rerankers and on hybrid fusion methods, not on replacing BM25
+itself.

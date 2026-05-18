@@ -1,0 +1,33 @@
+---
+term: FlashAttention
+aliases: [flash attention]
+primary_layer: runtime
+secondary_layers: [silicon]
+summary: An exact attention algorithm that reorders the computation to avoid materializing the full attention matrix in GPU HBM, giving 2 to 4 times speedup with no quality loss.
+sources:
+  - title: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness (Dao et al., 2022)"
+    url: "https://arxiv.org/abs/2205.14135"
+  - title: "FlashAttention-2 (Dao, 2023)"
+    url: "https://arxiv.org/abs/2307.08691"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A reimplementation of `attention` that exploits the speed difference
+between <G term="gpu">GPU</G> SRAM (on-chip, fast, small) and <G term="hbm">HBM</G> (off-chip, slow, large).
+The standard <G term="attention">attention</G> algorithm materializes a sequence_length squared
+<G term="attention">attention</G> matrix in <G term="hbm">HBM</G>, then reads it back to compute the output;
+FlashAttention tiles the computation so the full matrix never leaves
+SRAM, eliminating most of the slow memory traffic.
+
+The result is exact attention (same output as the naive algorithm) at
+2 to 4 times the speed, with linear instead of quadratic memory in
+sequence length. FlashAttention-2 (2023) restructured the loop order
+for better <G term="gpu">GPU</G> utilization; FlashAttention-3 (2024) added Hopper-
+specific tensor-core optimizations.
+
+It is now the default kernel in every major training and <G term="inference">inference</G>
+stack: PyTorch's scaled-dot-product-attention, <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, TensorRT-
+LLM, and the <G term="hugging-face">Hugging Face</G> Transformers library all route attention
+through a FlashAttention implementation when available.

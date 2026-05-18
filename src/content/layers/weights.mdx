@@ -10,14 +10,16 @@ related_layers: [data, training, runtime, governance]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The model files. Having the weights means you can run the model,
-fine-tune it, and inspect it; it does not mean you can re-train or
+<G term="fine-tuning">fine-tune</G> it, and inspect it; it does not mean you can re-train or
 reproduce it. This is the most superficial layer of openness and also
-where license diversity hides the most: Apache 2.0 is genuinely open;
-the Llama Community License and Gemma's terms are source-available with
-revocable acceptable-use clauses; OLMo is one of the few families open
+where license diversity hides the most: <G term="apache-2-0">Apache 2.0</G> is genuinely open;
+the <G term="llama">Llama</G> Community License and <G term="gemma">Gemma</G>'s terms are <G term="source-available">source-available</G> with
+revocable <G term="acceptable-use">acceptable-use</G> clauses; OLMo is one of the few families open
 at the weights, data, and training-code layers all at once. The
-open-weights ecosystem in 2026 is dominated by Chinese labs (Qwen,
-DeepSeek, Kimi, GLM), Meta's Llama family, Mistral, Google's Gemma, and
-AI2's OLMo. The OSAID definition decides which of these counts as "open
+open-weights ecosystem in 2026 is dominated by Chinese labs (<G term="qwen">Qwen</G>,
+<G term="deepseek">DeepSeek</G>, Kimi, GLM), Meta's <G term="llama">Llama family</G>, <G term="mistral">Mistral</G>, Google's <G term="gemma">Gemma</G>, and
+AI2's OLMo. The <G term="osaid">OSAID</G> definition decides which of these counts as "open
 source AI"; under the strictest reading, most do not.

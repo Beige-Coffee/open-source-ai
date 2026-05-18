@@ -1,0 +1,31 @@
+---
+term: scheduler
+aliases: [request scheduler, training scheduler]
+primary_layer: compute
+secondary_layers: [runtime, training]
+summary: The component in a serving or training system that decides which work runs next, balancing throughput, fairness, latency targets, and resource constraints.
+sources:
+  - title: "vLLM scheduler design"
+    url: "https://docs.vllm.ai/en/latest/design/scheduler.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+In an <G term="inference">inference</G> runtime: the loop that picks which requests to include
+in the next batch, when to admit a new request, when to evict cache
+blocks. <G term="vllm">vLLM</G> and <G term="sglang">SGLang</G> both use continuous-<G term="batching">batching</G> schedulers that
+make these decisions at the token level. The scheduler's policy
+determines the <G term="throughput">throughput</G>-vs-<G term="latency">latency</G> curve of the whole engine.
+
+In a training cluster: the workload manager (Slurm, Kubernetes, Ray,
+custom) that places jobs on physical hardware, handles preemption,
+and matches resource requests to availability. Hyperscaler training
+clusters use custom schedulers tuned for <G term="gpu">GPU</G>-aware placement,
+gang-scheduling of distributed jobs, and fault-tolerance handoffs.
+
+Scheduling design surfaces in user-visible ways. Cold-start <G term="latency">latency</G>
+on a "scale to zero" serverless <G term="inference">inference</G> endpoint comes from the
+scheduler waiting on hardware to provision. Long queue times on
+shared clusters come from the scheduler's fairness policies. The
+scheduler is rarely flashy but always load-bearing.

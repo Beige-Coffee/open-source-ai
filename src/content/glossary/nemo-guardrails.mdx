@@ -1,0 +1,28 @@
+---
+term: NeMo Guardrails
+aliases: [NeMo]
+primary_layer: safety-guardrails
+secondary_layers: [agents]
+summary: NVIDIA's open framework for programmable safety, topic, and conversation guardrails around LLM applications, using a Colang DSL to define allowed and disallowed conversation flows.
+sources:
+  - title: "NeMo Guardrails documentation"
+    url: "https://docs.nvidia.com/nemo/guardrails/latest/index.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+NVIDIA's guardrails framework, sitting between an application and an
+LLM. NeMo Guardrails uses Colang, a small DSL for describing
+canonical user intents, allowed flows between them, and forbidden or
+escalation flows. Inputs and outputs are checked against the rules
+before reaching the model or the user, with optional fact-check or
+moderation steps in the chain.
+
+The pattern complements model-level training. Where <G term="llama-guard">Llama Guard</G>
+classifies content after the fact, NeMo Guardrails enforces
+conversation-level structure: keep the chatbot on its assigned
+topic, refuse off-topic requests, escalate ambiguous cases to a human
+review path. <G term="apache-2-0">Apache 2.0</G> licensed.
+
+Full coverage at [/projects/nemo-guardrails](/projects/nemo-guardrails).

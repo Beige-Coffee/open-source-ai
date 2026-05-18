@@ -1,0 +1,37 @@
+---
+term: constitutional AI
+aliases: [CAI]
+primary_layer: safety-guardrails
+secondary_layers: [training]
+summary: Anthropic's alignment technique where a model is trained to critique and revise its own outputs against a written list of principles (the "constitution"), reducing the need for human ranking labels.
+sources:
+  - title: "Constitutional AI: Harmlessness from AI Feedback (Bai et al., 2022)"
+    url: "https://arxiv.org/abs/2212.08073"
+  - title: "Anthropic: Claude's Constitution"
+    url: "https://www.anthropic.com/news/claudes-constitution"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A training recipe with two stages. In the SL (supervised) stage the
+model generates a response, critiques itself against the constitution
+("would a thoughtful reader find this response unhelpful?"), revises
+the response based on the critique, and the revised version is used
+as the SFT target. In the RL stage the model ranks pairs of responses
+against the constitution to produce a preference dataset, which then
+trains a reward model used in <G term="rlhf">RLHF</G>.
+
+The constitution is a small set of plain-English principles (Claude's
+public constitution lists several dozen). The shift is moving the
+behavioral specification from labor-intensive per-example human
+ranking to a relatively concise written document the team can edit
+and audit.
+
+Beyond Anthropic, the technique is used in some open-source post-
+training projects (Tulu, Zephyr-Beta) and in lighter forms in academic
+work on AI feedback (RLAIF). The open question for governance is
+whether having a publishable constitution is itself a meaningful
+accountability mechanism or whether the harder work is the (often
+unpublished) red-teaming and refinement of what the constitution
+actually achieves.

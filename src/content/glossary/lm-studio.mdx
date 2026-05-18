@@ -1,0 +1,27 @@
+---
+term: LM Studio
+aliases: []
+primary_layer: runtime
+secondary_layers: [sovereignty-decentralization]
+summary: A desktop application for running open-weight models locally with a GUI, model browser, and OpenAI-compatible local server, targeting users who prefer apps over command-line tools.
+sources:
+  - title: "LM Studio"
+    url: "https://lmstudio.ai/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A desktop application that wraps `llama.cpp` and the <G term="gguf">GGUF</G> model
+ecosystem in a polished GUI. The flow is: browse a catalog of community
+quantizations on <G term="hugging-face">Hugging Face</G>, download with one click, chat with the
+model or expose it as a local OpenAI-compatible API endpoint.
+
+LM Studio targets the same audience as <G term="ollama">Ollama</G> (developers and
+power-users running local models) with a different posture: GUI-first
+rather than CLI-first, single-app rather than service-style. The
+runtime under the hood is <G term="llama-cpp">llama.cpp</G> in both cases; the differentiation
+is in the surrounding workflow.
+
+Proprietary application; the underlying <G term="llama">llama</G>.cpp runtime it wraps is
+MIT-licensed.

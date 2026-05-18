@@ -1,0 +1,34 @@
+---
+term: GPU
+aliases: [graphics processing unit]
+primary_layer: silicon
+secondary_layers: [compute, runtime]
+summary: A massively parallel processor originally designed for graphics, repurposed since the 2010s as the dominant compute substrate for both training and inference of large neural networks.
+sources:
+  - title: "NVIDIA H100 architecture whitepaper"
+    url: "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A parallel processor with thousands of small cores grouped into
+streaming multiprocessors, paired with high-bandwidth memory (<G term="hbm">HBM3</G> or
+<G term="hbm">HBM3e</G> on current data-center parts). The instruction set is built
+around dense linear algebra: matrix-multiply units (tensor cores on
+NVIDIA, matrix cores on AMD) execute thousands of fused multiply-adds
+per cycle.
+
+The GPU is what trained every modern <G term="frontier">frontier model</G> and serves nearly
+every production <G term="inference">inference</G> workload. The architecture's per-chip
+memory capacity (80 to 192 GB on 2026 datacenter parts) and per-chip
+bandwidth (3 to 8 TB/s) are the constraints that shape model
+architecture choices like `GQA`, <G term="mixture-of-experts">MoE</G> expert sizing, and <G term="kv-cache">KV-cache</G>
+layouts.
+
+NVIDIA dominates the datacenter GPU market in 2026 with the Hopper
+(H100/H200) and Blackwell (B100/B200) generations. AMD's MI300X is the
+main credible competitor for <G term="inference">inference</G>; Apple Silicon is the consumer
+<G term="local-first">local-first</G> parallel; the rest of the ecosystem is hyperscaler
+in-house parts (<G term="tpu">TPU</G>, Trainium) or startups (`Cerebras`, `Groq`,
+`Tenstorrent`).

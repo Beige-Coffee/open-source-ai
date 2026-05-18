@@ -1,0 +1,32 @@
+---
+term: x402
+aliases: []
+primary_layer: protocols
+secondary_layers: [sovereignty-decentralization]
+summary: An open protocol revived by Coinbase in 2025 that uses the long-reserved HTTP 402 "Payment Required" status to let agents and APIs settle micropayments, including in stablecoins.
+sources:
+  - title: "x402 protocol announcement (Coinbase, 2025)"
+    url: "https://www.coinbase.com/blog/x402-a-new-internet-payment-standard-and-an-open-source-protocol-for-internet-native-payments"
+  - title: "x402 specification"
+    url: "https://x402.org/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A revival of HTTP's reserved 402 status code as a real-world payment
+flow. When an API returns 402 Payment Required, an accompanying header
+describes the price and accepted payment rails (USDC on Base or
+Solana, Lightning, etc.). A client agent reads the header, signs and
+sends the payment, retries the request with proof, and gets the
+resource.
+
+The protocol matters for <G term="agentic">agentic</G> commerce: agents can pay for API
+calls, content, or compute without prearranged accounts. Coinbase's
+2025 launch focused on stablecoin settlement; later work added support
+for traditional rails and for Lightning-style off-chain channels.
+
+Related: `L402` (the Lightning-native predecessor from Lightning Labs)
+and Google's `AP2` (<G term="agentic">agentic</G> payment protocol). All three address the
+same problem from different starting points; whether they converge or
+fragment is still open.

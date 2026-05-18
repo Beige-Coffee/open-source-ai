@@ -1,0 +1,31 @@
+---
+term: PagedAttention
+aliases: [paged attention]
+primary_layer: runtime
+secondary_layers: []
+summary: An attention implementation that manages the KV cache in fixed-size blocks like operating-system virtual memory, eliminating fragmentation and letting many concurrent requests share GPU memory efficiently.
+sources:
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The core technical contribution of `vLLM`. Conventional <G term="inference">inference</G>
+engines allocate one contiguous slab of <G term="gpu">GPU</G> memory per request to hold
+the `KV cache`, sized for the maximum possible sequence length. Most
+requests do not use all of it; the unused tail is wasted; bringing in
+the next request requires defragmentation. The paged design splits the
+<G term="kv-cache">KV cache</G> into fixed-size blocks (typically 16 tokens each) tracked by
+a page table per request, the way virtual memory works in an OS.
+
+The result: near-zero memory fragmentation, dynamic growth of each
+request's cache as it generates more tokens, and the ability to share
+identical prefix blocks across requests (which is the basis for prefix
+caching).
+
+PagedAttention enables <G term="continuous-batching">continuous batching</G> at high concurrency. Other
+runtimes adopted the pattern after the original <G term="vllm">vLLM</G> release: <G term="sglang">SGLang</G>
+extends it with `RadixAttention` for tree-structured prefix sharing,
+and <G term="tensorrt-llm">TensorRT-LLM</G> ships its own block-based <G term="kv-cache">KV cache</G> manager.

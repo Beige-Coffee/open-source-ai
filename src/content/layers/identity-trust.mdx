@@ -10,15 +10,17 @@ related_layers: [silicon, runtime, agents, protocols]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The cryptographic and hardware infrastructure that lets you verify what
 a model is doing or who an agent is. Four sub-clusters share this
-layer: Trusted Execution Environments (Intel SGX, AMD SEV, NVIDIA H100
-Confidential Computing, Apple Secure Enclave); confidential-computing
-services (Apple PCC, Phala, AWS Nitro Enclaves); verifiable inference
-(EZKL, Modulus, Lagrange's ZKML); and agent-identity primitives (DIDs,
-verifiable credentials, AAIF agent passports, L402 macaroons). Trust
+layer: Trusted Execution Environments (<G term="sgx">Intel SGX</G>, AMD SEV, NVIDIA H100
+<G term="confidential-computing">Confidential Computing</G>, Apple Secure Enclave); confidential-computing
+services (Apple PCC, Phala, AWS Nitro Enclaves); <G term="verifiable-inference">verifiable inference</G>
+(EZKL, Modulus, Lagrange's <G term="zkml">ZKML</G>); and agent-identity primitives (DIDs,
+verifiable credentials, AAIF agent passports, <G term="l402">L402</G> macaroons). Trust
 primitives depend on silicon vendor cooperation, which means the
 silicon-vendor monopoly at Layer 1 can re-entrench at the trust layer
 unless open-silicon counter-bets develop their own trust-anchor stories.
-ZKML tries to make trust silicon-agnostic via pure cryptography, at
+<G term="zkml">ZKML</G> tries to make trust silicon-agnostic via pure cryptography, at
 substantial performance cost.

@@ -1,0 +1,31 @@
+---
+term: RadixAttention
+aliases: [radix attention]
+primary_layer: runtime
+secondary_layers: []
+summary: A KV cache management scheme used by SGLang that organizes shared prompt prefixes as a radix tree, letting many requests with overlapping prefixes reuse cached attention state.
+sources:
+  - title: "SGLang: Efficient Execution of Structured Language Model Programs (Zheng et al., 2024)"
+    url: "https://arxiv.org/abs/2312.07104"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="kv-cache">KV cache</G> scheme that distinguishes `SGLang` from peer runtimes.
+Where `PagedAttention` treats the cache as a flat pool of fixed-size
+blocks, RadixAttention organizes blocks into a radix tree keyed by token
+prefix. Requests sharing a prefix automatically share the corresponding
+cache nodes, and least-recently-used eviction reclaims unreferenced
+branches.
+
+The use case is agent-shaped traffic: many requests reusing the same
+long system prompt, the same few-shot examples, or the same tool-call
+context. Prefix sharing turns these into near-free reuses of already-
+computed <G term="attention">attention</G> state, with <G term="throughput">throughput</G> gains of 2x to 5x for
+prefix-heavy workloads compared to no sharing.
+
+<G term="sglang">SGLang</G> pairs RadixAttention with a domain-specific frontend for
+structured output (constrained decoding, parallel forking) which is the
+combination it markets. For pure single-turn chat traffic the gains are
+smaller; for agent traffic they can be the dominant performance lever.

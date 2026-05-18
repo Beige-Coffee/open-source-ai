@@ -1,0 +1,208 @@
+---
+/**
+ * <G term="moe">MoE</G> — inline glossary tagger.
+ *
+ * Renders the visible label as a button trigger; pairs it with a
+ * sibling popover (native HTML Popover API, role="dialog") containing
+ * the 30-word summary, a "Chat about this" button that dispatches the
+ * chat-trigger event, and an "Open full entry" link to /glossary/<slug>.
+ *
+ * The `term` prop accepts the canonical slug or any alias. If neither
+ * matches a glossary entry, the component logs a build warning and
+ * renders the slot as plain text.
+ *
+ * Positioning, hover-to-peek, and chat-trigger wiring run from
+ * src/lib/glossary-runtime.ts loaded once per page via BaseLayout.
+ */
+import { getCollection } from "astro:content";
+
+interface Props {
+  term: string;
+}
+const { term } = Astro.props;
+
+const entries = await getCollection("glossary");
+
+function normalize(s: string): string {
+  return s.toLowerCase().trim().replace(/\s+/g, "-");
+}
+const want = normalize(term);
+
+const entry = entries.find((e) => {
+  if (normalize(e.id) === want) return true;
+  if (normalize(e.data.term) === want) return true;
+  return (e.data.aliases ?? []).some((a) => normalize(a) === want);
+});
+
+if (!entry) {
+  console.warn(`[G] unknown term: "${term}" — rendering as plain text`);
+}
+
+const slug = entry?.id ?? "";
+const href = entry ? `/glossary/${slug}` : "";
+const cardId = entry ? `g-card-${slug}-${Math.random().toString(36).slice(2, 8)}` : "";
+---
+
+{
+  entry ? (
+    <span class="g-wrap">
+      <button
+        type="button"
+        class="g-trigger"
+        popovertarget={cardId}
+        data-g-slug={slug}
+        aria-describedby={cardId}
+      >
+        <slot />
+      </button>
+      <span
+        id={cardId}
+        popover="auto"
+        role="dialog"
+        aria-label={`Glossary: ${entry.data.term}`}
+        class="g-card"
+      >
+        <span class="g-card-head">
+          <span class="g-card-term">{entry.data.term}</span>
+          <span class="g-card-layer">{entry.data.primary_layer}</span>
+        </span>
+        <span class="g-card-summary">{entry.data.summary}</span>
+        <span class="g-card-actions">
+          <button
+            type="button"
+            class="g-card-chat"
+            data-g-term={entry.data.term}
+            data-g-slug={slug}
+          >
+            Chat about this <span aria-hidden="true">→</span>
+          </button>
+          <a class="g-card-link" href={href}>
+            Open full entry <span aria-hidden="true">→</span>
+          </a>
+        </span>
+      </span>
+    </span>
+  ) : (
+    <span class="g-missing"><slot /></span>
+  )
+}
+
+<style is:global>
+  /* Inline tagger: looks like prose, dotted underline to signal "more here." */
+  .g-trigger {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline dotted var(--color-border-strong);
+    text-underline-offset: 3px;
+    cursor: help;
+  }
+  .g-trigger:hover,
+  .g-trigger:focus-visible {
+    text-decoration-color: var(--color-text);
+    outline: none;
+  }
+  .g-trigger:focus-visible {
+    background: var(--color-surface-warm);
+    border-radius: 2px;
+  }
+
+  .g-missing {
+    /* Same prose flow, no decoration. */
+    display: inline;
+  }
+
+  /* Popover card. Uses <span> elements to keep the HTML parser from
+     closing the surrounding <p> when the component appears in MDX
+     prose. display: block + box-sizing turns spans into card layout. */
+  .g-card {
+    display: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    width: 320px;
+    max-width: calc(100vw - 32px);
+    font-family: var(--font-sans);
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  .g-card:popover-open {
+    display: block;
+  }
+
+  .g-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px 6px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .g-card-term {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .g-card-layer {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-subtle);
+  }
+  .g-card-summary {
+    display: block;
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+  .g-card-actions {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-warm);
+  }
+  .g-card-chat,
+  .g-card-link {
+    flex: 1;
+    padding: 7px 10px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .g-card-chat:hover,
+  .g-card-link:hover,
+  .g-card-chat:focus-visible,
+  .g-card-link:focus-visible {
+    background: var(--color-surface);
+    color: var(--color-text);
+    outline: none;
+  }
+  .g-card-chat {
+    border-right: 1px solid var(--color-border);
+    border-radius: 4px 0 0 4px;
+  }
+  .g-card-link {
+    border-radius: 0 4px 4px 0;
+  }
+</style>

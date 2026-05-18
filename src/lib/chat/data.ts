@@ -92,6 +92,18 @@ interface NewsIssue {
   body: string;
 }
 
+interface GlossaryEntry {
+  slug: string;
+  term: string;
+  aliases: string[];
+  primary_layer: string;
+  secondary_layers: string[];
+  summary: string;
+  sources?: { title: string; url: string }[];
+  updated: string;
+  body: string;
+}
+
 const cache = new Map<string, unknown>();
 
 async function getJson<T>(name: string): Promise<T> {
@@ -146,6 +158,10 @@ export async function getTodayNews(): Promise<NewsIssue | null> {
   return getJson<NewsIssue | null>("today-news");
 }
 
+export async function getGlossary(): Promise<GlossaryEntry[]> {
+  return getJson<GlossaryEntry[]>("glossary");
+}
+
 export type {
   LayerEntry,
   Project,
@@ -154,4 +170,5 @@ export type {
   Reading,
   Prediction,
   NewsIssue,
+  GlossaryEntry,
 };

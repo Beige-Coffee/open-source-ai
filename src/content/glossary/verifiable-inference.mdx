@@ -1,0 +1,35 @@
+---
+term: verifiable inference
+aliases: [verifiable AI inference]
+primary_layer: identity-trust
+secondary_layers: [runtime]
+summary: An inference architecture that provides cryptographic proof the claimed model produced the claimed output, via TEE attestation, zero-knowledge proofs (ZKML), or proof-of-sample-correctness schemes.
+sources:
+  - title: "ZKML: zero-knowledge proofs for machine learning (Modulus Labs survey)"
+    url: "https://ethresear.ch/t/zkml-state-of-the-art/14501"
+  - title: "Marlin TEE-Verifier documentation"
+    url: "https://docs.marlin.org/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The class of techniques that move "the operator says this is what the
+model returned" to "here is mathematical evidence." Three families.
+<G term="tee">TEE</G>-based: the <G term="inference">inference</G> runs inside a <G term="tee">TEE</G> and the operator presents
+an <G term="attestation">attestation</G> plus signed output. ZK-based (`ZKML`): the <G term="inference">inference</G>
+generates a zero-knowledge proof that some specific model produced the
+output from the input. Sampling-based: the operator periodically
+re-runs requests on a referee and slashes if results diverge.
+
+For <G term="agentic-payments">agentic payments</G> and on-chain agents, verifiable inference is the
+hard problem. A smart contract paying an agent for a task wants
+evidence the agent actually did the work, not just an off-chain claim.
+<G term="zkml">ZKML</G> is cryptographically clean but adds 10,000x compute overhead in
+the worst case; TEE-based is fast but trusts the hardware vendor;
+sampling adds <G term="latency">latency</G> but works on commodity infrastructure.
+
+In 2026 no approach dominates. Production confidential AI uses TEEs;
+research and on-chain settings experiment with <G term="zkml">ZKML</G>; large hosted
+inference still relies on contractual rather than cryptographic
+verification.

@@ -1,0 +1,42 @@
+---
+term: mixture of experts
+aliases: [moe, sparse moe]
+primary_layer: weights
+secondary_layers: [training, runtime]
+summary: A model architecture where each token activates only a fraction of total parameters by routing through learned expert subnetworks, decoupling capacity from compute.
+sources:
+  - title: "Switch Transformers (Fedus et al., 2021)"
+    url: "https://arxiv.org/abs/2101.03961"
+  - title: "Mixtral of Experts (Jiang et al., 2024)"
+    url: "https://arxiv.org/abs/2401.04088"
+  - title: "DeepSeek-V3 Technical Report"
+    url: "https://arxiv.org/abs/2412.19437"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A <G term="transformer">transformer</G> variant where the feed-forward block is replaced by a set
+of expert subnetworks plus a small router that picks the top-k experts
+to run for each token. The model has high total parameter count but
+activates only a slice of it per forward pass, so capacity and <G term="inference">inference</G>
+FLOPs become independent dimensions. <G term="mixtral">Mixtral</G> 8x7B activates roughly 13B
+of its 47B parameters per token; <G term="deepseek">DeepSeek</G>-V3 activates 37B of 671B.
+
+Mechanically: every token's hidden state goes through a learned gating
+function that outputs a softmax over experts; the top-k (usually 1 or
+2) experts process the token, and their outputs are weighted-summed.
+Training is harder than dense models because the router has to learn
+which experts specialize in what, and idle experts get no gradient.
+Auxiliary load-balancing losses prevent collapse into one or two
+dominant experts.
+
+In open-source AI the architecture matters because it offers a way to
+push capacity without paying linear <G term="inference">inference</G> cost. <G term="mixtral">Mixtral</G>, <G term="deepseek">DeepSeek</G>,
+Qwen3-MoE, and <G term="llama">Llama</G> 4's preview all use it. Runtimes serving MoE models
+need expert parallelism (different GPUs hold different experts) which
+makes them harder to serve at home but more efficient at fleet scale.
+
+Distinct from `dense models` where every parameter activates every
+forward pass, and from `model parallelism` which splits a dense model
+across devices rather than routing through learned subnetworks.

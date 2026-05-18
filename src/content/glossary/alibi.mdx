@@ -1,0 +1,30 @@
+---
+term: ALiBi
+aliases: [attention with linear biases]
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: A positional encoding that adds a linear bias to attention scores based on the distance between tokens, with no learned position parameters and natural length extrapolation.
+sources:
+  - title: "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation (Press et al., 2022)"
+    url: "https://arxiv.org/abs/2108.12409"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An alternative to `RoPE` for injecting position into <G term="attention">attention</G>. ALiBi
+adds a static bias to each <G term="attention">attention</G> score equal to the negative
+distance between tokens, scaled by a per-head slope. Closer tokens get
+near-zero bias; distant tokens get progressively more negative scores,
+effectively a soft recency bias.
+
+The headline property at release was train-short-test-long: models
+trained at 1024 tokens generalized to 4096+ tokens at <G term="inference">inference</G> with no
+<G term="fine-tuning">fine-tuning</G>, which <G term="rope">RoPE</G> without scaling could not. In practice the
+field converged on <G term="rope">RoPE</G> with frequency scaling for long-context work,
+and ALiBi sits in fewer production models than it once did.
+
+It still appears in some <G term="open-weights">open-weight</G> families (early MPT, BLOOM, and
+several research-grade releases). Worth understanding as the contrast
+that motivated the RoPE-scaling tricks now standard in long-context
+<G term="fine-tuning">fine-tuning</G>.

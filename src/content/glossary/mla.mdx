@@ -1,0 +1,31 @@
+---
+term: MLA
+aliases: [multi-head latent attention]
+primary_layer: runtime
+secondary_layers: [weights]
+summary: An attention variant introduced in DeepSeek-V2 that compresses keys and values through a learned low-rank projection, dramatically shrinking the KV cache.
+sources:
+  - title: "DeepSeek-V2 Technical Report"
+    url: "https://arxiv.org/abs/2405.04434"
+  - title: "DeepSeek-V3 Technical Report"
+    url: "https://arxiv.org/abs/2412.19437"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="attention">attention</G> variant <G term="deepseek">DeepSeek</G> introduced in V2 and refined in V3.
+Instead of storing per-head key and value vectors directly, MLA learns a
+low-rank latent projection of the KV state and stores the smaller
+latent, decompressing on the fly during <G term="attention">attention</G>. The cache per token
+drops to roughly 6 percent of an equivalent multi-head attention setup.
+
+The smaller cache lets <G term="deepseek">DeepSeek</G> run with much longer contexts and
+higher batch sizes on the same hardware than <G term="gqa">GQA</G>-style alternatives.
+The trade-off is computational: the decompression adds FLOPs, and the
+custom kernels needed to make it fast are a maintenance burden compared
+to standard `GQA`.
+
+Beyond DeepSeek the technique has been slower to spread; most other
+open families stick with <G term="gqa">GQA</G>. Whether MLA becomes general or stays a
+DeepSeek signature is an open question through 2026.

@@ -1,0 +1,34 @@
+---
+term: neocloud
+aliases: [GPU cloud, AI cloud, GPU-as-a-Service]
+primary_layer: infrastructure
+secondary_layers: [compute]
+summary: A specialized cloud provider focused exclusively on GPU and AI workloads, operating outside the traditional AWS/Azure/GCP hyperscaler perimeter, with CoreWeave, Lambda, and Voltage Park as the canonical examples.
+sources:
+  - title: "SemiAnalysis: The GPU Cloud Era"
+    url: "https://semianalysis.com/2024/03/14/gpu-cloud-economics-explained-the/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A cloud provider that sells <G term="gpu">GPU</G> compute as its primary or only
+product. Distinct from hyperscalers (AWS, Azure, GCP) in scope and
+customer base: neoclouds typically have no general-purpose VM tier,
+no managed databases, no enterprise SaaS, just GPUs by the hour or
+reserved instance. CoreWeave, Lambda, Voltage Park, Crusoe,
+Hyperbolic, Together AI, and Fireworks are commonly grouped under
+the label.
+
+The economics depend on chip access. NVIDIA allocates Hopper and
+Blackwell GPUs to neoclouds on terms that vary; the most-favored
+operators (CoreWeave is the public example, with a 2024 NVIDIA
+investment) get earlier and larger allocations than smaller peers.
+This creates a tier system within the neocloud category.
+
+For open-source AI, neoclouds matter as the practical compute layer
+for teams that cannot buy capacity from a hyperscaler at acceptable
+terms but cannot self-host either. The sovereignty profile varies:
+some are hyperscaler-adjacent (CoreWeave hosts large Microsoft
+workloads); others target the independent-developer market
+(Hyperbolic, Voltage Park).

@@ -1,0 +1,29 @@
+---
+term: Megatron
+aliases: [Megatron-LM]
+primary_layer: training
+secondary_layers: [compute]
+summary: NVIDIA's distributed-training framework for large transformer models, providing the reference implementation of tensor parallelism, pipeline parallelism, and 3D parallelism used in many open and closed training runs.
+sources:
+  - title: "Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism (Shoeybi et al., 2019)"
+    url: "https://arxiv.org/abs/1909.08053"
+  - title: "Megatron-LM GitHub"
+    url: "https://github.com/NVIDIA/Megatron-LM"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+NVIDIA's reference distributed-training framework. Megatron introduced
+the canonical tensor-parallel and pipeline-parallel implementations
+for <G term="transformer">transformer</G> training, with optimized fused kernels and
+communication patterns tuned for <G term="nvlink">NVLink</G> and <G term="infiniband">InfiniBand</G>. Many
+production <G term="frontier">frontier</G> training runs use Megatron-derived code, sometimes
+combined with <G term="deepspeed">DeepSpeed</G> or FSDP for the optimizer-state <G term="sharding">sharding</G>.
+
+The repository is permissively licensed and serves as the de facto
+reference: most open distributed-training papers either build on
+Megatron or compare against it. The <G term="nemo-guardrails">NeMo</G> framework (also NVIDIA)
+wraps Megatron in a higher-level API for model customization.
+
+Full coverage at [/projects/megatron-lm](/projects/megatron-lm).

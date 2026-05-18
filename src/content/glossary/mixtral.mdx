@@ -1,0 +1,25 @@
+---
+term: Mixtral
+aliases: []
+primary_layer: weights
+secondary_layers: [runtime]
+summary: Mistral AI's MoE model line, with Mixtral 8x7B (the first widely-adopted open mixture-of-experts model) and the larger Mixtral 8x22B as its two flagship releases.
+sources:
+  - title: "Mixtral of Experts (Jiang et al., 2024)"
+    url: "https://arxiv.org/abs/2401.04088"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The mixture-of-experts variant of `Mistral`. Mixtral 8x7B (December
+2023) was the first practical <G term="open-weights">open-weight</G> `MoE` model, with 8 experts
+of 7B parameters each and 2 active per token (roughly 13B active out
+of 47B total). It outperformed <G term="llama">Llama</G> 2 70B on most benchmarks at a
+fraction of the <G term="inference">inference</G> cost. Mixtral 8x22B (April 2024) scaled the
+recipe.
+
+The release proved open <G term="mixture-of-experts">MoE</G> could match dense baselines at lower
+serving cost and changed runtime engine roadmaps: <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and
+<G term="tensorrt-llm">TensorRT-LLM</G> all rushed to add expert-parallel <G term="inference">inference</G> support.
+<G term="apache-2-0">Apache 2.0</G> licensed in both cases.

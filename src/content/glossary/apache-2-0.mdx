@@ -1,0 +1,32 @@
+---
+term: Apache 2.0
+aliases: [Apache License 2.0, Apache-2.0]
+primary_layer: governance
+secondary_layers: [weights]
+summary: A permissive open-source license used by most open-weight model releases (Llama from 4 onward partial, Qwen, Mistral, DeepSeek, Falcon), allowing commercial use without acceptable-use restrictions.
+sources:
+  - title: "Apache License 2.0 full text"
+    url: "https://www.apache.org/licenses/LICENSE-2.0"
+  - title: "OSI: Apache License 2.0"
+    url: "https://opensource.org/license/apache-2-0"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A permissive license approved by the <G term="osi">Open Source Initiative</G>. The
+operative grant: a perpetual, irrevocable, royalty-free copyright and
+patent license to use, modify, and distribute, including in commercial
+products and proprietary derivatives. The notable add over MIT or BSD:
+explicit patent grant with a retaliation clause.
+
+For model weights, Apache 2.0 is the strongest "actually open" signal.
+It carries no <G term="acceptable-use">acceptable-use</G> clause, no <G term="mau">MAU</G> threshold, no <G term="field-of-use">field-of-use</G>
+restriction. A team can <G term="fine-tuning">fine-tune</G> the model, ship the result behind a
+proprietary product, and never report back to the original publisher.
+
+In 2026 the meaningful Apache-2.0 <G term="open-weights">open-weight</G> families include <G term="mistral">Mistral</G>
+(most releases), <G term="qwen">Qwen</G> (most releases), <G term="deepseek">DeepSeek</G> (most releases),
+Falcon, Phi-3 (Microsoft), and OLMo (AI2). <G term="llama">Llama</G> is closer to source-
+available: the Community License has both a 700M <G term="mau">MAU</G> clause and an
+<G term="acceptable-use">acceptable-use</G> addendum, neither compatible with the <G term="osi">OSI</G> definition.

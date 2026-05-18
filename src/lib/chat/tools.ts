@@ -14,6 +14,7 @@ import {
   getLayers,
   getLayerContent,
   getTodayNews,
+  getGlossary,
 } from "./data";
 import { searchAll } from "./retrieve";
 
@@ -148,6 +149,30 @@ export const TOOLS = [
     input_schema: { type: "object", properties: {} },
   },
   {
+    name: "find_glossary",
+    description:
+      "Filter the glossary by layer, free-text query against term or summary, or list every entry. Use to surface candidate definitions when the user asks 'what is X' or 'what are the key concepts at <layer>'. Returns up to 12 entries with term, summary, primary_layer, aliases. Limit: 3 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        layer: { type: "string", description: "Layer slug; matches primary_layer or any secondary_layer." },
+        query: { type: "string", description: "Free-text query against term and summary." },
+      },
+    },
+  },
+  {
+    name: "read_glossary",
+    description:
+      "Fetch the full glossary entry for one term by canonical slug OR by any alias (e.g. slug='moe' resolves to mixture-of-experts). Returns term, aliases, summary, primary_layer, secondary_layers, full body prose, sources. Use when the user asks for a deeper explanation of a specific concept, or after a 'Chat about this' click on a hover card. Limit: 4 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slug: { type: "string", description: "Canonical slug or alias of the glossary term." },
+      },
+      required: ["slug"],
+    },
+  },
+  {
     name: "search",
     description:
       "Full-text search across grants, funders, projects, readings, and layer overviews. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
@@ -170,10 +195,12 @@ const LIMITS: Record<string, number> = {
   find_funders: 2,
   find_projects: 3,
   find_readings: 3,
+  find_glossary: 3,
   read_layer: 3,
   read_funder: 3,
   read_grant: 3,
   read_project: 4,
+  read_glossary: 4,
   read_predictions: 2,
   today_news: 1,
   search: 2,
@@ -495,6 +522,65 @@ export async function executeTool(
           result = { error: "No news issues published yet." };
         } else {
           result = news;
+        }
+        break;
+      }
+
+      case "find_glossary": {
+        const args = call.input as { layer?: string; query?: string };
+        const glossary = await getGlossary();
+        const hits = glossary.filter((g) => {
+          if (args.layer) {
+            const inPrimary = g.primary_layer === args.layer;
+            const inSecondary = (g.secondary_layers ?? []).includes(args.layer);
+            if (!inPrimary && !inSecondary) return false;
+          }
+          if (args.query) {
+            const blob = `${g.term} ${(g.aliases ?? []).join(" ")} ${g.summary}`;
+            if (!fuzzyMatch(blob, args.query)) return false;
+          }
+          return true;
+        });
+        hits.sort((a, b) => a.term.toLowerCase().localeCompare(b.term.toLowerCase()));
+        result = {
+          count: hits.length,
+          glossary: hits.slice(0, 12).map((g) => ({
+            slug: g.slug,
+            term: g.term,
+            aliases: g.aliases,
+            primary_layer: g.primary_layer,
+            secondary_layers: g.secondary_layers,
+            summary: g.summary,
+          })),
+        };
+        break;
+      }
+
+      case "read_glossary": {
+        const raw = String(call.input.slug ?? "").trim();
+        const want = raw.toLowerCase().replace(/\s+/g, "-");
+        const glossary = await getGlossary();
+        const g = glossary.find((entry) => {
+          if (entry.slug === want) return true;
+          if (entry.term.toLowerCase() === raw.toLowerCase()) return true;
+          return (entry.aliases ?? []).some(
+            (a) => a.toLowerCase().replace(/\s+/g, "-") === want,
+          );
+        });
+        if (!g) {
+          const close = glossary
+            .filter((entry) =>
+              entry.slug.includes(want) ||
+              entry.term.toLowerCase().includes(raw.toLowerCase()),
+            )
+            .slice(0, 5)
+            .map((entry) => `${entry.slug} (${entry.term})`);
+          result = {
+            error: `No glossary entry for '${raw}'.`,
+            suggestions: close,
+          };
+        } else {
+          result = g;
         }
         break;
       }

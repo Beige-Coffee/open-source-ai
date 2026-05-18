@@ -1,0 +1,33 @@
+---
+term: RoPE
+aliases: [rotary positional embedding, rotary position embedding]
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: A positional encoding that rotates query and key vectors in two-dimensional subspaces by an angle proportional to their position, making attention scores depend on relative not absolute position.
+sources:
+  - title: "RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., 2021)"
+    url: "https://arxiv.org/abs/2104.09864"
+  - title: "YaRN: Efficient Context Window Extension (Peng et al., 2023)"
+    url: "https://arxiv.org/abs/2309.00071"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A way to inject sequence position into <G term="attention">attention</G>. RoPE splits each
+query and key vector into 2D pairs, rotates each pair by an angle that
+depends on the token's position and a per-pair frequency, and lets the
+dot product fall out as a function of relative position only. The math
+is clean and the implementation is a small modification to the <G term="attention">attention</G>
+kernel.
+
+RoPE is the positional encoding used in <G term="llama">Llama</G> (all generations), <G term="qwen">Qwen</G>,
+<G term="mistral">Mistral</G>, <G term="deepseek">DeepSeek</G>, <G term="gemma">Gemma</G>, and most other modern <G term="open-weights">open-weight</G> families.
+The frequency base parameter (often called `theta` or `rope_theta`)
+controls the rotation rate; raising it during <G term="fine-tuning">fine-tuning</G> extends the
+usable <G term="context-window">context window</G> without retraining from scratch (YaRN, NTK-aware,
+and dynamic scaling are variants of this trick).
+
+It replaced absolute and learned positional embeddings as the default
+during 2022 to 2023 and now sits in nearly every production
+implementation of attention.

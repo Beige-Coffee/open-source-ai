@@ -1,0 +1,33 @@
+---
+term: transformer
+aliases: []
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: The neural network architecture that combines self-attention with feed-forward layers, dominant for language modeling since 2017 and the substrate for nearly every modern LLM.
+sources:
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A stacked sequence of identical blocks. Each block has two sublayers: a
+self-`attention` mechanism that lets every token see every prior token,
+and a position-wise feed-forward network (FFN) that processes each
+position independently. Residual connections and layer norms surround
+both sublayers; positional encodings inject sequence order into the
+otherwise position-blind <G term="attention">attention</G>.
+
+The original 2017 paper introduced the architecture for machine
+translation. Decoder-only transformers became dominant for language
+modeling by 2020 with GPT-3 and remain the standard shape: hundreds of
+billions of parameters across dozens or hundreds of stacked blocks,
+trained autoregressively on web-scale text.
+
+Variants reshape one component without changing the bones. `MoE` models
+replace the FFN with a sparse <G term="mixture-of-experts">mixture of experts</G>. Mamba and similar
+state-space architectures swap <G term="attention">attention</G> for a recurrent operator with
+linear-time complexity. Diffusion language models (Gemini Diffusion,
+LLaDA-style) replace next-token prediction with iterative denoising.
+None has displaced the transformer at the <G term="frontier">frontier</G> as of 2026.

@@ -1,0 +1,33 @@
+---
+term: chunking
+aliases: [text chunking, document chunking]
+primary_layer: retrieval-memory
+secondary_layers: []
+summary: Splitting source documents into smaller passages for embedding and retrieval, where the chunk size and overlap directly affect retrieval quality and context efficiency.
+sources:
+  - title: "LangChain: Text Splitters documentation"
+    url: "https://python.langchain.com/docs/concepts/text_splitters/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The preprocessing step in any <G term="rag">RAG</G> pipeline. Documents are split into
+overlapping passages of roughly 200 to 1000 tokens, each embedded
+separately, indexed in a <G term="vector-database">vector database</G>. Retrieval returns these
+passages, not whole documents. Chunk size is a tradeoff: small chunks
+give precise retrieval but fragment context; large chunks preserve
+context but blur retrieval signal.
+
+Three pattern families. Fixed-size chunking splits at character or
+token counts with optional overlap. Recursive chunking respects
+document structure (paragraphs, then sentences, then characters) to
+keep semantic units intact. Late chunking (Jina, 2024) embeds the full
+document then pools per-chunk after, preserving cross-chunk context in
+the <G term="embedding">embedding</G>.
+
+In practice chunk strategy is the most-tweaked knob in <G term="rag">RAG</G> pipelines
+and the source of much retrieval-quality variation. Production systems
+often layer chunking with a parent-document fallback: embed small
+chunks for precise matching, return the larger parent passage to the
+generator for context.

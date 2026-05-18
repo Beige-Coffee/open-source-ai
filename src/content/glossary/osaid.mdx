@@ -1,0 +1,33 @@
+---
+term: OSAID
+aliases: [Open Source AI Definition]
+primary_layer: governance
+secondary_layers: [weights, data]
+summary: The OSI's October 2024 definition of "open source AI," requiring not just weights but enough information about data, code, and architecture for third parties to reproduce the system.
+sources:
+  - title: "OSI: Open Source AI Definition 1.0"
+    url: "https://opensource.org/ai/open-source-ai-definition"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The <G term="osi">OSI</G>'s authoritative definition of open-source AI, released October
+2024 after a two-year consultation. It demands four freedoms paralleling
+the Open Source Definition: freedom to use the system for any purpose,
+to study how it works, to modify it, and to share it (modified or not)
+with anyone.
+
+For AI systems specifically, OSAID requires sufficient information
+about training data (not necessarily the data itself, which may be
+legally undistributable), the source code used to train and run the
+system, and the trained parameters. The data carve-out is contested:
+critics argue that without the actual training data a system is not
+reproducible, so the <G term="osi">OSI</G>'s compromise admits systems that other
+definitions would exclude.
+
+Under the strictest reading of OSAID, very few 2026 <G term="frontier">frontier</G>-class
+releases qualify. AI2's OLMo family does. <G term="llama">Llama</G>, <G term="mistral">Mistral</G>, <G term="qwen">Qwen</G>,
+<G term="deepseek">DeepSeek</G>, and <G term="gemma">Gemma</G> are mostly weight-only and do not. The OSAID's
+practical effect is to provide a meaningful term for the open-AI
+community that vendor marketing has not yet diluted.

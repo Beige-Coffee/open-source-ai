@@ -1,0 +1,31 @@
+---
+term: agent memory
+aliases: [agentic memory]
+primary_layer: retrieval-memory
+secondary_layers: [agents]
+summary: The persistent state an agent carries across turns and sessions, ranging from session-scoped scratchpads to long-term knowledge bases the agent reads and writes itself.
+sources:
+  - title: "Generative Agents: Interactive Simulacra of Human Behavior (Park et al., 2023)"
+    url: "https://arxiv.org/abs/2304.03442"
+  - title: "MemGPT: Towards LLMs as Operating Systems (Packer et al., 2023)"
+    url: "https://arxiv.org/abs/2310.08560"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The state an agent reads back later. Three tiers usually distinguished:
+short-term (the model's current `context window`, holding the active
+turn), session memory (a scratchpad across turns within one conversation
+or task), and long-term memory (an external store of facts, preferences,
+past outcomes the agent retrieves selectively).
+
+Long-term memory is `RAG` applied inside-out. Instead of retrieving from
+a static corpus, the agent retrieves from a store it has written to
+itself. The hard problems are write-side: when to summarize, what to
+deduplicate, how to update versus append, how to garbage-collect.
+
+Open implementations: MemGPT (LLMs as memory-managing OS), mem0,
+Letta (productized MemGPT), and the memory primitives in <G term="langchain">LangChain</G> and
+<G term="llama-index">LlamaIndex</G>. None has emerged as the standard; the design space is still
+moving as agents move from single-turn to long-running.

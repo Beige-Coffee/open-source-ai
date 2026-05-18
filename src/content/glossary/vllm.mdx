@@ -1,0 +1,44 @@
+---
+term: vLLM
+aliases: []
+primary_layer: runtime
+secondary_layers: [agents]
+summary: An open-source inference engine introduced by UC Berkeley in 2023, built around PagedAttention to manage KV cache memory and serve tokens efficiently under load.
+sources:
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+  - title: "vLLM project documentation"
+    url: "https://docs.vllm.ai/"
+  - title: "vLLM GitHub"
+    url: "https://github.com/vllm-project/vllm"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A Python <G term="inference">inference</G> engine for LLMs whose core technical contribution is
+<G term="paged-attention">PagedAttention</G>, a virtual-memory-style layout for the <G term="kv-cache">KV cache</G> that
+lets a server pack many concurrent requests into the same <G term="gpu">GPU</G> memory
+without fragmentation. The engine handles <G term="continuous-batching">continuous batching</G>,
+<G term="prefix-caching">prefix caching</G>, <G term="speculative-decoding">speculative decoding</G>, and tensor / pipeline parallelism
+out of the box. It exposes an OpenAI-compatible HTTP API so existing
+clients work unchanged.
+
+How it differs from sibling runtimes: <G term="sglang">SGLang</G> adds <G term="radix-attention">RadixAttention</G> for
+structured generation patterns; <G term="tensorrt-llm">TensorRT-LLM</G> ships closed-source NVIDIA
+kernels optimized for Hopper and Blackwell; <G term="llama-cpp">llama.cpp</G> targets CPU and
+small-<G term="gpu">GPU</G> <G term="local-first">local-first</G> deployments. vLLM sits in the middle, optimized
+for production serving on datacenter GPUs with broad model support
+across both dense and <G term="mixture-of-experts">MoE</G> families.
+
+In open-source AI it is the default reference engine for serving open
+weights at scale. Most published <G term="llama">Llama</G>, <G term="qwen">Qwen</G>, <G term="mistral">Mistral</G>, and <G term="deepseek">DeepSeek</G>
+benchmarks list vLLM <G term="throughput">throughput</G> numbers; most agent platforms that need
+self-hosted <G term="inference">inference</G> target the vLLM HTTP API. The project is
+permissively licensed (<G term="apache-2-0">Apache 2.0</G>) and maintained as a community
+project under the PyTorch Foundation as of 2024.
+
+Adjacent concepts in the runtime layer: `PagedAttention` (its core
+mechanism), `KV cache` (the memory it manages), `continuous batching`
+(its scheduling pattern), `speculative decoding` (an optional
+acceleration), and `SGLang` / `TensorRT-LLM` (sibling engines).

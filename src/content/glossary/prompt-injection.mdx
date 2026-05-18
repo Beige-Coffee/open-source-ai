@@ -1,0 +1,36 @@
+---
+term: prompt injection
+aliases: [indirect prompt injection]
+primary_layer: safety-guardrails
+secondary_layers: [agents]
+summary: An attack where adversarial content in a document, tool result, or web page is interpreted as instructions by the model, overriding the user or system prompt.
+sources:
+  - title: "Prompt Injection attacks (Simon Willison)"
+    url: "https://simonwillison.net/series/prompt-injection/"
+  - title: "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection (Greshake et al., 2023)"
+    url: "https://arxiv.org/abs/2302.12173"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The defining LLM security failure. A model receives input from multiple
+sources (a system prompt, a user message, a retrieved document, a
+tool result, the contents of a web page being processed). A model
+trained to follow instructions in the prompt cannot reliably
+distinguish instructions in trusted versus untrusted sources, so
+adversarial text in a retrieved document can override the system
+prompt's safety constraints or tool-use policy.
+
+Indirect prompt injection (the Greshake et al. naming) is the
+production form: not the user typing malicious instructions, but the
+user uploading a document, browsing a page, or processing an email
+whose contents contain instructions the user did not author.
+
+No fully reliable defense exists in 2026. The mitigations stack:
+instruction hierarchies in <G term="post-training">post-training</G>, structured separation of
+trusted and untrusted content in the prompt, output filtering for
+suspicious actions, capability limits on what a tool can do, and
+human-in-the-loop for high-risk actions. Most production agent
+deployments rely on capability limiting more than on model-level
+defense.

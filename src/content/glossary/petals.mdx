@@ -1,0 +1,33 @@
+---
+term: Petals
+aliases: []
+primary_layer: sovereignty-decentralization
+secondary_layers: [runtime]
+summary: A volunteer-pooled inference system that runs large open-weight models across many internet-connected nodes, each holding a slice of the model, with users dispatching forward passes through the swarm.
+sources:
+  - title: "Petals: Collaborative Inference and Fine-tuning of Large Models (Borzunov et al., 2022)"
+    url: "https://arxiv.org/abs/2209.01188"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The canonical decentralized-<G term="inference">inference</G> reference project. Petals
+splits a <G term="transformer">transformer</G> into stages, runs each stage on a different
+volunteer <G term="gpu">GPU</G> connected over the public internet, and forwards
+activations between them. A user connects to the network as a client,
+which routes the forward pass through a sequence of nodes serving
+each stage.
+
+The <G term="throughput">throughput</G> is dramatically lower than centralized serving (limits
+imposed by inter-node <G term="latency">latency</G> over consumer internet), but the
+architecture demonstrates that <G term="frontier">frontier</G>-scale models can run without
+a single operator controlling the <G term="inference">inference</G>. <G term="fine-tuning">Fine-tuning</G> over the
+swarm is also supported.
+
+Petals is less a production-ready alternative to <G term="vllm">vLLM</G> and more a
+proof-of-concept for sovereignty-aligned inference architecture. The
+ideas (pipeline-parallel inference across loosely-connected nodes)
+inform a broader research stream of decentralized AI compute.
+
+Full coverage at [/projects/petals](/projects/petals).

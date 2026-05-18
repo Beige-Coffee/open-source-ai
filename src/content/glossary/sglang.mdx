@@ -1,0 +1,27 @@
+---
+term: SGLang
+aliases: []
+primary_layer: runtime
+secondary_layers: [agents]
+summary: An open inference engine from the LMSYS team featuring RadixAttention for prefix sharing and a structured-generation frontend, particularly strong on agent and tool-calling workloads.
+sources:
+  - title: "SGLang: Efficient Execution of Structured Language Model Programs (Zheng et al., 2024)"
+    url: "https://arxiv.org/abs/2312.07104"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A peer-competitive open <G term="inference">inference</G> engine launched in 2024 by the LMSYS
+team (the same group behind Chatbot Arena and Vicuna). The defining
+technical features are `RadixAttention` for prefix-sharing across
+requests and a Python frontend for structured generation
+(constrained decoding, parallel forking, control-flow over multiple
+generations).
+
+The combination matches agent-shaped traffic well: many requests
+reusing long system prompts and tool descriptions, with shared cache
+state across requests. On agent benchmarks SGLang typically matches or
+beats <G term="vllm">vLLM</G> <G term="throughput">throughput</G>; on pure single-turn chat the engines run close.
+
+Full coverage at [/projects/sglang](/projects/sglang).

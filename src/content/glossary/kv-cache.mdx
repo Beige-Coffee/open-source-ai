@@ -1,0 +1,31 @@
+---
+term: KV cache
+aliases: [kv-cache, key-value cache]
+primary_layer: runtime
+secondary_layers: [silicon]
+summary: The stored key and value vectors from previously processed tokens, reused at each generation step so an autoregressive model does not recompute attention over the entire prefix.
+sources:
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+During autoregressive generation, each new token's <G term="attention">attention</G> requires
+the key and value projections of every prior token. Recomputing them on
+every step would scale quadratically with sequence length. The KV cache
+stores them after the first forward pass and looks them up on every
+subsequent step, turning each decode step into a linear operation in
+prior length.
+
+The cost is memory. KV cache size scales as `2 × num_layers × num_heads ×
+head_dim × sequence_length × batch_size`. For <G term="llama">Llama</G>-3-70B at 8K context
+on bf16, that is roughly 1.3 GB per concurrent request. The KV cache is
+why long-context <G term="inference">inference</G> is expensive even though the model weights
+themselves do not change.
+
+Modern runtimes treat KV cache as the load-bearing resource. `PagedAttention`
+manages it like virtual memory; `GQA` reduces it by sharing KV heads
+across groups; <G term="quantization">quantization</G>-of-KV (<G term="fp8">FP8</G> or INT8 KV) cuts it in half or
+quarter; offloading to host RAM extends it at the cost of <G term="latency">latency</G>.

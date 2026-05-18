@@ -1,0 +1,34 @@
+---
+term: confidential computing
+aliases: []
+primary_layer: identity-trust
+secondary_layers: [silicon, runtime]
+summary: The umbrella category of compute architectures where workloads run isolated from the host operator, combining hardware TEEs, attestation, and encrypted-memory protections.
+sources:
+  - title: "Confidential Computing Consortium"
+    url: "https://confidentialcomputing.io/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The architecture pattern that lets a workload run on infrastructure
+the operator does not trust. The components are: a hardware-isolated
+runtime (a `TEE` on CPU, NVIDIA's confidential-compute mode on H100/
+H200, or a similar <G term="gpu">GPU</G> isolation), <G term="attestation">remote attestation</G> that proves the
+expected code is running, and encrypted communication channels that
+keep secrets out of the operator's reach end-to-end.
+
+For AI, confidential computing matters because hosted <G term="inference">inference</G> is
+otherwise a trust nightmare: prompts and outputs pass through provider
+infrastructure that could log, train on, or leak them. Apple Private
+Cloud Compute, Anthropic Confidential <G term="inference">Inference</G>, the AWS Nitro
+enclaves used by Apple, and projects like Maple AI all build on
+confidential-compute primitives to give users cryptographic instead
+of contractual privacy.
+
+The remaining gaps are <G term="gpu">GPU</G> coverage (only NVIDIA Hopper and Blackwell
+support confidential modes; AMD and Intel GPUs lag), performance
+overhead (10 to 30 percent on <G term="transformer">transformer</G> workloads, depending on
+mode), and the <G term="attestation">attestation</G> chain (the user needs to trust the
+hardware vendor's signing keys).

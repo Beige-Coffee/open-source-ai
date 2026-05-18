@@ -1,0 +1,34 @@
+---
+term: tokenizer
+aliases: []
+primary_layer: data
+secondary_layers: [training, runtime]
+summary: The component that splits raw text into discrete units (tokens) the model can process, usually using a learned subword vocabulary like Byte-Pair Encoding.
+sources:
+  - title: "Hugging Face Tokenizers documentation"
+    url: "https://huggingface.co/docs/tokenizers"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The piece of the model pipeline that turns text into integer IDs.
+Modern tokenizers use a subword vocabulary (typically 32K to 256K
+tokens) learned by <G term="bpe">Byte-Pair Encoding</G> (`BPE`) or a similar algorithm.
+Common words become single tokens; rare words are split into multiple
+subword tokens; arbitrary unicode falls back to byte-level encoding.
+
+The tokenizer is part of the model: it must match between training
+and <G term="inference">inference</G>. The trained vocabulary determines how text maps to
+sequences of tokens, which determines context-length budgets
+(measured in tokens, not characters), per-language efficiency
+(non-English text often tokenizes to more tokens per character), and
+behavior on out-of-vocabulary input (rare scripts, code, technical
+notation).
+
+Production tokenizers in 2026: tiktoken (OpenAI), <G term="llama">Llama</G> tokenizer
+family (Meta), <G term="qwen">Qwen</G> tokenizer, Anthropic's tokenizer for Claude. The
+<G term="hugging-face">Hugging Face</G> tokenizers library implements all the common variants
+and is the open-ecosystem reference. Tokenizer choice has measurable
+effects on training efficiency and downstream behavior, so it is one
+of the load-bearing design decisions of a model release.

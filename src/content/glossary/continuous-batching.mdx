@@ -1,0 +1,30 @@
+---
+term: continuous batching
+aliases: [in-flight batching, dynamic batching]
+primary_layer: runtime
+secondary_layers: []
+summary: A request-scheduling pattern where the inference engine adds new requests to the running batch as soon as one finishes a token, instead of waiting for the whole batch to complete.
+sources:
+  - title: "Orca: A Distributed Serving System for Transformer-Based Generative Models (Yu et al., OSDI 2022)"
+    url: "https://www.usenix.org/conference/osdi22/presentation/yu"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The serving pattern that made high-<G term="throughput">throughput</G> LLM <G term="inference">inference</G> economically
+viable. Naive <G term="batching">batching</G> waits for every request in a batch to finish
+before starting the next, which is wasteful: a 500-token completion
+holds the batch while a 20-token completion sits idle. Continuous
+<G term="batching">batching</G> schedules at the token level, swapping new requests in as
+others finish, so the <G term="gpu">GPU</G> is never idle waiting on the longest
+generation.
+
+Combined with `PagedAttention` (so per-request `KV cache` can grow
+independently) and prefill <G term="chunking">chunking</G> (so a new request's prefill does not
+stall the decode loop), continuous batching pushes a server's effective
+<G term="throughput">throughput</G> per <G term="gpu">GPU</G> 5 to 20 times higher than naive batching at similar
+<G term="latency">latency</G> targets.
+
+It is the default scheduling mode in <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, <G term="tensorrt-llm">TensorRT-LLM</G>,
+<G term="tgi">TGI</G>, and <G term="llama-cpp">llama.cpp</G>'s server mode.

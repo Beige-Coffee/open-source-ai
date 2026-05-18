@@ -1,0 +1,32 @@
+---
+term: LoRA
+aliases: [low-rank adaptation]
+primary_layer: training
+secondary_layers: [weights]
+summary: A parameter-efficient fine-tuning method that injects small low-rank adapter matrices into a frozen base model, training a tiny fraction of weights instead of the full model.
+sources:
+  - title: "LoRA: Low-Rank Adaptation of Large Language Models (Hu et al., 2021)"
+    url: "https://arxiv.org/abs/2106.09685"
+  - title: "Hugging Face PEFT documentation"
+    url: "https://huggingface.co/docs/peft"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A <G term="fine-tuning">fine-tuning</G> technique that freezes the original model weights and learns
+a pair of low-rank matrices A and B alongside each target layer, where the
+effective weight update is B times A. The rank r is small (typically 4 to
+64), so the number of trainable parameters is a fraction of a percent of
+the base model.
+
+This decouples adapter storage from base storage: many LoRA adapters can
+share one base model on disk, swap in at <G term="inference">inference</G> time, and run without
+a full forward pass through new parameters. Open-source training stacks
+like <G term="axolotl">Axolotl</G> and <G term="unsloth">Unsloth</G> ship LoRA as the default <G term="fine-tuning">fine-tuning</G> path; the
+<G term="hugging-face">Hugging Face</G> <G term="peft">PEFT</G> library is the canonical reference implementation.
+
+Compared to full fine-tuning: cheaper to train, smaller artifacts to ship,
+slightly less expressive on tasks far from the base model's distribution.
+Compared to `QLoRA`: LoRA keeps the base in original precision; <G term="qlora">QLoRA</G> adds
+a 4-bit quantized base to fit training on a single consumer <G term="gpu">GPU</G>.

@@ -1,0 +1,32 @@
+---
+term: HBM
+aliases: [high bandwidth memory, HBM3, HBM3e]
+primary_layer: silicon
+secondary_layers: [compute]
+summary: Stacked DRAM used as the main memory of every modern AI accelerator, with bandwidth in TB/s rather than GB/s and capacity per stack in tens of GB.
+sources:
+  - title: "JEDEC HBM3 standard announcement"
+    url: "https://www.jedec.org/news/pressreleases/jedec-publishes-hbm3-update-jesd238a"
+  - title: "Micron HBM3e product brief"
+    url: "https://www.micron.com/products/memory/hbm/hbm3e"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+DRAM stacked vertically and connected to the <G term="gpu">GPU</G> or accelerator die via
+a silicon interposer, giving wide-bus access to the memory at very high
+bandwidth. The H100 SXM has 80 GB of HBM3 at 3.35 TB/s; the H200 has
+141 GB of HBM3e at 4.8 TB/s; the Blackwell B200 has 192 GB of HBM3e.
+
+HBM is the most-load-bearing component of AI accelerator economics.
+Model size and `KV cache` size scale with capacity, <G term="throughput">throughput</G> scales
+with bandwidth, and per-GB cost dominates the bill of materials for
+high-end accelerators. The HBM supply chain (SK hynix, Samsung, Micron)
+sits in the same critical-path category as advanced lithography.
+
+The architectural consequence: 2026-era models are designed around
+HBM constraints. <G term="mixture-of-experts">MoE</G> sparsifies parameters to fit in capacity; <G term="gqa">GQA</G> and
+<G term="mla">MLA</G> shrink the <G term="kv-cache">KV cache</G>; <G term="fp8">FP8</G> <G term="inference">inference</G> halves the bytes per parameter.
+None of these would exist in the same form without HBM as the gating
+resource.

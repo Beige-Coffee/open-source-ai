@@ -1,0 +1,32 @@
+---
+term: NVLink
+aliases: []
+primary_layer: compute
+secondary_layers: [silicon]
+summary: NVIDIA's proprietary GPU-to-GPU interconnect, providing bandwidth an order of magnitude above PCIe and the basis for tightly-coupled 8-GPU server nodes (DGX, HGX).
+sources:
+  - title: "NVIDIA NVLink and NVSwitch documentation"
+    url: "https://www.nvidia.com/en-us/data-center/nvlink/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A high-bandwidth, point-to-point interconnect between NVIDIA GPUs in
+the same server. Hopper's NVLink 4 reaches 900 GB/s aggregate per <G term="gpu">GPU</G>;
+Blackwell's NVLink 5 reaches 1.8 TB/s. Combined with NVSwitch, which
+provides all-to-all connectivity across 8 (or with NVL72, 72) GPUs in
+one fabric, NVLink turns a server into a tightly-coupled compute
+domain rather than a loosely-connected cluster.
+
+The relevance for AI: tensor parallelism and pipeline parallelism
+require fast all-reduce across the participating GPUs. PCIe at 64 GB/s
+per <G term="gpu">GPU</G> is the bottleneck without NVLink; on NVLink it disappears
+into the noise of the matmul itself. Multi-GPU training and large-
+model <G term="inference">inference</G> depend on NVLink-class interconnect to scale.
+
+Competing fabrics exist (AMD Infinity Fabric, custom hyperscaler
+interconnects) but NVLink has the deepest software ecosystem. The new
+NVL72 architecture for Blackwell extends the NVLink domain to 72 GPUs
+in a single rack, blurring the line between "node" and "cluster" for
+the largest models.

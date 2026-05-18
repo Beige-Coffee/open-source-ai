@@ -1,0 +1,33 @@
+---
+term: post-training
+aliases: []
+primary_layer: training
+secondary_layers: [safety-guardrails, weights]
+summary: "Everything that happens after pretraining ends: supervised fine-tuning, preference optimization, red-teaming, distillation, and safety work that turns a base into a shippable assistant."
+sources:
+  - title: "Llama 3 Technical Report (Meta, 2024)"
+    url: "https://ai.meta.com/research/publications/the-llama-3-herd-of-models/"
+  - title: "Qwen3 Technical Report"
+    url: "https://arxiv.org/abs/2505.09388"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The umbrella term for the training work that follows <G term="pretraining">pretraining</G>. By
+2024 <G term="frontier">frontier</G> labs published increasingly detailed post-training
+recipes: multi-stage SFT, preference optimization, rejection sampling
+against learned reward models, capability-specific <G term="fine-tuning">fine-tuning</G> for code
+or math, and dedicated <G term="alignment">alignment</G> passes for refusal and tone.
+
+Post-training quality is now what separates <G term="open-weights">open-weight</G> base models
+from production assistants. The <G term="llama">Llama</G> 3 release notes describe roughly
+ten million instruction examples and millions of preference pairs in the
+post-training set; Qwen3 reports a multi-phase recipe involving distinct
+math, reasoning, and conversational stages.
+
+For open-source fine-tuners the implication is that pretrained bases are
+plentiful and cheap to access, but matching the post-training quality of
+a hosted assistant is the hard part. Open recipes (Tülu, Zephyr, Nous
+Hermes, OpenHermes) document workable post-training pipelines for
+practitioners who do not have a <G term="frontier">frontier</G>-lab data budget.

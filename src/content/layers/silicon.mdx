@@ -10,13 +10,15 @@ related_layers: [compute, runtime]
 updated: 2026-05-13
 ---
 
+import G from "../../components/G.astro";
+
 The substrate. Instruction set architectures (ISAs) and the physical
 accelerators that execute matrix math. Silicon is the slowest-moving
 layer in the stack and the one everything above inherits constraints
 from. Two questions live here and they are independent: is the ISA open
-(RISC-V is, ARM and x86 are not) and is the accelerator open (almost
-none are; Tenstorrent is the noteworthy exception). The dominant
+(<G term="risc-v">RISC-V</G> is, ARM and x86 are not) and is the accelerator open (almost
+none are; <G term="tenstorrent">Tenstorrent</G> is the noteworthy exception). The dominant
 production accelerator remains NVIDIA's H100/H200 line on the
-proprietary CUDA software stack; AMD MI300X, Cerebras, Groq, and Apple
+proprietary <G term="cuda">CUDA</G> software stack; AMD MI300X, <G term="cerebras">Cerebras</G>, <G term="groq">Groq</G>, and Apple
 Silicon are the credible alternatives at different points in the
 performance-and-availability trade space.

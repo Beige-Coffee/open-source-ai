@@ -1,0 +1,27 @@
+---
+term: MLX
+aliases: [Apple MLX]
+primary_layer: runtime
+secondary_layers: [silicon, sovereignty-decentralization]
+summary: Apple's open-source ML framework designed for Apple Silicon's unified memory architecture, the local-first inference engine for Mac and increasingly iPad and iPhone.
+sources:
+  - title: "MLX documentation"
+    url: "https://ml-explore.github.io/mlx/build/html/index.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Apple's open-source array framework, MIT-licensed, designed around
+Apple Silicon's unified-memory architecture. Where most ML frameworks
+shuttle data between CPU and <G term="gpu">GPU</G> memory, MLX treats them as a single
+pool, which suits Mac Studio configurations with 128 GB or 192 GB of
+unified memory.
+
+The framework supports both <G term="inference">inference</G> and training; for end users the
+practical use case is running <G term="open-weights">open-weight</G> models on a Mac. MLX-LM and
+MLX-VLM packages cover the major model families with PyTorch-style
+APIs. A Mac Studio with 128 GB can run <G term="llama">Llama</G>-3-70B at 20+ tokens per
+second; smaller models run at hundreds.
+
+Full coverage at [/projects/apple-mlx](/projects/apple-mlx).

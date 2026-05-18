@@ -1,0 +1,29 @@
+---
+term: DeepSeek
+aliases: []
+primary_layer: weights
+secondary_layers: [training]
+summary: A Chinese open-weight family known for the V3 MoE base model and the R1 reasoning model, both released under permissive licenses and unusually transparent in their training-cost reporting.
+sources:
+  - title: "DeepSeek-V3 technical report"
+    url: "https://arxiv.org/abs/2412.19437"
+  - title: "DeepSeek-R1 technical report"
+    url: "https://arxiv.org/abs/2501.12948"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A 2023-founded Chinese lab that became one of the most-watched open
+labs through late-2024 and 2025. DeepSeek-V3 (December 2024) was a
+671B-parameter <G term="mixture-of-experts">MoE</G> with 37B active per token, released under a
+permissive license and accompanied by an unusually candid technical
+report including training cost (~$5.6M for the final run). R1
+(January 2025) demonstrated reasoning-mode behavior trained largely
+from RL on verifiable rewards, with the recipe published.
+
+The combination (<G term="frontier">frontier</G>-class capability, <G term="open-weights">open weights</G>, detailed
+technical reporting) was unusual enough to reset community
+expectations of what open releases could include.
+
+Full coverage at [/projects/deepseek](/projects/deepseek).

@@ -1,0 +1,29 @@
+---
+term: batching
+aliases: []
+primary_layer: compute
+secondary_layers: [runtime]
+summary: Grouping multiple requests or training examples into a single forward or backward pass, the lever that turns GPU compute density into throughput.
+sources:
+  - title: "Orca: A Distributed Serving System for Transformer-Based Generative Models (Yu et al., 2022)"
+    url: "https://www.usenix.org/conference/osdi22/presentation/yu"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The practice of running many examples through a model in parallel.
+GPUs are compute-dense and memory-bandwidth-limited; running one
+sequence at a time leaves most of the compute idle. Batching amortizes
+the memory traffic across more useful work.
+
+For training the batch size is mostly a quality knob (small batches
+generalize differently, large batches require learning-rate tuning).
+For <G term="inference">inference</G>, batching is the central knob: larger batches mean
+higher <G term="throughput">throughput</G> per <G term="gpu">GPU</G> but higher per-request <G term="latency">latency</G>.
+
+`Continuous batching` is the <G term="inference">inference</G>-time pattern that makes
+batching dynamic per token instead of per request. Combined with
+`PagedAttention` for cache management, modern runtimes maintain
+batches of hundreds of concurrent requests per <G term="gpu">GPU</G> on production
+workloads.

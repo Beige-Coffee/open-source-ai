@@ -1,0 +1,33 @@
+---
+term: function calling
+aliases: [tool calling, structured tool use]
+primary_layer: agents
+secondary_layers: [protocols]
+summary: A pattern where a model emits a structured call (function name plus arguments), the runtime executes it, and the result returns as input on the model's next turn.
+sources:
+  - title: "OpenAI Function Calling documentation"
+    url: "https://platform.openai.com/docs/guides/function-calling"
+  - title: "Anthropic Tool Use documentation"
+    url: "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The protocol that lets a language model trigger code execution. The
+caller defines a tool schema (name, description, JSON-schema parameter
+shape); the model either responds with text or emits a structured tool-
+call object naming the tool and arguments; the host runs the tool and
+returns the result; the model continues with that result in context.
+
+The technique is what makes agents possible. Web search, code
+execution, database queries, file reads, <G term="mcp">MCP</G> server actions: all are
+function calls under the hood. Reliability varies by model:
+function-calling quality is now a standard axis on which models are
+benchmarked.
+
+Two flavors coexist. Provider-specific schemas (OpenAI's tools API,
+Anthropic's tool_use blocks, Gemini's function declarations) are the
+common case. The <G term="mcp">Model Context Protocol</G> (`MCP`) tries to standardize
+the tool layer across providers so the same MCP server works regardless
+of which model is making the call.

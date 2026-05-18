@@ -1,0 +1,29 @@
+---
+term: Cerebras
+aliases: [Cerebras Systems, CS-3]
+primary_layer: silicon
+secondary_layers: []
+summary: An AI compute company built around wafer-scale chips (the WSE-3 is a single die covering most of a 300mm wafer), offering some of the lowest inference latency on the market.
+sources:
+  - title: "Cerebras CS-3 announcement"
+    url: "https://www.cerebras.ai/press-release/cerebras-cs-3-now-available"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A different bet at the silicon layer. Where GPUs and most AI
+accelerators are die-sized, Cerebras's Wafer-Scale Engine (WSE-3) is a
+single chip approximately the size of an entire 300mm wafer (46,225
+square millimeters, ~900,000 cores). The architecture eliminates
+chip-to-chip communication for many workloads by keeping everything
+on one die.
+
+The headline metric is <G term="inference">inference</G> <G term="latency">latency</G>. Cerebras's hosted <G term="inference">inference</G>
+service produces tokens at hundreds to thousands per second on
+70B-class models, far above <G term="gpu">GPU</G>-based competitors. The trade-off is
+capital cost per system and a software stack that needs explicit
+support from frameworks (PyTorch with the Cerebras backend, the
+Cerebras compiler).
+
+Full coverage at [/projects/cerebras-cs3](/projects/cerebras-cs3).

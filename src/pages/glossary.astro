@@ -1,0 +1,198 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { loadLayers } from "../lib/layers";
+
+const entries = await getCollection("glossary");
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const layerBySlug = Object.fromEntries(allLayers.map((l) => [l.slug, l]));
+
+const sorted = entries
+  .slice()
+  .sort((a, b) =>
+    a.data.term.toLowerCase().localeCompare(b.data.term.toLowerCase()),
+  );
+
+const byLayer = allLayers.map((layer) => ({
+  layer,
+  entries: sorted.filter(
+    (e) =>
+      e.data.primary_layer === layer.slug ||
+      (e.data.secondary_layers ?? []).includes(layer.slug),
+  ),
+}));
+
+const layerTitle = (slug: string) => layerBySlug[slug]?.title ?? slug;
+---
+
+<BaseLayout
+  title="Glossary"
+  description="Plain-English definitions for the technical concepts, protocols, and projects that show up across the open-source AI stack."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-6">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Glossary
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      What the terms mean
+    </h1>
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      Definitions for the concepts, protocols, and projects this site
+      uses across its 14 layers. Each entry has a short hover summary
+      and a deeper page. Most show up inline in the prose as dotted
+      underlines you can hover or tap.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 mt-2 mb-8">
+    <p
+      class="font-mono text-xs text-[var(--color-text-subtle)] flex flex-wrap gap-x-4 gap-y-1"
+    >
+      <span>{entries.length} entries</span>
+      <span class="text-[var(--color-border-strong)]">&middot;</span>
+      <span>{byLayer.filter((b) => b.entries.length > 0).length} layers covered</span>
+    </p>
+  </section>
+
+  <section id="glossary-page" class="max-w-6xl mx-auto px-6">
+    <div
+      role="tablist"
+      aria-label="Glossary view"
+      class="sticky top-16 z-10 -mx-6 px-6 py-2 mb-6 bg-[var(--color-bg)] border-b border-[var(--color-border)]"
+    >
+      <div class="flex gap-1 flex-wrap">
+        <button
+          type="button"
+          role="tab"
+          data-glossary-tab="by-layer"
+          aria-selected="true"
+          class="px-3 py-1.5 rounded-md font-medium text-sm bg-[var(--color-accent-soft)] text-[var(--color-accent)] cursor-pointer"
+        >
+          By layer
+        </button>
+        <button
+          type="button"
+          role="tab"
+          data-glossary-tab="a-z"
+          aria-selected="false"
+          class="px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+        >
+          A&ndash;Z
+          <span class="font-mono text-xs ml-1 opacity-70">{entries.length}</span>
+        </button>
+      </div>
+    </div>
+
+    <div data-glossary-panel="by-layer">
+      {
+        byLayer
+          .filter((b) => b.entries.length > 0)
+          .map(({ layer, entries: layerEntries }) => (
+            <section class="mb-12">
+              <header class="mb-4">
+                <h2 class="font-serif text-2xl text-[var(--color-text)]">
+                  {layer.title}
+                </h2>
+                <p class="font-mono text-xs text-[var(--color-text-subtle)] mt-1">
+                  {layerEntries.length} {layerEntries.length === 1 ? "term" : "terms"}
+                </p>
+              </header>
+              <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {layerEntries.map((e) => (
+                  <li>
+                    <a
+                      href={`/glossary/${e.id}`}
+                      class="block p-3 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+                    >
+                      <div class="flex items-baseline justify-between gap-3 mb-1">
+                        <span class="font-serif text-sm text-[var(--color-text)]">
+                          {e.data.term}
+                        </span>
+                        {e.data.primary_layer !== layer.slug && (
+                          <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                            also in {layerTitle(e.data.primary_layer)}
+                          </span>
+                        )}
+                      </div>
+                      <p class="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                        {e.data.summary}
+                      </p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+      }
+    </div>
+
+    <div data-glossary-panel="a-z" hidden>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {sorted.map((e) => (
+          <li>
+            <a
+              href={`/glossary/${e.id}`}
+              class="block p-3 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+            >
+              <div class="flex items-baseline justify-between gap-3 mb-1">
+                <span class="font-serif text-sm text-[var(--color-text)]">
+                  {e.data.term}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  {layerTitle(e.data.primary_layer)}
+                </span>
+              </div>
+              <p class="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                {e.data.summary}
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    // Tab switcher: by-layer <-> a-z. Persists in URL hash.
+    function activateTab(name: string) {
+      const tabs = document.querySelectorAll<HTMLButtonElement>(
+        "[data-glossary-tab]",
+      );
+      const panels = document.querySelectorAll<HTMLElement>(
+        "[data-glossary-panel]",
+      );
+      tabs.forEach((t) => {
+        const active = t.getAttribute("data-glossary-tab") === name;
+        t.setAttribute("aria-selected", active ? "true" : "false");
+        if (active) {
+          t.className =
+            "px-3 py-1.5 rounded-md font-medium text-sm bg-[var(--color-accent-soft)] text-[var(--color-accent)] cursor-pointer";
+        } else {
+          t.className =
+            "px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer";
+        }
+      });
+      panels.forEach((p) => {
+        const active = p.getAttribute("data-glossary-panel") === name;
+        if (active) p.removeAttribute("hidden");
+        else p.setAttribute("hidden", "");
+      });
+    }
+    const fromHash = window.location.hash.replace(/^#/, "");
+    if (fromHash === "a-z") activateTab("a-z");
+    document.querySelectorAll<HTMLButtonElement>("[data-glossary-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const name = tab.getAttribute("data-glossary-tab")!;
+        activateTab(name);
+        history.replaceState(null, "", `#${name}`);
+      });
+    });
+  </script>
+</BaseLayout>

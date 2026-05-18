@@ -1,0 +1,31 @@
+---
+term: RISC-V
+aliases: [riscv]
+primary_layer: silicon
+secondary_layers: [sovereignty-decentralization, governance]
+summary: An open instruction set architecture, royalty-free and modular, increasingly used in AI accelerator cores (Tenstorrent, SiFive Intelligence) as the open alternative to ARM and x86.
+sources:
+  - title: "RISC-V International"
+    url: "https://riscv.org/"
+  - title: "RISC-V ISA specification"
+    url: "https://github.com/riscv/riscv-isa-manual"
+updated: 2026-05-18
+---
+
+A modular, open instruction set architecture from UC Berkeley
+(originally 2010, RISC-V Foundation since 2015, RISC-V International
+since 2020). The ISA itself is free to implement; the spec is
+governed by RISC-V International as a Linux-Foundation-style
+consortium with corporate and academic members.
+
+The relevance for AI: open silicon design is a sovereignty story. ARM
+and x86 charge licensing fees and operate as gatekeepers; RISC-V lets
+any team design and tape out a custom CPU or accelerator without
+licensing. AI accelerator startups (`Tenstorrent`, SiFive Intelligence,
+Esperanto) build cores around the ISA. China's domestic chip program
+treats RISC-V as the long-term ISA to avoid US-controlled licensing.
+
+RISC-V cores are not yet competitive with leading ARM or x86 cores on
+general-purpose performance. The bet is that for AI workloads, where
+matrix-multiply and memory hierarchy dominate, custom RISC-V designs
+can match dedicated accelerators while remaining open.

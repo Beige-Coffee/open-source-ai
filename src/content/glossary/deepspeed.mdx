@@ -1,0 +1,29 @@
+---
+term: DeepSpeed
+aliases: []
+primary_layer: training
+secondary_layers: [compute]
+summary: Microsoft's open-source training optimization library, originator of the ZeRO sharding technique and a peer to Megatron for distributed transformer training at scale.
+sources:
+  - title: "DeepSpeed documentation"
+    url: "https://www.deepspeed.ai/"
+  - title: "ZeRO paper (Rajbhandari et al., 2019)"
+    url: "https://arxiv.org/abs/1910.02054"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Microsoft's training optimization library. DeepSpeed introduced `ZeRO`,
+the <G term="sharding">sharding</G> technique that lets data-parallel training cross the
+memory boundary of any single <G term="gpu">GPU</G> by splitting optimizer states,
+gradients, and parameters across the data-parallel group.
+
+The library combines easily with PyTorch and with <G term="megatron">Megatron</G>'s
+parallelism abstractions; a typical production training stack runs
+<G term="megatron">Megatron</G>'s tensor-parallel + pipeline-parallel layout combined with
+DeepSpeed's <G term="sharding">ZeRO sharding</G>. DeepSpeed-<G term="inference">Inference</G> adds a separate
+<G term="inference">inference</G> path with tensor-parallel kernels, though for production
+inference <G term="vllm">vLLM</G> and <G term="sglang">SGLang</G> have largely displaced it.
+
+Full coverage at [/projects/deepspeed](/projects/deepspeed).

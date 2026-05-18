@@ -1,0 +1,31 @@
+---
+term: inference
+aliases: []
+primary_layer: runtime
+secondary_layers: [silicon, agents, evaluation]
+summary: Running a trained model to produce outputs (tokens, images, embeddings) from inputs at serving time, as distinct from the gradient updates of training.
+sources:
+  - title: "vLLM: A high-throughput serving engine for LLMs"
+    url: "https://docs.vllm.ai/en/latest/index.html"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The forward pass: input goes in, weights stay fixed, output comes out.
+Inference is what every API call to a hosted model does and what every
+self-served instance does locally. The economics of inference dominate
+operational cost for any model deployed at scale because each request
+runs the full forward pass and <G term="pretraining">pretraining</G> is amortized over the model's
+serving lifetime.
+
+For language models, inference has two phases. Prefill: process the
+prompt in parallel to fill the `KV cache`. Decode: generate one token at
+a time autoregressively. Prefill is compute-bound on long prompts;
+decode is memory-bandwidth-bound on long generations. Runtime engines
+optimize these two regimes separately.
+
+Open-source inference engines (`vLLM`, `SGLang`, `llama.cpp`, <G term="mlx">MLX</G>) compete
+on <G term="throughput">throughput</G>, memory efficiency, and supported features. The choice is
+load-bearing for cost: the same model on a poorly-tuned runtime can cost
+ten times more per token than on a well-tuned one.

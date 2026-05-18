@@ -1,0 +1,31 @@
+---
+term: DPO
+aliases: [direct preference optimization]
+primary_layer: training
+secondary_layers: [safety-guardrails]
+summary: A preference-tuning method that optimizes a model on pairwise human rankings directly, bypassing the reward-model and reinforcement-learning steps of RLHF.
+sources:
+  - title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model (Rafailov et al., 2023)"
+    url: "https://arxiv.org/abs/2305.18290"
+  - title: "TRL: Transformer Reinforcement Learning"
+    url: "https://github.com/huggingface/trl"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A reformulation of `RLHF` where the implicit reward model is the ratio
+between the trained policy and a frozen reference policy. The training
+objective is a simple classification loss over pairs of preferred and
+dispreferred responses, which makes it stable and cheap compared to RL.
+
+Practically: feed in a dataset of `(prompt, chosen, rejected)` triples
+collected from human or AI ranking, and run gradient descent. No reward
+model to train, no PPO loop, no KL coefficient to tune. The reference
+policy is usually the SFT-initialized model itself.
+
+DPO became the default open-source preference-tuning method in 2024
+because it works, fits on small hardware, and the <G term="hugging-face">Hugging Face</G> <G term="trl">TRL</G>
+library makes it a one-liner. Variants include `KTO` (Kahneman-Tversky,
+needs only binary good/bad signals, no pairs) and `ORPO` (Odds Ratio,
+combines SFT and DPO in one pass).

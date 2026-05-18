@@ -1,0 +1,26 @@
+---
+term: Gemma
+aliases: []
+primary_layer: weights
+secondary_layers: [governance]
+summary: Google's open-weight model family derived from Gemini research, with source-available licensing that includes an acceptable-use clause and license-revocation hook.
+sources:
+  - title: "Gemma terms of use"
+    url: "https://ai.google.dev/gemma/terms"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+Google's <G term="open-weights">open-weight</G> line, launched February 2024 as a 2B/7B model
+pair, since extended to 9B and 27B base sizes (Gemma 2) and to
+multimodal and code-specific variants. The architecture and <G term="tokenizer">tokenizer</G>
+inherit from Gemini research; the goal of the release is to give
+researchers and developers access to Google's <G term="open-weights">open-weight</G> contribution.
+
+The license terms are notable. Gemma is <G term="source-available">source-available</G>, not open
+source: an <G term="acceptable-use">acceptable-use</G> clause and a license-revocation hook
+distinguish it from Apache-licensed weights. The use restrictions
+parallel <G term="llama">Llama</G>'s; the revocation hook is more aggressive.
+
+Full coverage at [/projects/gemma](/projects/gemma).

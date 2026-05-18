@@ -1,0 +1,32 @@
+---
+term: PEFT
+aliases: [parameter-efficient fine-tuning]
+primary_layer: training
+secondary_layers: [weights]
+summary: A family of fine-tuning methods that update only a small fraction of a base model's parameters, making fine-tuning feasible on consumer hardware and storage-efficient at deployment.
+sources:
+  - title: "Hugging Face PEFT library"
+    url: "https://huggingface.co/docs/peft"
+  - title: "Parameter-Efficient Transfer Learning for NLP (Houlsby et al., 2019)"
+    url: "https://arxiv.org/abs/1902.00751"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A bucket of <G term="fine-tuning">fine-tuning</G> techniques that leave the base model frozen and
+train a small set of new parameters. `LoRA` is the dominant one; others
+include adapter layers (Houlsby 2019), prefix tuning, prompt tuning, and
+IA3. All trade some expressiveness for orders-of-magnitude reductions in
+trainable parameter count and adapter storage.
+
+The practical benefits compound at deployment. A single base model can
+serve many fine-tuned personalities or domains by swapping adapters at
+<G term="inference">inference</G> time, and adapters themselves are megabytes rather than
+gigabytes. <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and other open runtimes support per-request
+adapter selection for multi-tenant <G term="lora">LoRA</G> serving.
+
+The <G term="hugging-face">Hugging Face</G> PEFT library is the canonical implementation. It maps
+the same `PeftModel` interface over <G term="lora">LoRA</G>, AdaLoRA, prefix tuning, prompt
+tuning, IA3, and the related variants, so training code can change
+methods with a one-line config edit.

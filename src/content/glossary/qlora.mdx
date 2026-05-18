@@ -1,0 +1,31 @@
+---
+term: QLoRA
+aliases: []
+primary_layer: training
+secondary_layers: [weights]
+summary: A fine-tuning method that combines 4-bit quantization of the frozen base model with LoRA adapters, making large-model fine-tuning fit on a single consumer GPU.
+sources:
+  - title: "QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers et al., 2023)"
+    url: "https://arxiv.org/abs/2305.14314"
+  - title: "bitsandbytes library"
+    url: "https://github.com/bitsandbytes-foundation/bitsandbytes"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An extension of `LoRA` that stores the frozen base model in 4-bit
+precision using NF4 (a normal-distribution-tuned <G term="quantization">quantization</G> scheme) and
+double-quantizes the <G term="quantization">quantization</G> constants themselves to save more
+memory. <G term="lora">LoRA</G> adapters in full precision sit alongside the quantized base
+and absorb the gradient.
+
+The combined memory footprint is small enough that 65B parameter base
+models fit on a single 48GB <G term="gpu">GPU</G> and 7B models fit on a 24GB consumer
+card. The original paper showed QLoRA-tuned models matching full
+<G term="fine-tuning">fine-tuning</G> quality on the Vicuna <G term="benchmark">benchmark</G>.
+
+In practice QLoRA is the default for hobbyist <G term="fine-tuning">fine-tuning</G>. <G term="unsloth">Unsloth</G>,
+<G term="axolotl">Axolotl</G>, and <G term="trl">TRL</G> all expose it as a configuration flag. The trade-off
+versus <G term="lora">LoRA</G> is slower training (the quantize-dequantize step adds
+overhead) in exchange for fitting bigger bases on smaller hardware.

@@ -1,0 +1,27 @@
+---
+term: TensorRT-LLM
+aliases: [tensorrt llm]
+primary_layer: runtime
+secondary_layers: [silicon]
+summary: NVIDIA's closed-source inference engine for NVIDIA GPUs, the fastest runtime on Hopper and Blackwell but tied to NVIDIA's proprietary kernel stack and CUDA.
+sources:
+  - title: "TensorRT-LLM documentation"
+    url: "https://nvidia.github.io/TensorRT-LLM/"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+NVIDIA's production <G term="inference">inference</G> engine, the closed-runtime counterpart
+to <G term="vllm">vLLM</G> and <G term="sglang">SGLang</G>. TensorRT-LLM ships hand-tuned kernels for the
+latest NVIDIA architectures (Hopper, Blackwell) and integrates with
+the broader TensorRT compiler stack. On NVIDIA hardware it is usually
+the <G term="throughput">throughput</G> leader, often by 10 to 30 percent over the best open
+alternatives.
+
+The trade-off is openness. TensorRT-LLM is NVIDIA-only by design and
+depends on closed <G term="cuda">CUDA</G> kernels; a model deployed on TensorRT-LLM is
+locked to NVIDIA. The wrapper itself is permissively licensed; the
+performance comes from kernels that are not.
+
+Full coverage at [/projects/tensorrt-llm](/projects/tensorrt-llm).

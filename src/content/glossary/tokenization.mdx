@@ -1,0 +1,33 @@
+---
+term: tokenization
+aliases: []
+primary_layer: data
+secondary_layers: [training, runtime]
+summary: The process of mapping raw text into the integer-ID sequences a model consumes, governed by the model's specific tokenizer; the rate-limiting interface between text and tensor.
+sources:
+  - title: "Byte Pair Encoding (Sennrich et al., 2016)"
+    url: "https://arxiv.org/abs/1508.07909"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The act of running text through the `tokenizer` and producing the
+sequence of token IDs the model will see. Every API call and every
+training-data ingestion pipeline runs this step. The output sequence
+length is what context-window limits measure: a 1M-token context
+window will hold roughly 750K English words, 500K words in
+non-English Latin scripts, and many fewer in some non-Latin scripts.
+
+The interesting failure modes are language-skewed and notation-skewed.
+Languages whose writing systems were underrepresented in the
+<G term="tokenizer">tokenizer</G>'s training data tokenize to many more tokens per character,
+which makes them more expensive per call and effectively shrinks the
+useful context. Some character classes (CJK, Indic scripts, emoji,
+specialized math notation) are particularly bad on tokenizers trained
+mostly on English.
+
+Multilingual tokenizers (<G term="qwen">Qwen</G>, Aya, BLOOM) address this with much
+larger vocabularies (200K+ tokens) and explicit coverage targets.
+The compute cost is small per call; the operational cost is in the
+model that has to learn over a larger <G term="embedding">embedding</G> table.

@@ -1,0 +1,36 @@
+---
+term: quantization
+aliases: []
+primary_layer: weights
+secondary_layers: [runtime, silicon]
+summary: Storing or computing model weights in lower-precision number formats (FP8, INT8, INT4) to reduce memory and bandwidth, accepting small quality loss.
+sources:
+  - title: "GPTQ: Accurate Post-Training Quantization (Frantar et al., 2022)"
+    url: "https://arxiv.org/abs/2210.17323"
+  - title: "AWQ: Activation-aware Weight Quantization (Lin et al., 2023)"
+    url: "https://arxiv.org/abs/2306.00978"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+The set of techniques for representing model weights and activations
+in fewer bits than the training precision. A 70B parameter model in
+FP16 is 140 GB; in INT4 it is 35 GB; in many low-bit formats it
+runs on a single consumer <G term="gpu">GPU</G>. The cost is some quality loss, which
+modern <G term="post-training">post-training</G> quantization (GPTQ, AWQ, <G term="gguf">GGUF</G>/<G term="llama-cpp">llama.cpp</G>'s k-quant
+formats) has reduced to a fraction of a percent on most benchmarks
+for 4-bit and barely measurable for 8-bit.
+
+The format choice depends on deployment. <G term="fp8">FP8</G> is the data-center
+default on Hopper/Blackwell and MI300X, supported by mature kernels
+and minimal quality loss. INT4 (GPTQ, AWQ) is common for <G term="inference">inference</G>
+on older hardware without <G term="fp8">FP8</G> support. <G term="gguf">GGUF</G> k-quants (Q4_K_M, Q5_K_M,
+etc.) target <G term="on-device">on-device</G> deployment via <G term="llama">llama</G>.cpp and balance speed and
+quality.
+
+Training in low precision is harder than <G term="inference">inference</G>. FP8 mixed-
+precision training has become production-ready on Hopper; 4-bit
+training and 2-bit training remain research. Inference quantization
+is mature; training quantization is still an active <G term="frontier">frontier</G> in
+2026.

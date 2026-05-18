@@ -272,9 +272,21 @@ function scanYaml(target) {
 function scanMdxFile(filePath) {
   const raw = readFileSync(filePath, "utf8");
   const allowed = collectAllowedLines(raw);
-  // Drop frontmatter from scan; only check body prose.
-  const m = raw.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
-  const body = m ? m[1] : raw;
+  // Drop frontmatter from scan; only check body prose. Parse the
+  // frontmatter so we can pass `sources` (if present) through to the
+  // checker: a glossary or layer entry with a populated `sources`
+  // array satisfies the citation discipline for body claims.
+  const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  let frontmatter = {};
+  let body = raw;
+  if (m) {
+    try {
+      frontmatter = yaml.load(m[1]) ?? {};
+    } catch {
+      frontmatter = {};
+    }
+    body = m[2];
+  }
   const bodyOffset = raw.length - body.length;
   const chunks = chunkParagraphs(body);
   for (const c of chunks) {
@@ -285,6 +297,7 @@ function scanMdxFile(filePath) {
       file: filePath.replace(ROOT + "/", ""),
       lineNum: absoluteLine,
       paragraph: c.text,
+      sources: frontmatter.sources,
     });
   }
 }

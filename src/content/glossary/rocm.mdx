@@ -1,0 +1,32 @@
+---
+term: ROCm
+aliases: [Radeon Open Compute]
+primary_layer: silicon
+secondary_layers: [runtime]
+summary: AMD's open-source GPU compute stack, the main credible alternative to CUDA, with growing coverage in PyTorch and vLLM but still trailing on kernel maturity and tooling.
+sources:
+  - title: "ROCm documentation"
+    url: "https://rocm.docs.amd.com/"
+  - title: "AMD ROCm GitHub organization"
+    url: "https://github.com/ROCm"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+AMD's <G term="gpu">GPU</G> compute stack, intended as the open counterpart to <G term="cuda">CUDA</G>. The
+HIP compatibility layer translates <G term="cuda">CUDA</G> source to ROCm with mechanical
+edits, the rocBLAS and MIOpen libraries cover the dense and convolution
+kernels, and PyTorch ships a maintained ROCm backend.
+
+The 2024 wave of MI300X deployments at major cloud providers
+materially advanced ROCm's production-readiness. <G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and
+<G term="llama-cpp">llama.cpp</G> all have working ROCm support in 2026; key kernels
+(<G term="flash-attention">FlashAttention</G>, <G term="paged-attention">PagedAttention</G>) have AMD-tuned variants. <G term="inference">Inference</G> on
+MI300X reaches a meaningful fraction of H100 <G term="throughput">throughput</G> on many models.
+
+Training remains the harder gap. Many distributed-training stacks
+have CUDA assumptions baked into their networking, scheduling, and
+kernel code; ROCm coverage is real but uneven. AMD's bet is that as
+the open-source AI community grows tired of NVIDIA pricing, the cost
+of helping mature ROCm becomes worth paying.

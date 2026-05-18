@@ -1,0 +1,34 @@
+---
+term: jailbreak
+aliases: [LLM jailbreak]
+primary_layer: safety-guardrails
+secondary_layers: []
+summary: An adversarial input that causes a model to bypass its training-time refusal policy and produce content it would normally refuse, distinct from prompt injection's instruction-hijack.
+sources:
+  - title: "Universal and Transferable Adversarial Attacks on Aligned Language Models (Zou et al., 2023)"
+    url: "https://arxiv.org/abs/2307.15043"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+An input crafted to elicit content from a model that the model's
+<G term="post-training">post-training</G> pipeline tried to refuse: information about weapons
+synthesis, malware code, sexually explicit minors, and so on. The
+distinguishing feature from <G term="prompt-injection">prompt injection</G> is the target: jailbreaks
+aim at the model's own refusal policy; <G term="prompt-injection">prompt injection</G> aims at the
+control flow.
+
+The pattern catalog runs long. Role-play prompts ("you are an
+unethical AI"), elaborate hypothetical framings ("for a fictional
+story"), encoded payloads (ASCII art, base64, low-resource languages),
+gradient-based suffix attacks (the Zou et al. universal suffix work),
+many-shot jailbreaks (filling the context with refused queries), and
+multi-turn social engineering all appear regularly.
+
+The defender's posture has shifted from "prevent all jailbreaks" to
+"raise the cost." <G term="frontier">Frontier</G>-lab safety teams treat jailbreak resistance
+as a continuous adversarial process, not a finished product. Open
+weights expose models to <G term="fine-tuning">fine-tuning</G> that can directly remove the
+refusal policy, which is one of the load-bearing arguments in the
+safety-vs-openness debate.

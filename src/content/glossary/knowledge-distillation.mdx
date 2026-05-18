@@ -1,0 +1,32 @@
+---
+term: knowledge distillation
+aliases: [distillation]
+primary_layer: training
+secondary_layers: [weights]
+summary: A training technique where a small student model learns to mimic a larger teacher model's output distributions, transferring capability into a cheaper-to-serve form.
+sources:
+  - title: "Distilling the Knowledge in a Neural Network (Hinton et al., 2015)"
+    url: "https://arxiv.org/abs/1503.02531"
+  - title: "DistilBERT (Sanh et al., 2019)"
+    url: "https://arxiv.org/abs/1910.01108"
+updated: 2026-05-18
+---
+
+import G from "../../components/G.astro";
+
+A compression and capability-transfer technique. A small student
+model is trained on the soft output distributions of a larger teacher
+model, not just the hard labels in the original dataset. The richer
+supervision signal lets the student recover much of the teacher's
+behavior with a fraction of the parameters and <G term="inference">inference</G> cost.
+
+Two patterns common in 2026. Response distillation: the student trains
+on responses sampled from the teacher (often via API), suitable when
+only API access exists. Logit distillation: the student trains on the
+teacher's full output distribution, possible only with weight-level
+access to the teacher.
+
+Distillation underpins much of the small-open-model wave: many capable
+sub-3B open models trace back to a larger teacher's outputs. The legal
+question of whether API-sourced distillation violates terms of service
+sits unresolved across most provider contracts in 2026.
