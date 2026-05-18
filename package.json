@@ -19,7 +19,10 @@
     "audit:schemas": "node audit/verify/verify_schemas.mjs",
     "audit:cross-refs": "node audit/verify/verify_cross_refs.mjs",
     "audit:snapshot": "node audit/snapshot/snapshot.mjs --all",
-    "audit:snapshot:stale": "node audit/snapshot/snapshot.mjs --stale"
+    "audit:snapshot:stale": "node audit/snapshot/snapshot.mjs --stale",
+    "audit:verify": "node audit/verify/verify_entailment.mjs",
+    "audit:verify:all": "node audit/verify/verify_entailment.mjs --all",
+    "audit:verify:new": "node audit/verify/verify_entailment.mjs --since-last-extract"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
