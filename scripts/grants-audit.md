@@ -52,6 +52,39 @@ For each entry in `data/grants.yaml` and `data/funders.yaml`:
     "reason": "shared url host / name overlap / mentioned as partner"}
    ```
 
+4. **Per-funder coverage check** (the COVERAGE leg, complement to
+   the discovery routine). For each funder, fetch their grants /
+   awards / portfolio page (usually `<url>/grants`, `<url>/portfolio`,
+   `<url>/awards`, or linked from the homepage). Try to enumerate
+   the named grants on that page. Count them.
+
+   Compare to the number of grants in `data/grants.yaml` attributed
+   to this funder's slug. If our count is materially lower than the
+   funder's published count (e.g. we have 3 of an apparent 11),
+   record a `coverage_gap` finding:
+
+   ```json
+   {"timestamp": "...", "kind": "coverage_gap",
+    "funder_slug": "...",
+    "our_count": 3,
+    "funder_page_count": 11,
+    "funder_url_checked": "https://...",
+    "named_grants_we_lack": ["grant title 1", "grant title 2", ...],
+    "confidence": "high|medium|low",
+    "notes": "explanation: funder page structure was X, count is approximate, etc."}
+   ```
+
+   Notes on counting heuristics:
+   - Count only named individual grants, not program-level entries
+     (which are program rows, not project grants)
+   - "Our count" includes ALL grants attributed to that funder
+     (kind: project AND kind: program)
+   - Confidence is `low` when the funder page structure is hard to
+     parse (e.g. mixed grants and blog posts on the same index),
+     `medium` when the page lists clearly but is paginated, `high`
+     when there is a clean per-grant list
+   - Skip funders whose grants page is gated / requires login
+
 ## Output
 
 Append all findings to `data/inbox/grants-audit.jsonl`, one JSON
@@ -60,6 +93,7 @@ object per line. Then summarize the run with a single tail entry:
 ```json
 {"timestamp": "...", "kind": "summary", "entries_checked": N,
  "dead_urls": K, "fact_drifts": M, "consolidation_candidates": L,
+ "coverage_gaps": P, "funders_with_coverage_check": Q,
  "next_quarter_due": "YYYY-MM-DD"}
 ```
 

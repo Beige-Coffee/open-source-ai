@@ -101,9 +101,64 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       areas are synthesized from a May 2026 ecosystem research pass,
       cross-checked against currently-funded projects; project-shape
       descriptions are concrete enough that a grant application could
-      quote them. A weekly grants-watch routine surfaces candidate new
-      grants to a review queue; entries land on the public site only
-      after human verification of the primary source.
+      quote them.
+    </p>
+
+    <h2>Grants coverage and limitations</h2>
+    <p>
+      The grants page is a curated map, not a comprehensive index of
+      every open-source-AI grant ever made. Coverage is intentionally
+      stronger in some places than others, because the audience this
+      site is built for is "someone who used to fund Bitcoin OSS and
+      is now considering open-source AI."
+    </p>
+    <p>
+      <strong>Strong coverage</strong>: cypherpunk-adjacent and
+      sovereignty-positioned funders (HRF, OpenSats, Cosmos Institute,
+      Foresight Institute, Block / Goose), major AI-safety funders
+      (Open Philanthropy, FLI, SFF, Manifund, Lightspeed Grants),
+      and major OSS infrastructure programs (NLnet NGI Zero, Sovereign
+      Tech Fund, Mozilla Builders, Linux Foundation AAIF). For these
+      we have most known recent grants and most relevant context.
+    </p>
+    <p>
+      <strong>Thin coverage</strong>: academic NSF and DOE grants,
+      regional public funders outside the US / EU / UK, individual
+      fellowship-style grants under $50K, hyperscaler in-house grant
+      programs (most are not externally accessible anyway), and any
+      grants in languages other than English where the announcement
+      did not get covered in English-language outlets.
+    </p>
+    <p>
+      <strong>Three routines keep this honest, on different cycles</strong>:
+    </p>
+    <ul>
+      <li>
+        <strong>Weekly grants-watch</strong> (Mondays 09:00 PT):
+        surfaces new grant announcements from RSS feeds of funders we
+        already track, to a review queue.
+      </li>
+      <li>
+        <strong>Monthly grants-discovery</strong> (1st of each month
+        11:00 PT): actively searches for funders and grants we do NOT
+        already track, to a separate candidate queue.
+      </li>
+      <li>
+        <strong>Quarterly grants-audit</strong> (1st of Mar / Jun /
+        Sep / Dec 10:00 PT): re-verifies every existing entry against
+        its live source for dead links and fact drift, plus a
+        per-funder coverage pass that flags funders where our grant
+        count appears low relative to what their grants page lists.
+      </li>
+    </ul>
+    <p>
+      None of the three routines auto-publish to the site. Findings
+      go to <code>data/inbox/</code> and require human review before
+      they land in the canonical YAML files. Missing a funder or a
+      grant? File an issue on{" "}
+      <a href="https://github.com/Beige-Coffee/open-source-ai/issues"
+        >GitHub</a
+      >.
     </p>
 
     <h2>Open methodology</h2>

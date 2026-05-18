@@ -220,11 +220,24 @@ grants from `data/grants-sources.yaml` to
 `data/inbox/grants-needs-review.jsonl` for human review. Does not
 auto-publish.
 
+### Monthly grants-discovery routine (1st of each month, 11:00 PT)
+
+Named `oss-ai-stack-monthly-grants-discovery`. The COVERAGE leg of
+the system: actively hunts for grants and funders we do NOT already
+track. Three steps: rotating WebSearch queries for new funders, per-
+known-funder check for grants we missed, cross-check against external
+grant trackers. Findings appended to
+`data/inbox/funder-candidates.jsonl` and
+`data/inbox/grant-candidates.jsonl`. Full procedure at
+`scripts/grants-discovery.md`. Does NOT modify the canonical YAML
+files.
+
 ### Quarterly grants-audit routine (1st of Mar/Jun/Sep/Dec, 10:00 PT)
 
-Named `oss-ai-stack-quarterly-grants-audit`. Picks every entry in
-`data/grants.yaml` and `data/funders.yaml`, fetches its primary
-`url`, and checks for three classes of drift:
+Named `oss-ai-stack-quarterly-grants-audit`. The ACCURACY +
+COVERAGE-DEPTH leg. Picks every entry in `data/grants.yaml` and
+`data/funders.yaml`, fetches its primary `url`, and checks for four
+classes of drift:
 
 1. **Dead URL**: the entry's `url` returns 4xx/5xx or redirects
    somewhere unrelated. Flag for re-sourcing.
@@ -235,11 +248,31 @@ Named `oss-ai-stack-quarterly-grants-audit`. Picks every entry in
 3. **Funder consolidation candidates**: when two funder entries
    share a URL host or have substring overlap in their names,
    flag for human review (caught Cosmos Institute / Cosmos x FIRE).
+4. **Per-funder coverage gap**: for each funder, fetch their
+   awards / grants / portfolio page and count named grants on it.
+   Compare to grant count in `data/grants.yaml` attributed to that
+   funder. Flag funders where our coverage is materially lower than
+   the funder's published grants list, with `named_grants_we_lack`.
 
 Output appended to `data/inbox/grants-audit.jsonl` for human review.
 The audit does NOT modify the YAML files; resolutions are manual.
 The next agent updating those files reads the audit log first to
 know what needs attention.
+
+### How the three routines fit together
+
+The weekly + monthly + quarterly routines compose into a coverage,
+recency, and accuracy system:
+
+| Routine | Cadence | Scope | What it catches |
+|---|---|---|---|
+| grants-watch | Weekly | RSS feeds of known funders | New announcements from funders we already track |
+| grants-discovery | Monthly | Web search + external trackers | NEW funders and grants we do not yet track |
+| grants-audit | Quarterly | Every existing entry's live URL + per-funder coverage | Dead links, fact drift, consolidation candidates, coverage gaps |
+
+The /about page exposes the coverage-and-limitations posture to
+readers explicitly. None of the three routines auto-publish to the
+site; everything goes through `data/inbox/` for human review.
 
 ### Fact-check workflow (manual, anytime)
 
