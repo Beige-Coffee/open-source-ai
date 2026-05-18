@@ -230,24 +230,19 @@ function esc(s) {
 // Prompt rendering
 // ----------------------------------------------------------------------
 
-function renderPrompt(record) {
-  return `=== EXTRACTION SYSTEM PROMPT ===
+function renderPrompt(record, compact = false) {
+  const header = compact
+    ? ``
+    : `=== EXTRACTION SYSTEM PROMPT ===
 
 ${EXTRACTION_PROMPT}
 
-=== RECORD ===
-
-Source file: ${record.location}
-Surface: ${record.surface}
-Record key: ${record.recordKey}
-Already-cited sources (use as candidates for the Cited sources column when claims trace there): ${record.citedSources || "(none)"}
-
-Record text:
-"""
-${record.recordText}
-"""
-
-=== TASK ===
+`;
+  const task = compact
+    ? `Append claims for this record via:
+  echo '<json-array>' | node audit/extract/extract.mjs append ${asArg(record.location)} ${asArg(record.recordKey)}
+`
+    : `=== TASK ===
 
 Extract every checkable atomic claim in this record per the rules above. Output ONLY a JSON array (no prose around it) of objects with this shape:
 
@@ -267,6 +262,19 @@ If the record contains no checkable claims (pure framing prose with no embedded 
 When the agent has produced the JSON array, persist with:
   echo '<json-array>' | node audit/extract/extract.mjs append ${asArg(record.location)} ${asArg(record.recordKey)}
 `;
+  return `${header}=== RECORD ===
+
+Source file: ${record.location}
+Surface: ${record.surface}
+Record key: ${record.recordKey}
+Already-cited sources (use as candidates for the Cited sources column when claims trace there): ${record.citedSources || "(none)"}
+
+Record text:
+"""
+${record.recordText}
+"""
+
+${task}`;
 }
 function asArg(s) {
   // Strip the " (record=...)" suffix from location to recover relPath.
@@ -323,12 +331,23 @@ function cmdBatch(args) {
   const limitIdx = args.indexOf("--limit");
   const limit = limitIdx >= 0 ? Number(args[limitIdx + 1]) : 10;
   const allPriority = args.includes("--all-priority");
-  const files = allPriority ? priorityFiles() : args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--limit");
+  const compact = args.includes("--compact");
+  const files = allPriority
+    ? priorityFiles()
+    : args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--limit");
   if (files.length === 0) {
-    console.error("usage: extract.mjs batch [--limit N] [--all-priority] [<file>...]");
+    console.error("usage: extract.mjs batch [--limit N] [--all-priority] [--compact] [<file>...]");
     process.exit(1);
   }
   const state = loadState();
+  // In compact mode, print the system prompt once at the top.
+  if (compact) {
+    console.log("=== EXTRACTION SYSTEM PROMPT (applies to ALL records below) ===");
+    console.log();
+    console.log(EXTRACTION_PROMPT);
+    console.log("\n=== END SYSTEM PROMPT ===\n");
+    console.log("For each RECORD below, produce a JSON array of claims per the schema in the system prompt, then append via the command shown after the record.\n");
+  }
   let emitted = 0;
   for (const relPath of files) {
     if (emitted >= limit) break;
@@ -338,7 +357,7 @@ function cmdBatch(args) {
       const h = sourceHash(r.recordText);
       const k = `${relPath}::${r.recordKey}`;
       if (state.sources[k] === h) continue;
-      console.log(renderPrompt(r));
+      console.log(renderPrompt(r, compact));
       console.log("\n=== END RECORD ===\n");
       emitted++;
     }
