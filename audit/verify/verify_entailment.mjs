@@ -1,65 +1,47 @@
 #!/usr/bin/env node
 /**
- * Layer 2 + 3: per-claim entailment verifier.
+ * Layer 2 + 3: per-claim entailment verifier (in-session mode).
  *
- * This is the LLM-based fact checker. For each (claim, source) row
- * in CLAIMS_LEDGER.md, it:
- *   1. Reads the snapshot at sources/{sha256-of-canonical-url}/latest.json.
- *   2. Sends the claim + the snapshot text to a verifier model.
- *   3. Receives a verdict in {supported, contradicted, unsupported,
- *      verifier_unable} plus an evidence_span (required for supported)
- *      plus a confidence.
- *   4. Writes the verdict back to the ledger.
+ * No API key. This script does NOT call an LLM. It loads ledger rows
+ * and their snapshot text, prints the verifier prompt for the in-
+ * session Claude agent to process, then writes verdicts back.
  *
- * Model architecture:
- *   - DEFAULT (cheap): Claude Haiku 4.5 via Anthropic API. ~$0.01/1k
- *     input + $0.05/1k output. ~$0.001-0.003 per claim at typical
- *     sizes.
- *   - ESCALATION (expensive): Gemini 2.5 Pro or GPT-5 via OpenRouter.
- *     Used when Haiku returns low confidence or when re-verifying a
- *     previously-supported claim after source drift.
- *   - CROSS-MODEL DISCIPLINE: extractor is Claude; the verifier MUST
- *     be a different model family for any escalated row. Self-
- *     preference bias (Panickssery 2024, Liu 2024) inflates pass
- *     rates if same family does both. For the default Haiku path,
- *     accept the same-family risk for cost reasons but route
- *     low-confidence rows to a non-Claude judge.
+ * Subcommands:
  *
- * Local NLI option (HHEM/MiniCheck) is planned for the next
- * iteration once the Python sidecar is set up. The interface this
- * script exposes is verifier-agnostic; swapping in HHEM is a config
- * change.
+ *   pending [--status X] [--limit N]
+ *     List rows needing verification. JSON to stdout. Default status
+ *     filter is `needs_verification`.
  *
- * Reads env: ANTHROPIC_API_KEY (required for the Haiku default).
+ *   show <row-id>
+ *     Print the verifier prompt for one row (claim + lane + snapshot
+ *     text inlined). Agent reads, judges, writes back.
  *
- * Usage:
- *   node audit/verify/verify_entailment.mjs --since-last-extract
- *   node audit/verify/verify_entailment.mjs --status needs_verification
- *   node audit/verify/verify_entailment.mjs --status stale_pending_review
- *   node audit/verify/verify_entailment.mjs --all
- *   node audit/verify/verify_entailment.mjs --row <ID>
+ *   batch [--status X] [--limit N]
+ *     Print prompts for N rows as a single stream.
+ *
+ *   update <row-id> --verdict X [--evidence "..."] [--notes "..."]
+ *     Write a verdict back to the row. Sets lastVerified to today.
+ *
+ *   summarize
+ *     Print a count-by-verdict tally of the ledger.
+ *
+ * Cross-model discipline: the prompt printed here is the same shape
+ * regardless of who runs it. When an agent in this session does the
+ * judging, evidence_span discipline still applies (no supported
+ * verdict without a verbatim quote from the snapshot). For escalated
+ * rows that need a different model family to break self-preference
+ * bias, route the row through a separate Gemini / GPT session and
+ * write back via this same `update` command.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
-import Anthropic from "@anthropic-ai/sdk";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 const LEDGER_PATH = resolve(ROOT, "audit/CLAIMS_LEDGER.md");
 const STORE = resolve(ROOT, "sources");
-
-const apiKey = process.env.ANTHROPIC_API_KEY;
-if (!apiKey) {
-  console.error("[verify_entailment] ANTHROPIC_API_KEY required");
-  process.exit(2);
-}
-
-const client = new Anthropic({ apiKey });
-
-const DEFAULT_MODEL = process.env.AUDIT_VERIFIER_MODEL || "claude-haiku-4-5-20251001";
-const ESCALATION_MODEL = process.env.AUDIT_ESCALATION_MODEL || "claude-sonnet-4-6";
 
 function canonicalize(url) {
   try {
@@ -75,11 +57,9 @@ function canonicalize(url) {
     return url;
   }
 }
-
 function urlHash(url) {
   return createHash("sha256").update(canonicalize(url)).digest("hex");
 }
-
 function loadSnapshot(url) {
   const path = resolve(STORE, urlHash(url), "latest.json");
   if (!existsSync(path)) return null;
@@ -93,7 +73,6 @@ function loadSnapshot(url) {
 function loadLedger() {
   const text = readFileSync(LEDGER_PATH, "utf8");
   const lines = text.split("\n");
-  // Find the header row of the rows table.
   let headerLine = -1;
   for (let i = 0; i < lines.length; i++) {
     if (
@@ -106,7 +85,6 @@ function loadLedger() {
     }
   }
   if (headerLine === -1) return { lines, headerLine: -1, rows: [] };
-  // Two lines after header: header + separator. Rows follow.
   const rows = [];
   for (let i = headerLine + 2; i < lines.length; i++) {
     const line = lines[i];
@@ -117,22 +95,12 @@ function loadLedger() {
     rows.push({
       lineIndex: i,
       raw: line,
-      id,
-      surface,
-      location,
-      claim,
-      lane,
-      type,
-      citedSources,
-      verdict,
-      lastVerified,
-      notes,
+      id, surface, location, claim, lane, type, citedSources, verdict, lastVerified, notes,
     });
   }
   return { lines, headerLine, rows };
 }
-
-function writeLedger(state, updates) {
+function writeLedgerWithUpdates(state, updates) {
   const out = [...state.lines];
   for (const u of updates) {
     out[u.lineIndex] = `| ${u.id} | ${u.surface} | ${u.location} | ${u.claim} | ${u.lane} | ${u.type} | ${u.citedSources} | ${u.verdict} | ${u.lastVerified} | ${u.notes} |`;
@@ -141,7 +109,7 @@ function writeLedger(state, updates) {
 }
 
 // ----------------------------------------------------------------------
-// Verifier prompt + call
+// Prompt rendering
 // ----------------------------------------------------------------------
 
 const SYSTEM_PROMPT = `You are an entailment verifier for the open-source-ai-stack site's claims ledger. You read a single claim and a single source snapshot and decide whether the snapshot entails the claim.
@@ -151,8 +119,8 @@ Output STRICTLY this JSON shape (no prose around it):
 {
   "verdict": "supported" | "contradicted" | "unsupported" | "verifier_unable",
   "confidence": "high" | "medium" | "low",
-  "evidence_span": "<verbatim quote from the snapshot, ≤300 chars, REQUIRED if verdict is supported>",
-  "note": "<≤120 chars explanation>"
+  "evidence_span": "<verbatim quote from the snapshot, <=300 chars, REQUIRED if verdict is supported>",
+  "note": "<=120 chars explanation>"
 }
 
 Verdict definitions:
@@ -167,9 +135,19 @@ Rules:
 - Bias toward unsupported when entailment is not crisp. Low precision is worse than low recall here.
 - "Topically related" is NOT supported. The snapshot must explicitly state the specific fact in the claim.`;
 
-function buildUserMessage({ claim, snapshot, claimLane }) {
-  return `Claim lane: ${claimLane}
-Claim: ${claim}
+function renderPrompt(row, snapshot, src) {
+  return `=== VERIFIER SYSTEM PROMPT ===
+
+${SYSTEM_PROMPT}
+
+=== ROW ===
+
+Row ID: ${row.id}
+Surface: ${row.surface}
+Location: ${row.location}
+Claim lane: ${row.lane}
+Claim type: ${row.type}
+Claim: ${row.claim}
 
 Source URL: ${snapshot.url}
 Source fetched at: ${snapshot.fetched_at}
@@ -179,205 +157,197 @@ Source content (extracted main text):
 ${(snapshot.extracted_text || "").slice(0, 16000)}
 """
 
-Verify the claim against the source. Output the JSON verdict.`;
+=== TASK ===
+
+Verify the claim against the source above. Output the JSON verdict.
+
+After judging, persist with:
+  node audit/verify/verify_entailment.mjs update ${row.id} --verdict <V> --evidence "<span>" --notes "<note>"
+`;
 }
 
-async function callVerifier({ claim, snapshot, claimLane, model }) {
-  const res = await client.messages.create({
-    model,
-    max_tokens: 600,
-    system: SYSTEM_PROMPT,
-    messages: [
-      { role: "user", content: buildUserMessage({ claim, snapshot, claimLane }) },
-    ],
-  });
-  const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
-  // Extract the first {...} JSON object.
-  const m = text.match(/\{[\s\S]*\}/);
-  if (!m) {
-    return {
-      verdict: "verifier_unable",
-      confidence: "low",
-      evidence_span: "",
-      note: "Verifier returned non-JSON",
-    };
-  }
-  try {
-    return JSON.parse(m[0]);
-  } catch (e) {
-    return {
-      verdict: "verifier_unable",
-      confidence: "low",
-      evidence_span: "",
-      note: `JSON parse error: ${e.message}`,
-    };
-  }
-}
-
-// ----------------------------------------------------------------------
-// Per-row routing
-// ----------------------------------------------------------------------
-
-async function verifyOne(row) {
-  // Framing claims: NOT entailment. Skip; should be handled by Layer 4
-  // paragraph-level consistency check.
+function autoVerdict(row) {
+  // Lanes that don't need entailment.
   if (row.lane === "framing") {
     return {
       verdict: "consistent",
-      lastVerified: new Date().toISOString().slice(0, 10),
       notes: "framing; consistency-check Layer 4 will re-check quarterly",
     };
   }
-  // Predictions: never verify factually.
   if (row.lane === "prediction") {
     return {
       verdict: "pending_horizon",
-      lastVerified: new Date().toISOString().slice(0, 10),
       notes: "prediction; horizon resolver routine handles",
     };
   }
-  // Factual: do entailment.
   if (!row.citedSources || row.citedSources === "—") {
-    return {
-      verdict: "needs_source",
-      lastVerified: new Date().toISOString().slice(0, 10),
-      notes: "no cited source",
-    };
+    return { verdict: "needs_source", notes: "no cited source" };
   }
-  // Pick the first cited source URL; iterate later if we want
-  // multi-source entailment.
+  return null;
+}
+
+// ----------------------------------------------------------------------
+// Subcommands
+// ----------------------------------------------------------------------
+
+function cmdPending(args) {
+  const statusIdx = args.indexOf("--status");
+  const status = statusIdx >= 0 ? args[statusIdx + 1] : "needs_verification";
+  const limitIdx = args.indexOf("--limit");
+  const limit = limitIdx >= 0 ? Number(args[limitIdx + 1]) : Infinity;
+  const { rows } = loadLedger();
+  const target = rows.filter((r) => r.verdict === status).slice(0, limit);
+  const out = target.map((r) => ({
+    id: r.id,
+    lane: r.lane,
+    type: r.type,
+    claim: r.claim.slice(0, 80),
+    source_count: r.citedSources ? r.citedSources.split(",").length : 0,
+  }));
+  console.log(JSON.stringify({ status, count: target.length, total: rows.length, rows: out }, null, 2));
+}
+
+function emitForRow(row) {
+  // Auto-decide for framing/prediction/no-source rows.
+  const auto = autoVerdict(row);
+  if (auto) {
+    console.log(`=== ROW ${row.id} (auto-verdict: ${auto.verdict}) ===\n`);
+    console.log(`Persist with:`);
+    console.log(`  node audit/verify/verify_entailment.mjs update ${row.id} --verdict ${auto.verdict} --notes "${auto.notes}"`);
+    console.log(`\n=== END ROW ===\n`);
+    return true;
+  }
+  // Factual: load the first snapshot we have.
   const sources = row.citedSources.split(",").map((s) => s.trim()).filter(Boolean);
-  let bestResult = null;
   for (const src of sources) {
     const snapshot = loadSnapshot(src);
-    if (!snapshot) {
-      bestResult = bestResult ?? {
-        verdict: "source_unreachable",
-        confidence: "high",
-        evidence_span: "",
-        note: `no snapshot for ${src}; run audit:snapshot`,
-      };
-      continue;
-    }
-    if (snapshot.error || !snapshot.extracted_text) {
-      bestResult = bestResult ?? {
-        verdict: "source_unreachable",
-        confidence: "high",
-        evidence_span: "",
-        note: snapshot.error ?? "no extracted_text in snapshot",
-      };
-      continue;
-    }
-    const result = await callVerifier({
-      claim: row.claim,
-      snapshot,
-      claimLane: row.lane,
-      model: DEFAULT_MODEL,
-    });
-    // If supported, return immediately. Otherwise hold the best and
-    // try the next source.
-    if (result.verdict === "supported") {
-      bestResult = { ...result, source: src };
-      break;
-    }
-    if (!bestResult || bestResult.verdict === "source_unreachable") {
-      bestResult = { ...result, source: src };
-    }
+    if (!snapshot) continue;
+    if (snapshot.error || !snapshot.extracted_text) continue;
+    console.log(renderPrompt(row, snapshot, src));
+    console.log("\n=== END ROW ===\n");
+    return true;
   }
+  // No usable snapshot.
+  console.log(`=== ROW ${row.id} (source_unreachable) ===\n`);
+  console.log(`No snapshot found for any of: ${sources.join(", ")}`);
+  console.log(`Run: npm run audit:snapshot   then retry.`);
+  console.log(`Or mark: node audit/verify/verify_entailment.mjs update ${row.id} --verdict source_unreachable --notes "no snapshot"`);
+  console.log(`\n=== END ROW ===\n`);
+  return false;
+}
 
-  // Escalate low-confidence to the cross-model judge.
-  if (bestResult && bestResult.verdict !== "supported" && bestResult.confidence === "low") {
-    const snapshot = loadSnapshot(sources[0]);
-    if (snapshot && snapshot.extracted_text) {
-      const escalated = await callVerifier({
-        claim: row.claim,
-        snapshot,
-        claimLane: row.lane,
-        model: ESCALATION_MODEL,
-      });
-      bestResult = {
-        ...escalated,
-        note: `escalated: ${escalated.note ?? ""}`.slice(0, 120),
-      };
-    }
+function cmdShow(args) {
+  const id = args.find((a) => !a.startsWith("--"));
+  if (!id) {
+    console.error("usage: verify_entailment.mjs show <row-id>");
+    process.exit(1);
   }
+  const { rows } = loadLedger();
+  const row = rows.find((r) => r.id === id);
+  if (!row) {
+    console.error(`[verify] row not found: ${id}`);
+    process.exit(1);
+  }
+  emitForRow(row);
+}
 
-  return {
-    verdict: bestResult?.verdict ?? "verifier_unable",
-    lastVerified: new Date().toISOString().slice(0, 10),
-    notes: (
-      (bestResult?.evidence_span ? `evidence: ${bestResult.evidence_span.slice(0, 80)}... ` : "") +
-      (bestResult?.note ?? "")
-    ).slice(0, 120),
-  };
+function cmdBatch(args) {
+  const statusIdx = args.indexOf("--status");
+  const status = statusIdx >= 0 ? args[statusIdx + 1] : "needs_verification";
+  const limitIdx = args.indexOf("--limit");
+  const limit = limitIdx >= 0 ? Number(args[limitIdx + 1]) : 10;
+  const { rows } = loadLedger();
+  const target = rows.filter((r) => r.verdict === status).slice(0, limit);
+  if (target.length === 0) {
+    console.log(`# No rows in status=${status}.`);
+    return;
+  }
+  for (const row of target) emitForRow(row);
+  console.error(`[verify] emitted ${target.length} row prompt(s)`);
+}
+
+function flag(args, name) {
+  const i = args.indexOf(name);
+  return i >= 0 ? args[i + 1] : null;
+}
+
+function cmdUpdate(args) {
+  const id = args.find((a) => !a.startsWith("--"));
+  const verdict = flag(args, "--verdict");
+  const evidence = flag(args, "--evidence") || "";
+  const notes = flag(args, "--notes") || "";
+  if (!id || !verdict) {
+    console.error('usage: verify_entailment.mjs update <row-id> --verdict X [--evidence "..."] [--notes "..."]');
+    process.exit(1);
+  }
+  const allowed = new Set([
+    "supported", "contradicted", "unsupported", "consistent",
+    "pending_horizon", "source_unreachable", "verifier_unable",
+    "stale_pending_review", "needs_human", "needs_verification",
+    "needs_source",
+  ]);
+  if (!allowed.has(verdict)) {
+    console.error(`[verify] unknown verdict: ${verdict}`);
+    process.exit(1);
+  }
+  const state = loadLedger();
+  const row = state.rows.find((r) => r.id === id);
+  if (!row) {
+    console.error(`[verify] row not found: ${id}`);
+    process.exit(1);
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  const combined = (
+    (evidence ? `evidence: ${esc(evidence).slice(0, 80)}... ` : "") +
+    esc(notes)
+  ).slice(0, 200);
+  writeLedgerWithUpdates(state, [{
+    ...row,
+    verdict,
+    lastVerified: today,
+    notes: combined,
+  }]);
+  console.log(`[verify] ${id}: ${verdict}`);
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/\|/g, "/").replace(/\n/g, " ").trim();
+}
+
+function cmdSummarize() {
+  const { rows } = loadLedger();
+  const counts = {};
+  for (const r of rows) counts[r.verdict] = (counts[r.verdict] || 0) + 1;
+  const total = rows.length;
+  console.log(`[verify] ledger total: ${total} rows`);
+  for (const [k, v] of Object.entries(counts).sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${k.padEnd(22)} ${String(v).padStart(5)}  (${((100 * v) / total).toFixed(1)}%)`);
+  }
 }
 
 // ----------------------------------------------------------------------
 // Main
 // ----------------------------------------------------------------------
 
-const args = process.argv.slice(2);
-function flag(name) {
-  const i = args.indexOf(name);
-  return i >= 0 ? args[i + 1] ?? true : null;
+const [sub, ...rest] = process.argv.slice(2);
+switch (sub) {
+  case "pending": cmdPending(rest); break;
+  case "show": cmdShow(rest); break;
+  case "batch": cmdBatch(rest); break;
+  case "update": cmdUpdate(rest); break;
+  case "summarize": case "summary": cmdSummarize(); break;
+  default:
+    console.error(`Usage: verify_entailment.mjs <subcommand>
+
+Subcommands:
+  pending [--status X] [--limit N]    list rows needing verification
+  show <row-id>                       print verifier prompt for one row
+  batch [--status X] [--limit N]      print prompts for N rows
+  update <row-id> --verdict X [--evidence "..."] [--notes "..."]
+                                       write verdict back, set lastVerified=today
+  summarize                            count rows by verdict
+
+This script does NOT call any LLM. The agent reads the printed prompt,
+judges in-session, then persists via 'update'.`);
+    process.exit(sub ? 1 : 0);
 }
-
-const state = loadLedger();
-if (state.headerLine === -1) {
-  console.error("[verify_entailment] no rows table found in ledger; run extraction first");
-  process.exit(0);
-}
-
-let targetRows;
-if (flag("--all")) {
-  targetRows = state.rows;
-} else if (flag("--status")) {
-  const status = flag("--status");
-  targetRows = state.rows.filter((r) => r.verdict === status);
-} else if (flag("--row")) {
-  const id = flag("--row");
-  targetRows = state.rows.filter((r) => r.id === id);
-} else if (flag("--since-last-extract")) {
-  targetRows = state.rows.filter((r) => r.verdict === "needs_verification");
-} else {
-  targetRows = state.rows.filter((r) => r.verdict === "needs_verification");
-}
-
-console.log(`[verify_entailment] verifying ${targetRows.length} row(s) of ${state.rows.length} total`);
-
-const updates = [];
-let i = 0;
-for (const row of targetRows) {
-  i++;
-  try {
-    const result = await verifyOne(row);
-    updates.push({
-      ...row,
-      verdict: result.verdict,
-      lastVerified: result.lastVerified,
-      notes: result.notes,
-    });
-    console.log(`  [${i}/${targetRows.length}] ${row.id}: ${result.verdict}`);
-  } catch (e) {
-    console.error(`  [${i}/${targetRows.length}] ${row.id}: ERROR ${e.message ?? e}`);
-    updates.push({
-      ...row,
-      verdict: "verifier_unable",
-      lastVerified: new Date().toISOString().slice(0, 10),
-      notes: `verifier exception: ${String(e.message ?? e).slice(0, 80)}`,
-    });
-  }
-  // Persist after every row so partial runs are not lost.
-  if (i % 5 === 0) {
-    writeLedger(state, updates);
-  }
-}
-writeLedger(state, updates);
-
-// Summary.
-const counts = {};
-for (const u of updates) counts[u.verdict] = (counts[u.verdict] || 0) + 1;
-console.log(
-  "[verify_entailment] done: " +
-    Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(" "),
-);

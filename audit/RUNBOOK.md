@@ -87,22 +87,35 @@ verification scores.
 
 ## Verification model layering
 
-Per-claim verification uses three tiers by cost:
+Per-claim verification happens **in-session** under the agent's Claude
+subscription, not via an API key. The `audit/verify/verify_entailment.mjs`
+script does NOT call an LLM: it loads the row + snapshot and prints a
+prompt for the agent to read. The agent judges in this session and
+writes the verdict back via the script's `update` subcommand.
 
-1. **HHEM/MiniCheck (NLI)** — cheap, local, fast. Returns `supported`
-   / `contradicted` / `unsupported` with a confidence score. Default
-   verifier for factual claims.
-2. **Cross-model judge (LLM)** — different model family from the
-   extractor (Claude extracts, so the verifier is Gemini or GPT).
-   Escalation when NLI verifier confidence is low OR when
-   re-verifying a previously-supported claim that has had source
-   content drift.
-3. **Human review** — only for claims marked `needs_human` (verifier
-   disagreement, reader-inference findings, novel claim types).
+This is the same pattern an internal claims-ledger system uses: claims and sources
+are the persistent artifact; the model is whoever happens to be in the
+session reading the prompt.
 
-The extractor and verifier MUST be different model families.
-Self-preference bias materially inflates pass rates if Claude does
-both (Panickssery 2024, Liu 2024).
+Tiers, by escalation:
+
+1. **In-session Claude (default)** — the agent reads the printed
+   prompt, finds an `evidence_span` in the snapshot (or doesn't), and
+   writes the verdict. No API cost. This is what the scheduled
+   `audit-layer2` and `audit-layer3` routines do.
+2. **Cross-family escalation** — for any row where in-session Claude
+   returns low-confidence `supported`, the row is routed to a
+   different model family (Gemini / GPT in a separate session) to
+   break self-preference bias (Panickssery 2024, Liu 2024). The
+   ledger-update CLI is identical regardless of who ran the judgment.
+3. **Local NLI fallback (planned)** — HHEM-2.1-Open / MiniCheck as a
+   cheap pre-filter for high-volume re-verification. Not yet wired.
+4. **Human review** — for `needs_human` rows (verifier disagreement,
+   reader-inference findings, novel claim types).
+
+The cross-family discipline matters most for the extractor↔verifier
+boundary at first extraction. For routine re-verification of an
+already-supported row, same-family is acceptable to keep cost zero.
 
 ## Source freshness pattern
 
@@ -133,11 +146,11 @@ URL still resolves).
 |---|---|---|---|
 | 0 structural | every commit | ~0.5s, $0 | JSON Schema validates every YAML shape |
 | 1 mechanical | every commit | ~5s, $0 | Link liveness, cross-refs, license files, voice rules, citation presence |
-| 2 NLI entailment | per source-hash change | ~30s/claim, ~$0 (local model) | Per-(claim,source) entailment check via HHEM/MiniCheck |
-| 3 LLM judge | low-confidence rows + quarterly | ~$0.001/claim Haiku, ~$0.01/claim Gemini | Cross-model escalation |
-| 4 consistency | framing claims, quarterly | ~$0.005/paragraph | Paragraph-level "is this framing consistent with cited sources" |
+| 2 entailment | per source-hash change | in-session, $0 | Per-(claim,source) entailment check by the agent against snapshot |
+| 3 cross-family | low-confidence rows + quarterly | in-session, $0 | Same prompt, different model family (Gemini / GPT) to break self-preference |
+| 4 consistency | framing claims, quarterly | in-session, $0 | Paragraph-level "is this framing consistent with cited sources" |
 | 5 horizon resolver | per-prediction at horizon | one-shot per prediction | Predictions resolve when their date arrives |
-| 6 recall | quarterly + after major rewrites | ~$0.05/page | Adversarial re-extraction with different prompt; surface claims the extractor missed |
+| 6 recall | quarterly + after major rewrites | in-session, $0 | Adversarial re-extraction with different prompt; surface claims the extractor missed |
 
 ## Adding a new verifier rule
 

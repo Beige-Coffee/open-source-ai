@@ -7,6 +7,19 @@ Day-to-day cookbook. For the architecture, see `audit/RUNBOOK.md`.
 Every task starts at Layer 0 (structural) and only escalates when
 needed. Most edits never trigger anything past Layer 1.
 
+## How the LLM steps run
+
+There is no API key for this system. Extraction and verification both
+run **in-session** under your Claude subscription:
+
+1. Run a script subcommand that prints a prompt + the source/snapshot
+   text inline.
+2. Read the prompt and produce the required JSON in-session.
+3. Pipe the JSON back to the persistence subcommand.
+
+The scripts are pure I/O: loaders, prompt renderers, ledger writers,
+hash-state trackers. They never call an LLM themselves.
+
 ## Scenario index
 
 - [I edited a project description / funder mission / grant text](#1-edit-to-existing-yaml-content)
@@ -28,29 +41,29 @@ You changed a `description`, `mission`, `notable_recent`, or
 npm run audit:layer1        # Layers 0 + 1 mechanical
 ```
 
-If green: any factual claim you touched will be re-verified
-automatically on the next scheduled Layer 2 run (weekly). If the
-change is urgent, run:
+If green, the edited record's hash changes, which the next pending
+check picks up. To re-extract immediately:
 
 ```bash
-npm run audit:re-extract -- data/funders.yaml hrf
+node audit/extract/extract.mjs show data/funders.yaml --slug hrf
+# Read the printed prompt, produce the JSON claims array, then:
+echo '<json>' | node audit/extract/extract.mjs append data/funders.yaml hrf
 ```
-
-This re-runs the extractor on the named record, re-decomposes its
-claims, and queues them for Layer 2.
 
 ## 2. New YAML entry
 
 You added a new project / funder / grant.
 
 ```bash
-npm run audit:layer1                          # structural + mechanical
-npm run audit:extract -- data/projects.yaml   # extract claims from the new entry
-npm run audit:verify -- --since-last-extract  # verify the new claims
+npm run audit:layer1                                  # structural + mechanical
+node audit/extract/extract.mjs pending --all-priority # confirm the new entry shows up
+node audit/extract/extract.mjs batch --limit 10 --all-priority
+# For each printed RECORD prompt: produce JSON, append with:
+#   echo '<json>' | node audit/extract/extract.mjs append <relPath> <recordKey>
+node audit/verify/verify_entailment.mjs batch --limit 10
+# For each printed ROW prompt: produce verdict JSON, update with:
+#   node audit/verify/verify_entailment.mjs update <row-id> --verdict X --evidence "..." --notes "..."
 ```
-
-The extract step adds new rows to `audit/CLAIMS_LEDGER.md` with
-verdict `needs_verification`. The verify step drains the queue.
 
 ## 3. Edit to MDX or page-copy
 
@@ -59,78 +72,74 @@ or in an `.astro` page.
 
 ```bash
 npm run audit:layer1
-npm run audit:re-extract -- src/content/layers/silicon.mdx
-npm run audit:verify -- --since-last-extract
+node audit/extract/extract.mjs show src/content/layers/silicon.mdx
+# Produce JSON, append, verify as in scenario 2.
 ```
 
 If the edit is to framing prose only (no quantitative claims, no
 named-entity assertions), the consistency check runs at the next
-quarterly cycle; no immediate verification needed.
+quarterly cycle.
 
 ## 4. Source content drift
 
 The Layer 2 freshness check found a source whose content hash
-changed since the last snapshot.
-
-The routine auto-marks all rows pointing at that source as
-`stale_pending_review` and queues them. To resolve:
+changed since the last snapshot. All rows pointing at that source
+get marked `stale_pending_review`. To resolve:
 
 ```bash
-npm run audit:verify -- --status stale_pending_review
+npm run audit:snapshot:stale                                       # refresh older-than-30-day snapshots
+node audit/verify/verify_entailment.mjs batch --status stale_pending_review --limit 10
+# For each printed ROW prompt: judge against the new snapshot, update.
 ```
 
-The verifier re-fetches the snapshot, re-runs entailment, and either
-restores the prior verdict (content drifted but the specific claim
-still holds) or flips to `contradicted` / `unsupported` (the claim
-no longer holds against the new content).
+The verdict either restores (content drifted but the claim still
+holds) or flips to `contradicted` / `unsupported`.
 
 ## 5. New claim type
 
 You added a kind of claim the verifiers do not yet route correctly.
 
 1. Identify the routing signature (regex, structural pattern, etc.).
-2. Add the rule to `audit/verify/route_claims.mjs`.
-3. Re-run extraction across the affected files.
+2. Edit `audit/EXTRACTION_PROMPT.md` to document the new claim type.
+3. Re-run extraction across the affected files (the prose hash will
+   match unless prose changed, so explicitly:
+   `node audit/extract/extract.mjs show <file>`).
 4. Re-run verification on the newly-routed claims.
 
 ## 6. Scheduled finding
 
-A scheduled routine (weekly / quarterly) appended a finding to
+A scheduled routine (weekly / quarterly) wrote to
 `audit/CLAIMS_LEDGER.md` or to `data/inbox/`. To triage:
 
 ```bash
-npm run audit:status               # summary of verdict counts + pending items
+node audit/verify/verify_entailment.mjs summarize    # count by verdict
+node audit/verify/verify_entailment.mjs pending --status contradicted
+node audit/verify/verify_entailment.mjs pending --status unsupported
+node audit/verify/verify_entailment.mjs pending --status needs_human
 ```
 
-Then fix the source content (the YAML or MDX), commit, and re-run:
-
-```bash
-npm run audit:layer1
-npm run audit:verify -- --since-last-extract
-```
+Then fix the source content (YAML or MDX), commit, and re-extract
+the affected record.
 
 ## 7. Full re-verify (manual trigger)
 
-You want to re-verify every row regardless of diff. Costs real LLM
-tokens.
+You want to re-verify every row regardless of diff.
 
 ```bash
-npm run audit:full-verify
+node audit/verify/verify_entailment.mjs batch --status supported --limit 50
+# Iterate: read prompts, judge, update. Loop until all rows refreshed.
 ```
 
-Equivalent to the quarterly Layer 3 scheduled run. Plan for ~1-2
-hours wallclock.
+This is what the quarterly `audit-layer3` scheduled task does
+automatically. Plan for a long session.
 
 ## Status quick-reference
 
 ```bash
-npm run audit:status
+node audit/verify/verify_entailment.mjs summarize
 ```
 
 Prints:
 - Total rows in ledger
 - Verdict counts (supported / consistent / pending_horizon / ...)
-- Rows pending verification
-- Stale sources (content-hash drift detected)
-- Discovered-uncovered queue (recall pass findings)
-```
+- Percent in each bucket

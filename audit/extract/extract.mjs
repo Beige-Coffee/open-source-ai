@@ -1,66 +1,67 @@
 #!/usr/bin/env node
 /**
- * Claim extractor.
+ * Claim extractor (in-session mode).
  *
- * Reads a source file (YAML data file, MDX layer overview, or Astro
- * page) and writes one row per atomic decontextualized claim to
- * audit/CLAIMS_LEDGER.md.
+ * No API key. This script does NOT call an LLM. It loads source
+ * records (YAML rows, MDX bodies, page prose), prints the extraction
+ * prompt + record text for the in-session Claude agent to process,
+ * then persists the resulting claims back to audit/CLAIMS_LEDGER.md.
  *
- * Uses Claude as the extractor (per the RUNBOOK; the verifier will
- * use a different model family to avoid self-preference bias).
+ * Subcommands:
  *
- * Reads env: ANTHROPIC_API_KEY (required).
+ *   pending [--all-priority]
+ *     List records whose content has changed since last extraction.
+ *     Prints JSON to stdout.
  *
- * Usage:
- *   node audit/extract/extract.mjs <source-file-rel-path>
- *   node audit/extract/extract.mjs data/funders.yaml
- *   node audit/extract/extract.mjs data/funders.yaml --slug hrf
- *   node audit/extract/extract.mjs data/projects.yaml --slug vllm
- *   node audit/extract/extract.mjs src/content/layers/silicon.mdx
- *   node audit/extract/extract.mjs --all-priority  (extract all priority sources)
+ *   show <relPath> [--slug X]
+ *     Print the extraction prompt + record text for the agent.
+ *     One record only when --slug is set; otherwise iterates the
+ *     file's records.
  *
- * Output is appended to audit/CLAIMS_LEDGER.md with verdict
- * `needs_verification`. Run `npm run audit:verify` afterward to
- * verify the new rows.
+ *   batch [--limit N] [--all-priority]
+ *     Print prompts for up to N pending records as a single stream
+ *     so the agent can process a batch in one turn.
  *
- * The extractor is idempotent at the source level: if you re-run on
- * the same source whose content hash hasn't changed since the last
- * extraction, no new rows are added. Source content hashes are
- * tracked in audit/extract/.last_extracted.json.
+ *   append <relPath> <recordKey> < claims.json
+ *     Read a JSON array of claims from stdin, append rows to the
+ *     ledger, update the hash-state file so the record is not
+ *     re-extracted on the next pending check.
+ *
+ *   mark-extracted <relPath> <recordKey>
+ *     Update hash state without appending rows (use when the record
+ *     legitimately has zero extractable claims).
+ *
+ * The agent's loop:
+ *   1. node audit/extract/extract.mjs batch --limit 10 --all-priority
+ *   2. For each printed prompt, generate the JSON array of claims
+ *      in-session.
+ *   3. echo '<json>' | node audit/extract/extract.mjs append <relPath> <recordKey>
+ *
+ * The extractor is idempotent at the source level: re-running on a
+ * record whose content hash hasn't changed is a no-op. State lives in
+ * audit/extract/.last_extracted.json.
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, dirname, basename, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import yaml from "js-yaml";
-import Anthropic from "@anthropic-ai/sdk";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 const LEDGER_PATH = resolve(ROOT, "audit/CLAIMS_LEDGER.md");
 const STATE_PATH = resolve(__dirname, ".last_extracted.json");
 const EXTRACTION_PROMPT_PATH = resolve(ROOT, "audit/EXTRACTION_PROMPT.md");
-
-const apiKey = process.env.ANTHROPIC_API_KEY;
-if (!apiKey) {
-  console.error("[extract] ANTHROPIC_API_KEY required");
-  process.exit(2);
-}
-
-const client = new Anthropic({ apiKey });
-const EXTRACTOR_MODEL = process.env.AUDIT_EXTRACTOR_MODEL || "claude-sonnet-4-6";
 const EXTRACTION_PROMPT = readFileSync(EXTRACTION_PROMPT_PATH, "utf8");
 const PROMPT_VERSION = "v1.0-2026-05-14";
 
 function sourceHash(text) {
   return createHash("sha256").update(text).digest("hex");
 }
-
 function loadState() {
   if (!existsSync(STATE_PATH)) return { sources: {} };
   return JSON.parse(readFileSync(STATE_PATH, "utf8"));
 }
-
 function saveState(state) {
   writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
 }
@@ -74,17 +75,14 @@ function loadYamlRecords(relPath) {
   const text = readFileSync(resolve(ROOT, relPath), "utf8");
   const parsed = yaml.load(text);
   const base = basename(relPath, ".yaml");
-
-  // Map each top-level array to records.
   const arrayKey = Object.keys(parsed).find((k) => Array.isArray(parsed[k]));
   if (!arrayKey) return [];
 
   const records = [];
   for (const r of parsed[arrayKey]) {
     const key = r.slug || r.title || r.id || JSON.stringify(r).slice(0, 40);
-    // Build the "record text" — the prose-bearing fields per file kind.
     let recordText;
-    let cited = [];
+    const cited = [];
     if (base === "funders") {
       recordText = `Funder: ${r.name} (${r.slug})
 Mission: ${r.mission}
@@ -152,7 +150,6 @@ Filed: ${r.filed}`;
 
 function loadMdxBody(relPath) {
   const text = readFileSync(resolve(ROOT, relPath), "utf8");
-  // Strip frontmatter.
   const m = text.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
   const body = m ? m[1] : text;
   return [
@@ -168,7 +165,6 @@ function loadMdxBody(relPath) {
 
 function loadAstroProse(relPath) {
   const text = readFileSync(resolve(ROOT, relPath), "utf8");
-  // Pull <p>...</p> blocks; tolerant of newlines.
   const blocks = [];
   const re = /<p[^>]*>([\s\S]*?)<\/p>/g;
   let m;
@@ -198,12 +194,50 @@ function loadRecords(relPath, slugFilter) {
   return records;
 }
 
+function priorityFiles() {
+  const files = [
+    "data/funders.yaml",
+    "data/grants.yaml",
+    "data/projects.yaml",
+    "data/reading-lists.yaml",
+    "data/predictions.yaml",
+  ];
+  const layersDir = resolve(ROOT, "src/content/layers");
+  for (const f of readdirSync(layersDir)) {
+    if (extname(f) === ".mdx") files.push(`src/content/layers/${f}`);
+  }
+  return files;
+}
+
 // ----------------------------------------------------------------------
-// Extractor call
+// Ledger append
 // ----------------------------------------------------------------------
 
-async function extractFromRecord(record) {
-  const userMessage = `Source file: ${record.location}
+function appendRows(rows) {
+  let text = readFileSync(LEDGER_PATH, "utf8");
+  if (!text.endsWith("\n")) text += "\n";
+  for (const r of rows) {
+    text += `| ${r.id} | ${r.surface} | ${r.location} | ${esc(r.claim)} | ${r.lane} | ${r.type} | ${esc(r.cited_sources)} | needs_verification |  | ${esc(r.note)} |\n`;
+  }
+  writeFileSync(LEDGER_PATH, text);
+}
+function esc(s) {
+  if (!s) return "";
+  return String(s).replace(/\|/g, "/").replace(/\n/g, " ").trim().slice(0, 400);
+}
+
+// ----------------------------------------------------------------------
+// Prompt rendering
+// ----------------------------------------------------------------------
+
+function renderPrompt(record) {
+  return `=== EXTRACTION SYSTEM PROMPT ===
+
+${EXTRACTION_PROMPT}
+
+=== RECORD ===
+
+Source file: ${record.location}
 Surface: ${record.surface}
 Record key: ${record.recordKey}
 Already-cited sources (use as candidates for the Cited sources column when claims trace there): ${record.citedSources || "(none)"}
@@ -213,148 +247,210 @@ Record text:
 ${record.recordText}
 """
 
+=== TASK ===
+
 Extract every checkable atomic claim in this record per the rules above. Output ONLY a JSON array (no prose around it) of objects with this shape:
 
 [
   {
     "id_suffix": "001",
-    "claim": "Decontextualized atomic claim, ≤200 chars",
+    "claim": "Decontextualized atomic claim, <=200 chars",
     "lane": "factual" | "framing" | "prediction",
     "type": "amount" | "count" | "date" | "attribution" | "license" | "deployer" | "spec" | "cross-reference" | "tag-value" | "framing-prose" | "prediction-prose",
     "cited_sources": "comma-separated URLs from the record",
-    "note": "≤120 chars decomposition context"
-  },
-  ...
+    "note": "<=120 chars decomposition context"
+  }
 ]
 
-If the record contains no checkable claims (pure framing prose with no embedded facts), return [].`;
+If the record contains no checkable claims (pure framing prose with no embedded facts), return [].
 
-  const res = await client.messages.create({
-    model: EXTRACTOR_MODEL,
-    max_tokens: 4000,
-    system: EXTRACTION_PROMPT,
-    messages: [{ role: "user", content: userMessage }],
+When the agent has produced the JSON array, persist with:
+  echo '<json-array>' | node audit/extract/extract.mjs append ${asArg(record.location)} ${asArg(record.recordKey)}
+`;
+}
+function asArg(s) {
+  // Strip the " (record=...)" suffix from location to recover relPath.
+  if (s.includes(" (record=")) return s.split(" (record=")[0];
+  return s;
+}
+
+// ----------------------------------------------------------------------
+// Subcommands
+// ----------------------------------------------------------------------
+
+function cmdPending(args) {
+  const allPriority = args.includes("--all-priority");
+  const files = allPriority ? priorityFiles() : args.filter((a) => !a.startsWith("--"));
+  if (files.length === 0) {
+    console.error("usage: extract.mjs pending <file> [<file>...] | --all-priority");
+    process.exit(1);
+  }
+  const state = loadState();
+  const pending = [];
+  for (const relPath of files) {
+    const records = loadRecords(relPath);
+    for (const r of records) {
+      const h = sourceHash(r.recordText);
+      const k = `${relPath}::${r.recordKey}`;
+      if (state.sources[k] !== h) {
+        pending.push({ relPath, recordKey: r.recordKey, surface: r.surface });
+      }
+    }
+  }
+  console.log(JSON.stringify({ count: pending.length, pending }, null, 2));
+}
+
+function cmdShow(args) {
+  const relPath = args.find((a) => !a.startsWith("--"));
+  if (!relPath) {
+    console.error("usage: extract.mjs show <relPath> [--slug X]");
+    process.exit(1);
+  }
+  const slugIdx = args.indexOf("--slug");
+  const slug = slugIdx >= 0 ? args[slugIdx + 1] : null;
+  const records = loadRecords(relPath, slug);
+  if (records.length === 0) {
+    console.error(`no records for ${relPath}${slug ? ` slug=${slug}` : ""}`);
+    process.exit(1);
+  }
+  for (const r of records) {
+    console.log(renderPrompt(r));
+    console.log("\n=== END RECORD ===\n");
+  }
+}
+
+function cmdBatch(args) {
+  const limitIdx = args.indexOf("--limit");
+  const limit = limitIdx >= 0 ? Number(args[limitIdx + 1]) : 10;
+  const allPriority = args.includes("--all-priority");
+  const files = allPriority ? priorityFiles() : args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--limit");
+  if (files.length === 0) {
+    console.error("usage: extract.mjs batch [--limit N] [--all-priority] [<file>...]");
+    process.exit(1);
+  }
+  const state = loadState();
+  let emitted = 0;
+  for (const relPath of files) {
+    if (emitted >= limit) break;
+    const records = loadRecords(relPath);
+    for (const r of records) {
+      if (emitted >= limit) break;
+      const h = sourceHash(r.recordText);
+      const k = `${relPath}::${r.recordKey}`;
+      if (state.sources[k] === h) continue;
+      console.log(renderPrompt(r));
+      console.log("\n=== END RECORD ===\n");
+      emitted++;
+    }
+  }
+  if (emitted === 0) {
+    console.log("# No pending records. All sources already extracted.");
+  } else {
+    console.error(`[extract] emitted ${emitted} record prompt(s)`);
+  }
+}
+
+async function readStdin() {
+  return new Promise((resolve) => {
+    let data = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => (data += chunk));
+    process.stdin.on("end", () => resolve(data));
   });
-  const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
-  const m = text.match(/\[[\s\S]*\]/);
+}
+
+async function cmdAppend(args) {
+  const [relPath, recordKey] = args.filter((a) => !a.startsWith("--"));
+  if (!relPath || !recordKey) {
+    console.error("usage: echo '<json>' | extract.mjs append <relPath> <recordKey>");
+    process.exit(1);
+  }
+  const stdin = await readStdin();
+  const m = stdin.match(/\[[\s\S]*\]/);
   if (!m) {
-    console.warn(`  [extract] ${record.recordKey}: no JSON array in response`);
-    return [];
+    console.error("[extract] no JSON array on stdin");
+    process.exit(1);
   }
+  let claims;
   try {
-    return JSON.parse(m[0]);
+    claims = JSON.parse(m[0]);
   } catch (e) {
-    console.warn(`  [extract] ${record.recordKey}: JSON parse failed: ${e.message}`);
-    return [];
+    console.error(`[extract] JSON parse failed: ${e.message}`);
+    process.exit(1);
   }
-}
-
-// ----------------------------------------------------------------------
-// Ledger append
-// ----------------------------------------------------------------------
-
-function loadLedgerText() {
-  return readFileSync(LEDGER_PATH, "utf8");
-}
-function appendRows(rows) {
-  let text = loadLedgerText();
-  // Ensure trailing newline.
-  if (!text.endsWith("\n")) text += "\n";
-  for (const r of rows) {
-    text += `| ${r.id} | ${r.surface} | ${r.location} | ${esc(r.claim)} | ${r.lane} | ${r.type} | ${esc(r.cited_sources)} | needs_verification |  | ${esc(r.note)} |\n`;
+  if (!Array.isArray(claims)) {
+    console.error("[extract] stdin is not a JSON array");
+    process.exit(1);
   }
-  writeFileSync(LEDGER_PATH, text);
+
+  // Find the record to compute its hash + grab citedSources fallback.
+  const records = loadRecords(relPath, recordKey);
+  if (records.length === 0) {
+    console.error(`[extract] record not found: ${relPath} / ${recordKey}`);
+    process.exit(1);
+  }
+  const record = records[0];
+  const recHash = sourceHash(record.recordText);
+
+  const recordIdBase = `${basename(relPath, extname(relPath))}.${recordKey}`;
+  const rows = claims.map((claim, i) => ({
+    id: `${recordIdBase}.${claim.id_suffix || String(i + 1).padStart(3, "0")}`,
+    surface: record.surface,
+    location: record.location,
+    claim: claim.claim,
+    lane: claim.lane,
+    type: claim.type,
+    cited_sources: claim.cited_sources || record.citedSources,
+    note: `${claim.note ?? ""} [extractor=in-session prompt=${PROMPT_VERSION}]`,
+  }));
+  appendRows(rows);
+
+  const state = loadState();
+  state.sources[`${relPath}::${recordKey}`] = recHash;
+  saveState(state);
+
+  console.log(`[extract] ${recordKey}: appended ${rows.length} claim(s), state updated`);
 }
 
-function esc(s) {
-  if (!s) return "";
-  return String(s).replace(/\|/g, "/").replace(/\n/g, " ").trim().slice(0, 400);
+function cmdMarkExtracted(args) {
+  const [relPath, recordKey] = args.filter((a) => !a.startsWith("--"));
+  if (!relPath || !recordKey) {
+    console.error("usage: extract.mjs mark-extracted <relPath> <recordKey>");
+    process.exit(1);
+  }
+  const records = loadRecords(relPath, recordKey);
+  if (records.length === 0) {
+    console.error(`[extract] record not found: ${relPath} / ${recordKey}`);
+    process.exit(1);
+  }
+  const state = loadState();
+  state.sources[`${relPath}::${recordKey}`] = sourceHash(records[0].recordText);
+  saveState(state);
+  console.log(`[extract] ${recordKey}: marked extracted (0 claims)`);
 }
 
 // ----------------------------------------------------------------------
 // Main
 // ----------------------------------------------------------------------
 
-const args = process.argv.slice(2);
+const [sub, ...rest] = process.argv.slice(2);
+switch (sub) {
+  case "pending": cmdPending(rest); break;
+  case "show": cmdShow(rest); break;
+  case "batch": cmdBatch(rest); break;
+  case "append": await cmdAppend(rest); break;
+  case "mark-extracted": cmdMarkExtracted(rest); break;
+  default:
+    console.error(`Usage: extract.mjs <subcommand>
 
-function flagValue(name) {
-  const i = args.indexOf(name);
-  return i >= 0 ? args[i + 1] : null;
+Subcommands:
+  pending [--all-priority] [<file>...]    list records needing extraction
+  show <relPath> [--slug X]               print extraction prompt + record text
+  batch [--limit N] [--all-priority]      print prompts for N pending records
+  append <relPath> <recordKey> < json     read claims JSON from stdin, append + mark
+  mark-extracted <relPath> <recordKey>    mark a zero-claim record extracted
+
+This script does NOT call any LLM. The agent reads the printed prompt,
+generates the claims JSON in-session, then pipes it back via 'append'.`);
+    process.exit(sub ? 1 : 0);
 }
-
-const allPriority = args.includes("--all-priority");
-const positional = args.find((a) => !a.startsWith("--") && a !== flagValue("--slug"));
-
-const slugFilter = flagValue("--slug");
-
-const filesToProcess = [];
-if (allPriority) {
-  filesToProcess.push(
-    "data/funders.yaml",
-    "data/grants.yaml",
-    "data/projects.yaml",
-    "data/reading-lists.yaml",
-    "data/predictions.yaml",
-  );
-  // Layer MDX files.
-  const layersDir = resolve(ROOT, "src/content/layers");
-  for (const f of readdirSync(layersDir)) {
-    if (extname(f) === ".mdx") {
-      filesToProcess.push(`src/content/layers/${f}`);
-    }
-  }
-} else if (positional) {
-  filesToProcess.push(positional);
-} else {
-  console.error("Usage: node audit/extract/extract.mjs <source-file> [--slug X] | --all-priority");
-  process.exit(1);
-}
-
-const state = loadState();
-
-for (const relPath of filesToProcess) {
-  console.log(`[extract] processing ${relPath}${slugFilter ? ` (slug=${slugFilter})` : ""}`);
-  const records = loadRecords(relPath, slugFilter);
-  if (records.length === 0) {
-    console.log(`  no records`);
-    continue;
-  }
-  console.log(`  ${records.length} record(s)`);
-
-  let i = 0;
-  for (const record of records) {
-    i++;
-    const recHash = sourceHash(record.recordText);
-    const stateKey = `${relPath}::${record.recordKey}`;
-    if (state.sources[stateKey] === recHash && !slugFilter) {
-      console.log(`  [${i}/${records.length}] ${record.recordKey}: unchanged, skipping`);
-      continue;
-    }
-
-    let extracted;
-    try {
-      extracted = await extractFromRecord(record);
-    } catch (e) {
-      console.error(`  [${i}/${records.length}] ${record.recordKey}: extractor error: ${e.message ?? e}`);
-      continue;
-    }
-
-    const recordIdBase = `${basename(relPath, extname(relPath))}.${record.recordKey}`;
-    const rows = extracted.map((claim) => ({
-      id: `${recordIdBase}.${claim.id_suffix || String(Math.random()).slice(2, 6)}`,
-      surface: record.surface,
-      location: record.location,
-      claim: claim.claim,
-      lane: claim.lane,
-      type: claim.type,
-      cited_sources: claim.cited_sources || record.citedSources,
-      note: `${claim.note ?? ""} [extractor=${EXTRACTOR_MODEL} prompt=${PROMPT_VERSION}]`,
-    }));
-    appendRows(rows);
-    state.sources[stateKey] = recHash;
-    saveState(state);
-    console.log(`  [${i}/${records.length}] ${record.recordKey}: ${rows.length} claim(s) extracted`);
-  }
-}
-
-console.log("[extract] done");

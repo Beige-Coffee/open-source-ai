@@ -20,12 +20,12 @@
     "audit:cross-refs": "node audit/verify/verify_cross_refs.mjs",
     "audit:snapshot": "node audit/snapshot/snapshot.mjs --all",
     "audit:snapshot:stale": "node audit/snapshot/snapshot.mjs --stale",
-    "audit:verify": "node audit/verify/verify_entailment.mjs",
-    "audit:verify:all": "node audit/verify/verify_entailment.mjs --all",
-    "audit:verify:new": "node audit/verify/verify_entailment.mjs --since-last-extract",
+    "audit:verify:pending": "node audit/verify/verify_entailment.mjs pending",
+    "audit:verify:batch": "node audit/verify/verify_entailment.mjs batch",
+    "audit:verify:summary": "node audit/verify/verify_entailment.mjs summarize",
     "audit:coverage": "node audit/completeness/check_coverage.mjs",
-    "audit:extract": "node audit/extract/extract.mjs",
-    "audit:extract:all": "node audit/extract/extract.mjs --all-priority"
+    "audit:extract:pending": "node audit/extract/extract.mjs pending --all-priority",
+    "audit:extract:batch": "node audit/extract/extract.mjs batch --all-priority"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

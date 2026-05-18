@@ -314,18 +314,35 @@ research, see prior conversation):
   different prompt catches claims the literal extractor missed.
   Precision-only is the silent failure mode for curated content.
 
+### Who does the LLM work
+
+No API key. Extraction and verification both run **in-session** under
+the agent's Claude subscription. The `audit/extract/extract.mjs` and
+`audit/verify/verify_entailment.mjs` scripts do NOT call any LLM:
+they load source records / snapshots, print a prompt with the
+material inlined, and read structured output back from stdin or
+flags. The agent reads the printed prompt and produces the JSON in
+this session.
+
+Same pattern as an internal claims-ledger system: the ledger and snapshots are the
+persistent artifact; the model is whoever is in the session.
+
 ### npm scripts for the audit
 
 - `npm run audit:layer1` — Layers 0 + 1 (JSON Schema, cross-refs,
-  citation discipline). Runs on every prebuild.
+  citation discipline). Runs on every prebuild. No LLM.
 - `npm run audit:links` — link liveness (network, not in prebuild)
 - `npm run audit:snapshot` — refresh source snapshots
 - `npm run audit:snapshot:stale` — only snapshots older than 30 days
-- `npm run audit:extract` — extract claims from a source file
-- `npm run audit:extract:all` — bootstrap extraction across all
-  priority sources
-- `npm run audit:verify` — entailment verify needs_verification rows
-- `npm run audit:verify:all` — full re-verify
+- `npm run audit:extract:pending` — list records needing extraction
+- `npm run audit:extract:batch` — print extraction prompts for N
+  pending records (default 10). Agent reads, produces JSON, appends
+  via `node audit/extract/extract.mjs append <relPath> <recordKey>`.
+- `npm run audit:verify:pending` — list rows needing verification
+- `npm run audit:verify:batch` — print verifier prompts for N rows.
+  Agent reads, judges, writes back via
+  `node audit/verify/verify_entailment.mjs update <id> --verdict X`.
+- `npm run audit:verify:summary` — count rows by verdict
 - `npm run audit:coverage` — regenerate audit/CONCEPTS_INDEX.md
 
 ### Fact-check workflow (manual, anytime)
