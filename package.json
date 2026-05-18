@@ -7,13 +7,17 @@
   },
   "scripts": {
     "predev": "node scripts/build-data.mjs",
-    "prebuild": "node scripts/lint-citations.mjs && node scripts/build-data.mjs",
+    "prebuild": "bash audit/check.sh && node scripts/build-data.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "build-data": "node scripts/build-data.mjs",
-    "lint": "node scripts/lint-citations.mjs"
+    "lint": "node scripts/lint-citations.mjs",
+    "audit:layer1": "bash audit/check.sh",
+    "audit:links": "INCLUDE_LINKS=1 node audit/verify/verify_links.mjs",
+    "audit:schemas": "node audit/verify/verify_schemas.mjs",
+    "audit:cross-refs": "node audit/verify/verify_cross_refs.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -32,5 +36,9 @@
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.3.0",
     "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }

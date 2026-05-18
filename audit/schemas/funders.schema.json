@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-source-ai.tech/audit/schemas/funders.schema.json",
+  "title": "Funders (data/funders.yaml)",
+  "type": "object",
+  "required": ["funders"],
+  "properties": {
+    "funders": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/funder" }
+    }
+  },
+  "$defs": {
+    "funder": {
+      "type": "object",
+      "required": ["slug", "name", "region", "type", "mission", "funding_range", "cadence", "process", "url", "focus_layers", "notable_recent"],
+      "additionalProperties": false,
+      "properties": {
+        "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string", "minLength": 2 },
+        "region": {
+          "type": "string",
+          "enum": ["US", "EU", "UK", "Global", "Asia", "Africa", "LatAm"]
+        },
+        "type": {
+          "type": "string",
+          "enum": ["government", "foundation", "corporate", "consortium"]
+        },
+        "mission": { "type": "string", "minLength": 10 },
+        "funding_range": { "type": "string", "minLength": 1 },
+        "cadence": { "type": "string", "minLength": 1 },
+        "process": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+        "focus_layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "silicon", "compute", "data", "training", "weights",
+              "runtime", "retrieval-memory", "agents", "protocols",
+              "evaluation", "governance", "identity-trust",
+              "safety-guardrails", "sovereignty-decentralization"
+            ]
+          }
+        },
+        "notable_recent": { "type": "string", "minLength": 1 },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/source" }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["title", "url"],
+      "properties": {
+        "title": { "type": "string" },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" }
+      }
+    }
+  }
+}

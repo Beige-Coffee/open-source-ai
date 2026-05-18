@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-source-ai.tech/audit/schemas/projects.schema.json",
+  "title": "Projects (data/projects.yaml)",
+  "type": "object",
+  "required": ["projects"],
+  "properties": {
+    "projects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/project" }
+    }
+  },
+  "$defs": {
+    "project": {
+      "type": "object",
+      "required": ["slug", "name", "layers", "license", "focus", "maturity", "url", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "slug": { "type": "string", "pattern": "^[a-z0-9-.]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "silicon", "compute", "data", "training", "weights",
+              "runtime", "retrieval-memory", "agents", "protocols",
+              "evaluation", "governance", "identity-trust",
+              "safety-guardrails", "sovereignty-decentralization"
+            ]
+          }
+        },
+        "license": { "type": "string", "minLength": 1 },
+        "focus": {
+          "type": "string",
+          "enum": ["open", "open-weights", "source-available", "proprietary", "standard"]
+        },
+        "maturity": {
+          "type": "string",
+          "enum": ["stable", "beta", "alpha", "research", "maintenance", "new"]
+        },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+        "github": { "type": "string", "format": "uri", "pattern": "^https?://" },
+        "description": { "type": "string", "minLength": 10 },
+        "explainer": { "type": "string", "minLength": 200 },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/source" }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["title", "url"],
+      "properties": {
+        "title": { "type": "string" },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" }
+      }
+    }
+  }
+}

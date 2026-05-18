@@ -139,7 +139,7 @@ funders:
 
   - slug: cohere-labs
     name: "Cohere Labs (formerly Cohere for AI)"
-    region: Multi
+    region: Global
     type: corporate
     mission: "Multilingual LLM research; civic and academic API access; community grants."
     funding_range: "API credits only (no cash). Catalyst Grants free access to Aya, Command, Rerank, Embed for civic and academic users."
@@ -151,7 +151,7 @@ funders:
 
   - slug: huggingface
     name: "HuggingFace Community Grants"
-    region: Multi
+    region: Global
     type: corporate
     mission: "GPU credits for Spaces, robotics datasets, hosted model demos. Informal, community-mediated grants."
     funding_range: "Compute grants only; informal scale."
@@ -163,7 +163,7 @@ funders:
 
   - slug: linux-foundation-aaif
     name: "Linux Foundation / Agentic AI Foundation"
-    region: Multi
+    region: Global
     type: foundation
     mission: "Open agent standards. Anchor projects: MCP (Anthropic), goose (Block), AGENTS.md (OpenAI)."
     funding_range: "Member-dues funded; in-kind contributions from members (compute, engineering) rather than cash grants to outside teams."
