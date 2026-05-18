@@ -1,7 +1,7 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-05-14T08:00:00-07:00",
+  "last_run_at": "2026-05-18T09:00:00-07:00",
   "sources": {
     "vllm-releases": {
       "last_seen_tag": "v0.21.0rc3",
@@ -130,98 +130,98 @@
     },
     "grants_watch_frontier-model-forum-updates": {
       "last_seen_url": "https://www.frontiermodelforum.org/updates/fmf-announces-first-of-its-kind-information-sharing-agreement/",
-      "last_seen_at": "2026-05-13",
-      "note": "Latest visible item is an information-sharing agreement, not a grant. No grant candidates queued from this source."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13. A 'Progress Update' follow-on to the information-sharing agreement is visible but undated and not a grant."
     },
     "grants_watch_nlnet-news": {
       "last_seen_url": "https://nlnet.nl/news/2026/20260428-Jaap-Akkerhuis-Knighted.html",
-      "last_seen_at": "2026-05-13",
-      "note": "Queued three candidates: 44-project March cohort, NLnet's Horizon Europe selection, Proton Foundation donation. April 57-project cohort already in grants.yaml."
+      "last_seen_at": "2026-05-18",
+      "note": "No new news items since 2026-05-13. Office hour event on 2026-05-27 is not a grant announcement."
     },
     "grants_watch_nsf-news-ai": {
-      "last_seen_url": "https://www.nsf.gov/news/nsf-announces-2026-graduate-research-fellowship-program",
-      "last_seen_at": "2026-05-13",
-      "note": "nsf.gov/news/index.jsp?org=NSF returned 202 with empty body; used /news/ landing as fallback. Queued $11M K-12 AI PD as low-confidence on-topic candidate."
+      "last_seen_url": "https://www.nsf.gov/news/nsf-announces-15b-nsf-x-labs-initiative-pursue-generational",
+      "last_seen_at": "2026-05-18",
+      "note": "Queued NSF X-Labs $1.5B/decade initiative (2026-05-14) as low-confidence: AI/open-source relevance not confirmed from listing, needs human read of the announcement."
     },
     "grants_watch_schmidt-sciences-opportunities": {
-      "last_seen_at": "2026-05-13",
-      "note": "Visible opportunities listing had no AI-specific open calls beyond what is already represented in funders.yaml."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items. Currently listed: VIEW-2 EOIs, 2026 AI Interpretability RFP, 2026 Science of Trustworthy AI RFP, all previously known."
     },
     "grants_watch_schmidt-sciences-announcements": {
       "last_seen_url": "https://www.schmidtsciences.org/worlds-largest-animal-migration-and-ocean-gyres-play-critical-roles-in-global-carbon-cycle/",
-      "last_seen_at": "2026-05-13",
-      "note": "Queued AI at Work $3M+ awards (Jan 27, 2026). Other recent items were climate/astrophysics."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13. Most recent post 2026-04-30 (carbon cycle)."
     },
     "grants_watch_mozilla-foundation-press": {
       "last_seen_url": "https://foundation.mozilla.org/en/blog/funding-the-future-of-trustworthy-tech/",
-      "last_seen_at": "2026-05-13",
-      "note": "Queued one low-confidence editorial post about future grantmaking. No specific award announcements visible."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13. Fetched listing returned older posts; redirect to mozillafoundation.org/en/blog observed. Worth re-checking if signal expected."
     },
     "grants_watch_mozilla-builders-blog": {
-      "last_seen_at": "2026-05-13",
-      "note": "https://builders.mozilla.org/blog/ returned HTTP 404 on 2026-05-13; logged to fetch-errors.jsonl."
+      "last_seen_at": "2026-05-18",
+      "note": "https://builders.mozilla.org/blog/ still 404 on 2026-05-18. URL needs human re-sourcing."
     },
     "grants_watch_sovereign-tech-agency-news": {
       "last_seen_url": "https://www.sovereign.tech/news/standards-survey-results",
-      "last_seen_at": "2026-05-13",
-      "note": "Site has moved from sovereigntechfund.de to sovereign.tech for article URLs. Queued 2026 Fellowship open call and Resilience tender; sources.yaml feed URL still works but article links resolve to sovereign.tech."
+      "last_seen_at": "2026-05-18",
+      "note": "Both sovereigntechfund.de/news and sovereign.tech/news returned 403 on 2026-05-18 (bot-block). Could not verify new items; sources.yaml feed URL needs an alternative path or auth method."
     },
     "grants_watch_anthropic-news-funding": {
-      "last_seen_url": "https://www.anthropic.com/news/claude-for-small-business",
-      "last_seen_at": "2026-05-13",
-      "note": "Recent posts are product/partnership/compute announcements, not grants. Project Glasswing (Apr 7, 2026) is a consortium initiative, not a grant program. No candidates queued."
+      "last_seen_url": "https://www.anthropic.com/news/gates-foundation-partnership",
+      "last_seen_at": "2026-05-18",
+      "note": "Queued Gates Foundation $200M partnership (2026-05-14) as low-confidence edge case. PwC expanded partnership (2026-05-14) is not a grant."
     },
     "grants_watch_openai-index-funding": {
-      "last_seen_at": "2026-05-13",
-      "note": "https://openai.com/index/ returned HTTP 403 on 2026-05-13; https://openai.com/news/ also 403. Logged to fetch-errors.jsonl."
+      "last_seen_at": "2026-05-18",
+      "note": "https://openai.com/index/ and /news/ still return 403 on 2026-05-18. No new visibility."
     },
     "grants_watch_lf-aaif-blog": {
       "last_seen_url": "https://lfaidata.foundation/blog/2026/04/27/onnx-v1-21-0-released-introducing-opset-26-new-cumprod-operator-2-bit-type-s",
-      "last_seen_at": "2026-05-13",
-      "note": "Recent posts are project releases (ONNX, TrustyAI, Open Voice). No grant announcements identified."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13."
     },
     "grants_watch_open-philanthropy-grants": {
-      "last_seen_at": "2026-05-13",
-      "note": "https://www.openphilanthropy.org/grants/ returned HTTP 403 on 2026-05-13 (likely Cloudflare). Also tried /giving/grants?focus-area=potential-risks-advanced-ai with same result. Logged to fetch-errors.jsonl; needs alternative scrape strategy."
+      "last_seen_at": "2026-05-18",
+      "note": "Open Philanthropy URL now 301-redirects to coefficientgiving.org which also returns 403. Org appears rebranded to Coefficient Giving. grants-sources.yaml entry needs human update."
     },
     "grants_watch_ai2-blog-funding": {
       "last_seen_url": "https://allenai.org/blog/aimip",
-      "last_seen_at": "2026-05-13",
-      "note": "Recent Ai2 blog posts are model/product releases. AIMIP (May 13) is a benchmark project, not a funding announcement."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13."
     },
     "grants_watch_huggingface-blog-grants": {
-      "last_seen_url": "https://huggingface.co/blog/amazon/foundation-model-building-blocks",
-      "last_seen_at": "2026-05-13",
-      "note": "Recent HF posts are model/feature/leaderboard releases. No community-grant announcements in the 15-item window."
+      "last_seen_url": "https://huggingface.co/blog/ibm-research/open-agent-leaderboard",
+      "last_seen_at": "2026-05-18",
+      "note": "Three new posts (Open Agent Leaderboard 2026-05-18, Granite Embedding R2 2026-05-14, continuous_async 2026-05-14) are all project/model releases, not grants."
     },
     "grants_watch_granted-ai": {
       "last_seen_url": "https://grantedai.com/grants/capacity-building-grant-initiative-2026-michigan-health-endowment-fund-36ec4c3e",
-      "last_seen_at": "2026-05-13",
-      "note": "Visible items are domain-general grants (education, health, climate, agriculture). No AI-stack-relevant grants surfaced."
+      "last_seen_at": "2026-05-18",
+      "note": "Recent items are forestry, cultural districts, CAL FIRE workforce. No AI-stack-relevant grants surfaced this week."
     },
     "grants_watch_opportunity-desk": {
       "last_seen_url": "https://opportunitydesk.org/2026/05/13/sir-ratan-tata-postdoctoral-fellowship-2026-2027/",
-      "last_seen_at": "2026-05-13",
-      "note": "Visible items are fellowships and grants in development, education, climate. None AI-stack-relevant in the listing window."
+      "last_seen_at": "2026-05-18",
+      "note": "Recent items in environment, business, agriculture, public health, education, arts, peace/security. None AI-stack-relevant."
     },
     "grants_watch_ea-forum-grants": {
-      "last_seen_at": "2026-05-13",
-      "note": "https://forum.effectivealtruism.org/tag/grants/feed.xml returned HTTP 404 on 2026-05-13. Logged to fetch-errors.jsonl."
+      "last_seen_at": "2026-05-18",
+      "note": "https://forum.effectivealtruism.org/tag/grants/feed.xml still 404 on 2026-05-18."
     },
     "grants_watch_lesswrong-funding": {
-      "last_seen_url": "https://www.lesswrong.com/posts/GufBJNg62gkpbnE4Q/mats-autumn-2026-fellowship-applications-now-open-apply-by",
-      "last_seen_at": "2026-05-13",
-      "note": "Queued MATS Autumn 2026 fellowship as a 'new' candidate funder. Other recent funding-tagged posts were research write-ups."
+      "last_seen_url": "https://www.lesswrong.com/posts/7vpvNM7viJqNWAdG7/classifier-context-rot-monitor-performance-degrades-with",
+      "last_seen_at": "2026-05-18",
+      "note": "Two new funding-adjacent posts on 2026-05-18 are Anthropic Fellows research outputs, not grant announcements."
     },
     "grants_watch_eu-horizon-news": {
       "last_seen_url": "https://digital-strategy.ec.europa.eu/en/news/eu-agrees-simplify-ai-rules-boost-innovation-and-ban-nudification-apps-protect-citizens",
-      "last_seen_at": "2026-05-13",
-      "note": "Recent items are policy and regulation. NLnet's Horizon Europe Open Internet Stack selection captured via the nlnet-news source instead."
+      "last_seen_at": "2026-05-18",
+      "note": "No new items since 2026-05-13."
     },
     "grants_watch_aisi-uk-grants": {
       "last_seen_url": "https://www.aisi.gov.uk/grants",
-      "last_seen_at": "2026-05-13",
-      "note": "AISI grants page now references an AISI Challenge Fund (priority areas, application pack PDFs) distinct from the Alignment Project. Queued for human verification."
+      "last_seen_at": "2026-05-18",
+      "note": "Page unchanged. All programmes still show 'Applications closed.'"
     }
   }
 }
