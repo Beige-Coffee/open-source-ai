@@ -194,12 +194,12 @@ funders:
     region: US
     type: foundation
     mission: "Funds frontier safety and security research for advanced AI, computer security, neurotech, and cryptography to keep emerging tech beneficial and decentralized."
-    funding_range: "$10K - $300K+"
-    cadence: "Rolling, quarterly deadlines (Mar/Jun/Sep/Dec)"
-    process: "Open application across four AI safety categories; peer review; ~$5M distributed annually."
+    funding_range: "$10K - $100K typical (higher amounts for AI safety focus areas)"
+    cadence: "Rolling, monthly deadlines (last day of each month)"
+    process: "Open application across seven AI focus areas; in-house review then technical advisor evaluation; ~$3M distributed annually."
     url: "https://foresight.org/grants/grants-ai-for-science-safety/"
     focus_layers: [safety-guardrails, identity-trust, sovereignty-decentralization, evaluation]
-    notable_recent: "AI for Safety and Science Nodes 2026 launching in San Francisco and Berlin with up to $3M; quarterly AI Safety Grant rounds throughout 2025."
+    notable_recent: "AI for Science and Safety Nodes 2026 program operating two hubs in San Francisco and Berlin offering grant funding, office space, and compute."
 
   - slug: cosmos-institute
     name: Cosmos Institute

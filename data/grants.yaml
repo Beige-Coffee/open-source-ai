@@ -820,13 +820,14 @@ grants:
   - title: "FOCAL lab at Carnegie Mellon"
     kind: project
     funder: cooperative-ai-foundation
-    recipient: "Carnegie Mellon FOCAL lab"
-    date: "2024-08-01"
-    amount_label: "~£200K"
+    recipient: "Vincent Conitzer (Carnegie Mellon FOCAL lab)"
+    date: "2021-09-01"
+    amount_label: "$500,000 (2021-2025)"
+    amount_usd: 500000
     layers: [agents, evaluation]
     region: US
     url: "https://www.cooperativeai.com/post/grant-summaries"
-    description: "Establishes a research lab laying decision- and game-theoretic foundations for advancing AI cooperation. Includes workshops, online seminar series, and visitor programs."
+    description: "Multi-year grant establishing the Foundations of Cooperative AI Lab (FOCAL) under Vincent Conitzer at Carnegie Mellon University. The lab develops decision and game theory for cooperation between advanced machine agents, with outputs including workshops, online seminar series, and visitor programs."
 
   - title: "Coercion-capability measurement project"
     kind: project
