@@ -431,6 +431,82 @@ async function cmdAppend(args) {
   console.log(`[extract] ${recordKey}: appended ${rows.length} claim(s), state updated`);
 }
 
+// Mechanical extraction for record types where the atomic claim is
+// pattern-derivable (no LLM needed). Currently handles:
+//   data/predictions.yaml  - one prediction-lane row per record
+//   data/reading-lists.yaml - one factual cross-reference row per record
+function cmdMechanical(args) {
+  const relPath = args.find((a) => !a.startsWith("--"));
+  if (!relPath) {
+    console.error("usage: extract.mjs mechanical <relPath>");
+    process.exit(1);
+  }
+  if (!relPath.endsWith("predictions.yaml") && !relPath.endsWith("reading-lists.yaml")) {
+    console.error(`[extract] mechanical only supports predictions.yaml / reading-lists.yaml`);
+    process.exit(1);
+  }
+  const records = loadRecords(relPath);
+  const state = loadState();
+  let totalRows = 0;
+  let totalRecs = 0;
+  for (const r of records) {
+    const h = sourceHash(r.recordText);
+    const k = `${relPath}::${r.recordKey}`;
+    if (state.sources[k] === h) continue;
+
+    const recordIdBase = `${basename(relPath, extname(relPath))}.${r.recordKey}`;
+    let rows = [];
+    if (relPath.endsWith("predictions.yaml")) {
+      // Parse the recordText to pull claim + horizon + filed.
+      const claimMatch = r.recordText.match(/Claim:\s*(.+?)(?:\n|$)/);
+      const horizonMatch = r.recordText.match(/Horizon:\s*(.+?)(?:\n|$)/);
+      const filedMatch = r.recordText.match(/Filed:\s*(.+?)(?:\n|$)/);
+      const claim = claimMatch ? claimMatch[1].trim() : r.recordText.slice(0, 200);
+      const horizon = horizonMatch ? horizonMatch[1].trim() : "unknown";
+      const filed = filedMatch ? filedMatch[1].trim() : "unknown";
+      rows.push({
+        id: `${recordIdBase}.001`,
+        surface: r.surface,
+        location: r.location,
+        claim: `${claim} (horizon: ${horizon}, filed: ${filed})`,
+        lane: "prediction",
+        type: "prediction-prose",
+        cited_sources: "",
+        note: `[extractor=mechanical prompt=v1.0-2026-05-14]`,
+      });
+    } else if (relPath.endsWith("reading-lists.yaml")) {
+      // The reading record asserts: the URL exists and matches its
+      // claimed title/source/type/year. One existence row.
+      const titleMatch = r.recordText.match(/Reading:\s*(.+?)(?:\n|$)/);
+      const sourceMatch = r.recordText.match(/Source:\s*(.+?)(?:\n|$)/);
+      const typeYearMatch = r.recordText.match(/Type:\s*(.+?)\s*\(([\d]+)\)/);
+      const urlMatch = r.recordText.match(/URL:\s*(.+?)(?:\n|$)/);
+      const title = titleMatch ? titleMatch[1].trim() : r.recordKey;
+      const src = sourceMatch ? sourceMatch[1].trim() : "unknown source";
+      const type = typeYearMatch ? typeYearMatch[1].trim() : "unknown";
+      const year = typeYearMatch ? typeYearMatch[2].trim() : "unknown";
+      const url = urlMatch ? urlMatch[1].trim() : "";
+      const isHttp = String(url).startsWith("http");
+      rows.push({
+        id: `${recordIdBase}.001`,
+        surface: r.surface,
+        location: r.location,
+        claim: `Reading "${title}" by ${src}, published ${year} as ${type}, is available at ${url}`,
+        lane: "factual",
+        type: "attribution",
+        cited_sources: isHttp ? url : "",
+        note: `[extractor=mechanical prompt=v1.0-2026-05-14] reading existence + metadata`,
+      });
+    }
+    appendRows(rows);
+    state.sources[k] = h;
+    totalRows += rows.length;
+    totalRecs += 1;
+  }
+  saveState(state);
+  console.log(`[extract] mechanical ${relPath}: ${totalRecs} record(s), ${totalRows} row(s) appended`);
+}
+
 function cmdMarkExtracted(args) {
   const [relPath, recordKey] = args.filter((a) => !a.startsWith("--"));
   if (!relPath || !recordKey) {
@@ -459,6 +535,7 @@ switch (sub) {
   case "batch": cmdBatch(rest); break;
   case "append": await cmdAppend(rest); break;
   case "mark-extracted": cmdMarkExtracted(rest); break;
+  case "mechanical": cmdMechanical(rest); break;
   default:
     console.error(`Usage: extract.mjs <subcommand>
 
