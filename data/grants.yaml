@@ -341,7 +341,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Rocco Hu"
-    date: "2024-09-04"
+    date: "2024-09-10"
     amount_label: "$1K-$10K range"
     layers: [evaluation, governance]
     region: UK
@@ -352,7 +352,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Erik Bordeleau"
-    date: "2024-09-04"
+    date: "2024-09-10"
     amount_label: "$1K-$10K range"
     layers: [sovereignty-decentralization, data]
     region: EU
@@ -363,7 +363,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Alfaxad Eyembe"
-    date: "2024-09-04"
+    date: "2024-09-10"
     amount_label: "$1K-$10K range"
     layers: [agents, evaluation]
     region: Global
@@ -374,7 +374,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Jake Birdwell"
-    date: "2024-09-04"
+    date: "2024-09-10"
     amount_label: "$1K-$10K range"
     layers: [agents, evaluation, governance]
     region: US
@@ -400,7 +400,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Johanna Einsiedler"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [evaluation, data, retrieval-memory]
     region: EU
@@ -411,7 +411,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Steven Molotnikov"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [evaluation, safety-guardrails]
     region: US
@@ -422,7 +422,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Caleb Maresca"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [agents, governance]
     region: US
@@ -433,7 +433,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Nada Amin"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [evaluation, agents]
     region: US
@@ -444,7 +444,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Jonas Kgomo"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [evaluation, retrieval-memory]
     region: Global
@@ -455,7 +455,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Kunvar Thaman"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [evaluation, safety-guardrails]
     region: Global
@@ -466,7 +466,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Zhongying Qiao"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [agents, evaluation]
     region: Global
@@ -477,7 +477,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Jasmine Cui"
-    date: "2025-07-01"
+    date: "2025-08-15"
     amount_label: "$1K-$10K plus compute"
     layers: [agents, retrieval-memory]
     region: US
@@ -492,7 +492,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Peli Grietzer"
-    date: "2025-08-01"
+    date: "2024-12-17"
     amount_label: "$1K-$10K range"
     layers: [evaluation, governance]
     region: US
@@ -503,7 +503,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Raphaël Millière"
-    date: "2025-08-01"
+    date: "2024-12-17"
     amount_label: "$1K-$10K range"
     layers: [evaluation, weights]
     region: US
@@ -514,7 +514,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Sam Klein (Public AI Network)"
-    date: "2025-08-01"
+    date: "2024-12-17"
     amount_label: "$1K-$10K range"
     layers: [data, sovereignty-decentralization]
     region: US
@@ -525,7 +525,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: "Seth Lazar"
-    date: "2025-08-01"
+    date: "2024-12-17"
     amount_label: "$1K-$10K range"
     layers: [agents, governance, sovereignty-decentralization]
     region: Global
