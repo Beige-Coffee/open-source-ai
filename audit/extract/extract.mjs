@@ -79,8 +79,13 @@ function loadYamlRecords(relPath) {
   if (!arrayKey) return [];
 
   const records = [];
+  let idx = 0;
   for (const r of parsed[arrayKey]) {
-    const key = r.slug || r.title || r.id || JSON.stringify(r).slice(0, 40);
+    // Use position-based key for records without a stable identifier so
+    // siblings with the same "shape" (e.g. multiple predictions on the
+    // same layer) don't collide on the slice(0,40) of their JSON.
+    const key = r.slug || r.title || r.id || `${arrayKey}-${String(idx).padStart(3, "0")}`;
+    idx++;
     let recordText;
     const cited = [];
     if (base === "funders") {
