@@ -249,10 +249,10 @@ projects:
       - title: "llama.cpp (Apple Silicon backend)"
         url: "https://github.com/ggml-org/llama.cpp"
 
-  # Compute
+  # Infrastructure
   - slug: akash
     name: Akash Network
-    layers: [compute]
+    layers: [infrastructure, sovereignty-decentralization]
     license: Apache 2.0
     focus: open
     maturity: stable
@@ -296,7 +296,7 @@ projects:
 
   - slug: io-net
     name: io.net
-    layers: [compute]
+    layers: [infrastructure, sovereignty-decentralization]
     license: Source-available
     focus: source-available
     maturity: beta
@@ -305,7 +305,7 @@ projects:
 
   - slug: bittensor-compute
     name: Bittensor Compute (Subnet 27 etc.)
-    layers: [compute]
+    layers: [infrastructure, sovereignty-decentralization]
     license: Apache 2.0
     focus: open
     maturity: beta
@@ -347,7 +347,7 @@ projects:
 
   - slug: hyperbolic
     name: Hyperbolic
-    layers: [compute]
+    layers: [infrastructure]
     license: Source-available
     focus: source-available
     maturity: beta
@@ -356,7 +356,7 @@ projects:
 
   - slug: gensyn
     name: Gensyn
-    layers: [compute, sovereignty-decentralization]
+    layers: [infrastructure, sovereignty-decentralization]
     license: Apache 2.0
     focus: open
     maturity: research
@@ -365,7 +365,7 @@ projects:
 
   - slug: coreweave
     name: CoreWeave
-    layers: [compute]
+    layers: [infrastructure]
     license: Proprietary
     focus: proprietary
     maturity: stable
@@ -374,7 +374,7 @@ projects:
 
   - slug: prime-intellect
     name: Prime Intellect
-    layers: [compute, sovereignty-decentralization, training]
+    layers: [infrastructure, sovereignty-decentralization, training]
     license: Apache 2.0
     focus: open
     maturity: research
@@ -416,6 +416,101 @@ projects:
         url: "https://www.primeintellect.ai/blog/intellect-2"
       - title: "prime framework on GitHub"
         url: "https://github.com/PrimeIntellect-ai/prime"
+
+
+  - slug: stargate
+    name: Stargate
+    layers: [infrastructure, sovereignty-decentralization]
+    license: Proprietary
+    focus: proprietary
+    maturity: new
+    url: "https://openai.com/index/announcing-the-stargate-project/"
+    description: "$500B four-year AI-compute buildout announced January 2025 by OpenAI, SoftBank, Oracle, and MGX; first site is Abilene, Texas with Crusoe as developer."
+    sources:
+      - title: "Announcing The Stargate Project (OpenAI)"
+        url: "https://openai.com/index/announcing-the-stargate-project/"
+
+  - slug: g42
+    name: G42
+    layers: [infrastructure, sovereignty-decentralization]
+    license: Proprietary
+    focus: proprietary
+    maturity: stable
+    url: "https://www.g42.ai/"
+    description: "Emirati AI holding company building sovereign data centers and training capacity; partner in the Stargate UAE buildout."
+    sources:
+      - title: "G42"
+        url: "https://www.g42.ai/"
+      - title: "Stargate UAE (Reuters, May 2025)"
+        url: "https://www.reuters.com/world/middle-east/openai-oracle-softbank-launch-uae-data-center-project-2025-05-22/"
+
+  - slug: humain
+    name: Humain
+    layers: [infrastructure, sovereignty-decentralization]
+    license: Proprietary
+    focus: proprietary
+    maturity: new
+    url: "https://humain.ai/"
+    description: "Saudi sovereign-AI company announced May 2025, owned by the Public Investment Fund (PIF); building in-kingdom data center capacity with Nvidia and AMD chip commitments."
+    sources:
+      - title: "PIF announces launch of HUMAIN (Saudi PIF, May 2025)"
+        url: "https://www.pif.gov.sa/en/news-and-insights/press-releases/2025/pif-announces-launch-of-humain/"
+
+  - slug: indiaai-mission
+    name: IndiaAI Mission
+    layers: [infrastructure, sovereignty-decentralization, governance]
+    license: Government-funded
+    focus: proprietary
+    maturity: stable
+    url: "https://indiaai.gov.in/"
+    description: "India's national AI mission, ~Rs 10,372 crore approved by the Union Cabinet in March 2024; a Common Compute Facility track procures shared GPU capacity for Indian researchers and startups."
+    sources:
+      - title: "Cabinet approves IndiaAI Mission (PIB, March 2024)"
+        url: "https://pib.gov.in/PressReleasePage.aspx?PRID=2012375"
+      - title: "IndiaAI Mission portal"
+        url: "https://indiaai.gov.in/"
+
+  - slug: crusoe
+    name: Crusoe Energy
+    layers: [infrastructure]
+    license: Proprietary
+    focus: proprietary
+    maturity: stable
+    url: "https://crusoe.ai/"
+    description: "AI data center operator that originally built modular compute next to flared natural gas in the Bakken; pivoted to AI in 2024; designated as Stargate's first-site developer at the Abilene, Texas campus."
+    sources:
+      - title: "Crusoe (company site)"
+        url: "https://crusoe.ai/"
+      - title: "Stargate Abilene site (OpenAI January 2025)"
+        url: "https://openai.com/index/announcing-the-stargate-project/"
+
+  - slug: lambda
+    name: Lambda
+    layers: [infrastructure]
+    license: Proprietary
+    focus: proprietary
+    maturity: stable
+    url: "https://lambdalabs.com/"
+    description: "GPU cloud focused on AI workloads, founded 2012; one of the larger neoclouds, raised $480M Series D in February 2025 to expand H100 and Blackwell capacity."
+    sources:
+      - title: "Lambda site"
+        url: "https://lambdalabs.com/"
+      - title: "Lambda Series D announcement (February 2025)"
+        url: "https://lambda.ai/blog/lambda-raises-480-million-series-d"
+
+  - slug: voltage-park
+    name: Voltage Park
+    layers: [infrastructure, sovereignty-decentralization]
+    license: Nonprofit operator
+    focus: proprietary
+    maturity: stable
+    url: "https://voltagepark.com/"
+    description: "Nonprofit GPU cloud founded by Jed McCaleb in 2023, operating ~24,000 H100s and renting capacity to AI research labs at close to cost."
+    sources:
+      - title: "Voltage Park site"
+        url: "https://voltagepark.com/"
+      - title: "Voltage Park launch (TechCrunch, October 2023)"
+        url: "https://techcrunch.com/2023/10/30/24000-gpu-cluster-voltage-park/"
 
   # Data
   - slug: common-crawl
@@ -475,11 +570,11 @@ projects:
   - slug: dolma
     name: Dolma
     layers: [data]
-    license: ImpACT
+    license: ODC-BY
     focus: open
     maturity: stable
     url: "https://huggingface.co/datasets/allenai/dolma"
-    description: "AI2's 3T-token training corpus; the substrate for OLMo; redistributable under ImpACT license."
+    description: "AI2's 3T-token training corpus; the substrate for OLMo; redistributable under ODC-BY license (updated from ImpACT in April 2024)."
 
   - slug: dclm
     name: DataComp-LM (DCLM)
