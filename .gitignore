@@ -4,6 +4,8 @@ dist/
 .astro/
 # generated data for the chat agent (built from data/*.yaml + src/content/**)
 public/data/
+# source snapshots (content-addressed, regeneratable via audit/snapshot/snapshot.mjs)
+sources/
 
 # dependencies
 node_modules/
