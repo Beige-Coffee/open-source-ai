@@ -259,20 +259,74 @@ The audit does NOT modify the YAML files; resolutions are manual.
 The next agent updating those files reads the audit log first to
 know what needs attention.
 
-### How the three routines fit together
+### How the routines fit together
 
-The weekly + monthly + quarterly routines compose into a coverage,
-recency, and accuracy system:
+The grants-specific routines compose with the broader claims-audit
+system into a coverage + recency + accuracy + grounding stack:
 
 | Routine | Cadence | Scope | What it catches |
 |---|---|---|---|
-| grants-watch | Weekly | RSS feeds of known funders | New announcements from funders we already track |
-| grants-discovery | Monthly | Web search + external trackers | NEW funders and grants we do not yet track |
-| grants-audit | Quarterly | Every existing entry's live URL + per-funder coverage | Dead links, fact drift, consolidation candidates, coverage gaps |
+| grants-watch | Weekly Mon 09:00 | RSS feeds of known funders | New announcements from known funders |
+| grants-discovery | Monthly 1st 11:00 | Web search + external trackers | NEW funders and grants we do not yet track |
+| grants-audit | Quarterly 1st (Mar/Jun/Sep/Dec) 10:00 | Every grant/funder entry's live URL + per-funder coverage | Dead links, fact drift, consolidation candidates, coverage gaps |
+| audit-layer2 | Weekly Tue 10:00 | Drifted sources + stale-pending-review ledger rows | Source content changed since last verification |
+| audit-layer3 | Quarterly 1st 12:00 | Every row in CLAIMS_LEDGER.md regardless of diff | Full re-verify catches drift that didn't trip the diff signal |
+| recall-pass | Quarterly 1st 13:00 | Adversarial re-extraction with different model | Claims the literal extractor missed (precision-only blind spot) |
+| coverage check | Run on-demand or after content edits | Canonical entity lists vs YAML data | Popular projects/concepts not in the catalog |
 
 The /about page exposes the coverage-and-limitations posture to
-readers explicitly. None of the three routines auto-publish to the
-site; everything goes through `data/inbox/` for human review.
+readers explicitly. None of the routines auto-publish to the site;
+everything goes through `data/inbox/` or `audit/CLAIMS_LEDGER.md`
+for human review.
+
+## Claims-audit system (under `audit/`)
+
+Independent of the grants-specific routines above, every checkable
+claim in the site (YAML descriptions, MDX bodies, page-copy prose)
+is tracked in `audit/CLAIMS_LEDGER.md` with a verdict that persists
+across cycles. The full architecture lives in `audit/RUNBOOK.md`;
+day-to-day cookbook in `audit/OPERATIONS.md`.
+
+Key principles (lifted from FactScore / VeriScore / Molecular Facts
+research, see prior conversation):
+
+- **Decontextualized atomic claims**: each row is property-level
+  atomic AND carries the minimum context to verify independently.
+  Vanilla atomic decomposition (FactScore) strips antecedents and
+  silently makes claims unverifiable.
+- **Three lanes**: factual / framing / prediction. Mixing them in
+  one verification path silently corrupts scores (VeriScore EMNLP
+  2024). Framing claims get a paragraph-level consistency check
+  labeled `consistent`, NOT `verified`. Predictions resolve at
+  horizon, never verified externally.
+- **Cross-model extract vs verify**: Claude extracts, the verifier
+  uses a different family (Gemini / GPT) for any escalated row.
+  Self-preference bias inflates pass rates if same family does both.
+- **Snapshot store**: `sources/{sha256-of-canonical-url}/{ts}.json`
+  with trafilatura-extracted text + content hash + Wayback Machine
+  URL. Verification runs against the snapshot, not the live URL.
+  ~75% of cited URLs drift even when still 200 OK (Klein et al.).
+- **Verdict enum distinguishes verifier-says-no from verifier-couldnt-answer**:
+  `unsupported` ≠ `verifier_unable` ≠ `source_unreachable`. Per
+  Earezki May 2026, 42% of LLM-judge "hallucination" verdicts are
+  pipeline errors. Keep them distinct.
+- **Recall pass**: quarterly adversarial re-extraction with a
+  different prompt catches claims the literal extractor missed.
+  Precision-only is the silent failure mode for curated content.
+
+### npm scripts for the audit
+
+- `npm run audit:layer1` — Layers 0 + 1 (JSON Schema, cross-refs,
+  citation discipline). Runs on every prebuild.
+- `npm run audit:links` — link liveness (network, not in prebuild)
+- `npm run audit:snapshot` — refresh source snapshots
+- `npm run audit:snapshot:stale` — only snapshots older than 30 days
+- `npm run audit:extract` — extract claims from a source file
+- `npm run audit:extract:all` — bootstrap extraction across all
+  priority sources
+- `npm run audit:verify` — entailment verify needs_verification rows
+- `npm run audit:verify:all` — full re-verify
+- `npm run audit:coverage` — regenerate audit/CONCEPTS_INDEX.md
 
 ### Fact-check workflow (manual, anytime)
 

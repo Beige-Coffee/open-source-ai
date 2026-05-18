@@ -6,6 +6,8 @@ dist/
 public/data/
 # source snapshots (content-addressed, regeneratable via audit/snapshot/snapshot.mjs)
 sources/
+# per-machine extraction state (which records have been extracted, by content hash)
+audit/extract/.last_extracted.json
 
 # dependencies
 node_modules/
