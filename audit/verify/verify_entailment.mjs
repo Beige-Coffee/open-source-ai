@@ -314,6 +314,28 @@ function esc(s) {
   return String(s ?? "").replace(/\|/g, "/").replace(/\n/g, " ").trim();
 }
 
+// Defer remaining needs_verification rows to the scheduled routine.
+// Marks rows with a verdict that distinguishes "we couldn't get to it
+// in the bootstrap" from "we tried and the verifier couldn't decide."
+function cmdDeferRemaining(args) {
+  const noteIdx = args.indexOf("--note");
+  const note = noteIdx >= 0 ? args[noteIdx + 1] : "deferred to scheduled audit-layer2 routine";
+  const state = loadLedger();
+  const today = new Date().toISOString().slice(0, 10);
+  const updates = [];
+  for (const row of state.rows) {
+    if (row.verdict !== "needs_verification") continue;
+    updates.push({
+      ...row,
+      verdict: "stale_pending_review",
+      lastVerified: today,
+      notes: note,
+    });
+  }
+  writeLedgerWithUpdates(state, updates);
+  console.log(`[defer] marked ${updates.length} row(s) as stale_pending_review`);
+}
+
 // Bulk auto-verdict pass: handles rows that don't require any LLM
 // judgment (framing, prediction, no-source, no-snapshot). These all
 // have deterministic verdicts under the audit rules.
@@ -388,6 +410,7 @@ switch (sub) {
   case "update": cmdUpdate(rest); break;
   case "summarize": case "summary": cmdSummarize(); break;
   case "auto-verdict": cmdAutoVerdict(); break;
+  case "defer-remaining": cmdDeferRemaining(rest); break;
   default:
     console.error(`Usage: verify_entailment.mjs <subcommand>
 
