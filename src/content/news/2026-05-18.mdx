@@ -1,0 +1,66 @@
+---
+date: 2026-05-18
+editorial_letter: "This issue covers items from 2026-05-15 through 2026-05-18 across four layers. The runtime layer carried four primary-source items: vLLM v0.21.0 stable, SGLang v0.5.12, Ollama v0.24.0 stable, and Ollama v0.30.0-rc17. The weights layer logged Nathan Lambert's Latest Open Artifacts #21 on Interconnects and IBM's Granite Embedding Multilingual R2. The evaluation layer carried IBM Research's Open Agent Leaderboard announcement, and the governance layer logged Jack Clark's Import AI 457. The most significant primary release of the period is vLLM v0.21.0, which ships 367 commits from 202 contributors, deprecates Transformers v4 in favor of v5, requires C++20 to build, and adds KV-Offload integration with the Hybrid Memory Allocator plus a TOKENSPEED_MLA backend on Blackwell GPUs."
+item_count: 8
+layer_buckets:
+  weights: 2
+  runtime: 4
+  evaluation: 1
+  governance: 1
+---
+
+## Weights
+
+### Latest open artifacts (#21): Open model bonanza
+
+Nathan Lambert's Interconnects published the 21st installment of the "Latest open artifacts" series on 2026-05-16, surveying the recent open-model release cycle, including Gemma 4 and DeepSeek V4. The post cites the CAISI assessment showing that open models lag the American frontier with the gap becoming wider over time.
+
+Source: [Interconnects](https://www.interconnects.ai/p/latest-open-artifacts-21-open-model)
+
+### Granite Embedding Multilingual R2
+
+IBM Research published Granite Embedding Multilingual R2 on 2026-05-14 under the Apache 2.0 license. The post claims state-of-the-art retrieval quality among sub-100M-parameter multilingual embedding models, with a 32K-token context window.
+
+Source: [Hugging Face Blog](https://huggingface.co/blog/ibm-granite/granite-embedding-multilingual-r2)
+
+## Runtime
+
+### vLLM v0.21.0
+
+vLLM tagged v0.21.0 stable on 2026-05-15, following the v0.21.0rc3 candidate covered in the 2026-05-14 issue. The release notes describe 367 commits from 202 contributors, including 49 new contributors. Headline changes include deprecation of Transformers v4 in favor of v5, a C++20 build requirement, KV-Offload integration with the Hybrid Memory Allocator, speculative decoding with thinking-budget support, and a TOKENSPEED_MLA backend on Blackwell GPUs. New model architectures supported include MiMo-V2.5, Laguna XS.2, and Moondream3.
+
+Source: [vLLM GitHub Releases](https://github.com/vllm-project/vllm/releases/tag/v0.21.0)
+
+### SGLang v0.5.12
+
+SGLang published v0.5.12 on 2026-05-16. The release adds DeepSeek V4 inference across tensor, expert, context, and prefill-decode parallelism with DeepGemm and FlashMLA kernels. Hardware coverage expands to Nvidia B300, B200, H200, H100, GB200, GB300 and AMD MI35X. The release also adds W4A4 MegaMoE plus Marlin and FlashInfer W4A8 MoE kernels on Hopper, support for Ring-2.6-1T (a trillion-parameter reasoning model), Gemma 4 MTP, MiniCPM-V 4.6, and a HiCache plus UnifiedRadixTree path with SSD offload.
+
+Source: [SGLang GitHub Releases](https://github.com/sgl-project/sglang/releases/tag/v0.5.12)
+
+### Ollama v0.24.0
+
+Ollama cut the v0.24.0 stable release on 2026-05-15, following the v0.24.0-rc0 and rc1 candidates noted in prior issues. The release notes call out the Codex App integration with a built-in browser and review mode, plus a reworked MLX sampler reported to improve generation quality on Apple Silicon.
+
+Source: [Ollama GitHub Releases](https://github.com/ollama/ollama/releases/tag/v0.24.0)
+
+### Ollama v0.30.0-rc17
+
+Ollama tagged v0.30.0-rc17 on 2026-05-15, running in parallel to the v0.24 stable line. The release notes describe an architectural shift to support llama.cpp directly with GGUF compatibility, along with MLX acceleration for Apple Silicon.
+
+Source: [Ollama GitHub Releases](https://github.com/ollama/ollama/releases/tag/v0.30.0-rc17)
+
+## Evaluation
+
+### The Open Agent Leaderboard
+
+IBM Research, posting on the Hugging Face blog on 2026-05-18, introduced the Open Agent Leaderboard, a benchmark surface for evaluating AI agent performance. The HF blog entry is the announcement vehicle; the leaderboard itself is intended to be hosted on the Hugging Face Hub.
+
+Source: [Hugging Face Blog](https://huggingface.co/blog/ibm-research/open-agent-leaderboard)
+
+## Governance
+
+### Import AI 457: AI stuxnet; cursed Muon optimizer; and positive alignment
+
+Jack Clark's Import AI 457 published on 2026-05-18. The issue's three section titles, per the post page, are "AI stuxnet," "cursed Muon optimizer," and "positive alignment."
+
+Source: [Import AI](https://importai.substack.com/p/import-ai-457-ai-stuxnet-cursed-muon)

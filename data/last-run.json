@@ -4,12 +4,12 @@
   "last_run_at": "2026-05-18T09:00:00-07:00",
   "sources": {
     "vllm-releases": {
-      "last_seen_tag": "v0.21.0rc3",
-      "last_seen_at": "2026-05-14"
+      "last_seen_tag": "v0.21.0",
+      "last_seen_at": "2026-05-15"
     },
     "sglang-releases": {
-      "last_seen_tag": "v0.5.11",
-      "last_seen_at": "2026-05-05"
+      "last_seen_tag": "v0.5.12",
+      "last_seen_at": "2026-05-16"
     },
     "mcp-releases": {
       "last_seen_tag": "2025-11-25",
@@ -20,8 +20,8 @@
       "note": "feed returned 404 on 2026-05-13; logged to fetch-errors.jsonl"
     },
     "interconnects": {
-      "last_seen_url": "https://www.interconnects.ai/p/how-open-model-ecosystems-compound",
-      "last_seen_at": "2026-05-12"
+      "last_seen_url": "https://www.interconnects.ai/p/latest-open-artifacts-21-open-model",
+      "last_seen_at": "2026-05-16"
     },
     "eleutherai-blog": {
       "last_seen_url": "https://blog.eleuther.ai/reward-hacking-indicators/",
@@ -36,8 +36,9 @@
       "last_seen_at": "2026-05-07"
     },
     "latent-space": {
-      "last_seen_url": "https://www.latent.space/p/ainews-codex-rises-claude-meters",
-      "last_seen_at": "2026-05-14"
+      "last_seen_url": "https://www.latent.space/p/the-fourth-law",
+      "last_seen_at": "2026-05-18",
+      "note": "2026-05-18 episode is a defense-policy podcast on AI-guided weapons (Noah Smith with Yaroslav Azhnyuk); processed but not published as it is not stack-relevant."
     },
     "lmarena-blog": {
       "last_seen_at": null,
@@ -48,8 +49,8 @@
       "last_seen_at": "2026-05-13"
     },
     "import-ai": {
-      "last_seen_url": "https://importai.substack.com/p/import-ai-456-rsi-and-economic-growth",
-      "last_seen_at": "2026-05-11"
+      "last_seen_url": "https://importai.substack.com/p/import-ai-457-ai-stuxnet-cursed-muon",
+      "last_seen_at": "2026-05-18"
     },
     "apple-security-blog": {
       "last_seen_at": null,
@@ -60,21 +61,23 @@
       "last_seen_at": "2025-04-10"
     },
     "ollama-releases": {
-      "last_seen_tag": "v0.24.0-rc0",
-      "last_seen_at": "2026-05-14"
+      "last_seen_tag": "v0.30.0-rc17",
+      "last_seen_at": "2026-05-15",
+      "note": "Parallel release lines: v0.24.x stable culminated in v0.24.0 (2026-05-15); v0.30.x line iterating on rc17 (2026-05-15) introduces direct llama.cpp/GGUF support and MLX acceleration."
     },
     "llama-cpp-releases": {
-      "last_seen_tag": "b9145",
-      "last_seen_at": "2026-05-14",
-      "note": "Nightly tag bumps; not published as items unless a milestone release is identified."
+      "last_seen_tag": "b9209",
+      "last_seen_at": "2026-05-18",
+      "note": "Nightly tag bumps continue (b9145 → b9209 over this window); no milestone release identified, skipped per policy."
     },
     "huggingface-blog": {
-      "last_seen_url": "https://huggingface.co/blog/continuous_async",
-      "last_seen_at": "2026-05-14"
+      "last_seen_url": "https://huggingface.co/blog/ibm-research/open-agent-leaderboard",
+      "last_seen_at": "2026-05-18"
     },
     "anthropic-news": {
-      "last_seen_url": "https://www.anthropic.com/news/gates-foundation-partnership",
-      "last_seen_at": "2026-05-14"
+      "last_seen_url": "https://www.anthropic.com/news/pwc-expanded-partnership",
+      "last_seen_at": "2026-05-14",
+      "note": "PwC expanded-partnership post (2026-05-14) processed but not published; classified as enterprise partnership rather than a stack release."
     },
     "anthropic-research": {
       "last_seen_url": "https://www.anthropic.com/research/teaching-claude-why",
