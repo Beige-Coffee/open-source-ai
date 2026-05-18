@@ -256,16 +256,38 @@ grants:
     url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
     description: "Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable for civil-society teams under authoritarian rule."
 
-  - title: "PayPerQ"
+  - title: "PlebDevs AI Development Course"
     kind: project
     funder: hrf
-    recipient: "PayPerQ"
+    recipient: "PlebDevs"
     date: "2025-11-24"
     amount_label: "Undisclosed"
-    layers: [runtime, identity-trust, sovereignty-decentralization]
-    region: US
+    layers: [agents, governance]
+    region: Global
     url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Pay-per-query gateway to leading chatbots that requires no account and accepts Bitcoin, Lightning, or credit card. Lets dissidents and journalists use frontier AI without leaving an identifiable trail tied to a corporate account."
+    description: "Developer education platform focused on Bitcoin and open-source technology launching an AI development course for beginners building open-source AI tools in repressive environments."
+
+  - title: "Sovereign Engineering Freedom Tech AI Cohorts"
+    kind: project
+    funder: hrf
+    recipient: "Sovereign Engineering"
+    date: "2025-11-24"
+    amount_label: "Undisclosed"
+    layers: [agents, sovereignty-decentralization]
+    region: Global
+    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
+    description: "Brings builders together in a physical space to create freedom-enhancing tools on open networks like Bitcoin and Nostr. Over two cohorts, participants explore how AI can be integrated into censorship-resistant systems."
+
+  - title: "Citizen Power Initiatives for China AI Research"
+    kind: project
+    funder: hrf
+    recipient: "Citizen Power Initiatives for China"
+    date: "2025-11-24"
+    amount_label: "Undisclosed"
+    layers: [governance, evaluation]
+    region: Asia
+    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
+    description: "Research examining how the Chinese regime uses AI to bolster its digital dictatorship and exports these tools to other regimes, plus identifying open-source AI tools human rights defenders can use to resist digital repression."
 
   - title: "CANVAS Global Education for Nonviolent Engagement (GENE)"
     kind: project

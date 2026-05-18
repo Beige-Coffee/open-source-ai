@@ -223,7 +223,7 @@ funders:
     process: "Open RFP via dedicated portal; peer review by HRF freedom-tech team."
     url: "https://hrf.org/program/ai-for-individual-rights/"
     focus_layers: [sovereignty-decentralization, identity-trust, runtime, agents]
-    notable_recent: "First round of AI for Individual Rights grants announced Nov 2025: eight projects including Maple, Routstr, OpenCode, PayPerQ, CANVAS, Bridge Project."
+    notable_recent: "First round of AI for Individual Rights grants announced November 24, 2025: eight grantees (Maple AI, Routstr, The Bridge Project, PlebDevs, OpenCode, Sovereign Engineering, CANVAS, Citizen Power Initiatives for China)."
 
   - slug: opensats
     name: OpenSats
