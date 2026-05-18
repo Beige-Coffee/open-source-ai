@@ -22,7 +22,8 @@
     "audit:snapshot:stale": "node audit/snapshot/snapshot.mjs --stale",
     "audit:verify": "node audit/verify/verify_entailment.mjs",
     "audit:verify:all": "node audit/verify/verify_entailment.mjs --all",
-    "audit:verify:new": "node audit/verify/verify_entailment.mjs --since-last-extract"
+    "audit:verify:new": "node audit/verify/verify_entailment.mjs --since-last-extract",
+    "audit:coverage": "node audit/completeness/check_coverage.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
