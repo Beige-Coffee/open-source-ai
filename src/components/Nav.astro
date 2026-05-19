@@ -49,12 +49,166 @@ const items: NavItem[] = [
         })
       }
     </nav>
-    <a
-      href="/rss/news.xml"
-      class="text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] no-underline"
-      title="Subscribe via RSS"
-    >
-      RSS
-    </a>
+    <div class="flex items-center gap-4">
+      <a
+        href="/rss/news.xml"
+        class="text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] no-underline"
+        title="Subscribe via RSS"
+      >
+        RSS
+      </a>
+      {/* Profile menu placeholder. Populated client-side by the script
+          below once we know whether the visitor has a Supabase session,
+          since most nav-bearing pages are prerendered and don't have
+          access to Astro.locals.user at SSR time. */}
+      <div id="profile-menu" class="hidden relative">
+        <button
+          id="profile-menu-trigger"
+          type="button"
+          class="profile-icon"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-label="Account menu"
+        >
+          <span id="profile-initial">·</span>
+        </button>
+        <div
+          id="profile-menu-panel"
+          role="menu"
+          aria-hidden="true"
+          class="profile-panel"
+        >
+          <div class="profile-panel-head">
+            <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+              Signed in
+            </span>
+            <span id="profile-menu-identity" class="block text-sm text-[var(--color-text)] truncate"></span>
+          </div>
+          <a href="/learn/profile" role="menuitem">Course progress</a>
+          <a href="/learn/profile/notes" role="menuitem">Personal Notes</a>
+          <a href="/settings" role="menuitem">API keys &amp; settings</a>
+          <form method="POST" action="/api/auth/logout" role="none" class="logout-form">
+            <button type="submit" role="menuitem">Log out</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
+
+<script>
+  // Profile menu hydration: ask the browser Supabase client whether
+  // there's an active session and, if so, show the avatar trigger and
+  // wire up open/close + outside-click. Lives here (not in BaseLayout's
+  // inline script) so the icon is always in the same DOM position as
+  // the rest of the nav.
+  import { browserSupabase } from "../lib/course/supabase";
+  import { displayIdentity } from "../lib/course/identity";
+
+  (async () => {
+    const root = document.getElementById("profile-menu");
+    const trigger = document.getElementById("profile-menu-trigger") as HTMLButtonElement | null;
+    const panel = document.getElementById("profile-menu-panel");
+    const initial = document.getElementById("profile-initial");
+    const identityEl = document.getElementById("profile-menu-identity");
+    if (!root || !trigger || !panel || !initial || !identityEl) return;
+
+    const supabase = browserSupabase();
+    if (!supabase) return;
+    const { data } = await supabase.auth.getSession();
+    const email = data.session?.user?.email ?? null;
+    if (!email) return;
+
+    const identity = displayIdentity(email);
+    identityEl.textContent = identity;
+    initial.textContent = identity.charAt(0).toUpperCase() || "·";
+    root.classList.remove("hidden");
+
+    const setOpen = (open: boolean) => {
+      trigger.setAttribute("aria-expanded", String(open));
+      panel.setAttribute("aria-hidden", String(!open));
+      root.classList.toggle("open", open);
+    };
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(trigger.getAttribute("aria-expanded") !== "true");
+    });
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setOpen(false);
+    });
+  })();
+</script>
+
+<style>
+  .profile-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+  }
+  .profile-icon:hover {
+    background: var(--color-surface-warm);
+    border-color: var(--color-text-muted);
+  }
+  .profile-panel {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 220px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    padding: 6px;
+    z-index: 30;
+  }
+  #profile-menu.open .profile-panel {
+    display: block;
+  }
+  .profile-panel-head {
+    padding: 8px 10px 10px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 4px;
+  }
+  .profile-panel a,
+  .profile-panel button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 0;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .profile-panel a:hover,
+  .profile-panel button:hover {
+    background: var(--color-surface-warm);
+    color: var(--color-text);
+  }
+  .logout-form {
+    margin: 0;
+    border-top: 1px solid var(--color-border);
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+</style>
