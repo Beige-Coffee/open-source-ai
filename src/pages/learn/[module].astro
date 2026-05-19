@@ -226,7 +226,12 @@ const prev = prevModule(moduleSlug);
          Synthesize. The right column carries the phase-specific chat or
          writing surface. -->
     <div class="grid gap-6 md:grid-cols-[3fr_2fr]">
-      <div class="prose-course min-h-[60vh]">
+      {/* Left column min-height matches the chat's sticky height on
+          desktop, so a short Read section doesn't leave the right
+          column visually dangling far below it. Mobile keeps its
+          smaller 60vh min so the chat below doesn't get pushed
+          off-screen. */}
+      <div class="prose-course min-h-[60vh] md:min-h-[calc(100vh-6rem)]">
         {
           layerEntry && LayerContent && (
             <Fragment>

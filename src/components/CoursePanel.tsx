@@ -417,6 +417,19 @@ export default function CoursePanel({
             armStallTimer();
             const label = humanizeTool(event.name, event.input);
             if (event.kind === "start") {
+              // If the agent just emitted text before this tool call,
+              // close it off with a paragraph break so the next text
+              // block doesn't run on into the previous sentence. The
+              // stream concatenates pre-tool and post-tool text deltas
+              // back-to-back, which produces "clearly.It's not quite"
+              // without this nudge.
+              if (
+                accumulated.length > 0 &&
+                !/\n\n\s*$/.test(accumulated)
+              ) {
+                accumulated = accumulated.replace(/\s*$/, "") + "\n\n";
+                setStreamingText(accumulated);
+              }
               setToolStatus(label);
               setToolTrace((prev) => [
                 ...prev,
