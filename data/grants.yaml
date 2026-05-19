@@ -1,1000 +1,1070 @@
-# Recently funded grants in open-source AI, with layer attribution.
-#
-# Each entry: funder slug (must exist in funders.yaml), recipient,
-# date (YYYY-MM), amount (USD-equivalent), one or more layers, source
-# URL, and notes. Rendered at /grants in the "Recently funded" feed
-# and aggregated into the per-layer rollup.
-#
-# Editing this file: append entries as they happen. The weekly grants-watch
-# routine surfaces candidates to data/inbox/grants-needs-review.jsonl for
-# human review before they land here.
-
 grants:
-  - title: "Open Multimodal AI Infrastructure (OMAI) partnership"
+  - title: Open Multimodal AI Infrastructure (OMAI) partnership
     kind: project
     funder: nsf
-    recipient: "Allen Institute for AI"
-    date: "2025-08"
+    recipient: Allen Institute for AI
+    date: 2025-08
     amount_usd: 152000000
-    amount_label: "$152M (NSF $75M + NVIDIA $77M)"
-    layers: [weights, data, compute]
+    amount_label: $152M (NSF $75M + NVIDIA $77M)
+    layers:
+      - weights
+      - data
+      - compute
     region: US
-    url: "https://allenai.org/blog/nsf-nvidia"
-    description: "First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage."
-
-  - title: "Technical AI Safety RFP"
+    url: https://allenai.org/blog/nsf-nvidia
+    description: First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage.
+  - title: Technical AI Safety RFP
     kind: program
     funder: open-philanthropy
-    recipient: "Multiple grantees"
-    date: "2025-04"
+    recipient: Multiple grantees
+    date: 2025-04
     amount_usd: 40000000
-    amount_label: "$40M+"
-    layers: [safety-guardrails, evaluation]
+    amount_label: $40M+
+    layers:
+      - safety-guardrails
+      - evaluation
     region: Global
-    url: "https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/"
-    description: "Closed April 15, 2025. Distributed across 21 technical safety areas."
-
-  - title: "FAR.AI / FAR.Futures field-building grant"
+    url: https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/
+    description: Closed April 15, 2025. Distributed across 21 technical safety areas.
+    sources:
+      - title: coefficientgiving.org (audit-verified)
+        url: https://coefficientgiving.org/request-for-proposals-technical-ai-safety-research
+      - title: forum.effectivealtruism.org (audit-verified)
+        url: https://forum.effectivealtruism.org/posts/XtgDaunRKtCPzyCWg/open-philanthropy-technical-ai-safety-rfp-usd40m-available
+  - title: FAR.AI / FAR.Futures field-building grant
     kind: project
     funder: open-philanthropy
-    recipient: "FAR.AI"
-    date: "2025-04"
+    recipient: FAR.AI
+    date: 2025-04
     amount_usd: 6650000
-    amount_label: "$6.65M over 2 years"
-    layers: [safety-guardrails]
+    amount_label: $6.65M over 2 years
+    layers:
+      - safety-guardrails
     region: US
-    url: "https://www.openphilanthropy.org/"
-    description: "Field-building grant for AI safety research community."
-
-  - title: "Alignment Project cohort"
+    url: https://www.openphilanthropy.org/
+    description: Field-building grant for AI safety research community.
+    sources:
+      - title: openphilanthropy.org (audit-verified)
+        url: https://www.openphilanthropy.org/grants/far-ai-ai-field-building-2025/
+  - title: Alignment Project cohort
     kind: program
     funder: aisi-alignment-project
-    recipient: "60+ projects (UK)"
-    date: "2025"
+    recipient: 60+ projects (UK)
+    date: '2025'
     amount_usd: 35000000
-    amount_label: "£27M (~$35M)"
-    layers: [safety-guardrails, evaluation]
+    amount_label: £27M (~$35M)
+    layers:
+      - safety-guardrails
+      - evaluation
     region: UK
-    url: "https://alignmentproject.aisi.gov.uk/"
-    description: "60+ alignment projects funded; individual grants up to £1M."
-
-  - title: "AI2050 Fellows cohort"
+    url: https://alignmentproject.aisi.gov.uk/
+    description: 60+ alignment projects funded; individual grants up to £1M.
+  - title: AI2050 Fellows cohort
     kind: program
     funder: schmidt-sciences
-    recipient: "Multiple researchers"
-    date: "2025"
+    recipient: Multiple researchers
+    date: '2025'
     amount_usd: 18000000
-    amount_label: "$18M cohort"
-    layers: [safety-guardrails, evaluation, governance]
+    amount_label: $18M cohort
+    layers:
+      - safety-guardrails
+      - evaluation
+      - governance
     region: Global
-    url: "https://www.schmidtsciences.org/2025-ai2050-fellows-announcement/"
-    description: "Annual AI2050 fellowships program."
-
-  - title: "AI Safety Science program"
+    url: https://www.schmidtsciences.org/2025-ai2050-fellows-announcement/
+    description: Annual AI2050 fellowships program.
+  - title: AI Safety Science program
     kind: program
     funder: schmidt-sciences
-    recipient: "27 projects"
-    date: "2025-02"
+    recipient: 27 projects
+    date: 2025-02
     amount_usd: 10000000
-    amount_label: "$10M / 27 projects"
-    layers: [safety-guardrails]
+    amount_label: $10M / 27 projects
+    layers:
+      - safety-guardrails
     region: Global
-    url: "https://www.schmidtsciences.org/trustworthy-ai/"
-    description: "Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project."
-
-  - title: "AI Safety Fund Dec 2025 round"
+    url: https://www.schmidtsciences.org/trustworthy-ai/
+    description: Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project.
+    sources:
+      - title: schmidtsciences.org (audit-verified)
+        url: https://www.schmidtsciences.org/new-10-million-ai-safety-science-program-launched-for-foundational-research/
+      - title: schmidtsciences.org (audit-verified)
+        url: https://www.schmidtsciences.org/safetyscience/
+  - title: AI Safety Fund Dec 2025 round
     kind: program
     funder: frontier-model-forum-aisf
-    recipient: "11 grantees including Apollo Research, Caltech BioSentinel, Institute for Decentralized AI, Faculty AI"
-    date: "2025-12"
+    recipient: 11 grantees including Apollo Research, Caltech BioSentinel, Institute for Decentralized AI, Faculty AI
+    date: 2025-12
     amount_usd: 5000000
-    amount_label: ">$5M / 11 grantees"
-    layers: [safety-guardrails, agents]
+    amount_label: '>$5M / 11 grantees'
+    layers:
+      - safety-guardrails
+      - agents
     region: Global
-    url: "https://www.frontiermodelforum.org/updates/announcement-of-new-ai-safety-fund-grantees/"
-    description: "Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming."
-
-  - title: "Democracy x AI Cohort 2026"
+    url: https://www.frontiermodelforum.org/updates/announcement-of-new-ai-safety-fund-grantees/
+    description: Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming.
+  - title: Democracy x AI Cohort 2026
     kind: program
     funder: mozilla
-    recipient: "10 teams"
-    date: "2026-02"
+    recipient: 10 teams
+    date: 2026-02
     amount_usd: 1250000
-    amount_label: "$1M / 10 teams + $250K Sustain Track"
-    layers: [governance, agents, sovereignty-decentralization]
+    amount_label: $1M / 10 teams + $250K Sustain Track
+    layers:
+      - governance
+      - agents
+      - sovereignty-decentralization
     region: Global
-    url: "https://www.mozillafoundation.org/en/what-we-do/grantmaking/incubator/democracy-ai-cohort/"
-    description: "10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure."
-
-  - title: "NGI Zero Commons Fund April 2026 round"
+    url: https://www.mozillafoundation.org/en/what-we-do/grantmaking/incubator/democracy-ai-cohort/
+    description: 10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure.
+  - title: NGI Zero Commons Fund April 2026 round
     kind: program
     funder: nlnet
-    recipient: "57 projects"
-    date: "2026-04"
+    recipient: 57 projects
+    date: 2026-04
     amount_usd: 1500000
-    amount_label: "€1.4M (~$1.5M) across 57 projects"
-    layers: [protocols, identity-trust, governance]
+    amount_label: €1.4M (~$1.5M) across 57 projects
+    layers:
+      - protocols
+      - identity-trust
+      - governance
     region: EU
-    url: "https://nlnet.nl/news/2026/20260409-announce-commons-fund.html"
-    description: "Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware."
-
-  - title: "Claude for Open Source program"
+    url: https://nlnet.nl/news/2026/20260409-announce-commons-fund.html
+    description: Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware.
+  - title: Claude for Open Source program
     kind: program
     funder: anthropic
-    recipient: "10,000+ OSS maintainers"
-    date: "2026-02"
-    amount_label: "Free Claude Max for eligible OSS maintainers (compute credits not cash)"
-    layers: [runtime, agents]
+    recipient: 10,000+ OSS maintainers
+    date: 2026-02
+    amount_label: Free Claude Max for eligible OSS maintainers (compute credits not cash)
+    layers:
+      - runtime
+      - agents
     region: Global
-    url: "https://claude.com/contact-sales/claude-for-oss"
-    description: "Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026."
-
-  - title: "Anthropic Fellows May 2026 cohort"
+    url: https://claude.com/contact-sales/claude-for-oss
+    description: 'Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026.'
+    sources:
+      - title: aitoolsclub.com (audit-verified)
+        url: https://aitoolsclub.com/anthropic-launches-claude-for-open-source-program-free-claude-max-for-6-months/
+      - title: abhs.in (audit-verified)
+        url: https://www.abhs.in/blog/anthropic-claude-for-open-source-free-max-20x-how-to-apply-2026
+  - title: Anthropic Fellows May 2026 cohort
     kind: program
     funder: anthropic
-    recipient: "Safety researchers"
-    date: "2026-05"
-    amount_label: "$3,850/week + ~$15K/month compute, 4 months"
-    layers: [safety-guardrails]
+    recipient: Safety researchers
+    date: 2026-05
+    amount_label: $3,850/week + ~$15K/month compute, 4 months
+    layers:
+      - safety-guardrails
     region: Global
-    url: "https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/"
-    description: "Compute-heavy fellowship program for alignment research."
-
-  - title: "OLMo 3 / Molmo 2 release line"
+    url: https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/
+    description: Compute-heavy fellowship program for alignment research.
+  - title: OLMo 3 / Molmo 2 release line
     kind: project
     funder: ai2
-    recipient: "AI2 internal teams"
-    date: "2025-11"
-    amount_label: "Internal Ai2 funding"
-    layers: [weights, data]
+    recipient: AI2 internal teams
+    date: 2025-11
+    amount_label: Internal Ai2 funding
+    layers:
+      - weights
+      - data
     region: US
-    url: "https://allenai.org/blog"
-    description: "OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage."
-
-  - title: "Common Pile v0.1"
+    url: https://allenai.org/blog
+    description: OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage.
+  - title: Common Pile v0.1
     kind: project
     funder: ai2
-    recipient: "EleutherAI"
-    date: "2025-06"
-    amount_label: "Compute + collaboration"
-    layers: [data]
+    recipient: EleutherAI
+    date: 2025-06
+    amount_label: Compute + collaboration
+    layers:
+      - data
     region: US
-    url: "https://www.eleuther.ai/research"
-    description: "License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma."
-
-  - title: "OpenEuroLLM consortium kickoff"
+    url: https://www.eleuther.ai/research
+    description: License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma.
+    sources:
+      - title: blog.eleuther.ai (audit-verified)
+        url: https://blog.eleuther.ai/common-pile/
+      - title: techcrunch.com (audit-verified)
+        url: https://techcrunch.com/2025/06/06/eleutherai-releases-massive-ai-training-dataset-of-licensed-and-open-domain-text/
+  - title: OpenEuroLLM consortium kickoff
     kind: project
     funder: eu-horizon
-    recipient: "Multi-partner EU consortium"
-    date: "2025-Q4"
+    recipient: Multi-partner EU consortium
+    date: 2025-Q4
     amount_usd: 60000000
-    amount_label: "€55M+ (~$60M) for OpenEuroLLM"
-    layers: [weights, data]
+    amount_label: €55M+ (~$60M) for OpenEuroLLM
+    layers:
+      - weights
+      - data
     region: EU
-    url: "https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies"
-    description: "Open multilingual European LLM consortium funded under Horizon Europe."
-
-  - title: "Mistral Compute / ASML / Ministry of Armed Forces"
-    kind: project
-    funder: eu-horizon
-    recipient: "Mistral AI"
-    date: "2026"
-    amount_label: "Compute partnership, scale undisclosed"
-    layers: [compute, weights]
-    region: EU
-    url: "https://mistral.ai/news"
-    description: "European sovereign-compute partnership with strategic-industry implications. Specifics evolving."
-
-  - title: "AISI Inspect framework"
+    url: https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies
+    description: Open multilingual European LLM consortium funded under Horizon Europe.
+    sources:
+      - title: openeurollm.eu (audit-verified)
+        url: https://openeurollm.eu/launch-press-release
+  - title: AISI Inspect framework
     kind: project
     funder: aisi-alignment-project
-    recipient: "Open release"
-    date: "2025"
-    amount_label: "Internal funding; open release"
-    layers: [safety-guardrails, evaluation]
+    recipient: Open release
+    date: '2025'
+    amount_label: Internal funding; open release
+    layers:
+      - safety-guardrails
+      - evaluation
     region: UK
-    url: "https://www.aisi.gov.uk/work"
-    description: "Open-sourced evaluation harness from UK AISI; available for community use."
-
-  - title: "Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance"
+    url: https://www.aisi.gov.uk/work
+    description: Open-sourced evaluation harness from UK AISI; available for community use.
+  - title: 'Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance'
     kind: program
     funder: sovereign-tech-fund
-    recipient: "Foundational open-source maintainers"
-    date: "2024-2026"
+    recipient: Foundational open-source maintainers
+    date: 2024-2026
     amount_usd: 24900000
-    amount_label: "€23M+ (~$24.9M) across 60 technologies in 2 years"
-    layers: [runtime, governance]
+    amount_label: €23M+ (~$24.9M) across 60 technologies in 2 years
+    layers:
+      - runtime
+      - governance
     region: EU
-    url: "https://www.sovereigntechfund.de/"
-    description: "Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools."
-
-  - title: "MCP donation to Linux Foundation AAIF"
+    url: https://www.sovereigntechfund.de/
+    description: Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools.
+    sources:
+      - title: phoronix.com (audit-verified)
+        url: https://www.phoronix.com/news/STF-Two-Years-24.9M-USD
+      - title: sovereign.tech (audit-verified)
+        url: https://www.sovereign.tech/news/our-first-year
+  - title: MCP donation to Linux Foundation AAIF
     kind: project
     funder: linux-foundation-aaif
-    recipient: "Model Context Protocol project"
-    date: "2025-12"
-    amount_label: "In-kind / governance handoff"
-    layers: [protocols]
+    recipient: Model Context Protocol project
+    date: 2025-12
+    amount_label: In-kind / governance handoff
+    layers:
+      - protocols
     region: Global
-    url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
-    description: "Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and AGENTS.md (OpenAI). Industry-consortium governance model."
-
-  # ============================================================
-  # HRF: AI for Individual Rights program (2025-11-24 announcement)
-  # ============================================================
-
-  - title: "Maple AI"
+    url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
+    description: Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and AGENTS.md (OpenAI). Industry-consortium governance model.
+  - title: Maple AI
     kind: project
     funder: hrf
-    recipient: "OpenSecret"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [runtime, identity-trust, agents]
+    recipient: OpenSecret
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - runtime
+      - identity-trust
+      - agents
     region: US
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Open-source, end-to-end encrypted AI assistant built by OpenSecret using secure enclaves and confidential computing. Activists in authoritarian environments can use frontier LLMs without their queries being scanned, stored, or handed to governments. HRF support funds capability improvements and new features for activist research workflows."
-
-  - title: "Routstr"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Open-source, end-to-end encrypted AI assistant built by OpenSecret using secure enclaves and confidential computing. Activists in authoritarian environments can use frontier LLMs without their queries being scanned, stored, or handed to governments. HRF support funds capability improvements and new features for activist research workflows.
+    sources:
+      - title: hrf.org (audit-verified)
+        url: https://hrf.org/program/ai-for-individual-rights/
+  - title: Routstr
     kind: project
     funder: hrf
-    recipient: "Sovereign Engineering / Routstr team"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [protocols, sovereignty-decentralization, runtime]
+    recipient: Sovereign Engineering / Routstr team
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - protocols
+      - sovereignty-decentralization
+      - runtime
     region: Global
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "LLM routing marketplace built on the Nostr decentralized communications protocol. Users connect pseudonymously to buy and sell access to each other's AI accounts in an uncensorable peer-to-peer marketplace, giving activists inference even when governments or corporate providers block them."
-
-  - title: "OpenCode"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: LLM routing marketplace built on the Nostr decentralized communications protocol. Users connect pseudonymously to buy and sell access to each other's AI accounts in an uncensorable peer-to-peer marketplace, giving activists inference even when governments or corporate providers block them.
+    sources:
+      - title: stacker.news (audit-verified)
+        url: https://stacker.news/items/473870
+  - title: OpenCode
     kind: project
     funder: hrf
-    recipient: "OpenCode"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [agents, runtime, sovereignty-decentralization]
+    recipient: OpenCode
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - runtime
+      - sovereignty-decentralization
     region: Global
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable for civil-society teams under authoritarian rule."
-
-  - title: "PlebDevs AI Development Course"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable for civil-society teams under authoritarian rule.
+  - title: PlebDevs AI Development Course
     kind: project
     funder: hrf
-    recipient: "PlebDevs"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [agents, governance]
+    recipient: PlebDevs
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - governance
     region: Global
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Developer education platform focused on Bitcoin and open-source technology launching an AI development course for beginners building open-source AI tools in repressive environments."
-
-  - title: "Sovereign Engineering Freedom Tech AI Cohorts"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Developer education platform focused on Bitcoin and open-source technology launching an AI development course for beginners building open-source AI tools in repressive environments.
+  - title: Sovereign Engineering Freedom Tech AI Cohorts
     kind: project
     funder: hrf
-    recipient: "Sovereign Engineering"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [agents, sovereignty-decentralization]
+    recipient: Sovereign Engineering
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - sovereignty-decentralization
     region: Global
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Brings builders together in a physical space to create freedom-enhancing tools on open networks like Bitcoin and Nostr. Over two cohorts, participants explore how AI can be integrated into censorship-resistant systems."
-
-  - title: "Citizen Power Initiatives for China AI Research"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Brings builders together in a physical space to create freedom-enhancing tools on open networks like Bitcoin and Nostr. Over two cohorts, participants explore how AI can be integrated into censorship-resistant systems.
+  - title: Citizen Power Initiatives for China AI Research
     kind: project
     funder: hrf
-    recipient: "Citizen Power Initiatives for China"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [governance, evaluation]
+    recipient: Citizen Power Initiatives for China
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - governance
+      - evaluation
     region: Asia
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Research examining how the Chinese regime uses AI to bolster its digital dictatorship and exports these tools to other regimes, plus identifying open-source AI tools human rights defenders can use to resist digital repression."
-
-  - title: "CANVAS Global Education for Nonviolent Engagement (GENE)"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Research examining how the Chinese regime uses AI to bolster its digital dictatorship and exports these tools to other regimes, plus identifying open-source AI tools human rights defenders can use to resist digital repression.
+  - title: CANVAS Global Education for Nonviolent Engagement (GENE)
     kind: project
     funder: hrf
-    recipient: "CANVAS"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [agents, retrieval-memory]
+    recipient: CANVAS
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - retrieval-memory
     region: EU
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "AI-powered tool trained on decades of frontline nonviolent organizing experience. Helps activists plan campaigns, coordinate action, and respond in moments of crisis with strategy guidance grounded in CANVAS's documented case archive."
-
-  - title: "The Bridge Project"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: AI-powered tool trained on decades of frontline nonviolent organizing experience. Helps activists plan campaigns, coordinate action, and respond in moments of crisis with strategy guidance grounded in CANVAS's documented case archive.
+  - title: The Bridge Project
     kind: project
     funder: hrf
-    recipient: "The Bridge Project"
-    date: "2025-11-24"
-    amount_label: "Undisclosed"
-    layers: [agents, governance]
+    recipient: The Bridge Project
+    date: '2025-11-24'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - governance
     region: US
-    url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-    description: "Provides hands-on consultation to activists in HRF's network, helping them refine prototypes into deployable applications. Acts as a bridge between human-rights defenders and the technical talent needed to launch tools in production."
-
-  - title: "Stringer Safety"
+    url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+    description: Provides hands-on consultation to activists in HRF's network, helping them refine prototypes into deployable applications. Acts as a bridge between human-rights defenders and the technical talent needed to launch tools in production.
+  - title: Stringer Safety
     kind: project
     funder: hrf
-    recipient: "Anjan Sundaram et al. (AI Hack for Freedom)"
-    date: "2026-01-18"
-    amount_label: "Hackathon prize"
-    layers: [agents, identity-trust]
+    recipient: Anjan Sundaram et al. (AI Hack for Freedom)
+    date: '2026-01-18'
+    amount_label: Hackathon prize
+    layers:
+      - agents
+      - identity-trust
     region: Global
-    url: "https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/"
-    description: "Safety app for journalists in high-risk environments. Reporters maintain a trusted contact network with shared location and status; a one-click SOS triggers response recommendations using the encrypted Maple AI assistant."
-
-  - title: "Pathos"
+    url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
+    description: Safety app for journalists in high-risk environments. Reporters maintain a trusted contact network with shared location and status; a one-click SOS triggers response recommendations using the encrypted Maple AI assistant.
+  - title: Pathos
     kind: project
     funder: hrf
-    recipient: "Leopoldo López and team (AI Hack for Freedom)"
-    date: "2026-01-18"
-    amount_label: "Hackathon prize"
-    layers: [protocols, sovereignty-decentralization]
+    recipient: Leopoldo López and team (AI Hack for Freedom)
+    date: '2026-01-18'
+    amount_label: Hackathon prize
+    layers:
+      - protocols
+      - sovereignty-decentralization
     region: Global
-    url: "https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/"
-    description: "Application running on the decentralized Nostr protocol so it cannot be shut down by governments. Built at HRF's first AI Hack for Freedom in Austin, January 2026."
-
-  # ============================================================
-  # Cosmos Institute: inaugural cohort (2024-09)
-  # ============================================================
-
-  - title: "Computational virtue ethics framework"
+    url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
+    description: Application running on the decentralized Nostr protocol so it cannot be shut down by governments. Built at HRF's first AI Hack for Freedom in Austin, January 2026.
+  - title: Computational virtue ethics framework
     kind: project
     funder: cosmos-institute
-    recipient: "Rocco Hu"
-    date: "2024-09-10"
-    amount_label: "$1K-$10K range"
-    layers: [evaluation, governance]
+    recipient: Rocco Hu
+    date: '2024-09-10'
+    amount_label: $1K-$10K range
+    layers:
+      - evaluation
+      - governance
     region: UK
-    url: "https://blog.cosmos-institute.org/p/announcing-cosmos-ventures"
-    description: "Oxford-trained philosopher-computer-scientist developing a computational theory of virtue ethics for AI alignment, building grounded approaches to AI value learning rooted in Aristotelian rather than utilitarian frames."
-
-  - title: "Decentralized AI commons for live arts (The Sphere)"
+    url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+    description: Oxford-trained philosopher-computer-scientist developing a computational theory of virtue ethics for AI alignment, building grounded approaches to AI value learning rooted in Aristotelian rather than utilitarian frames.
+  - title: Decentralized AI commons for live arts (The Sphere)
     kind: project
     funder: cosmos-institute
-    recipient: "Erik Bordeleau"
-    date: "2024-09-10"
-    amount_label: "$1K-$10K range"
-    layers: [sovereignty-decentralization, data]
+    recipient: Erik Bordeleau
+    date: '2024-09-10'
+    amount_label: $1K-$10K range
+    layers:
+      - sovereignty-decentralization
+      - data
     region: EU
-    url: "https://blog.cosmos-institute.org/p/announcing-cosmos-ventures"
-    description: "Researcher building The Sphere, an AI commons for preserving and remixing live performance art. Explores how decentralized governance and AI can sustain non-commercial creative work."
-
-  - title: "Bio-inspired AI swarm simulation platform"
+    url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+    description: Researcher building The Sphere, an AI commons for preserving and remixing live performance art. Explores how decentralized governance and AI can sustain non-commercial creative work.
+  - title: Bio-inspired AI swarm simulation platform
     kind: project
     funder: cosmos-institute
-    recipient: "Alfaxad Eyembe"
-    date: "2024-09-10"
-    amount_label: "$1K-$10K range"
-    layers: [agents, evaluation]
+    recipient: Alfaxad Eyembe
+    date: '2024-09-10'
+    amount_label: $1K-$10K range
+    layers:
+      - agents
+      - evaluation
     region: Global
-    url: "https://blog.cosmos-institute.org/p/announcing-cosmos-ventures"
-    description: "Open simulation platform for studying multi-agent coordination patterns inspired by biological swarms, intended as a substrate for cooperative-AI experiments."
-
-  - title: "AI-driven digital wargaming platform"
+    url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+    description: Open simulation platform for studying multi-agent coordination patterns inspired by biological swarms, intended as a substrate for cooperative-AI experiments.
+  - title: AI-driven digital wargaming platform
     kind: project
     funder: cosmos-institute
-    recipient: "Jake Birdwell"
-    date: "2024-09-10"
-    amount_label: "$1K-$10K range"
-    layers: [agents, evaluation, governance]
+    recipient: Jake Birdwell
+    date: '2024-09-10'
+    amount_label: $1K-$10K range
+    layers:
+      - agents
+      - evaluation
+      - governance
     region: US
-    url: "https://blog.cosmos-institute.org/p/announcing-cosmos-ventures"
-    description: "AI-driven wargaming platform for exploring policy and strategic decisions involving advanced AI, treating wargames as a deliberation tool for human decision-makers."
-
-  - title: "Silicon Valley ideology seminar series"
+    url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+    description: AI-driven wargaming platform for exploring policy and strategic decisions involving advanced AI, treating wargames as a deliberation tool for human decision-makers.
+  - title: Silicon Valley ideology seminar series
     kind: project
     funder: cosmos-institute
-    recipient: "Nadia Asparouhova and Tim Hwang"
-    date: "2024-10-01"
-    amount_label: "$1K-$10K range"
-    layers: [governance]
+    recipient: Nadia Asparouhova and Tim Hwang
+    date: '2024-10-01'
+    amount_label: $1K-$10K range
+    layers:
+      - governance
     region: US
-    url: "https://blog.cosmos-institute.org/p/announcing-cosmos-ventures"
-    description: "Pre-election seminar series convening researchers, journalists, and policymakers to dissect the political ideologies shaping AI development in Silicon Valley. Co-hosted at Sloan Foundation offices."
-
-  # ============================================================
-  # Cosmos x FIRE: Truth-seeking AI grants (2025 cohorts)
-  # ============================================================
-
-  - title: "Metalens"
+    url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+    description: Pre-election seminar series convening researchers, journalists, and policymakers to dissect the political ideologies shaping AI development in Silicon Valley. Co-hosted at Sloan Foundation offices.
+    sources:
+      - title: blog.cosmos-institute.org (audit-verified)
+        url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
+  - title: Metalens
     kind: project
     funder: cosmos-institute
-    recipient: "Johanna Einsiedler"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [evaluation, data, retrieval-memory]
+    recipient: Johanna Einsiedler
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - evaluation
+      - data
+      - retrieval-memory
     region: EU
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "Open-source scientific research platform combining AI summarization with structured human checks, intended to help researchers see beyond hype and identify reliable claims in dense literature."
-
-  - title: "Perplex"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: Open-source scientific research platform combining AI summarization with structured human checks, intended to help researchers see beyond hype and identify reliable claims in dense literature.
+  - title: Perplex
     kind: project
     funder: cosmos-institute
-    recipient: "Steven Molotnikov"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [evaluation, safety-guardrails]
+    recipient: Steven Molotnikov
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - evaluation
+      - safety-guardrails
     region: US
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "Tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference models. Aims to give independent reviewers a way to audit proprietary deployments."
-
-  - title: "Policy Explorer"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: Tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference models. Aims to give independent reviewers a way to audit proprietary deployments.
+  - title: Policy Explorer
     kind: project
     funder: cosmos-institute
-    recipient: "Caleb Maresca"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [agents, governance]
+    recipient: Caleb Maresca
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - agents
+      - governance
     region: US
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "AI tool for analyzing the impacts and assumptions embedded in regulatory and policy proposals, geared toward helping civil-society analysts surface what a rule actually does."
-
-  - title: "Argument Debugger"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: AI tool for analyzing the impacts and assumptions embedded in regulatory and policy proposals, geared toward helping civil-society analysts surface what a rule actually does.
+  - title: Argument Debugger
     kind: project
     funder: cosmos-institute
-    recipient: "Nada Amin"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [evaluation, agents]
+    recipient: Nada Amin
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - evaluation
+      - agents
     region: US
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "AI assistant that finds gaps in chains of reasoning and suggests repairs, framed as a tool for better arguments rather than persuasive ones. Built by a Harvard CS faculty member."
-
-  - title: "Remarker"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: AI assistant that finds gaps in chains of reasoning and suggests repairs, framed as a tool for better arguments rather than persuasive ones. Built by a Harvard CS faculty member.
+  - title: Remarker
     kind: project
     funder: cosmos-institute
-    recipient: "Jonas Kgomo"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [evaluation, retrieval-memory]
+    recipient: Jonas Kgomo
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - evaluation
+      - retrieval-memory
     region: Global
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "Open-source Wikipedia-like reference for exploring truth-seeking behavior in LLMs. Curates examples and methods so other researchers can build on a shared corpus."
-
-  - title: "Reward Hacking Benchmark"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: Open-source Wikipedia-like reference for exploring truth-seeking behavior in LLMs. Curates examples and methods so other researchers can build on a shared corpus.
+  - title: Reward Hacking Benchmark
     kind: project
     funder: cosmos-institute
-    recipient: "Kunvar Thaman"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [evaluation, safety-guardrails]
+    recipient: Kunvar Thaman
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - evaluation
+      - safety-guardrails
     region: Global
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "Open benchmark that systematically tests LLM agents for reward hacking and deceptive behavior, providing a public-good evaluation rather than relying on lab-internal red teams."
-
-  - title: "Socratic Mirror"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: Open benchmark that systematically tests LLM agents for reward hacking and deceptive behavior, providing a public-good evaluation rather than relying on lab-internal red teams.
+  - title: Socratic Mirror
     kind: project
     funder: cosmos-institute
-    recipient: "Zhongying Qiao"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [agents, evaluation]
+    recipient: Zhongying Qiao
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - agents
+      - evaluation
     region: Global
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "AI thought partner designed to interrogate the user rather than answer them, modelling Socratic questioning to push deeper thinking instead of optimizing for satisfaction."
-
-  - title: "Socratica"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: AI thought partner designed to interrogate the user rather than answer them, modelling Socratic questioning to push deeper thinking instead of optimizing for satisfaction.
+  - title: Socratica
     kind: project
     funder: cosmos-institute
-    recipient: "Jasmine Cui"
-    date: "2025-08-15"
-    amount_label: "$1K-$10K plus compute"
-    layers: [agents, retrieval-memory]
+    recipient: Jasmine Cui
+    date: '2025-08-15'
+    amount_label: $1K-$10K plus compute
+    layers:
+      - agents
+      - retrieval-memory
     region: US
-    url: "https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai"
-    description: "AI librarian that conducts research and helps users formulate better questions, treating question-quality as a first-class output rather than a means to an answer."
-
-  # ============================================================
-  # Cosmos Institute: second cohort (2025-08) and Decentralized AI launch
-  # ============================================================
-
-  - title: "Praxis-based AI alignment values"
+    url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+    description: AI librarian that conducts research and helps users formulate better questions, treating question-quality as a first-class output rather than a means to an answer.
+  - title: Praxis-based AI alignment values
     kind: project
     funder: cosmos-institute
-    recipient: "Peli Grietzer"
-    date: "2024-12-17"
-    amount_label: "$1K-$10K range"
-    layers: [evaluation, governance]
+    recipient: Peli Grietzer
+    date: '2024-12-17'
+    amount_label: $1K-$10K range
+    layers:
+      - evaluation
+      - governance
     region: US
-    url: "https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos"
-    description: "Harvard-trained researcher bridging philosophy, AI, and literary humanities. Defines praxis-based values inspired by virtue ethics to guide AI alignment beyond rule-based approaches."
-
-  - title: "Variable-binding interpretability infrastructure"
+    url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
+    description: Harvard-trained researcher bridging philosophy, AI, and literary humanities. Defines praxis-based values inspired by virtue ethics to guide AI alignment beyond rule-based approaches.
+  - title: Variable-binding interpretability infrastructure
     kind: project
     funder: cosmos-institute
-    recipient: "Raphaël Millière"
-    date: "2024-12-17"
-    amount_label: "$1K-$10K range"
-    layers: [evaluation, weights]
+    recipient: Raphaël Millière
+    date: '2024-12-17'
+    amount_label: $1K-$10K range
+    layers:
+      - evaluation
+      - weights
     region: US
-    url: "https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos"
-    description: "Macquarie University philosopher of mind developing open infrastructure for AI interpretability research, focused on how neural networks bind variables, a long-standing question in cognitive science."
-
-  - title: "Public AI digital library"
+    url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
+    description: Macquarie University philosopher of mind developing open infrastructure for AI interpretability research, focused on how neural networks bind variables, a long-standing question in cognitive science.
+    sources:
+      - title: philpeople.org (audit-verified)
+        url: https://philpeople.org/profiles/raphael-milliere-2
+  - title: Public AI digital library
     kind: project
     funder: cosmos-institute
-    recipient: "Sam Klein (Public AI Network)"
-    date: "2024-12-17"
-    amount_label: "$1K-$10K range"
-    layers: [data, sovereignty-decentralization]
+    recipient: Sam Klein (Public AI Network)
+    date: '2024-12-17'
+    amount_label: $1K-$10K range
+    layers:
+      - data
+      - sovereignty-decentralization
     region: US
-    url: "https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos"
-    description: "Cofounder of Public AI Network and longtime Wikipedian mapping how a public-good global digital library powered by generative AI could be built and governed."
-
-  - title: "Open agent economy infrastructure"
+    url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
+    description: Cofounder of Public AI Network and longtime Wikipedian mapping how a public-good global digital library powered by generative AI could be built and governed.
+  - title: Open agent economy infrastructure
     kind: project
     funder: cosmos-institute
-    recipient: "Seth Lazar"
-    date: "2024-12-17"
-    amount_label: "$1K-$10K range"
-    layers: [agents, governance, sovereignty-decentralization]
+    recipient: Seth Lazar
+    date: '2024-12-17'
+    amount_label: $1K-$10K range
+    layers:
+      - agents
+      - governance
+      - sovereignty-decentralization
     region: Global
-    url: "https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos"
-    description: "Australian National University political philosopher developing technical and regulatory groundwork for an open agent economy that resists centralization by the largest agent platform companies."
-
-  - title: "Institute for Decentralized AI launch"
+    url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
+    description: Australian National University political philosopher developing technical and regulatory groundwork for an open agent economy that resists centralization by the largest agent platform companies.
+  - title: Institute for Decentralized AI launch
     kind: project
     funder: cosmos-institute
-    recipient: "Samuele Marro (Cosmos Incubation Fellow)"
-    date: "2025-09-15"
-    amount_label: "5 fully funded research positions"
-    layers: [sovereignty-decentralization, protocols, governance]
+    recipient: Samuele Marro (Cosmos Incubation Fellow)
+    date: '2025-09-15'
+    amount_label: 5 fully funded research positions
+    layers:
+      - sovereignty-decentralization
+      - protocols
+      - governance
     region: UK
-    url: "https://blog.cosmos-institute.org/p/new-decentralized-ai-project-and"
-    description: "New institute combining research and infrastructure to support AI that operates without centralized gatekeepers. Initial cohort of five fully funded positions split between Oxford and Stanford."
-
-  # ============================================================
-  # Block goose grant program (2025 launch)
-  # ============================================================
-
-  - title: "Goose grant program launch"
+    url: https://blog.cosmos-institute.org/p/new-decentralized-ai-project-and
+    description: New institute combining research and infrastructure to support AI that operates without centralized gatekeepers. Initial cohort of five fully funded positions split between Oxford and Stanford.
+  - title: Goose grant program launch
     kind: program
     funder: block-goose
-    recipient: "Multiple external builders"
-    date: "2025-06-01"
-    amount_label: "Up to $100K per grant"
-    layers: [agents, runtime, protocols]
+    recipient: Multiple external builders
+    date: '2025-06-01'
+    amount_label: Up to $100K per grant
+    layers:
+      - agents
+      - runtime
+      - protocols
     region: Global
-    url: "https://block.xyz/inside/introducing-the-goose-grant-program"
-    description: "Launch of grants for external developers building integrations, tooling, and infrastructure on Block's open-source goose agent platform. Goose runs locally, supports any model, and has shipped to thousands of developers via partners like Databricks."
-
-  # ============================================================
-  # OpenSats: AI-adjacent grants (2025)
-  # ============================================================
-
-  - title: "Orchard"
+    url: https://block.xyz/inside/introducing-the-goose-grant-program
+    description: Launch of grants for external developers building integrations, tooling, and infrastructure on Block's open-source goose agent platform. Goose runs locally, supports any model, and has shipped to thousands of developers via partners like Databricks.
+  - title: Orchard
     kind: project
     funder: opensats
-    recipient: "Orchard developers"
-    date: "2025-06-01"
-    amount_label: "Undisclosed"
-    layers: [runtime, sovereignty-decentralization, protocols]
+    recipient: Orchard developers
+    date: '2025-06-01'
+    amount_label: Undisclosed
+    layers:
+      - runtime
+      - sovereignty-decentralization
+      - protocols
     region: Global
-    url: "https://opensats.org/blog/2025-year-in-review"
-    description: "Web application integrating an Ollama-powered local AI interface alongside Lightning Network Daemon, Taproot Assets, and Cashu. Demonstrates how local LLMs can be paired with sovereign-money rails."
-
-  # ============================================================
-  # Mozilla Builders Accelerator (cohort 1, local-AI theme, 2024-09)
-  # ============================================================
-
-  - title: "Ente Photos"
+    url: https://opensats.org/blog/2025-year-in-review
+    description: Web application integrating an Ollama-powered local AI interface alongside Lightning Network Daemon, Taproot Assets, and Cashu. Demonstrates how local LLMs can be paired with sovereign-money rails.
+  - title: Ente Photos
     kind: project
     funder: mozilla
-    recipient: "Ente"
-    date: "2024-09-23"
+    recipient: Ente
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [retrieval-memory, runtime]
+    amount_label: Up to $100K
+    layers:
+      - retrieval-memory
+      - runtime
     region: Asia
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Open-source on-device semantic search and image recognition for private photo storage. Mozilla Builders Accelerator cohort 1 (local AI theme); avoids cloud dependency for personal photo libraries."
-
-  - title: "Transformer Lab"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Open-source on-device semantic search and image recognition for private photo storage. Mozilla Builders Accelerator cohort 1 (local AI theme); avoids cloud dependency for personal photo libraries.
+  - title: Transformer Lab
     kind: project
     funder: mozilla
-    recipient: "Transformer Lab"
-    date: "2024-09-23"
+    recipient: Transformer Lab
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [training, weights, runtime]
+    amount_label: Up to $100K
+    layers:
+      - training
+      - weights
+      - runtime
     region: US
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Cross-platform desktop application for building, training, fine-tuning, evaluating, and exporting local LLMs on Windows, macOS, and Linux. Ships in Mozilla's first Builders Accelerator local-AI cohort."
-
-  - title: "Sartify (Swahili LLM)"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Cross-platform desktop application for building, training, fine-tuning, evaluating, and exporting local LLMs on Windows, macOS, and Linux. Ships in Mozilla's first Builders Accelerator local-AI cohort.
+  - title: Sartify (Swahili LLM)
     kind: project
     funder: mozilla
-    recipient: "Sartify"
-    date: "2024-09-23"
+    recipient: Sartify
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [training, weights, data]
+    amount_label: Up to $100K
+    layers:
+      - training
+      - weights
+      - data
     region: Africa
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Foundation-model and tooling work for Swahili-speaking regions. Creates general and domain-specific AI capabilities for a language poorly served by major commercial models."
-
-  - title: "Ersilia Model Hub"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Foundation-model and tooling work for Swahili-speaking regions. Creates general and domain-specific AI capabilities for a language poorly served by major commercial models.
+  - title: Ersilia Model Hub
     kind: project
     funder: mozilla
-    recipient: "Ersilia"
-    date: "2024-09-23"
+    recipient: Ersilia
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [weights, retrieval-memory]
+    amount_label: Up to $100K
+    layers:
+      - weights
+      - retrieval-memory
     region: Global
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Curated catalog of AI/ML drug-discovery models that operate locally. Targets researchers in low- and middle-income countries who cannot rely on US cloud platforms."
-
-  - title: "Foyle"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Curated catalog of AI/ML drug-discovery models that operate locally. Targets researchers in low- and middle-income countries who cannot rely on US cloud platforms.
+  - title: Foyle
     kind: project
     funder: mozilla
-    recipient: "Foyle"
-    date: "2024-09-23"
+    recipient: Foyle
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [agents, runtime]
+    amount_label: Up to $100K
+    layers:
+      - agents
+      - runtime
     region: US
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "AI copilot for operations and automation work. Uses a notebook format to capture continuous human feedback so the assistant improves on the operator's actual workflows."
-
-  - title: "Theia AI IDE"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: AI copilot for operations and automation work. Uses a notebook format to capture continuous human feedback so the assistant improves on the operator's actual workflows.
+  - title: Theia AI IDE
     kind: project
     funder: mozilla
-    recipient: "Eclipse Foundation / Theia"
-    date: "2024-09-23"
+    recipient: Eclipse Foundation / Theia
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [agents, runtime]
+    amount_label: Up to $100K
+    layers:
+      - agents
+      - runtime
     region: EU
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Extension of the Eclipse Theia editor giving developers a transparent, customizable AI experience with the freedom to choose and self-host language models."
-
-  - title: "Latent Scope"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Extension of the Eclipse Theia editor giving developers a transparent, customizable AI experience with the freedom to choose and self-host language models.
+    sources:
+      - title: builders.mozilla.org (audit-verified)
+        url: https://builders.mozilla.org/the-ai-powered-theia-ide/
+  - title: Latent Scope
     kind: project
     funder: mozilla
-    recipient: "Latent Scope"
-    date: "2024-09-23"
+    recipient: Latent Scope
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [data, evaluation]
+    amount_label: Up to $100K
+    layers:
+      - data
+      - evaluation
     region: US
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Local pipeline and visualization environment for embedding, clustering, and categorizing datasets with LLMs. Operates entirely on the user's machine."
-
-  - title: "Nx (Elixir machine learning)"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Local pipeline and visualization environment for embedding, clustering, and categorizing datasets with LLMs. Operates entirely on the user's machine.
+  - title: Nx (Elixir machine learning)
     kind: project
     funder: mozilla
-    recipient: "Nx project / DockYard"
-    date: "2024-09-23"
+    recipient: Nx project / DockYard
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [training, runtime]
+    amount_label: Up to $100K
+    layers:
+      - training
+      - runtime
     region: US
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Distributed machine-learning framework leveraging Elixir's concurrency and fault-tolerance properties as an alternative to Python-centric stacks."
-
-  - title: "Tölvera"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Distributed machine-learning framework leveraging Elixir's concurrency and fault-tolerance properties as an alternative to Python-centric stacks.
+    sources:
+      - title: dockyard.com (audit-verified)
+        url: https://dockyard.com/blog/2024/09/24/nx-selected-for-mozilla-inaugural-builders-accelerator-cohort-promoting-open-source-ai-solutions
+  - title: Tölvera
     kind: project
     funder: mozilla
-    recipient: "Tölvera"
-    date: "2024-09-23"
+    recipient: Tölvera
+    date: '2024-09-23'
     amount_usd: 100000
-    amount_label: "Up to $100K"
-    layers: [evaluation, runtime]
+    amount_label: Up to $100K
+    layers:
+      - evaluation
+      - runtime
     region: EU
-    url: "https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/"
-    description: "Creative tool bridging art and science with self-organizing simulations that explore alternative models of intelligence. Produced by an artist-researcher in Iceland."
-
-  # ============================================================
-  # FLI: AI safety and multistakeholder programs
-  # ============================================================
-
-  - title: "Multistakeholder Engagement for Safe and Prosperous AI program"
+    url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+    description: Creative tool bridging art and science with self-organizing simulations that explore alternative models of intelligence. Produced by an artist-researcher in Iceland.
+    sources:
+      - title: builders.mozilla.org (audit-verified)
+        url: https://builders.mozilla.org/project/tolvera/
+  - title: Multistakeholder Engagement for Safe and Prosperous AI program
     kind: program
     funder: future-of-life-institute
-    recipient: "Multiple grantees (program-level)"
-    date: "2025-06-01"
+    recipient: Multiple grantees (program-level)
+    date: '2025-06-01'
     amount_usd: 5000000
-    amount_label: "$5M total, $100K-$500K per project"
-    layers: [governance, evaluation]
+    amount_label: $5M total, $100K-$500K per project
+    layers:
+      - governance
+      - evaluation
     region: Global
-    url: "https://futureoflife.org/grant-program/multistakeholder-engagement-for-safe-and-prosperous-ai/"
-    description: "FLI grant program for projects that engage, educate, and activate stakeholder groups and the public on AI futures. Letters of intent due February 2025; decisions June 2025."
-
-  - title: "Problem-solving AI grants (16 awards)"
+    url: https://futureoflife.org/grant-program/multistakeholder-engagement-for-safe-and-prosperous-ai/
+    description: FLI grant program for projects that engage, educate, and activate stakeholder groups and the public on AI futures. Letters of intent due February 2025; decisions June 2025.
+  - title: Problem-solving AI grants (16 awards)
     kind: program
     funder: future-of-life-institute
-    recipient: "16 researchers across UN SDG and global governance tracks"
-    date: "2024-12-01"
+    recipient: 16 researchers across UN SDG and global governance tracks
+    date: '2024-12-01'
     amount_usd: 240000
-    amount_label: "$15K each, $240K total"
-    layers: [governance, evaluation]
+    amount_label: $15K each, $240K total
+    layers:
+      - governance
+      - evaluation
     region: Global
-    url: "https://futureoflife.org/press-release/fli-announces-16-grants-for-problem-solving-ai/"
-    description: "Sixteen $15K grants for research on AI applied to UN SDG topics (maternal mortality, climate education, labor, poverty) and on global governance institution design (CERN for AI, Fair Trade AI, Global AGI agency)."
-
-  - title: "AI Safety Index Winter 2025"
+    url: https://futureoflife.org/press-release/fli-announces-16-grants-for-problem-solving-ai/
+    description: Sixteen $15K grants for research on AI applied to UN SDG topics (maternal mortality, climate education, labor, poverty) and on global governance institution design (CERN for AI, Fair Trade AI, Global AGI agency).
+  - title: AI Safety Index Winter 2025
     kind: program
     funder: future-of-life-institute
-    recipient: "FLI internal team (third-party expert panel)"
-    date: "2025-12-01"
-    amount_label: "Internal program"
-    layers: [evaluation, safety-guardrails]
+    recipient: FLI internal team (third-party expert panel)
+    date: '2025-12-01'
+    amount_label: Internal program
+    layers:
+      - evaluation
+      - safety-guardrails
     region: Global
-    url: "https://futureoflife.org/ai-safety-index-winter-2025/"
-    description: "Third installment of FLI's panel-graded AI Safety Index rating frontier labs on risk assessment, governance, current harms, safety frameworks, and existential safety strategy. Panel includes independent academics."
-
-  # ============================================================
-  # Manifund regrants (2024-2025)
-  # ============================================================
-
-  - title: "Scoping Developmental Interpretability (Timaeus first funding)"
+    url: https://futureoflife.org/ai-safety-index-winter-2025/
+    description: Third installment of FLI's panel-graded AI Safety Index rating frontier labs on risk assessment, governance, current harms, safety frameworks, and existential safety strategy. Panel includes independent academics.
+  - title: Scoping Developmental Interpretability (Timaeus first funding)
     kind: project
     funder: manifund
-    recipient: "Jesse Hoogland (Timaeus)"
-    date: "2024-03-01"
-    amount_label: "Undisclosed"
-    layers: [evaluation, weights]
+    recipient: Jesse Hoogland (Timaeus)
+    date: '2024-03-01'
+    amount_label: Undisclosed
+    layers:
+      - evaluation
+      - weights
     region: Global
-    url: "https://manifund.substack.com/p/manifund-2025-regrants"
-    description: "First funding for the Timaeus team's developmental interpretability research program. Manifund regrant accelerated their research by months and seeded what is now an established alignment lab."
-
-  - title: "China and AI deep coverage"
+    url: https://manifund.substack.com/p/manifund-2025-regrants
+    description: First funding for the Timaeus team's developmental interpretability research program. Manifund regrant accelerated their research by months and seeded what is now an established alignment lab.
+  - title: China and AI deep coverage
     kind: project
     funder: manifund
-    recipient: "ChinaTalk (Jordan Schneider)"
-    date: "2024-06-01"
-    amount_label: "Undisclosed"
-    layers: [governance]
+    recipient: ChinaTalk (Jordan Schneider)
+    date: '2024-06-01'
+    amount_label: Undisclosed
+    layers:
+      - governance
     region: US
-    url: "https://manifund.substack.com/p/manifund-2025-regrants"
-    description: "Support for ChinaTalk's coverage of Chinese AI policy and the DeepSeek lab, ahead of the curve on what became major US policy debates."
-
-  - title: "Frontier AI benchmark pilot"
+    url: https://manifund.substack.com/p/manifund-2025-regrants
+    description: Support for ChinaTalk's coverage of Chinese AI policy and the DeepSeek lab, ahead of the curve on what became major US policy debates.
+  - title: Frontier AI benchmark pilot
     kind: project
     funder: manifund
-    recipient: "Epoch AI"
-    date: "2024-09-01"
+    recipient: Epoch AI
+    date: '2024-09-01'
     amount_usd: 200000
-    amount_label: "$200K"
-    layers: [evaluation]
+    amount_label: $200K
+    layers:
+      - evaluation
     region: Global
-    url: "https://manifund.substack.com/p/manifund-2025-regrants"
-    description: "Regrant from Leopold Aschenbrenner supporting Epoch AI's pilot of a new frontier AI benchmark, building on their earlier compute-trends and capability-tracking work."
-
-  # ============================================================
-  # SFF and other big-allocation funders
-  # ============================================================
-
-  - title: "SFF-2025 AI safety allocations"
+    url: https://manifund.substack.com/p/manifund-2025-regrants
+    description: Regrant from Leopold Aschenbrenner supporting Epoch AI's pilot of a new frontier AI benchmark, building on their earlier compute-trends and capability-tracking work.
+  - title: SFF-2025 AI safety allocations
     kind: program
     funder: survival-and-flourishing-fund
-    recipient: "Multiple AI safety and governance organizations"
-    date: "2025-12-01"
+    recipient: Multiple AI safety and governance organizations
+    date: '2025-12-01'
     amount_usd: 29000000
-    amount_label: "~$29M to AI"
-    layers: [safety-guardrails, governance, evaluation]
+    amount_label: ~$29M to AI
+    layers:
+      - safety-guardrails
+      - governance
+      - evaluation
     region: Global
-    url: "https://survivalandflourishing.fund/2025/recommendations"
-    description: "Approximately $29M of SFF's $34.9M 2025 round directed to AI safety and governance work, with smaller allocations to biosecurity, longevity, forecasting, math, and EA infrastructure."
-
-  - title: "Hoffman-Yee 2025 continuation grants"
+    url: https://survivalandflourishing.fund/2025/recommendations
+    description: Approximately $29M of SFF's $34.9M 2025 round directed to AI safety and governance work, with smaller allocations to biosecurity, longevity, forecasting, math, and EA infrastructure.
+    sources:
+      - title: forum.effectivealtruism.org (audit-verified)
+        url: https://forum.effectivealtruism.org/posts/vhw6R5P52qJr6opou/sff-2025-funding-by-cause-area-usd34-million-to-ai-86-bio-7
+  - title: Hoffman-Yee 2025 continuation grants
     kind: program
     funder: stanford-hai
-    recipient: "Five Stanford research teams from 2024 cohort"
-    date: "2025-04-01"
+    recipient: Five Stanford research teams from 2024 cohort
+    date: '2025-04-01'
     amount_usd: 10000000
-    amount_label: "Up to $2M each, $10M total"
-    layers: [training, weights, evaluation]
+    amount_label: Up to $2M each, $10M total
+    layers:
+      - training
+      - weights
+      - evaluation
     region: US
-    url: "https://hai.stanford.edu/news/stanford-research-teams-receive-new-hoffman-yee-grant-funding-for-2025"
-    description: "Five interdisciplinary Stanford teams from the 2024 Hoffman-Yee cohort received up to $2M each to continue their research over two more years. Notable recipient Brian Hie's group continues open biological foundation models with the Evo project."
-
-  - title: "Diverse Intelligences Hubs (4 universities)"
+    url: https://hai.stanford.edu/news/stanford-research-teams-receive-new-hoffman-yee-grant-funding-for-2025
+    description: Five interdisciplinary Stanford teams from the 2024 Hoffman-Yee cohort received up to $2M each to continue their research over two more years. Notable recipient Brian Hie's group continues open biological foundation models with the Evo project.
+  - title: Diverse Intelligences Hubs (4 universities)
     kind: program
     funder: templeton-world
-    recipient: "Princeton, Indiana, Macquarie, St Andrews"
-    date: "2025-09-16"
-    amount_label: "Multi-year hub grants"
-    layers: [evaluation, governance]
+    recipient: Princeton, Indiana, Macquarie, St Andrews
+    date: '2025-09-16'
+    amount_label: Multi-year hub grants
+    layers:
+      - evaluation
+      - governance
     region: Global
-    url: "https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences"
-    description: "Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science. Each hub administers seed funding for early-career researchers and international collaborations."
-
-  - title: "Inaugural Humanity AI grants ($18M total: $8M cohort + $10M open call)"
+    url: https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences
+    description: Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science. Each hub administers seed funding for early-career researchers and international collaborations.
+  - title: 'Inaugural Humanity AI grants ($18M total: $8M cohort + $10M open call)'
     kind: program
     funder: humanity-ai
-    recipient: "9+ inaugural grantee organizations (AI Now Institute, Center for Democracy and Technology, Council on Foreign Relations LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, Student Defense, plus AI Civics)"
-    date: "2026-05-12"
+    recipient: 9+ inaugural grantee organizations (AI Now Institute, Center for Democracy and Technology, Council on Foreign Relations LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, Student Defense, plus AI Civics)
+    date: '2026-05-12'
     amount_usd: 18000000
-    amount_label: "$18M total ($8M cohort grants + $3M AI Civics + $10M open call coming)"
-    layers: [governance, data, evaluation]
+    amount_label: $18M total ($8M cohort grants + $3M AI Civics + $10M open call coming)
+    layers:
+      - governance
+      - data
+      - evaluation
     region: US
-    url: "https://humanityai.ai/humanity-ai-announces-more-than-18-million-in-new-grants-to-shape-ai-for-the-public-good/"
-    description: "First round of pooled grants from the Humanity AI coalition, covering democratic institutions, worker rights, journalism, and education. Named organizations awarded $500K each include AI Now Institute, Center for Democracy and Technology, CFR LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, and Student Defense. Includes $3M for a new AI Civics program led by Data & Society with Digital Public Library of America."
-
-  # ============================================================
-  # Cooperative AI Foundation grants
-  # ============================================================
-
-  - title: "FOCAL lab at Carnegie Mellon"
+    url: https://humanityai.ai/humanity-ai-announces-more-than-18-million-in-new-grants-to-shape-ai-for-the-public-good/
+    description: First round of pooled grants from the Humanity AI coalition, covering democratic institutions, worker rights, journalism, and education. Named organizations awarded $500K each include AI Now Institute, Center for Democracy and Technology, CFR LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, and Student Defense. Includes $3M for a new AI Civics program led by Data & Society with Digital Public Library of America.
+  - title: FOCAL lab at Carnegie Mellon
     kind: project
     funder: cooperative-ai-foundation
-    recipient: "Vincent Conitzer (Carnegie Mellon FOCAL lab)"
-    date: "2021-09-01"
-    amount_label: "$500,000 (2021-2025)"
+    recipient: Vincent Conitzer (Carnegie Mellon FOCAL lab)
+    date: '2021-09-01'
+    amount_label: $500,000 (2021-2025)
     amount_usd: 500000
-    layers: [agents, evaluation]
+    layers:
+      - agents
+      - evaluation
     region: US
-    url: "https://www.cooperativeai.com/post/grant-summaries"
-    description: "Multi-year grant establishing the Foundations of Cooperative AI Lab (FOCAL) under Vincent Conitzer at Carnegie Mellon University. The lab develops decision and game theory for cooperation between advanced machine agents, with outputs including workshops, online seminar series, and visitor programs."
-
-  - title: "Coercion-capability measurement project"
+    url: https://www.cooperativeai.com/post/grant-summaries
+    description: Multi-year grant establishing the Foundations of Cooperative AI Lab (FOCAL) under Vincent Conitzer at Carnegie Mellon University. The lab develops decision and game theory for cooperation between advanced machine agents, with outputs including workshops, online seminar series, and visitor programs.
+  - title: Coercion-capability measurement project
     kind: project
     funder: cooperative-ai-foundation
-    recipient: "CAIF 2025 grantee"
-    date: "2025-04-01"
-    amount_label: "Undisclosed"
-    layers: [evaluation, safety-guardrails]
+    recipient: CAIF 2025 grantee
+    date: '2025-04-01'
+    amount_label: Undisclosed
+    layers:
+      - evaluation
+      - safety-guardrails
     region: UK
-    url: "https://www.cooperativeai.com/post/grant-summaries"
-    description: "Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with different levels of those capabilities."
-
-  - title: "Norm-learning agents"
-    kind: project
-    funder: cooperative-ai-foundation
-    recipient: "CAIF 2025 grantee"
-    date: "2025-04-01"
-    amount_label: "Undisclosed"
-    layers: [agents]
-    region: UK
-    url: "https://www.cooperativeai.com/post/grant-summaries"
-    description: "Funded research on enhancing AI agents' ability to learn the norms, conventions, and preferences of other agents so they can rapidly adapt and cooperate more effectively."
-
-  - title: "Multi-party negotiation support for humanitarian crises"
-    kind: project
-    funder: cooperative-ai-foundation
-    recipient: "CAIF 2025 grantee"
-    date: "2025-04-01"
-    amount_label: "Undisclosed"
-    layers: [agents, governance]
-    region: Global
-    url: "https://www.cooperativeai.com/post/grant-summaries"
-    description: "Funded work on AI tools that support human decision-makers in complex multi-party negotiations, with humanitarian crisis response as the motivating use case."
-
-  # ============================================================
-  # AI Grant Batch 4 (2025) — Friedman / Gross
-  # ============================================================
-
-  - title: "Goodfire (Batch 4)"
+    url: https://www.cooperativeai.com/post/grant-summaries
+    description: Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with different levels of those capabilities.
+    sources:
+      - title: cooperativeai.com (audit-verified)
+        url: https://www.cooperativeai.com/post/grant-summaries
+  - title: Goodfire (Batch 4)
     kind: project
     funder: ai-grant
-    recipient: "Goodfire"
-    date: "2025-03-01"
+    recipient: Goodfire
+    date: '2025-03-01'
     amount_usd: 250000
-    amount_label: "$250K SAFE plus credits"
-    layers: [evaluation, weights]
+    amount_label: $250K SAFE plus credits
+    layers:
+      - evaluation
+      - weights
     region: US
-    url: "https://aigrant.org/"
-    description: "Mechanistic interpretability tooling for production LLM deployments. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
-
-  - title: "Inception Labs (Batch 4)"
+    url: https://aigrant.org/
+    description: Mechanistic interpretability tooling for production LLM deployments. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+  - title: Inception Labs (Batch 4)
     kind: project
     funder: ai-grant
-    recipient: "Inception Labs"
-    date: "2025-03-01"
+    recipient: Inception Labs
+    date: '2025-03-01'
     amount_usd: 250000
-    amount_label: "$250K SAFE plus credits"
-    layers: [training, weights]
+    amount_label: $250K SAFE plus credits
+    layers:
+      - training
+      - weights
     region: US
-    url: "https://aigrant.org/"
-    description: "Diffusion-based large language models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
-
-  - title: "Haize Labs (Batch 4)"
+    url: https://aigrant.org/
+    description: Diffusion-based large language models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    sources:
+      - title: x.com (audit-verified)
+        url: https://x.com/aigrant/status/1840826250124017868
+  - title: Haize Labs (Batch 4)
     kind: project
     funder: ai-grant
-    recipient: "Haize Labs"
-    date: "2025-03-01"
+    recipient: Haize Labs
+    date: '2025-03-01'
     amount_usd: 250000
-    amount_label: "$250K SAFE plus credits"
-    layers: [evaluation, safety-guardrails]
+    amount_label: $250K SAFE plus credits
+    layers:
+      - evaluation
+      - safety-guardrails
     region: US
-    url: "https://aigrant.org/"
-    description: "Adversarial AI evaluation and red-teaming infrastructure. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
-
-  - title: "Artificial Analysis (Batch 4)"
+    url: https://aigrant.org/
+    description: Adversarial AI evaluation and red-teaming infrastructure. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+  - title: Artificial Analysis (Batch 4)
     kind: project
     funder: ai-grant
-    recipient: "Artificial Analysis"
-    date: "2025-03-01"
+    recipient: Artificial Analysis
+    date: '2025-03-01'
     amount_usd: 250000
-    amount_label: "$250K SAFE plus credits"
-    layers: [evaluation]
+    amount_label: $250K SAFE plus credits
+    layers:
+      - evaluation
     region: US
-    url: "https://aigrant.org/"
-    description: "Independent benchmarks and evaluations of frontier AI models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits."
-
-  # ============================================================
-  # Emergent Ventures (Mercatus / Cowen)
-  # ============================================================
-
-  - title: "Open source math for the AIs"
+    url: https://aigrant.org/
+    description: Independent benchmarks and evaluations of frontier AI models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    sources:
+      - title: aigrant.com (audit-verified)
+        url: https://aigrant.com/
+  - title: Open source math for the AIs
     kind: project
     funder: emergent-ventures
-    recipient: "Reyansh Sharma"
-    date: "2025-09-01"
-    amount_label: "$1K-$50K range"
-    layers: [data, training]
+    recipient: Reyansh Sharma
+    date: '2025-09-01'
+    amount_label: $1K-$50K range
+    layers:
+      - data
+      - training
     region: UK
-    url: "https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html"
-    description: "Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort Emergent Ventures award."
-
-  - title: "Privacy-preserving ML on encrypted data"
+    url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
+    description: Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort Emergent Ventures award.
+  - title: Privacy-preserving ML on encrypted data
     kind: project
     funder: emergent-ventures
-    recipient: "Jessie Chen"
-    date: "2025-09-01"
-    amount_label: "$1K-$50K range"
-    layers: [identity-trust, training]
+    recipient: Jessie Chen
+    date: '2025-09-01'
+    amount_label: $1K-$50K range
+    layers:
+      - identity-trust
+      - training
     region: Asia
-    url: "https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html"
-    description: "Privacy-preserving machine-learning models that operate directly on encrypted data without exposing the underlying inputs. 46th cohort Emergent Ventures award."
-
-  - title: "Data for the AIs"
+    url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
+    description: Privacy-preserving machine-learning models that operate directly on encrypted data without exposing the underlying inputs. 46th cohort Emergent Ventures award.
+  - title: Data for the AIs
     kind: project
     funder: emergent-ventures
-    recipient: "Laura Ryan"
-    date: "2025-12-01"
-    amount_label: "$1K-$50K range"
-    layers: [data]
+    recipient: Laura Ryan
+    date: '2025-12-01'
+    amount_label: $1K-$50K range
+    layers:
+      - data
     region: UK
-    url: "https://marginalrevolution.com/marginalrevolution/2025/12/emergent-ventures-winners-50th-cohort.html"
-    description: "Building open data resources for AI training. 50th cohort Emergent Ventures award."
-
-  # ============================================================
-  # Other open-science / agent-economy / plurality funders
-  # ============================================================
-
-  - title: "Astera Residency Program"
+    url: https://marginalrevolution.com/marginalrevolution/2025/12/emergent-ventures-winners-50th-cohort.html
+    description: Building open data resources for AI training. 50th cohort Emergent Ventures award.
+  - title: Astera Residency Program
     kind: program
     funder: astera-institute
-    recipient: "Multiple residents"
-    date: "2025-01-01"
-    amount_label: "$125K-$250K salary plus up to $1.5M project budget"
-    layers: [data, training, weights]
+    recipient: Multiple residents
+    date: '2025-01-01'
+    amount_label: $125K-$250K salary plus up to $1.5M project budget
+    layers:
+      - data
+      - training
+      - weights
     region: US
-    url: "https://astera.org/foundation/"
-    description: "One-year fully-funded residency for scientists and engineers building open-science public goods, including AI for biology and other research domains. Residents receive Voltage Park H100 compute access and must publish all code, data, and outputs openly."
-
-  - title: "Recall (AI agent reputation)"
+    url: https://astera.org/foundation/
+    description: One-year fully-funded residency for scientists and engineers building open-science public goods, including AI for biology and other research domains. Residents receive Voltage Park H100 compute access and must publish all code, data, and outputs openly.
+    sources:
+      - title: astera.org (audit-verified)
+        url: https://astera.org/residency/
+      - title: astera.org (audit-verified)
+        url: https://astera.org/first-residency-cohort/
+      - title: astera.org (audit-verified)
+        url: https://astera.org/open-science-policy/
+  - title: Recall (AI agent reputation)
     kind: project
     funder: filecoin-foundation
-    recipient: "Recall"
-    date: "2025-04-01"
-    amount_label: "Undisclosed"
-    layers: [data, agents, identity-trust]
+    recipient: Recall
+    date: '2025-04-01'
+    amount_label: Undisclosed
+    layers:
+      - data
+      - agents
+      - identity-trust
     region: Global
-    url: "https://fil.org/blog/filecoin-foundation-quarterly-update-april-2025"
-    description: "Reputation system for AI agents that ensures they operate on high-integrity, verifiable data. Integrates Filecoin decentralized storage as the substrate for agent state and provenance."
-
-  - title: "BridgingBot"
+    url: https://fil.org/blog/filecoin-foundation-quarterly-update-april-2025
+    description: Reputation system for AI agents that ensures they operate on high-integrity, verifiable data. Integrates Filecoin decentralized storage as the substrate for agent state and provenance.
+    sources:
+      - title: fil.org (audit-verified)
+        url: https://fil.org/ecosystem-explorer/recall
+  - title: BridgingBot
     kind: project
     funder: plurality-institute
-    recipient: "Plurality Institute (with Harvard, UC Berkeley, Jigsaw, Google.org)"
-    date: "2025-02-01"
-    amount_label: "Undisclosed"
-    layers: [agents, governance]
+    recipient: Plurality Institute (with Harvard, UC Berkeley, Jigsaw, Google.org)
+    date: '2025-02-01'
+    amount_label: Undisclosed
+    layers:
+      - agents
+      - governance
     region: US
-    url: "https://www.plurality.institute/research"
-    description: "LLM-powered social-media moderator designed to foster constructive online dialogue. Includes a randomized controlled trial and full open-sourcing of code and methods."
-
-  - title: "LLM Map of deliberative AI tools"
+    url: https://www.plurality.institute/research
+    description: LLM-powered social-media moderator designed to foster constructive online dialogue. Includes a randomized controlled trial and full open-sourcing of code and methods.
+    sources:
+      - title: techandsocialcohesion.substack.com (audit-verified)
+        url: https://techandsocialcohesion.substack.com/p/from-battleground-to-common-ground
+  - title: LLM Map of deliberative AI tools
     kind: project
     funder: plurality-institute
-    recipient: "Plurality Institute community"
-    date: "2025-02-01"
-    amount_label: "Internal program"
-    layers: [evaluation, governance]
+    recipient: Plurality Institute community
+    date: '2025-02-01'
+    amount_label: Internal program
+    layers:
+      - evaluation
+      - governance
     region: Global
-    url: "https://www.plurality.institute/research"
-    description: "Collaboratively built landscape catalog of 70+ tools using LLMs to strengthen public discourse. Launched at the institute's February 2025 LLM Workshop and organized along functional dimensions."
+    url: https://www.plurality.institute/research
+    description: Collaboratively built landscape catalog of 70+ tools using LLMs to strengthen public discourse. Launched at the institute's February 2025 LLM Workshop and organized along functional dimensions.
+    sources:
+      - title: plurality.institute (audit-verified)
+        url: https://www.plurality.institute/blog-posts/exploring-opportunities-for-large-language-models-in-public-discourse

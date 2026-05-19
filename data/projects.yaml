@@ -1,33 +1,13 @@
-# Projects catalog per layer.
-#
-# 5-10 representative projects per layer. Each has: slug, name, layers
-# (primary first; cross-layer projects list multiple), license, focus
-# (open / open-weights / source-available / proprietary), maturity, url,
-# github (optional), description (one line).
-#
-# License values: "Apache 2.0" | "MIT" | "BSD-3" | "BSD-2" | "MPL 2.0" |
-# "AGPL-3.0" | "PostgreSQL" | "Llama Community License" | "Gemma Terms" |
-# "Source-available" | "Proprietary" | "ImpACT" | "Standard"
-#
-# Focus tags: "open" (OSI-approved) | "open-weights" (source-available
-# weights) | "source-available" (visible source, non-OSI license) |
-# "proprietary" (closed) | "standard" (specification, not software)
-#
-# Maturity: "stable" | "beta" | "alpha" | "research" | "maintenance" | "new"
-#
-# Edit freely as the ecosystem evolves. The weekly grants-watch and daily
-# news routines do not modify this file.
-
 projects:
-  # Silicon
   - slug: nvidia-h100
     name: NVIDIA H100 / H200
-    layers: [silicon]
+    layers:
+      - silicon
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.nvidia.com/en-us/data-center/h100/"
-    description: "Hyperscaler-class AI accelerator with CUDA software moat; default frontier-training and frontier-inference hardware."
+    url: https://www.nvidia.com/en-us/data-center/h100/
+    description: Hyperscaler-class AI accelerator with CUDA software moat; default frontier-training and frontier-inference hardware.
     explainer: |
       The H100 (Hopper) and H200 are NVIDIA's data-center AI
       accelerators. Closed silicon, closed ISA (PTX as the published
@@ -54,21 +34,25 @@ projects:
       Lambda, etc.). Street price typically $25-40K for an H100; not
       sold to individuals at scale.
     sources:
-      - title: "NVIDIA H100 Product Page"
-        url: "https://www.nvidia.com/en-us/data-center/h100/"
-      - title: "NVIDIA H200 Product Page"
-        url: "https://www.nvidia.com/en-us/data-center/h200/"
-      - title: "CUDA Toolkit Documentation"
-        url: "https://docs.nvidia.com/cuda/"
-
+      - title: NVIDIA H100 Product Page
+        url: https://www.nvidia.com/en-us/data-center/h100/
+      - title: NVIDIA H200 Product Page
+        url: https://www.nvidia.com/en-us/data-center/h200/
+      - title: CUDA Toolkit Documentation
+        url: https://docs.nvidia.com/cuda/
+      - title: intuitionlabs.ai (audit-verified)
+        url: https://intuitionlabs.ai/articles/nvidia-ai-gpu-pricing-guide
+      - title: markets.financialcontent.com (audit-verified)
+        url: https://markets.financialcontent.com/wral/article/tokenring-2025-12-29-nvidias-blackwell-dynasty-b200-and-gb200-sold-out-through-mid-2026-as-backlog-hits-36-million-units
   - slug: amd-mi300x
     name: AMD MI300X / MI325X
-    layers: [silicon]
+    layers:
+      - silicon
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
-    description: "Highest-memory accelerator on the market (192 GB+ HBM); ROCm software stack open-source-adjacent."
+    url: https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html
+    description: Highest-memory accelerator on the market (192 GB+ HBM); ROCm software stack open-source-adjacent.
     explainer: |
       AMD's data-center AI accelerator line. MI300X shipped late 2023
       with 192GB of HBM3 (more memory than any other accelerator at
@@ -92,22 +76,28 @@ projects:
       closes the software gap fast enough to break NVIDIA's lock-in
       before the next generation extends it.
     sources:
-      - title: "AMD Instinct MI300X Product Page"
-        url: "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
-      - title: "ROCm Documentation"
-        url: "https://rocm.docs.amd.com/"
-      - title: "Microsoft Azure ND MI300X Announcement"
-        url: "https://azure.microsoft.com/en-us/blog/azure-announces-new-ai-optimized-vm-series-featuring-amds-flagship-mi300x-gpu/"
-
+      - title: AMD Instinct MI300X Product Page
+        url: https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html
+      - title: ROCm Documentation
+        url: https://rocm.docs.amd.com/
+      - title: Microsoft Azure ND MI300X Announcement
+        url: https://azure.microsoft.com/en-us/blog/azure-announces-new-ai-optimized-vm-series-featuring-amds-flagship-mi300x-gpu/
+      - title: amd.com (audit-verified)
+        url: https://www.amd.com/en/products/accelerators/instinct/mi300/mi325x.html
+      - title: techcommunity.microsoft.com (audit-verified)
+        url: https://techcommunity.microsoft.com/blog/azurehighperformancecomputingblog/introducing-the-new-azure-ai-infrastructure-vm-series-nd-mi300x-v5/4145152
+      - title: engineering.fb.com (audit-verified)
+        url: https://engineering.fb.com/2024/10/15/data-infrastructure/metas-open-ai-hardware-vision/
   - slug: tenstorrent
     name: Tenstorrent (Wormhole, Blackhole)
-    layers: [silicon]
+    layers:
+      - silicon
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://tenstorrent.com/"
-    github: "https://github.com/tenstorrent/tt-metal"
-    description: "Open-trending AI accelerators on RISC-V; Jim Keller-led; tt-metal and tt-forge open."
+    url: https://tenstorrent.com/
+    github: https://github.com/tenstorrent/tt-metal
+    description: Open-trending AI accelerators on RISC-V; Jim Keller-led; tt-metal and tt-forge open.
     explainer: |
       Tenstorrent designs AI accelerators that combine RISC-V CPU
       cores with their Tensix tensor compute units. The current
@@ -133,23 +123,27 @@ projects:
       attracts enough early customers and contributors to close the
       software gap before NVIDIA's lock-in compounds further.
     sources:
-      - title: "Tenstorrent — Products"
-        url: "https://tenstorrent.com/hardware/"
-      - title: "tt-metal on GitHub"
-        url: "https://github.com/tenstorrent/tt-metal"
-      - title: "tt-forge on GitHub"
-        url: "https://github.com/tenstorrent/tt-forge"
-      - title: "Tenstorrent — Vision"
-        url: "https://tenstorrent.com/vision"
-
+      - title: Tenstorrent — Products
+        url: https://tenstorrent.com/hardware/
+      - title: tt-metal on GitHub
+        url: https://github.com/tenstorrent/tt-metal
+      - title: tt-forge on GitHub
+        url: https://github.com/tenstorrent/tt-forge
+      - title: Tenstorrent — Vision
+        url: https://tenstorrent.com/vision
+      - title: tenstorrent.com (audit-verified)
+        url: https://tenstorrent.com/en/hardware/wormhole
+      - title: tenstorrent.com (audit-verified)
+        url: https://tenstorrent.com/newsroom/tenstorrent-launches-blackhole-developer-products-at-tenstorrent-dev-day
   - slug: risc-v
     name: RISC-V
-    layers: [silicon]
+    layers:
+      - silicon
     license: Standard
     focus: open
     maturity: stable
-    url: "https://riscv.org/"
-    description: "Open instruction set architecture; royalty-free; substrate for open silicon (CPUs and emerging AI accelerators)."
+    url: https://riscv.org/
+    description: Open instruction set architecture; royalty-free; substrate for open silicon (CPUs and emerging AI accelerators).
     explainer: |
       RISC-V is an open Instruction Set Architecture governed by a
       Swiss non-profit, RISC-V International. Royalty-free, no
@@ -178,41 +172,42 @@ projects:
       foundational, real, and slow to mature into the AI-frontier role
       its open-stack advocates want for it.
     sources:
-      - title: "RISC-V International — About"
-        url: "https://riscv.org/about/"
-      - title: "RISC-V Specifications"
-        url: "https://riscv.org/specifications/"
-      - title: "SiFive — RISC-V CPU IP"
-        url: "https://www.sifive.com/"
-      - title: "Tenstorrent — Vision (RISC-V positioning)"
-        url: "https://tenstorrent.com/vision"
-
+      - title: RISC-V International — About
+        url: https://riscv.org/about/
+      - title: RISC-V Specifications
+        url: https://riscv.org/specifications/
+      - title: SiFive — RISC-V CPU IP
+        url: https://www.sifive.com/
+      - title: Tenstorrent — Vision (RISC-V positioning)
+        url: https://tenstorrent.com/vision
   - slug: cerebras-cs3
     name: Cerebras CS-3
-    layers: [silicon]
+    layers:
+      - silicon
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.cerebras.ai/product-system"
-    description: "Wafer-scale accelerator; proprietary but disruptive on inference economics for specific model sizes."
-
+    url: https://www.cerebras.ai/product-system
+    description: Wafer-scale accelerator; proprietary but disruptive on inference economics for specific model sizes.
   - slug: groq-lpu
     name: Groq LPU
-    layers: [silicon]
+    layers:
+      - silicon
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://groq.com/"
-    description: "Language Processing Unit; proprietary; extraordinarily fast inference for small-to-medium models at low batch sizes."
-
+    url: https://groq.com/
+    description: Language Processing Unit; proprietary; extraordinarily fast inference for small-to-medium models at low batch sizes.
   - slug: apple-silicon
     name: Apple Silicon (M-series)
-    layers: [silicon, runtime]
+    layers:
+      - silicon
+      - runtime
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.apple.com/mac/m4-pro/"
-    description: "Unified memory architecture; closed silicon, but the strongest on-device inference platform via llama.cpp and MLX."
+    url: https://www.apple.com/mac/m4-pro/
+    description: Unified memory architecture; closed silicon, but the strongest on-device inference platform via llama.cpp and MLX.
     explainer: |
       Apple's M-series chips (M1, M2, M3, M4 across Pro, Max, Ultra
       tiers) are SoCs designed for laptops and desktops. Closed
@@ -242,23 +237,27 @@ projects:
       and software roadmap. Genuinely open local-AI silicon at this
       capability remains a future bet (Tenstorrent, Strix Halo).
     sources:
-      - title: "Apple M4 Pro / Max Specifications"
-        url: "https://www.apple.com/newsroom/2024/10/new-macbook-pro-features-m4-family-of-chips-and-apple-intelligence/"
-      - title: "Apple MLX Framework"
-        url: "https://github.com/ml-explore/mlx"
-      - title: "llama.cpp (Apple Silicon backend)"
-        url: "https://github.com/ggml-org/llama.cpp"
-
-  # Infrastructure
+      - title: Apple M4 Pro / Max Specifications
+        url: https://www.apple.com/newsroom/2024/10/new-macbook-pro-features-m4-family-of-chips-and-apple-intelligence/
+      - title: Apple MLX Framework
+        url: https://github.com/ml-explore/mlx
+      - title: llama.cpp (Apple Silicon backend)
+        url: https://github.com/ggml-org/llama.cpp
+      - title: apple.com (audit-verified)
+        url: https://www.apple.com/newsroom/2024/10/apple-introduces-m4-pro-and-m4-max/
+      - title: apple.com (audit-verified)
+        url: https://www.apple.com/newsroom/2025/03/apple-unveils-new-mac-studio-the-most-powerful-mac-ever/
   - slug: akash
     name: Akash Network
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://akash.network/"
-    github: "https://github.com/akash-network/node"
-    description: "Cosmos-based decentralized GPU and CPU marketplace; AKT token; reverse-auction matching."
+    url: https://akash.network/
+    github: https://github.com/akash-network/node
+    description: Cosmos-based decentralized GPU and CPU marketplace; AKT token; reverse-auction matching.
     explainer: |
       Akash is a decentralized compute marketplace built on the Cosmos
       SDK. Providers (anyone with spare GPUs or CPUs) list capacity;
@@ -287,31 +286,33 @@ projects:
       tooling matures enough to bridge the experiment-vs-production
       gap.
     sources:
-      - title: "Akash Network Documentation"
-        url: "https://akash.network/docs/"
-      - title: "Akash on GitHub"
-        url: "https://github.com/akash-network/node"
-      - title: "AKT Tokenomics"
-        url: "https://akash.network/token/"
-
+      - title: Akash Network Documentation
+        url: https://akash.network/docs/
+      - title: Akash on GitHub
+        url: https://github.com/akash-network/node
+      - title: AKT Tokenomics
+        url: https://akash.network/token/
   - slug: io-net
     name: io.net
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Source-available
     focus: source-available
     maturity: beta
-    url: "https://io.net/"
-    description: "Solana-based aggregator of decentralized GPU supply; IO token; pulls from underutilized DePIN networks."
-
+    url: https://io.net/
+    description: Solana-based aggregator of decentralized GPU supply; IO token; pulls from underutilized DePIN networks.
   - slug: bittensor-compute
     name: Bittensor Compute (Subnet 27 etc.)
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://bittensor.com/"
-    github: "https://github.com/opentensor/bittensor"
-    description: "TAO-incentivized compute subnets inside the Bittensor protocol; emission-based rewards."
+    url: https://bittensor.com/
+    github: https://github.com/opentensor/bittensor
+    description: TAO-incentivized compute subnets inside the Bittensor protocol; emission-based rewards.
     explainer: |
       Bittensor is a peer-to-peer protocol with a token-incentive
       design (TAO) and a subnet architecture: each subnet defines a
@@ -338,49 +339,52 @@ projects:
       subnet quality is uneven, and the path from "miner contributing
       compute" to "stable production workload" still has friction.
     sources:
-      - title: "Bittensor Documentation"
-        url: "https://docs.bittensor.com/"
-      - title: "Bittensor Whitepaper"
-        url: "https://bittensor.com/whitepaper"
-      - title: "Bittensor on GitHub"
-        url: "https://github.com/opentensor/bittensor"
-
+      - title: Bittensor Documentation
+        url: https://docs.bittensor.com/
+      - title: Bittensor Whitepaper
+        url: https://bittensor.com/whitepaper
+      - title: Bittensor on GitHub
+        url: https://github.com/opentensor/bittensor
   - slug: hyperbolic
     name: Hyperbolic
-    layers: [infrastructure]
+    layers:
+      - infrastructure
     license: Source-available
     focus: source-available
     maturity: beta
-    url: "https://hyperbolic.xyz/"
-    description: "Marketplace plus hosted inference; decentralized supply, hosted UX."
-
+    url: https://hyperbolic.xyz/
+    description: Marketplace plus hosted inference; decentralized supply, hosted UX.
   - slug: gensyn
     name: Gensyn
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://www.gensyn.ai/"
-    description: "Decentralized training network with cryptographic verification of compute (proof-of-learning); Ethereum-based."
-
+    url: https://www.gensyn.ai/
+    description: Decentralized training network with cryptographic verification of compute (proof-of-learning); Ethereum-based.
   - slug: coreweave
     name: CoreWeave
-    layers: [infrastructure]
+    layers:
+      - infrastructure
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.coreweave.com/"
-    description: "Dedicated AI cloud; bellwether for AI-capex; closed but commodity-ish in pricing."
-
+    url: https://www.coreweave.com/
+    description: Dedicated AI cloud; bellwether for AI-capex; closed but commodity-ish in pricing.
   - slug: prime-intellect
     name: Prime Intellect
-    layers: [infrastructure, sovereignty-decentralization, training]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
+      - training
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://www.primeintellect.ai/"
-    github: "https://github.com/PrimeIntellect-ai/prime"
-    description: "Distributed training framework and compute aggregation (INTELLECT-1, INTELLECT-2)."
+    url: https://www.primeintellect.ai/
+    github: https://github.com/PrimeIntellect-ai/prime
+    description: Distributed training framework and compute aggregation (INTELLECT-1, INTELLECT-2).
     explainer: |
       Prime Intellect is a startup focused on decentralized training
       of frontier-scale AI models. They aggregate compute across
@@ -408,128 +412,135 @@ projects:
       capital plus partnerships; the open framework is independent of
       the company's commercial roadmap.
     sources:
-      - title: "Prime Intellect"
-        url: "https://www.primeintellect.ai/"
-      - title: "INTELLECT-1 Release Post"
-        url: "https://www.primeintellect.ai/blog/intellect-1-release"
-      - title: "INTELLECT-2 Announcement"
-        url: "https://www.primeintellect.ai/blog/intellect-2"
-      - title: "prime framework on GitHub"
-        url: "https://github.com/PrimeIntellect-ai/prime"
-
-
+      - title: Prime Intellect
+        url: https://www.primeintellect.ai/
+      - title: INTELLECT-1 Release Post
+        url: https://www.primeintellect.ai/blog/intellect-1-release
+      - title: INTELLECT-2 Announcement
+        url: https://www.primeintellect.ai/blog/intellect-2
+      - title: prime framework on GitHub
+        url: https://github.com/PrimeIntellect-ai/prime
   - slug: stargate
     name: Stargate
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Proprietary
     focus: proprietary
     maturity: new
-    url: "https://openai.com/index/announcing-the-stargate-project/"
-    description: "$500B four-year AI-compute buildout announced January 2025 by OpenAI, SoftBank, Oracle, and MGX; first site is Abilene, Texas with Crusoe as developer."
+    url: https://openai.com/index/announcing-the-stargate-project/
+    description: $500B four-year AI-compute buildout announced January 2025 by OpenAI, SoftBank, Oracle, and MGX; first site is Abilene, Texas with Crusoe as developer.
     sources:
-      - title: "Announcing The Stargate Project (OpenAI)"
-        url: "https://openai.com/index/announcing-the-stargate-project/"
-
+      - title: Announcing The Stargate Project (OpenAI)
+        url: https://openai.com/index/announcing-the-stargate-project/
   - slug: g42
     name: G42
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.g42.ai/"
-    description: "Emirati AI holding company building sovereign data centers and training capacity; partner in the Stargate UAE buildout."
+    url: https://www.g42.ai/
+    description: Emirati AI holding company building sovereign data centers and training capacity; partner in the Stargate UAE buildout.
     sources:
-      - title: "G42"
-        url: "https://www.g42.ai/"
-      - title: "Stargate UAE (Reuters, May 2025)"
-        url: "https://www.reuters.com/world/middle-east/openai-oracle-softbank-launch-uae-data-center-project-2025-05-22/"
-
+      - title: G42
+        url: https://www.g42.ai/
+      - title: Stargate UAE (Reuters, May 2025)
+        url: https://www.reuters.com/world/middle-east/openai-oracle-softbank-launch-uae-data-center-project-2025-05-22/
   - slug: humain
     name: Humain
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Proprietary
     focus: proprietary
     maturity: new
-    url: "https://humain.ai/"
-    description: "Saudi sovereign-AI company announced May 2025, owned by the Public Investment Fund (PIF); building in-kingdom data center capacity with Nvidia and AMD chip commitments."
+    url: https://humain.ai/
+    description: Saudi sovereign-AI company announced May 2025, owned by the Public Investment Fund (PIF); building in-kingdom data center capacity with Nvidia and AMD chip commitments.
     sources:
-      - title: "PIF announces launch of HUMAIN (Saudi PIF, May 2025)"
-        url: "https://www.pif.gov.sa/en/news-and-insights/press-releases/2025/pif-announces-launch-of-humain/"
-
+      - title: PIF announces launch of HUMAIN (Saudi PIF, May 2025)
+        url: https://www.pif.gov.sa/en/news-and-insights/press-releases/2025/pif-announces-launch-of-humain/
   - slug: indiaai-mission
     name: IndiaAI Mission
-    layers: [infrastructure, sovereignty-decentralization, governance]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
+      - governance
     license: Government-funded
     focus: proprietary
     maturity: stable
-    url: "https://indiaai.gov.in/"
-    description: "India's national AI mission, ~Rs 10,372 crore approved by the Union Cabinet in March 2024; a Common Compute Facility track procures shared GPU capacity for Indian researchers and startups."
+    url: https://indiaai.gov.in/
+    description: India's national AI mission, ~Rs 10,372 crore approved by the Union Cabinet in March 2024; a Common Compute Facility track procures shared GPU capacity for Indian researchers and startups.
     sources:
-      - title: "Cabinet approves IndiaAI Mission (PIB, March 2024)"
-        url: "https://pib.gov.in/PressReleasePage.aspx?PRID=2012375"
-      - title: "IndiaAI Mission portal"
-        url: "https://indiaai.gov.in/"
-
+      - title: Cabinet approves IndiaAI Mission (PIB, March 2024)
+        url: https://pib.gov.in/PressReleasePage.aspx?PRID=2012375
+      - title: IndiaAI Mission portal
+        url: https://indiaai.gov.in/
   - slug: crusoe
     name: Crusoe Energy
-    layers: [infrastructure]
+    layers:
+      - infrastructure
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://crusoe.ai/"
-    description: "AI data center operator that originally built modular compute next to flared natural gas in the Bakken; pivoted to AI in 2024; designated as Stargate's first-site developer at the Abilene, Texas campus."
+    url: https://crusoe.ai/
+    description: AI data center operator that originally built modular compute next to flared natural gas in the Bakken; pivoted to AI in 2024; designated as Stargate's first-site developer at the Abilene, Texas campus.
     sources:
-      - title: "Crusoe (company site)"
-        url: "https://crusoe.ai/"
-      - title: "Stargate Abilene site (OpenAI January 2025)"
-        url: "https://openai.com/index/announcing-the-stargate-project/"
-
+      - title: Crusoe (company site)
+        url: https://crusoe.ai/
+      - title: Stargate Abilene site (OpenAI January 2025)
+        url: https://openai.com/index/announcing-the-stargate-project/
   - slug: lambda
     name: Lambda
-    layers: [infrastructure]
+    layers:
+      - infrastructure
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://lambdalabs.com/"
-    description: "GPU cloud focused on AI workloads, founded 2012; one of the larger neoclouds, raised $480M Series D in February 2025 to expand H100 and Blackwell capacity."
+    url: https://lambdalabs.com/
+    description: GPU cloud focused on AI workloads, founded 2012; one of the larger neoclouds, raised $480M Series D in February 2025 to expand H100 and Blackwell capacity.
     sources:
-      - title: "Lambda site"
-        url: "https://lambdalabs.com/"
-      - title: "Lambda Series D announcement (February 2025)"
-        url: "https://lambda.ai/blog/lambda-raises-480-million-series-d"
-
+      - title: Lambda site
+        url: https://lambdalabs.com/
+      - title: Lambda Series D announcement (February 2025)
+        url: https://lambda.ai/blog/lambda-raises-480-million-series-d
   - slug: voltage-park
     name: Voltage Park
-    layers: [infrastructure, sovereignty-decentralization]
+    layers:
+      - infrastructure
+      - sovereignty-decentralization
     license: Nonprofit operator
     focus: proprietary
     maturity: stable
-    url: "https://voltagepark.com/"
-    description: "Nonprofit GPU cloud founded by Jed McCaleb in 2023, operating ~24,000 H100s and renting capacity to AI research labs at close to cost."
+    url: https://voltagepark.com/
+    description: Nonprofit GPU cloud founded by Jed McCaleb in 2023, operating ~24,000 H100s and renting capacity to AI research labs at close to cost.
     sources:
-      - title: "Voltage Park site"
-        url: "https://voltagepark.com/"
-      - title: "Voltage Park launch (TechCrunch, October 2023)"
-        url: "https://techcrunch.com/2023/10/30/24000-gpu-cluster-voltage-park/"
-
-  # Data
+      - title: Voltage Park site
+        url: https://voltagepark.com/
+      - title: Voltage Park launch (TechCrunch, October 2023)
+        url: https://techcrunch.com/2023/10/30/24000-gpu-cluster-voltage-park/
   - slug: common-crawl
     name: Common Crawl
-    layers: [data]
+    layers:
+      - data
     license: Standard
     focus: open
     maturity: stable
-    url: "https://commoncrawl.org/"
-    description: "Non-profit petabyte-scale monthly web crawl since 2008; the substrate underneath nearly every open AI corpus."
-
+    url: https://commoncrawl.org/
+    description: Non-profit petabyte-scale monthly web crawl since 2008; the substrate underneath nearly every open AI corpus.
+    sources:
+      - title: commoncrawl.org (audit-verified)
+        url: https://commoncrawl.org/about
   - slug: fineweb
     name: FineWeb / FineWeb-Edu
-    layers: [data]
+    layers:
+      - data
     license: ODC-By 1.0
     focus: open
     maturity: stable
-    url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
-    description: "HuggingFace 15T-token filtered Common Crawl; FineWeb-Edu is the higher-quality educational subset."
+    url: https://huggingface.co/datasets/HuggingFaceFW/fineweb
+    description: HuggingFace 15T-token filtered Common Crawl; FineWeb-Edu is the higher-quality educational subset.
     explainer: |
       FineWeb is HuggingFace's open pretraining dataset. ~15 trillion
       tokens after filtering Common Crawl with a series of quality
@@ -558,59 +569,59 @@ projects:
       content), so it does not satisfy the strictest reading of
       open-source AI. For that, see Common Pile.
     sources:
-      - title: "FineWeb on HuggingFace"
-        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
-      - title: "FineWeb Blog Post (HuggingFace)"
-        url: "https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1"
-      - title: "FineWeb-Edu Dataset"
-        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu"
-      - title: "FineWeb 2 Multilingual"
-        url: "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
-
+      - title: FineWeb on HuggingFace
+        url: https://huggingface.co/datasets/HuggingFaceFW/fineweb
+      - title: FineWeb Blog Post (HuggingFace)
+        url: https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1
+      - title: FineWeb-Edu Dataset
+        url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu
+      - title: FineWeb 2 Multilingual
+        url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
   - slug: dolma
     name: Dolma
-    layers: [data]
+    layers:
+      - data
     license: ODC-BY
     focus: open
     maturity: stable
-    url: "https://huggingface.co/datasets/allenai/dolma"
-    description: "AI2's 3T-token training corpus; the substrate for OLMo; redistributable under ODC-BY license (updated from ImpACT in April 2024)."
-
+    url: https://huggingface.co/datasets/allenai/dolma
+    description: AI2's 3T-token training corpus; the substrate for OLMo; redistributable under ODC-BY license (updated from ImpACT in April 2024).
   - slug: dclm
     name: DataComp-LM (DCLM)
-    layers: [data]
+    layers:
+      - data
     license: CC-BY-4.0
     focus: open
     maturity: stable
-    url: "https://www.datacomp.ai/dclm/"
-    description: "Both a benchmark and a corpus; the 'ship the filter, not just the bytes' approach to open data."
-
+    url: https://www.datacomp.ai/dclm/
+    description: Both a benchmark and a corpus; the 'ship the filter, not just the bytes' approach to open data.
   - slug: redpajama
     name: RedPajama v1 / v2
-    layers: [data]
+    layers:
+      - data
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://www.together.ai/blog/redpajama-data-v2"
-    description: "Together AI's open replication of the Llama 1 training mix; v2 reaches 30T tokens."
-
+    url: https://www.together.ai/blog/redpajama-data-v2
+    description: Together AI's open replication of the Llama 1 training mix; v2 reaches 30T tokens.
   - slug: the-pile
     name: The Pile
-    layers: [data]
+    layers:
+      - data
     license: MIT
     focus: open
     maturity: maintenance
-    url: "https://pile.eleuther.ai/"
-    description: "EleutherAI's 2020 825GB open corpus; influential predecessor to all current open-corpus work."
-
+    url: https://pile.eleuther.ai/
+    description: EleutherAI's 2020 825GB open corpus; influential predecessor to all current open-corpus work.
   - slug: common-pile-v0
     name: Common Pile v0.1
-    layers: [data]
+    layers:
+      - data
     license: License-clean
     focus: open
     maturity: new
-    url: "https://blog.eleuther.ai/common-pile-v0/"
-    description: "EleutherAI's June 2025 license-clean pretraining corpus; one of few entries doing this work at scale."
+    url: https://blog.eleuther.ai/common-pile-v0/
+    description: EleutherAI's June 2025 license-clean pretraining corpus; one of few entries doing this work at scale.
     explainer: |
       Common Pile v0.1 is an 8TB pretraining corpus assembled by
       EleutherAI in collaboration with around 30 partner
@@ -640,23 +651,24 @@ projects:
       existence proof; whether it scales to frontier remains the
       open question.
     sources:
-      - title: "Common Pile v0.1 Announcement (EleutherAI)"
-        url: "https://blog.eleuther.ai/common-pile-v0/"
-      - title: "Common Pile on HuggingFace"
-        url: "https://huggingface.co/blog/stas/common-pile-v01"
-      - title: "OSAID v1.0 (data clause)"
-        url: "https://opensource.org/ai/open-source-ai-definition"
-
-  # Training
+      - title: Common Pile v0.1 Announcement (EleutherAI)
+        url: https://blog.eleuther.ai/common-pile-v0/
+      - title: Common Pile on HuggingFace
+        url: https://huggingface.co/blog/stas/common-pile-v01
+      - title: OSAID v1.0 (data clause)
+        url: https://opensource.org/ai/open-source-ai-definition
+      - title: blog.eleuther.ai (audit-verified)
+        url: https://blog.eleuther.ai/common-pile/
   - slug: unsloth
     name: Unsloth
-    layers: [training]
+    layers:
+      - training
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://unsloth.ai/"
-    github: "https://github.com/unslothai/unsloth"
-    description: "2-30x faster fine-tuning with 70% less VRAM; consumer-GPU-friendly LoRA / QLoRA; free open-source tier."
+    url: https://unsloth.ai/
+    github: https://github.com/unslothai/unsloth
+    description: 2-30x faster fine-tuning with 70% less VRAM; consumer-GPU-friendly LoRA / QLoRA; free open-source tier.
     explainer: |
       Unsloth is an open-source fine-tuning framework built by Daniel
       and Michael Han. The headline claim is dramatically faster fine-
@@ -683,71 +695,72 @@ projects:
       ecosystem migrates to Unsloth as the default vs stays on TRL
       for compatibility with the rest of the HuggingFace stack.
     sources:
-      - title: "Unsloth Documentation"
-        url: "https://docs.unsloth.ai/"
-      - title: "Unsloth on GitHub"
-        url: "https://github.com/unslothai/unsloth"
-      - title: "Unsloth Performance Benchmarks"
-        url: "https://unsloth.ai/blog/mistral-benchmark"
-
+      - title: Unsloth Documentation
+        url: https://docs.unsloth.ai/
+      - title: Unsloth on GitHub
+        url: https://github.com/unslothai/unsloth
+      - title: Unsloth Performance Benchmarks
+        url: https://unsloth.ai/blog/mistral-benchmark
   - slug: axolotl
     name: Axolotl
-    layers: [training]
+    layers:
+      - training
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://github.com/axolotl-ai-cloud/axolotl"
-    github: "https://github.com/axolotl-ai-cloud/axolotl"
-    description: "General-purpose fine-tuning framework; supports most open-weights models out of the box."
-
+    url: https://github.com/axolotl-ai-cloud/axolotl
+    github: https://github.com/axolotl-ai-cloud/axolotl
+    description: General-purpose fine-tuning framework; supports most open-weights models out of the box.
   - slug: llama-factory
     name: LLaMA-Factory
-    layers: [training]
+    layers:
+      - training
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://github.com/hiyouga/LLaMA-Factory"
-    github: "https://github.com/hiyouga/LLaMA-Factory"
-    description: "Chinese-origin open fine-tuning toolkit; very feature-rich; broadly used in the open ecosystem."
-
+    url: https://github.com/hiyouga/LLaMA-Factory
+    github: https://github.com/hiyouga/LLaMA-Factory
+    description: Chinese-origin open fine-tuning toolkit; very feature-rich; broadly used in the open ecosystem.
   - slug: hf-trl
     name: HuggingFace TRL
-    layers: [training]
+    layers:
+      - training
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://github.com/huggingface/trl"
-    github: "https://github.com/huggingface/trl"
-    description: "Standard library for supervised fine-tuning, RLHF, DPO, and KTO; the reference TRL implementation."
-
+    url: https://github.com/huggingface/trl
+    github: https://github.com/huggingface/trl
+    description: Standard library for supervised fine-tuning, RLHF, DPO, and KTO; the reference TRL implementation.
   - slug: megatron-lm
     name: Megatron-LM
-    layers: [training]
+    layers:
+      - training
     license: BSD-3
     focus: open
     maturity: stable
-    url: "https://github.com/NVIDIA/Megatron-LM"
-    github: "https://github.com/NVIDIA/Megatron-LM"
-    description: "NVIDIA's distributed-training framework; the heaviest open frontier-training tooling."
-
+    url: https://github.com/NVIDIA/Megatron-LM
+    github: https://github.com/NVIDIA/Megatron-LM
+    description: NVIDIA's distributed-training framework; the heaviest open frontier-training tooling.
   - slug: deepspeed
     name: DeepSpeed
-    layers: [training]
+    layers:
+      - training
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://www.deepspeed.ai/"
-    github: "https://github.com/microsoft/DeepSpeed"
-    description: "Microsoft's distributed-training framework; ZeRO sharding; widely used outside Microsoft too."
-
+    url: https://www.deepspeed.ai/
+    github: https://github.com/microsoft/DeepSpeed
+    description: Microsoft's distributed-training framework; ZeRO sharding; widely used outside Microsoft too.
   - slug: nous-distro
     name: Nous Research DisTrO
-    layers: [training, sovereignty-decentralization]
+    layers:
+      - training
+      - sovereignty-decentralization
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://nousresearch.com/"
-    description: "Decentralized training optimizer that reduces gradient-sync bandwidth 100-1000x; enables training over commodity internet."
+    url: https://nousresearch.com/
+    description: Decentralized training optimizer that reduces gradient-sync bandwidth 100-1000x; enables training over commodity internet.
     explainer: |
       DisTrO (Distributed Training Over-the-Internet) is a family of
       bandwidth-efficient training optimizers from Nous Research. The
@@ -777,22 +790,21 @@ projects:
       that simply could not exist otherwise (community-trained,
       regional, sovereignty-anchored), not racing the frontier.
     sources:
-      - title: "Nous Research"
-        url: "https://nousresearch.com/"
-      - title: "DisTrO on GitHub"
-        url: "https://github.com/NousResearch/DisTrO"
-      - title: "DisTrO Technical Report"
-        url: "https://github.com/NousResearch/DisTrO/blob/main/A_Preliminary_Report_on_DisTrO.pdf"
-
-  # Weights
+      - title: Nous Research
+        url: https://nousresearch.com/
+      - title: DisTrO on GitHub
+        url: https://github.com/NousResearch/DisTrO
+      - title: DisTrO Technical Report
+        url: https://github.com/NousResearch/DisTrO/blob/main/A_Preliminary_Report_on_DisTrO.pdf
   - slug: llama
     name: Llama (Meta)
-    layers: [weights]
+    layers:
+      - weights
     license: Llama Community License
     focus: source-available
     maturity: stable
-    url: "https://ai.meta.com/llama/"
-    description: "Meta's open-weights family; dominant in usage; license carries a 700M-MAU clause and acceptable-use restrictions."
+    url: https://ai.meta.com/llama/
+    description: Meta's open-weights family; dominant in usage; license carries a 700M-MAU clause and acceptable-use restrictions.
     explainer: |
       Llama is Meta's open-weights model family. Llama 1 (Feb 2023,
       research-only), Llama 2 (Jul 2023, first commercial release),
@@ -821,23 +833,33 @@ projects:
       not durably open. For the operative analysis of which clauses
       actually bind in your situation, see the OSI's annotated take.
     sources:
-      - title: "Llama at Meta AI"
-        url: "https://ai.meta.com/llama/"
-      - title: "Llama Community License Text"
-        url: "https://www.llama.com/llama3/license/"
-      - title: "OSI: Meta Llama License Still Not Open Source"
-        url: "https://opensource.org/blog/meta-llama-license-still-not-open-source"
-      - title: "Llama 3 Herd of Models (Meta AI, 2024)"
-        url: "https://arxiv.org/abs/2407.21783"
-
+      - title: Llama at Meta AI
+        url: https://ai.meta.com/llama/
+      - title: Llama Community License Text
+        url: https://www.llama.com/llama3/license/
+      - title: 'OSI: Meta Llama License Still Not Open Source'
+        url: https://opensource.org/blog/meta-llama-license-still-not-open-source
+      - title: Llama 3 Herd of Models (Meta AI, 2024)
+        url: https://arxiv.org/abs/2407.21783
+      - title: ai.meta.com (audit-verified)
+        url: https://ai.meta.com/blog/large-language-model-llama-meta-ai/
+      - title: about.fb.com (audit-verified)
+        url: https://about.fb.com/news/2023/07/llama-2/
+      - title: ai.meta.com (audit-verified)
+        url: https://ai.meta.com/blog/meta-llama-3/
+      - title: huggingface.co (audit-verified)
+        url: https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct
+      - title: opensource.org (audit-verified)
+        url: https://opensource.org/blog/metas-llama-license-is-still-not-open-source
   - slug: mistral
     name: Mistral / Mixtral
-    layers: [weights]
+    layers:
+      - weights
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://mistral.ai/"
-    description: "French lab; older open releases under Apache 2.0; flagships increasingly API-only or under research-tier licenses."
+    url: https://mistral.ai/
+    description: French lab; older open releases under Apache 2.0; flagships increasingly API-only or under research-tier licenses.
     explainer: |
       Mistral AI is a French frontier-AI startup founded in 2023 by
       researchers from Meta and Google DeepMind. The early releases
@@ -868,23 +890,27 @@ projects:
       sustain the company without the open releases that built its
       reputation in the first place?
     sources:
-      - title: "Mistral AI"
-        url: "https://mistral.ai/"
-      - title: "Mistral 7B Paper"
-        url: "https://arxiv.org/abs/2310.06825"
-      - title: "Mixtral of Experts (Mixtral 8x7B paper)"
-        url: "https://arxiv.org/abs/2401.04088"
-      - title: "Mistral Models on HuggingFace"
-        url: "https://huggingface.co/mistralai"
-
+      - title: Mistral AI
+        url: https://mistral.ai/
+      - title: Mistral 7B Paper
+        url: https://arxiv.org/abs/2310.06825
+      - title: Mixtral of Experts (Mixtral 8x7B paper)
+        url: https://arxiv.org/abs/2401.04088
+      - title: Mistral Models on HuggingFace
+        url: https://huggingface.co/mistralai
+      - title: en.wikipedia.org (audit-verified)
+        url: https://en.wikipedia.org/wiki/Mistral_AI
+      - title: mistral.ai (audit-verified)
+        url: https://mistral.ai/models
   - slug: qwen
     name: Qwen (Alibaba)
-    layers: [weights]
+    layers:
+      - weights
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://qwenlm.github.io/"
-    description: "Alibaba's aggressive open-weights series (Qwen 2.5 / 3); Apache 2.0 across most sizes; full-precision weights available."
+    url: https://qwenlm.github.io/
+    description: Alibaba's aggressive open-weights series (Qwen 2.5 / 3); Apache 2.0 across most sizes; full-precision weights available.
     explainer: |
       Qwen is Alibaba Cloud's model family. Qwen 2.5 (late 2024) and
       Qwen 3 (2025) shipped a wide range of sizes (0.5B to 72B+)
@@ -913,21 +939,25 @@ projects:
       pressure on Chinese AI exports, and does the West's "do we
       trust models from a Chinese lab" debate affect adoption.
     sources:
-      - title: "Qwen on GitHub (QwenLM)"
-        url: "https://github.com/QwenLM"
-      - title: "Qwen2.5 Technical Report"
-        url: "https://arxiv.org/abs/2412.15115"
-      - title: "Qwen Models on HuggingFace"
-        url: "https://huggingface.co/Qwen"
-
+      - title: Qwen on GitHub (QwenLM)
+        url: https://github.com/QwenLM
+      - title: Qwen2.5 Technical Report
+        url: https://arxiv.org/abs/2412.15115
+      - title: Qwen Models on HuggingFace
+        url: https://huggingface.co/Qwen
+      - title: alibabagroup.com (audit-verified)
+        url: https://www.alibabagroup.com/en-US/document-1773855135127044096
+      - title: alibabacloud.com (audit-verified)
+        url: https://www.alibabacloud.com/blog/alibaba-introduces-qwen3-setting-new-benchmark-in-open-source-ai-with-hybrid-reasoning_602192
   - slug: deepseek
     name: DeepSeek V3 / R1
-    layers: [weights]
+    layers:
+      - weights
     license: MIT
     focus: open
     maturity: stable
-    url: "https://www.deepseek.com/"
-    description: "Cost-quality reset; V3 papers documented architectural innovations (MoE, MLA, aux-loss-free MoE); R1 open reasoning model."
+    url: https://www.deepseek.com/
+    description: Cost-quality reset; V3 papers documented architectural innovations (MoE, MLA, aux-loss-free MoE); R1 open reasoning model.
     explainer: |
       DeepSeek is a Chinese frontier-AI lab. Their open releases
       reset two ceilings in late 2024-early 2025. DeepSeek-V3 (Dec
@@ -958,23 +988,24 @@ projects:
       and political content filtering apply as they do to any closed-
       data lab.
     sources:
-      - title: "DeepSeek"
-        url: "https://www.deepseek.com/"
-      - title: "DeepSeek-V3 Technical Report"
-        url: "https://arxiv.org/abs/2412.19437"
-      - title: "DeepSeek-R1 Reasoning Paper"
-        url: "https://arxiv.org/abs/2501.12948"
-      - title: "DeepSeek Models on HuggingFace"
-        url: "https://huggingface.co/deepseek-ai"
-
+      - title: DeepSeek
+        url: https://www.deepseek.com/
+      - title: DeepSeek-V3 Technical Report
+        url: https://arxiv.org/abs/2412.19437
+      - title: DeepSeek-R1 Reasoning Paper
+        url: https://arxiv.org/abs/2501.12948
+      - title: DeepSeek Models on HuggingFace
+        url: https://huggingface.co/deepseek-ai
   - slug: olmo
     name: OLMo (AI2)
-    layers: [weights, data]
+    layers:
+      - weights
+      - data
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://allenai.org/olmo"
-    description: "The only major model family meeting the strictest reading of OSAID: data (Dolma), training code, and weights all published."
+    url: https://allenai.org/olmo
+    description: 'The only major model family meeting the strictest reading of OSAID: data (Dolma), training code, and weights all published.'
     explainer: |
       OLMo is a family of open language models from the Allen Institute
       for AI (AI2). What makes OLMo distinctive is not the capability
@@ -1003,70 +1034,72 @@ projects:
       Stewarded by AI2; long-term direction depends on AI2's continued
       funding for the program.
     sources:
-      - title: "OLMo at AI2"
-        url: "https://allenai.org/olmo"
-      - title: "OLMo 2 Release"
-        url: "https://allenai.org/blog/olmo2"
-      - title: "Dolma Corpus"
-        url: "https://huggingface.co/datasets/allenai/dolma"
-      - title: "Open Source AI Definition (OSI)"
-        url: "https://opensource.org/ai/open-source-ai-definition"
-
+      - title: OLMo at AI2
+        url: https://allenai.org/olmo
+      - title: OLMo 2 Release
+        url: https://allenai.org/blog/olmo2
+      - title: Dolma Corpus
+        url: https://huggingface.co/datasets/allenai/dolma
+      - title: Open Source AI Definition (OSI)
+        url: https://opensource.org/ai/open-source-ai-definition
   - slug: gemma
     name: Gemma (Google)
-    layers: [weights]
+    layers:
+      - weights
     license: Gemma Terms
     focus: source-available
     maturity: stable
-    url: "https://ai.google.dev/gemma"
-    description: "Google's open-weights siblings to Gemini; source-available, not OSI-approved."
-
+    url: https://ai.google.dev/gemma
+    description: Google's open-weights siblings to Gemini; source-available, not OSI-approved.
   - slug: phi
     name: Phi (Microsoft)
-    layers: [weights]
+    layers:
+      - weights
     license: MIT
     focus: open
     maturity: stable
-    url: "https://huggingface.co/microsoft"
-    description: "Small open models heavy on synthetic-data training; MIT license; cost-effective inference at edge sizes."
-
+    url: https://huggingface.co/microsoft
+    description: Small open models heavy on synthetic-data training; MIT license; cost-effective inference at edge sizes.
   - slug: kimi
     name: Kimi (Moonshot AI)
-    layers: [weights]
+    layers:
+      - weights
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://kimi.com/"
-    description: "Chinese open-weights series; emphasis on long-context performance."
-
+    url: https://kimi.com/
+    description: Chinese open-weights series; emphasis on long-context performance.
   - slug: glm
     name: GLM (Zhipu AI)
-    layers: [weights]
+    layers:
+      - weights
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://chatglm.cn/"
-    description: "Tsinghua-spinoff; ChatGLM and GLM-4 families; Apache 2.0 for major releases."
-
+    url: https://chatglm.cn/
+    description: Tsinghua-spinoff; ChatGLM and GLM-4 families; Apache 2.0 for major releases.
+    sources:
+      - title: en.wikipedia.org (audit-verified)
+        url: https://en.wikipedia.org/wiki/Z.ai
   - slug: yi
     name: Yi (01.AI)
-    layers: [weights]
+    layers:
+      - weights
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://01.ai/"
-    description: "Kai-Fu Lee's Chinese open model family (Yi-34B etc.); Apache 2.0."
-
-  # Runtime
+    url: https://01.ai/
+    description: Kai-Fu Lee's Chinese open model family (Yi-34B etc.); Apache 2.0.
   - slug: vllm
     name: vLLM
-    layers: [runtime]
+    layers:
+      - runtime
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://docs.vllm.ai/"
-    github: "https://github.com/vllm-project/vllm"
-    description: "Dominant open production inference engine; PagedAttention and continuous batching; NVIDIA / AMD / Intel / TPU support."
+    url: https://docs.vllm.ai/
+    github: https://github.com/vllm-project/vllm
+    description: Dominant open production inference engine; PagedAttention and continuous batching; NVIDIA / AMD / Intel / TPU support.
     explainer: |
       vLLM is an open inference engine for large language models,
       originally built at UC Berkeley by Woosuk Kwon and collaborators.
@@ -1094,24 +1127,26 @@ projects:
       open work compares itself against. The v1 architectural refresh
       landed in early 2025 and reset the performance baseline.
     sources:
-      - title: "vLLM Documentation"
-        url: "https://docs.vllm.ai/"
-      - title: "Efficient Memory Management for LLM Serving with PagedAttention (Kwon et al., 2023)"
-        url: "https://arxiv.org/abs/2309.06180"
-      - title: "vLLM v1 Architecture Announcement"
-        url: "https://blog.vllm.ai/"
-      - title: "vLLM on GitHub"
-        url: "https://github.com/vllm-project/vllm"
-
+      - title: vLLM Documentation
+        url: https://docs.vllm.ai/
+      - title: Efficient Memory Management for LLM Serving with PagedAttention (Kwon et al., 2023)
+        url: https://arxiv.org/abs/2309.06180
+      - title: vLLM v1 Architecture Announcement
+        url: https://blog.vllm.ai/
+      - title: vLLM on GitHub
+        url: https://github.com/vllm-project/vllm
+      - title: blog.vllm.ai (audit-verified)
+        url: https://blog.vllm.ai/2025/01/27/v1-alpha-release.html
   - slug: sglang
     name: SGLang
-    layers: [runtime]
+    layers:
+      - runtime
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://sglang.ai/"
-    github: "https://github.com/sgl-project/sglang"
-    description: "RadixAttention plus structured generation; from the LMSYS team; gains for shared-prefix and agent workloads."
+    url: https://sglang.ai/
+    github: https://github.com/sgl-project/sglang
+    description: RadixAttention plus structured generation; from the LMSYS team; gains for shared-prefix and agent workloads.
     explainer: |
       SGLang is an open inference engine for large language models
       from the LMSYS team (the same group behind Chatbot Arena).
@@ -1139,22 +1174,22 @@ projects:
       engine for workloads where RadixAttention matters." Both vLLM
       and SGLang continue to converge on each other's strengths.
     sources:
-      - title: "SGLang Project"
-        url: "https://sglang.ai/"
-      - title: "SGLang on GitHub"
-        url: "https://github.com/sgl-project/sglang"
-      - title: "SGLang Paper (Efficient Execution of Structured LM Programs)"
-        url: "https://arxiv.org/abs/2312.07104"
-
+      - title: SGLang Project
+        url: https://sglang.ai/
+      - title: SGLang on GitHub
+        url: https://github.com/sgl-project/sglang
+      - title: SGLang Paper (Efficient Execution of Structured LM Programs)
+        url: https://arxiv.org/abs/2312.07104
   - slug: llama-cpp
     name: llama.cpp
-    layers: [runtime]
+    layers:
+      - runtime
     license: MIT
     focus: open
     maturity: stable
-    url: "https://github.com/ggml-org/llama.cpp"
-    github: "https://github.com/ggml-org/llama.cpp"
-    description: "Georgi Gerganov's local-first inference engine; defines the GGUF format; the on-device standard."
+    url: https://github.com/ggml-org/llama.cpp
+    github: https://github.com/ggml-org/llama.cpp
+    description: Georgi Gerganov's local-first inference engine; defines the GGUF format; the on-device standard.
     explainer: |
       llama.cpp is Georgi Gerganov's open inference engine for large
       language models. Pure C/C++ with no required runtime
@@ -1186,22 +1221,24 @@ projects:
       sovereignty-anchored "buy your own hardware, run your own
       models" thesis operational today.
     sources:
-      - title: "llama.cpp on GitHub"
-        url: "https://github.com/ggml-org/llama.cpp"
-      - title: "GGUF Format Specification"
-        url: "https://github.com/ggml-org/ggml/blob/master/docs/gguf.md"
-      - title: "ggml (the underlying tensor library)"
-        url: "https://github.com/ggml-org/ggml"
-
+      - title: llama.cpp on GitHub
+        url: https://github.com/ggml-org/llama.cpp
+      - title: GGUF Format Specification
+        url: https://github.com/ggml-org/ggml/blob/master/docs/gguf.md
+      - title: ggml (the underlying tensor library)
+        url: https://github.com/ggml-org/ggml
+      - title: github.com (audit-verified)
+        url: https://github.com/ggerganov
   - slug: ollama
     name: Ollama
-    layers: [runtime]
+    layers:
+      - runtime
     license: MIT
     focus: open
     maturity: stable
-    url: "https://ollama.com/"
-    github: "https://github.com/ollama/ollama"
-    description: "Local model runner; Docker-style UX over llama.cpp; the easiest way to run open weights on your machine."
+    url: https://ollama.com/
+    github: https://github.com/ollama/ollama
+    description: Local model runner; Docker-style UX over llama.cpp; the easiest way to run open weights on your machine.
     explainer: |
       Ollama is a local model runner that wraps llama.cpp with a
       Docker-style command-line and HTTP API. Install Ollama, run
@@ -1231,102 +1268,106 @@ projects:
       services) preserve the open-source character that made it
       useful in the first place.
     sources:
-      - title: "Ollama"
-        url: "https://ollama.com/"
-      - title: "Ollama on GitHub"
-        url: "https://github.com/ollama/ollama"
-      - title: "Ollama API Documentation"
-        url: "https://github.com/ollama/ollama/blob/main/docs/api.md"
-
+      - title: Ollama
+        url: https://ollama.com/
+      - title: Ollama on GitHub
+        url: https://github.com/ollama/ollama
+      - title: Ollama API Documentation
+        url: https://github.com/ollama/ollama/blob/main/docs/api.md
   - slug: tgi
     name: Text Generation Inference (TGI)
-    layers: [runtime]
+    layers:
+      - runtime
     license: Apache 2.0
     focus: open
     maturity: maintenance
-    url: "https://github.com/huggingface/text-generation-inference"
-    github: "https://github.com/huggingface/text-generation-inference"
-    description: "HuggingFace's production inference server; maintenance mode in 2026 as vLLM became the standard."
-
+    url: https://github.com/huggingface/text-generation-inference
+    github: https://github.com/huggingface/text-generation-inference
+    description: HuggingFace's production inference server; maintenance mode in 2026 as vLLM became the standard.
   - slug: mlc-llm
     name: MLC-LLM
-    layers: [runtime]
+    layers:
+      - runtime
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://llm.mlc.ai/"
-    github: "https://github.com/mlc-ai/mlc-llm"
-    description: "Cross-platform compilation (TVM-based); the 'LLM in your browser' or 'on your phone' standard."
-
+    url: https://llm.mlc.ai/
+    github: https://github.com/mlc-ai/mlc-llm
+    description: Cross-platform compilation (TVM-based); the 'LLM in your browser' or 'on your phone' standard.
   - slug: tensorrt-llm
     name: TensorRT-LLM
-    layers: [runtime]
+    layers:
+      - runtime
     license: Source-available
     focus: source-available
     maturity: stable
-    url: "https://github.com/NVIDIA/TensorRT-LLM"
-    description: "NVIDIA's closed-runtime counterpart; fastest on NVIDIA hardware; depends on closed CUDA kernels and the proprietary TensorRT compiler."
-
-  # Retrieval and memory
+    url: https://github.com/NVIDIA/TensorRT-LLM
+    description: NVIDIA's closed-runtime counterpart; fastest on NVIDIA hardware; depends on closed CUDA kernels and the proprietary TensorRT compiler.
   - slug: qdrant
     name: Qdrant
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://qdrant.tech/"
-    github: "https://github.com/qdrant/qdrant"
-    description: "Rust-native open-source vector database; production-grade similarity search and filtering."
-
+    url: https://qdrant.tech/
+    github: https://github.com/qdrant/qdrant
+    description: Rust-native open-source vector database; production-grade similarity search and filtering.
   - slug: weaviate
     name: Weaviate
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: BSD-3
     focus: open
     maturity: stable
-    url: "https://weaviate.io/"
-    github: "https://github.com/weaviate/weaviate"
-    description: "Go-based open-source vector database; built-in modules for embedding and reranking."
-
+    url: https://weaviate.io/
+    github: https://github.com/weaviate/weaviate
+    description: Go-based open-source vector database; built-in modules for embedding and reranking.
   - slug: chroma
     name: Chroma
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://www.trychroma.com/"
-    github: "https://github.com/chroma-core/chroma"
-    description: "Python-first open-source vector database; popular default for AI-app development."
-
+    url: https://www.trychroma.com/
+    github: https://github.com/chroma-core/chroma
+    description: Python-first open-source vector database; popular default for AI-app development.
   - slug: milvus
     name: Milvus
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://milvus.io/"
-    github: "https://github.com/milvus-io/milvus"
-    description: "Go-based open-source vector database; large-scale production deployments; Zilliz commercial offering."
-
+    url: https://milvus.io/
+    github: https://github.com/milvus-io/milvus
+    description: Go-based open-source vector database; large-scale production deployments; Zilliz commercial offering.
+    sources:
+      - title: en.wikipedia.org (audit-verified)
+        url: https://en.wikipedia.org/wiki/Milvus_(vector_database)
+      - title: milvus.io (audit-verified)
+        url: https://milvus.io/docs/release_notes.md
   - slug: lancedb
     name: LanceDB
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://lancedb.com/"
-    github: "https://github.com/lancedb/lancedb"
-    description: "Rust-native open vector database; serverless; columnar Lance format underneath."
-
+    url: https://lancedb.com/
+    github: https://github.com/lancedb/lancedb
+    description: Rust-native open vector database; serverless; columnar Lance format underneath.
   - slug: pgvector
     name: pgvector
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: PostgreSQL
     focus: open
     maturity: stable
-    url: "https://github.com/pgvector/pgvector"
-    github: "https://github.com/pgvector/pgvector"
-    description: "Vector similarity search inside PostgreSQL; lets existing Postgres deployments add RAG without a separate database."
+    url: https://github.com/pgvector/pgvector
+    github: https://github.com/pgvector/pgvector
+    description: Vector similarity search inside PostgreSQL; lets existing Postgres deployments add RAG without a separate database.
     explainer: |
       pgvector is a PostgreSQL extension by Andrew Kane that adds
       vector data types and similarity-search operators to standard
@@ -1355,22 +1396,23 @@ projects:
       and "use a dedicated vector DB" keeps moving. pgvector keeps
       winning the small-to-medium case.
     sources:
-      - title: "pgvector on GitHub"
-        url: "https://github.com/pgvector/pgvector"
-      - title: "pgvector Tutorial (Supabase)"
-        url: "https://supabase.com/docs/guides/database/extensions/pgvector"
-      - title: "pgvector Performance Notes"
-        url: "https://github.com/pgvector/pgvector#performance"
-
+      - title: pgvector on GitHub
+        url: https://github.com/pgvector/pgvector
+      - title: pgvector Tutorial (Supabase)
+        url: https://supabase.com/docs/guides/database/extensions/pgvector
+      - title: pgvector Performance Notes
+        url: https://github.com/pgvector/pgvector#performance
   - slug: letta
     name: Letta (formerly MemGPT)
-    layers: [retrieval-memory, agents]
+    layers:
+      - retrieval-memory
+      - agents
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://letta.com/"
-    github: "https://github.com/letta-ai/letta"
-    description: "Memory-stateful agent framework; OS-like memory hierarchy; persistent context across sessions."
+    url: https://letta.com/
+    github: https://github.com/letta-ai/letta
+    description: Memory-stateful agent framework; OS-like memory hierarchy; persistent context across sessions.
     explainer: |
       Letta (formerly MemGPT) is an open framework for building
       stateful AI agents with persistent memory. The original MemGPT
@@ -1399,42 +1441,41 @@ projects:
       hardest gaps to close, and Letta is the best current open bet
       on closing it.
     sources:
-      - title: "Letta"
-        url: "https://letta.com/"
-      - title: "Letta on GitHub"
-        url: "https://github.com/letta-ai/letta"
-      - title: "MemGPT Paper (Towards LLMs as Operating Systems)"
-        url: "https://arxiv.org/abs/2310.08560"
-
+      - title: Letta
+        url: https://letta.com/
+      - title: Letta on GitHub
+        url: https://github.com/letta-ai/letta
+      - title: MemGPT Paper (Towards LLMs as Operating Systems)
+        url: https://arxiv.org/abs/2310.08560
   - slug: mem0
     name: mem0
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://mem0.ai/"
-    github: "https://github.com/mem0ai/mem0"
-    description: "Memory layer for AI agents; vector-store-agnostic; popular for adding persistent user state to chat apps."
-
+    url: https://mem0.ai/
+    github: https://github.com/mem0ai/mem0
+    description: Memory layer for AI agents; vector-store-agnostic; popular for adding persistent user state to chat apps.
   - slug: pinecone
     name: Pinecone
-    layers: [retrieval-memory]
+    layers:
+      - retrieval-memory
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.pinecone.io/"
-    description: "Closed managed vector database; fast and operationally simple; no self-host option at most tiers."
-
-  # Agents
+    url: https://www.pinecone.io/
+    description: Closed managed vector database; fast and operationally simple; no self-host option at most tiers.
   - slug: goose
     name: Goose (Block)
-    layers: [agents]
+    layers:
+      - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://block.github.io/goose/"
-    github: "https://github.com/block/goose"
-    description: "Block's open agent; under the Linux Foundation's AAIF since Dec 2025; MCP-native; BYOK; extension-based."
+    url: https://block.github.io/goose/
+    github: https://github.com/block/goose
+    description: Block's open agent; under the Linux Foundation's AAIF since Dec 2025; MCP-native; BYOK; extension-based.
     explainer: |
       Goose is an on-machine, open agent originally built at Block.
       Apache 2.0. Extension-based architecture: capabilities are added
@@ -1461,24 +1502,24 @@ projects:
       runs a grant program (up to $100K) for external builders
       extending Goose with new integrations or tooling.
     sources:
-      - title: "Goose Documentation"
-        url: "https://block.github.io/goose/"
-      - title: "Goose on GitHub"
-        url: "https://github.com/block/goose"
-      - title: "Linux Foundation Agentic AI Foundation Announcement"
-        url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
-      - title: "Goose Grant Program (Block)"
-        url: "https://block.xyz/inside/introducing-the-goose-grant-program"
-
+      - title: Goose Documentation
+        url: https://block.github.io/goose/
+      - title: Goose on GitHub
+        url: https://github.com/block/goose
+      - title: Linux Foundation Agentic AI Foundation Announcement
+        url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
+      - title: Goose Grant Program (Block)
+        url: https://block.xyz/inside/introducing-the-goose-grant-program
   - slug: openhands
     name: OpenHands
-    layers: [agents]
+    layers:
+      - agents
     license: MIT
     focus: open
     maturity: stable
-    url: "https://all-hands.dev/"
-    github: "https://github.com/All-Hands-AI/OpenHands"
-    description: "Formerly OpenDevin; sandboxed open coding agent; strong SWE-bench Verified performance."
+    url: https://all-hands.dev/
+    github: https://github.com/All-Hands-AI/OpenHands
+    description: Formerly OpenDevin; sandboxed open coding agent; strong SWE-bench Verified performance.
     explainer: |
       OpenHands (formerly OpenDevin) is an open-source coding agent
       with a sandboxed execution environment. MIT-licensed. The agent
@@ -1507,22 +1548,22 @@ projects:
       especially on the polish-and-defaults dimension where closed
       products usually win.
     sources:
-      - title: "OpenHands Documentation"
-        url: "https://docs.all-hands.dev/"
-      - title: "OpenHands on GitHub"
-        url: "https://github.com/All-Hands-AI/OpenHands"
-      - title: "OpenHands Paper (Open Platform for AI Software Developers)"
-        url: "https://arxiv.org/abs/2407.16741"
-
+      - title: OpenHands Documentation
+        url: https://docs.all-hands.dev/
+      - title: OpenHands on GitHub
+        url: https://github.com/All-Hands-AI/OpenHands
+      - title: OpenHands Paper (Open Platform for AI Software Developers)
+        url: https://arxiv.org/abs/2407.16741
   - slug: aider
     name: Aider
-    layers: [agents]
+    layers:
+      - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://aider.chat/"
-    github: "https://github.com/Aider-AI/aider"
-    description: "Paul Gauthier's terminal-native open coding agent; BYOK; git-aware diffs; widely loved for its directness."
+    url: https://aider.chat/
+    github: https://github.com/Aider-AI/aider
+    description: Paul Gauthier's terminal-native open coding agent; BYOK; git-aware diffs; widely loved for its directness.
     explainer: |
       Aider is a terminal-native open coding agent built by Paul
       Gauthier. Apache 2.0. Architectural choices that make it
@@ -1552,41 +1593,45 @@ projects:
       to maintain. A frequent recommendation when "what should I
       use as a starting point for AI-assisted coding" comes up.
     sources:
-      - title: "Aider Documentation"
-        url: "https://aider.chat/docs/"
-      - title: "Aider on GitHub"
-        url: "https://github.com/Aider-AI/aider"
-      - title: "Aider Leaderboards"
-        url: "https://aider.chat/docs/leaderboards/"
-
+      - title: Aider Documentation
+        url: https://aider.chat/docs/
+      - title: Aider on GitHub
+        url: https://github.com/Aider-AI/aider
+      - title: Aider Leaderboards
+        url: https://aider.chat/docs/leaderboards/
+      - title: aider.chat (audit-verified)
+        url: https://aider.chat/docs/llms.html
+      - title: aider.chat (audit-verified)
+        url: https://aider.chat/docs/git.html
   - slug: cline
     name: Cline
-    layers: [agents]
+    layers:
+      - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://cline.bot/"
-    github: "https://github.com/cline/cline"
-    description: "VS Code-native open coding agent; large community of users; began as Claude Dev."
-
+    url: https://cline.bot/
+    github: https://github.com/cline/cline
+    description: VS Code-native open coding agent; large community of users; began as Claude Dev.
   - slug: continue
     name: Continue
-    layers: [agents]
+    layers:
+      - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://www.continue.dev/"
-    github: "https://github.com/continuedev/continue"
-    description: "Open IDE coding agent for VS Code and JetBrains; broader IDE integration than most."
-
+    url: https://www.continue.dev/
+    github: https://github.com/continuedev/continue
+    description: Open IDE coding agent for VS Code and JetBrains; broader IDE integration than most.
   - slug: claude-code
     name: Claude Code (Anthropic)
-    layers: [agents]
+    layers:
+      - agents
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.anthropic.com/claude-code"
-    description: "Anthropic's first-party CLI coding agent; closed-source; subscription model; the dominant closed coding agent in 2026."
+    url: https://www.anthropic.com/claude-code
+    description: Anthropic's first-party CLI coding agent; closed-source; subscription model; the dominant closed coding agent in 2026.
     explainer: |
       Claude Code is Anthropic's first-party coding agent. CLI-based
       (with IDE integrations), proprietary, distributed primarily via
@@ -1616,71 +1661,71 @@ projects:
       open-agent ecosystem competes on substitutability and
       sovereignty, not feature parity.
     sources:
-      - title: "Claude Code (Anthropic)"
-        url: "https://www.anthropic.com/claude-code"
-      - title: "Claude Code Documentation"
-        url: "https://docs.claude.com/en/docs/claude-code/overview"
-      - title: "Claude for Open Source Program"
-        url: "https://claude.com/contact-sales/claude-for-oss"
-
+      - title: Claude Code (Anthropic)
+        url: https://www.anthropic.com/claude-code
+      - title: Claude Code Documentation
+        url: https://docs.claude.com/en/docs/claude-code/overview
+      - title: Claude for Open Source Program
+        url: https://claude.com/contact-sales/claude-for-oss
   - slug: cursor
     name: Cursor
-    layers: [agents]
+    layers:
+      - agents
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://cursor.com/"
-    description: "Closed VS-Code-fork IDE with integrated agentic features; strong developer adoption."
-
+    url: https://cursor.com/
+    description: Closed VS-Code-fork IDE with integrated agentic features; strong developer adoption.
   - slug: devin
     name: Devin (Cognition Labs)
-    layers: [agents]
+    layers:
+      - agents
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://devin.ai/"
-    description: "Cognition's closed autonomous-software-engineer agent; was first to publicize SWE-bench scores."
-
+    url: https://devin.ai/
+    description: Cognition's closed autonomous-software-engineer agent; was first to publicize SWE-bench scores.
   - slug: langchain
     name: LangChain
-    layers: [agents]
+    layers:
+      - agents
     license: MIT
     focus: open
     maturity: stable
-    url: "https://www.langchain.com/"
-    github: "https://github.com/langchain-ai/langchain"
-    description: "Most-used open agent-construction framework; LLM tools, chains, RAG primitives, multi-agent helpers."
-
+    url: https://www.langchain.com/
+    github: https://github.com/langchain-ai/langchain
+    description: Most-used open agent-construction framework; LLM tools, chains, RAG primitives, multi-agent helpers.
   - slug: llama-index
     name: LlamaIndex
-    layers: [agents, retrieval-memory]
+    layers:
+      - agents
+      - retrieval-memory
     license: MIT
     focus: open
     maturity: stable
-    url: "https://www.llamaindex.ai/"
-    github: "https://github.com/run-llama/llama_index"
-    description: "Open framework for data-aware LLM applications; strong on RAG and structured data integration."
-
+    url: https://www.llamaindex.ai/
+    github: https://github.com/run-llama/llama_index
+    description: Open framework for data-aware LLM applications; strong on RAG and structured data integration.
   - slug: autogen
     name: AutoGen
-    layers: [agents]
+    layers:
+      - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://microsoft.github.io/autogen/"
-    github: "https://github.com/microsoft/autogen"
-    description: "Microsoft's open multi-agent framework; programmable agent conversations and tool-use orchestration."
-
-  # Protocols
+    url: https://microsoft.github.io/autogen/
+    github: https://github.com/microsoft/autogen
+    description: Microsoft's open multi-agent framework; programmable agent conversations and tool-use orchestration.
   - slug: mcp
     name: Model Context Protocol (MCP)
-    layers: [protocols]
+    layers:
+      - protocols
     license: MIT
     focus: open
     maturity: stable
-    url: "https://modelcontextprotocol.io/"
-    github: "https://github.com/modelcontextprotocol/modelcontextprotocol"
-    description: "Anthropic-seeded protocol for tool and context exchange; donated to the Linux Foundation's AAIF Dec 2025; de facto standard."
+    url: https://modelcontextprotocol.io/
+    github: https://github.com/modelcontextprotocol/modelcontextprotocol
+    description: Anthropic-seeded protocol for tool and context exchange; donated to the Linux Foundation's AAIF Dec 2025; de facto standard.
     explainer: |
       MCP is a wire protocol that lets a model or agent talk to tools
       and context sources in a standardized way. An MCP server exposes
@@ -1708,24 +1753,24 @@ projects:
       continues to influence the spec's direction. So far it has been
       treated as a published standard rather than a controlled product.
     sources:
-      - title: "MCP Specification (modelcontextprotocol.io)"
-        url: "https://modelcontextprotocol.io/"
-      - title: "MCP on GitHub"
-        url: "https://github.com/modelcontextprotocol"
-      - title: "Awesome MCP Servers"
-        url: "https://github.com/modelcontextprotocol/servers"
-      - title: "AAIF Founding Announcement (Linux Foundation)"
-        url: "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
-
+      - title: MCP Specification (modelcontextprotocol.io)
+        url: https://modelcontextprotocol.io/
+      - title: MCP on GitHub
+        url: https://github.com/modelcontextprotocol
+      - title: Awesome MCP Servers
+        url: https://github.com/modelcontextprotocol/servers
+      - title: AAIF Founding Announcement (Linux Foundation)
+        url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
   - slug: a2a
     name: Agent-to-Agent (A2A)
-    layers: [protocols]
+    layers:
+      - protocols
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://a2a-protocol.org/"
-    github: "https://github.com/a2aproject/A2A"
-    description: "Google-seeded protocol for inter-agent communication; under Linux Foundation; 150+ org signatories."
+    url: https://a2a-protocol.org/
+    github: https://github.com/a2aproject/A2A
+    description: Google-seeded protocol for inter-agent communication; under Linux Foundation; 150+ org signatories.
     explainer: |
       A2A (Agent-to-Agent) is a protocol for inter-agent communication
       seeded by Google in 2024 and donated to the Linux Foundation in
@@ -1754,31 +1799,35 @@ projects:
       strategic question is whether A2A becomes the durable inter-
       agent layer or whether agent-platform vendors fork their own.
     sources:
-      - title: "A2A Protocol"
-        url: "https://a2a-protocol.org/"
-      - title: "A2A on GitHub"
-        url: "https://github.com/a2aproject/A2A"
-      - title: "Linux Foundation A2A Announcement"
-        url: "https://www.linuxfoundation.org/press/announcing-the-agent2agent-protocol-a2a"
-
+      - title: A2A Protocol
+        url: https://a2a-protocol.org/
+      - title: A2A on GitHub
+        url: https://github.com/a2aproject/A2A
+      - title: Linux Foundation A2A Announcement
+        url: https://www.linuxfoundation.org/press/announcing-the-agent2agent-protocol-a2a
   - slug: aaif
     name: Agentic AI Foundation (AAIF)
-    layers: [protocols, governance]
+    layers:
+      - protocols
+      - governance
     license: Standard
     focus: open
     maturity: new
-    url: "https://aaif.linuxfoundation.org/"
-    description: "Linux Foundation umbrella for agent and protocol governance; founded Dec 2025; hosts MCP, goose, AGENTS.md."
-
+    url: https://aaif.linuxfoundation.org/
+    description: Linux Foundation umbrella for agent and protocol governance; founded Dec 2025; hosts MCP, goose, AGENTS.md.
+    sources:
+      - title: linuxfoundation.org (audit-verified)
+        url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
   - slug: l402
     name: L402
-    layers: [protocols]
+    layers:
+      - protocols
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://docs.lightning.engineering/lightning-network-tools/lnd/l402"
-    github: "https://github.com/lightninglabs/L402"
-    description: "Lightning Labs payment protocol pairing HTTP 402 with Lightning Network invoices; the original agentic-payments rail."
+    url: https://docs.lightning.engineering/lightning-network-tools/lnd/l402
+    github: https://github.com/lightninglabs/L402
+    description: Lightning Labs payment protocol pairing HTTP 402 with Lightning Network invoices; the original agentic-payments rail.
     explainer: |
       L402 is a payment protocol that combines the long-dormant HTTP
       402 "Payment Required" status code with Lightning Network
@@ -1808,24 +1857,26 @@ projects:
       ecosystem treats Lightning as a viable rail or moves to on-chain
       stablecoin alternatives.
     sources:
-      - title: "L402 Documentation (Lightning Labs)"
-        url: "https://docs.lightning.engineering/lightning-network-tools/lnd/l402"
-      - title: "L402 on GitHub"
-        url: "https://github.com/lightninglabs/L402"
-      - title: "HRF AI for Individual Rights — Routstr"
-        url: "https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/"
-      - title: "HTTP 402 (W3C)"
-        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402"
-
+      - title: L402 Documentation (Lightning Labs)
+        url: https://docs.lightning.engineering/lightning-network-tools/lnd/l402
+      - title: L402 on GitHub
+        url: https://github.com/lightninglabs/L402
+      - title: HRF AI for Individual Rights — Routstr
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+      - title: HTTP 402 (W3C)
+        url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402
+      - title: docs.lightning.engineering (audit-verified)
+        url: https://docs.lightning.engineering/the-lightning-network/l402
   - slug: x402
     name: x402
-    layers: [protocols]
+    layers:
+      - protocols
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://www.x402.org/"
-    github: "https://github.com/coinbase/x402"
-    description: "Coinbase's HTTP 402 revival with on-chain settlement; under the Linux Foundation; Stripe shipped an x402 integration in 2026."
+    url: https://www.x402.org/
+    github: https://github.com/coinbase/x402
+    description: Coinbase's HTTP 402 revival with on-chain settlement; under the Linux Foundation; Stripe shipped an x402 integration in 2026.
     explainer: |
       x402 is Coinbase's revival of the long-dormant HTTP 402 "Payment
       Required" status code. Open spec under Apache 2.0. The
@@ -1855,180 +1906,184 @@ projects:
       than people realize, because the rails determine who can become
       an economic agent in the agentic web without permission.
     sources:
-      - title: "x402.org"
-        url: "https://www.x402.org/"
-      - title: "x402 on GitHub (Coinbase)"
-        url: "https://github.com/coinbase/x402"
-      - title: "Linux Foundation x402 Announcement"
-        url: "https://www.linuxfoundation.org/press/coinbase-contributes-x402-payment-standard-to-the-linux-foundation"
-
+      - title: x402.org
+        url: https://www.x402.org/
+      - title: x402 on GitHub (Coinbase)
+        url: https://github.com/coinbase/x402
+      - title: Linux Foundation x402 Announcement
+        url: https://www.linuxfoundation.org/press/coinbase-contributes-x402-payment-standard-to-the-linux-foundation
+      - title: linuxfoundation.org (audit-verified)
+        url: https://www.linuxfoundation.org/press/linux-foundation-is-launching-the-x402-foundation-and-welcoming-the-contribution-of-the-x402-protocol
   - slug: acp
     name: Agent Client Protocol (ACP)
-    layers: [protocols]
+    layers:
+      - protocols
     license: Apache 2.0
     focus: open
     maturity: alpha
-    url: "https://agentclientprotocol.org/"
-    description: "Protocol for agent-to-client communication (IDEs, chat clients); less mature than MCP."
-
-  # Evaluation
+    url: https://agentclientprotocol.org/
+    description: Protocol for agent-to-client communication (IDEs, chat clients); less mature than MCP.
   - slug: lm-eval-harness
     name: lm-evaluation-harness
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: stable
-    url: "https://github.com/EleutherAI/lm-evaluation-harness"
-    github: "https://github.com/EleutherAI/lm-evaluation-harness"
-    description: "EleutherAI's standard harness; reference implementation for most public evals; the open-ecosystem default."
-
+    url: https://github.com/EleutherAI/lm-evaluation-harness
+    github: https://github.com/EleutherAI/lm-evaluation-harness
+    description: EleutherAI's standard harness; reference implementation for most public evals; the open-ecosystem default.
   - slug: lmarena
     name: LMArena (Chatbot Arena)
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://lmarena.ai/"
-    description: "Pairwise human voting converted to Elo; gold standard for 'how do humans prefer this model'; hard to game."
-
+    url: https://lmarena.ai/
+    description: Pairwise human voting converted to Elo; gold standard for 'how do humans prefer this model'; hard to game.
   - slug: mmlu
     name: MMLU / MMLU-Pro
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: maintenance
-    url: "https://github.com/hendrycks/test"
-    description: "Canonical multitask benchmark (57 subjects); v1 mostly saturated; MMLU-Pro is the harder successor."
-
+    url: https://github.com/hendrycks/test
+    description: Canonical multitask benchmark (57 subjects); v1 mostly saturated; MMLU-Pro is the harder successor.
   - slug: humaneval
     name: HumanEval / HumanEval+
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: maintenance
-    url: "https://github.com/openai/human-eval"
-    description: "Foundational code-completion benchmark; HumanEval+ extends test cases; superseded by LiveCodeBench for contamination resistance."
-
+    url: https://github.com/openai/human-eval
+    description: Foundational code-completion benchmark; HumanEval+ extends test cases; superseded by LiveCodeBench for contamination resistance.
   - slug: swe-bench
     name: SWE-bench Verified
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: stable
-    url: "https://www.swebench.com/"
-    github: "https://github.com/princeton-nlp/SWE-bench"
-    description: "Real GitHub issues from popular Python projects; the de facto for coding-agent capability."
-
+    url: https://www.swebench.com/
+    github: https://github.com/princeton-nlp/SWE-bench
+    description: Real GitHub issues from popular Python projects; the de facto for coding-agent capability.
   - slug: livebench
     name: LiveBench / LiveCodeBench
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: stable
-    url: "https://livebench.ai/"
-    description: "Contamination-aware benchmark with monthly question refresh; resists training-set leakage."
-
+    url: https://livebench.ai/
+    description: Contamination-aware benchmark with monthly question refresh; resists training-set leakage.
   - slug: gpqa
     name: GPQA Diamond
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: CC-BY-4.0
     focus: open
     maturity: stable
-    url: "https://github.com/idavidrein/gpqa"
-    description: "Graduate-level physics, chemistry, biology questions; hard, slow to saturate."
-
+    url: https://github.com/idavidrein/gpqa
+    description: Graduate-level physics, chemistry, biology questions; hard, slow to saturate.
   - slug: frontiermath
     name: FrontierMath
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: Source-available
     focus: source-available
     maturity: stable
-    url: "https://epoch.ai/frontiermath"
-    description: "Currently the hardest math benchmark; frontier labs negotiated partial access deals."
-
+    url: https://epoch.ai/frontiermath
+    description: Currently the hardest math benchmark; frontier labs negotiated partial access deals.
   - slug: hle
     name: Humanity's Last Exam (HLE)
-    layers: [evaluation]
+    layers:
+      - evaluation
     license: MIT
     focus: open
     maturity: new
-    url: "https://lastexam.ai/"
-    description: "Center for AI Safety and Scale AI joint; designed as the 'final boss' benchmark."
-
-  # Governance
+    url: https://lastexam.ai/
+    description: Center for AI Safety and Scale AI joint; designed as the 'final boss' benchmark.
   - slug: osi
     name: Open Source Initiative
-    layers: [governance]
+    layers:
+      - governance
     license: Standard
     focus: open
     maturity: stable
-    url: "https://opensource.org/"
-    description: "Body that defines and certifies open source; oversees the Open Source AI Definition (OSAID)."
-
+    url: https://opensource.org/
+    description: Body that defines and certifies open source; oversees the Open Source AI Definition (OSAID).
   - slug: osaid
     name: OSAID v1.0
-    layers: [governance]
+    layers:
+      - governance
     license: Standard
     focus: open
     maturity: stable
-    url: "https://opensource.org/ai"
-    description: "Open Source AI Definition v1.0 (October 2024); the first formal definition of 'open source AI'; v2.0 cycle in 2026."
-
+    url: https://opensource.org/ai
+    description: Open Source AI Definition v1.0 (October 2024); the first formal definition of 'open source AI'; v2.0 cycle in 2026.
+    sources:
+      - title: opensource.org (audit-verified)
+        url: https://opensource.org/blog/the-open-source-initiative-announces-the-release-of-the-industrys-first-open-source-ai-definition
+      - title: opensource.org (audit-verified)
+        url: https://opensource.org/blog/2024-end-of-year-review-open-source-ai-definition-v1-0
   - slug: linux-foundation
     name: Linux Foundation
-    layers: [governance]
+    layers:
+      - governance
     license: Standard
     focus: open
     maturity: stable
-    url: "https://www.linuxfoundation.org/"
-    description: "Neutral hosting and governance body; owns AAIF, LF AI and Data, A2A, and many other open AI projects."
-
+    url: https://www.linuxfoundation.org/
+    description: Neutral hosting and governance body; owns AAIF, LF AI and Data, A2A, and many other open AI projects.
   - slug: apache-2
     name: Apache License 2.0
-    layers: [governance]
+    layers:
+      - governance
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://www.apache.org/licenses/LICENSE-2.0"
-    description: "Most-used license for open AI projects; explicit patent grant plus patent-retaliation clause; durable rights."
-
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    description: Most-used license for open AI projects; explicit patent grant plus patent-retaliation clause; durable rights.
   - slug: mit-license
     name: MIT License
-    layers: [governance]
+    layers:
+      - governance
     license: MIT
     focus: open
     maturity: stable
-    url: "https://opensource.org/license/mit"
-    description: "Shortest permissive open-source license; no explicit patent language; common in agent and runtime projects."
-
+    url: https://opensource.org/license/mit
+    description: Shortest permissive open-source license; no explicit patent language; common in agent and runtime projects.
   - slug: llama-license
     name: Llama Community License
-    layers: [governance]
+    layers:
+      - governance
     license: Source-available
     focus: source-available
     maturity: stable
-    url: "https://www.llama.com/llama3/license/"
-    description: "Meta's source-available license; 700M MAU clause; OSI-rejected. Sets the precedent for 'source-available AI.'"
-
+    url: https://www.llama.com/llama3/license/
+    description: Meta's source-available license; 700M MAU clause; OSI-rejected. Sets the precedent for 'source-available AI.'
   - slug: gemma-terms
     name: Gemma Terms
-    layers: [governance]
+    layers:
+      - governance
     license: Source-available
     focus: source-available
     maturity: stable
-    url: "https://ai.google.dev/gemma/terms"
-    description: "Google's open-weights license for Gemma; source-available; prohibited-use policy parallels Meta's."
-
-  # Identity and trust
+    url: https://ai.google.dev/gemma/terms
+    description: Google's open-weights license for Gemma; source-available; prohibited-use policy parallels Meta's.
   - slug: ezkl
     name: EZKL
-    layers: [identity-trust]
+    layers:
+      - identity-trust
     license: Apache 2.0
     focus: open
     maturity: beta
-    url: "https://ezkl.xyz/"
-    github: "https://github.com/zkonduit/ezkl"
-    description: "Zero-knowledge proofs for ML inference; ZKML toolkit; converts ONNX models to ZK circuits."
+    url: https://ezkl.xyz/
+    github: https://github.com/zkonduit/ezkl
+    description: Zero-knowledge proofs for ML inference; ZKML toolkit; converts ONNX models to ZK circuits.
     explainer: |
       EZKL is an open toolkit for generating zero-knowledge proofs of
       machine-learning inference. Apache 2.0. The workflow: convert
@@ -2059,58 +2114,60 @@ projects:
       hardware-attested confidential compute win the verifiable-AI
       conversation by default.
     sources:
-      - title: "EZKL"
-        url: "https://ezkl.xyz/"
-      - title: "EZKL on GitHub"
-        url: "https://github.com/zkonduit/ezkl"
-      - title: "EZKL Documentation"
-        url: "https://docs.ezkl.xyz/"
-
+      - title: EZKL
+        url: https://ezkl.xyz/
+      - title: EZKL on GitHub
+        url: https://github.com/zkonduit/ezkl
+      - title: EZKL Documentation
+        url: https://docs.ezkl.xyz/
   - slug: modulus-labs
     name: Modulus Labs
-    layers: [identity-trust]
+    layers:
+      - identity-trust
     license: Source-available
     focus: source-available
     maturity: research
-    url: "https://www.moduluslabs.xyz/"
-    description: "ZKML startup; verifiable inference focused on on-chain AI applications."
-
+    url: https://www.moduluslabs.xyz/
+    description: ZKML startup; verifiable inference focused on on-chain AI applications.
   - slug: lagrange
     name: Lagrange (DeepProve)
-    layers: [identity-trust]
+    layers:
+      - identity-trust
     license: Source-available
     focus: source-available
     maturity: beta
-    url: "https://lagrange.dev/"
-    description: "ZK coprocessor for verifiable compute; DeepProve targets ZKML at production scale."
-
+    url: https://lagrange.dev/
+    description: ZK coprocessor for verifiable compute; DeepProve targets ZKML at production scale.
   - slug: phala-network
     name: Phala Network
-    layers: [identity-trust, compute]
+    layers:
+      - identity-trust
+      - compute
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://phala.network/"
-    github: "https://github.com/Phala-Network/phala-blockchain"
-    description: "TEE-as-a-service; Intel SGX based compute network with confidentiality guarantees."
-
+    url: https://phala.network/
+    github: https://github.com/Phala-Network/phala-blockchain
+    description: TEE-as-a-service; Intel SGX based compute network with confidentiality guarantees.
   - slug: nvidia-h100-cc
     name: NVIDIA H100 Confidential Computing
-    layers: [identity-trust, silicon]
+    layers:
+      - identity-trust
+      - silicon
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://www.nvidia.com/en-us/data-center/solutions/confidential-computing/"
-    description: "GPU TEE; hardware-attested isolated execution on NVIDIA H100; the closed but real confidential-AI baseline."
-
+    url: https://www.nvidia.com/en-us/data-center/solutions/confidential-computing/
+    description: GPU TEE; hardware-attested isolated execution on NVIDIA H100; the closed but real confidential-AI baseline.
   - slug: apple-pcc
     name: Apple Private Cloud Compute
-    layers: [identity-trust]
+    layers:
+      - identity-trust
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: "https://security.apple.com/blog/private-cloud-compute/"
-    description: "Apple's verifiable cloud inference architecture; Secure Enclave anchored; published security guarantees."
+    url: https://security.apple.com/blog/private-cloud-compute/
+    description: Apple's verifiable cloud inference architecture; Secure Enclave anchored; published security guarantees.
     explainer: |
       Private Cloud Compute (PCC) is Apple's architecture for running
       Apple Intelligence requests that exceed on-device capability,
@@ -2143,88 +2200,94 @@ projects:
       specifically, and the rest of the market has nothing
       comparable.
     sources:
-      - title: "Apple Private Cloud Compute (security.apple.com)"
-        url: "https://security.apple.com/blog/private-cloud-compute/"
-      - title: "PCC Security Documentation"
-        url: "https://security.apple.com/documentation/private-cloud-compute"
-      - title: "PCC Virtual Research Environment"
-        url: "https://security.apple.com/blog/pcc-security-research/"
-
+      - title: Apple Private Cloud Compute (security.apple.com)
+        url: https://security.apple.com/blog/private-cloud-compute/
+      - title: PCC Security Documentation
+        url: https://security.apple.com/documentation/private-cloud-compute
+      - title: PCC Virtual Research Environment
+        url: https://security.apple.com/blog/pcc-security-research/
+      - title: apple.com (audit-verified)
+        url: https://www.apple.com/newsroom/2024/06/introducing-apple-intelligence-for-iphone-iPad-and-mac/
   - slug: dids
     name: Decentralized Identifiers (DIDs)
-    layers: [identity-trust, protocols]
+    layers:
+      - identity-trust
+      - protocols
     license: Standard
     focus: open
     maturity: stable
-    url: "https://www.w3.org/TR/did-core/"
-    description: "W3C identity standard; the protocol-layer primitive for agent passports and self-sovereign identity."
-
-  # Safety and guardrails
+    url: https://www.w3.org/TR/did-core/
+    description: W3C identity standard; the protocol-layer primitive for agent passports and self-sovereign identity.
   - slug: llama-guard
     name: Llama Guard
-    layers: [safety-guardrails]
+    layers:
+      - safety-guardrails
     license: Llama Community License
     focus: source-available
     maturity: stable
-    url: "https://www.llama.com/trust-and-safety/"
-    description: "Meta's open guardrail classifier; trained to flag unsafe inputs and outputs; common building block in safety pipelines."
-
+    url: https://www.llama.com/trust-and-safety/
+    description: Meta's open guardrail classifier; trained to flag unsafe inputs and outputs; common building block in safety pipelines.
   - slug: nemo-guardrails
     name: NeMo Guardrails
-    layers: [safety-guardrails]
+    layers:
+      - safety-guardrails
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: "https://docs.nvidia.com/nemo/guardrails/"
-    github: "https://github.com/NVIDIA-NeMo/Guardrails"
-    description: "NVIDIA's open guardrails library; Python-first; programmable safety rails for LLM applications."
-
+    url: https://docs.nvidia.com/nemo/guardrails/
+    github: https://github.com/NVIDIA-NeMo/Guardrails
+    description: NVIDIA's open guardrails library; Python-first; programmable safety rails for LLM applications.
+    sources:
+      - title: github.com (audit-verified)
+        url: https://github.com/NVIDIA/NeMo-Guardrails
   - slug: aisi-inspect
     name: AISI Inspect
-    layers: [safety-guardrails, evaluation]
+    layers:
+      - safety-guardrails
+      - evaluation
     license: MIT
     focus: open
     maturity: stable
-    url: "https://inspect.aisi.org.uk/"
-    github: "https://github.com/UKGovernmentBEIS/inspect_ai"
-    description: "UK AI Security Institute's evaluation framework for AI safety; open-sourced; widely adopted in safety research."
-
+    url: https://inspect.aisi.org.uk/
+    github: https://github.com/UKGovernmentBEIS/inspect_ai
+    description: UK AI Security Institute's evaluation framework for AI safety; open-sourced; widely adopted in safety research.
   - slug: metr
     name: METR
-    layers: [safety-guardrails]
+    layers:
+      - safety-guardrails
     license: Standard
     focus: open
     maturity: research
-    url: "https://metr.org/"
-    description: "Model Evaluation and Threat Research; publishes open methodology and partial benchmarks for capability-dangerous evals."
-
+    url: https://metr.org/
+    description: Model Evaluation and Threat Research; publishes open methodology and partial benchmarks for capability-dangerous evals.
   - slug: apollo-research
     name: Apollo Research
-    layers: [safety-guardrails]
+    layers:
+      - safety-guardrails
     license: Standard
     focus: open
     maturity: research
-    url: "https://www.apolloresearch.ai/"
-    description: "Specializes in scheming and deception detection in frontier models; FMF-funded; releases research and partial tooling."
-
+    url: https://www.apolloresearch.ai/
+    description: Specializes in scheming and deception detection in frontier models; FMF-funded; releases research and partial tooling.
   - slug: constitutional-ai
     name: Constitutional AI (methodology)
-    layers: [safety-guardrails]
+    layers:
+      - safety-guardrails
     license: Standard
     focus: source-available
     maturity: stable
-    url: "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback"
-    description: "Anthropic's training methodology for harmlessness via AI feedback; methodology is public, specific implementations proprietary."
-
-  # Sovereignty and decentralization
+    url: https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback
+    description: Anthropic's training methodology for harmlessness via AI feedback; methodology is public, specific implementations proprietary.
   - slug: intellect-1
     name: Prime Intellect INTELLECT-1
-    layers: [sovereignty-decentralization, training]
+    layers:
+      - sovereignty-decentralization
+      - training
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://www.primeintellect.ai/blog/intellect-1"
-    description: "10B-parameter model trained across distributed compute via the PRIME framework; first public proof that decentralized frontier-ish training is feasible."
+    url: https://www.primeintellect.ai/blog/intellect-1
+    description: 10B-parameter model trained across distributed compute via the PRIME framework; first public proof that decentralized frontier-ish training is feasible.
     explainer: |
       INTELLECT-1 is a 10B-parameter language model that Prime
       Intellect trained across distributed compute spanning multiple
@@ -2256,21 +2319,22 @@ projects:
       independent of any hyperscaler relationship now has a concrete
       template to follow.
     sources:
-      - title: "INTELLECT-1 Release Post (Prime Intellect)"
-        url: "https://www.primeintellect.ai/blog/intellect-1-release"
-      - title: "INTELLECT-1 Technical Report"
-        url: "https://www.primeintellect.ai/blog/intellect-1"
-      - title: "INTELLECT-1 on HuggingFace"
-        url: "https://huggingface.co/PrimeIntellect/INTELLECT-1-Instruct"
-
+      - title: INTELLECT-1 Release Post (Prime Intellect)
+        url: https://www.primeintellect.ai/blog/intellect-1-release
+      - title: INTELLECT-1 Technical Report
+        url: https://www.primeintellect.ai/blog/intellect-1
+      - title: INTELLECT-1 on HuggingFace
+        url: https://huggingface.co/PrimeIntellect/INTELLECT-1-Instruct
   - slug: templar-covenant-72b
     name: Templar Covenant-72B
-    layers: [sovereignty-decentralization, training]
+    layers:
+      - sovereignty-decentralization
+      - training
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://github.com/tplr-ai/templar"
-    description: "Bittensor subnet for decentralized training; produced Covenant-72B in 2026; on-chain coordination plus incentivized compute."
+    url: https://github.com/tplr-ai/templar
+    description: Bittensor subnet for decentralized training; produced Covenant-72B in 2026; on-chain coordination plus incentivized compute.
     explainer: |
       Templar is a Bittensor subnet that ran a 72-billion-parameter
       language model pretraining from scratch across an incentivized
@@ -2305,47 +2369,51 @@ projects:
       time-to-result, and dependent on TAO economics continuing to
       reward miners adequately.
     sources:
-      - title: "Templar on GitHub"
-        url: "https://github.com/tplr-ai/templar"
-      - title: "Templar (project page)"
-        url: "https://www.tplr.ai/"
-      - title: "Bittensor Subnet Architecture"
-        url: "https://docs.bittensor.com/learn/subnets-and-blocks"
-
+      - title: Templar on GitHub
+        url: https://github.com/tplr-ai/templar
+      - title: Templar (project page)
+        url: https://www.tplr.ai/
+      - title: Bittensor Subnet Architecture
+        url: https://docs.bittensor.com/learn/subnets-and-blocks
   - slug: pluralis
     name: Pluralis Research
-    layers: [sovereignty-decentralization, training]
+    layers:
+      - sovereignty-decentralization
+      - training
     license: Apache 2.0
     focus: open
     maturity: research
-    url: "https://pluralis.ai/"
-    description: "Distributed training startup focused on aggregating compute from many small contributors with crypto-economic incentives."
-
+    url: https://pluralis.ai/
+    description: Distributed training startup focused on aggregating compute from many small contributors with crypto-economic incentives.
   - slug: petals
     name: Petals
-    layers: [sovereignty-decentralization, runtime]
+    layers:
+      - sovereignty-decentralization
+      - runtime
     license: MIT
     focus: open
     maturity: research
-    url: "https://petals.dev/"
-    github: "https://github.com/bigscience-workshop/petals"
-    description: "Cooperative pipeline-parallel inference across volunteer devices; the canonical decentralized-inference reference project."
-
+    url: https://petals.dev/
+    github: https://github.com/bigscience-workshop/petals
+    description: Cooperative pipeline-parallel inference across volunteer devices; the canonical decentralized-inference reference project.
   - slug: apple-mlx
     name: MLX (Apple)
-    layers: [sovereignty-decentralization, runtime]
+    layers:
+      - sovereignty-decentralization
+      - runtime
     license: MIT
     focus: open
     maturity: stable
-    url: "https://github.com/ml-explore/mlx"
-    github: "https://github.com/ml-explore/mlx"
-    description: "Apple's open ML framework for Apple Silicon; enables local-first model running and small-cluster pipeline inference."
-
+    url: https://github.com/ml-explore/mlx
+    github: https://github.com/ml-explore/mlx
+    description: Apple's open ML framework for Apple Silicon; enables local-first model running and small-cluster pipeline inference.
   - slug: world-id
     name: World ID
-    layers: [sovereignty-decentralization, identity-trust]
+    layers:
+      - sovereignty-decentralization
+      - identity-trust
     license: Source-available
     focus: source-available
     maturity: stable
-    url: "https://world.org/"
-    description: "Proof-of-personhood identity protocol; pairs biometric verification with cryptographic credentials; agent-economy adjacent."
+    url: https://world.org/
+    description: Proof-of-personhood identity protocol; pairs biometric verification with cryptographic credentials; agent-economy adjacent.
