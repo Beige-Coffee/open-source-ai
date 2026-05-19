@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SearchPage from "../components/SearchPage.tsx";
+
+// SSR the initial query out of ?q= so the result list is correct on
+// first paint when arriving from a shared link. Subsequent edits run
+// client-side.
+const initialQuery = Astro.url.searchParams.get("q") ?? "";
+---
+
+<BaseLayout
+  title={initialQuery ? `Search: ${initialQuery}` : "Search"}
+  description="Search across stack layers, glossary terms, projects, grants, funders, news issues, predictions, and readings."
+>
+  <SearchPage initialQuery={initialQuery} client:load />
+</BaseLayout>

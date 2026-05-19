@@ -49,6 +49,20 @@ const items: NavItem[] = [
       }
     </nav>
     <div class="flex items-center gap-4">
+      <button
+        id="nav-search-trigger"
+        type="button"
+        aria-label="Search the site"
+        title="Search · ⌘K"
+        class="flex items-center gap-2 text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-text)] cursor-pointer border border-[var(--color-border)] rounded px-2 py-1 hover:border-[var(--color-text-muted)]"
+      >
+        <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+        </svg>
+        <span class="hidden md:inline">Search</span>
+        <kbd class="hidden md:inline-block ml-1 px-1 border border-[var(--color-border)] rounded text-[10px] text-[var(--color-text-subtle)]">⌘K</kbd>
+      </button>
       <a
         href="/rss/news.xml"
         class="text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] no-underline"
@@ -96,6 +110,17 @@ const items: NavItem[] = [
 </header>
 
 <script>
+  // Wire the nav search button to the global SearchPopover. The
+  // popover itself listens for the `search-open` custom event and
+  // for ⌘K / Ctrl+K. Mac users see ⌘K hinted in the chip; Windows /
+  // Linux users still hit Ctrl+K via the popover's keyboard handler.
+  const searchTrigger = document.getElementById("nav-search-trigger");
+  if (searchTrigger) {
+    searchTrigger.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("search-open"));
+    });
+  }
+
   // Profile menu hydration: ask the browser Supabase client whether
   // there's an active session and, if so, show the avatar trigger and
   // wire up open/close + outside-click. Lives here (not in BaseLayout's

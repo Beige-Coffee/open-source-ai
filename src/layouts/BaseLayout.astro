@@ -3,6 +3,7 @@ import "../styles/global.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import ChatBubble from "../components/ChatBubble.tsx";
+import SearchPopover from "../components/SearchPopover.tsx";
 
 interface Props {
   title: string;
@@ -97,6 +98,7 @@ const isCourseRoute = Astro.url.pathname.startsWith("/learn");
     </main>
     <Footer />
     {!isCourseRoute && <ChatBubble client:only="react" />}
+    <SearchPopover client:idle />
     <script>
       import "../lib/glossary-runtime";
     </script>
