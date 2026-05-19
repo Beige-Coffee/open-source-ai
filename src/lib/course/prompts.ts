@@ -156,7 +156,7 @@ function probePrompt({ module, passChoice, probePrimer }: PhaseContext): string 
     probePrimer && probePrimer.length > 0
       ? `
 
-ALLOWED-CLAIMS SCOPE (from the Read content visible beside this chat):
+ALLOWED-CLAIMS SCOPE (from the layer content visible beside this chat):
 ${probePrimer.map((c) => `  - ${c}`).join("\n")}
 
 Every question you ask MUST anchor to one of these claims. If a
@@ -165,11 +165,12 @@ back inside the list or pick a fresh anchor from the list. Do not
 invent claims; the learner has not been shown them and cannot
 fairly answer.
 
-The Read content remains visible to the learner alongside this
-chat. You can reference what they can see in front of them ("the
-paragraph about <X>", "the second key-term card", etc.); avoid
-language like "you just read" or "earlier you saw" that implies
-the Read content has been hidden.`
+The layer content stays visible to the learner alongside this
+chat. Refer to it as "the content" (not "the Read content" or
+"what you just read"). You can point at specific landmarks ("the
+overview paragraph", "the section about X", "the key-term card
+for Y"), since the learner can see them. Avoid language that
+implies the content has been hidden or only existed in the past.`
       : "";
 
   return `
@@ -188,7 +189,7 @@ ${depthRule}
 When the learner has demonstrated understanding of the core concepts at this layer, end your reply with the literal token <PROBE_COMPLETE/> on its own line. That tells the UI the learner can advance to Compare. Do not emit this token until the learner has earned it.
 
 OPENING:
-For your first message, start with a question that opens the layer. Don't introduce yourself or recap the Read content (the learner can see it beside this chat). Just ask the question.`;
+For your first message, start with a question that opens the layer. Don't introduce yourself or recap the content (the learner can see it beside this chat). Just ask the question.`;
 }
 
 function comparePrompt({ module, passChoice }: PhaseContext): string {

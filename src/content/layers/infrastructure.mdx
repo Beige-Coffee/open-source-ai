@@ -9,146 +9,185 @@ sovereignty_relevance: 5
 related_layers: [silicon, compute, sovereignty-decentralization]
 updated: 2026-05-19
 probe_primer:
-  - "Infrastructure is the physical substrate (data center buildings, power, cooling, grid interconnect), distinct from silicon (the chips) and compute (the control-plane scheduling on those chips)."
-  - "Through 2025 and 2026 the binding constraint at the frontier shifted from chip allocation to electricity supply: Microsoft restarted Three Mile Island for Azure AI, the OpenAI / SoftBank / Oracle Stargate buildout committed $500B, and sovereign-state programs (UAE G42, Saudi Humain, IndiaAI Mission) entered the capex race."
-  - "Organizational decentralization (Akash, io.net, Bittensor compute subnets: peer-to-peer marketplaces of independent operators) is a different counterweight from physical decentralization (one company siting many small facilities, e.g., Crusoe's original flare-gas modular data centers)."
-  - "Crusoe migrated from the physically-distributed flare-gas model toward the hyperscaler default: it is the lead developer for the first Stargate site in Abilene, Texas. Companies move on the concentration-vs-distribution spectrum."
-  - "Almost no artifact at this layer is OSI-open; the relevant openness question shifts from license terms to whose jurisdiction the gigawatts sit in and how concentrated the operator set is."
-  - "The central editorial tension is concentration versus distribution of gigawatts: whether 5 GW of frontier compute lives in 4 hyperscaler regions or 40 operators across 20 jurisdictions decides whether sovereign or individual AI is technically possible at frontier scale."
+  - "Infrastructure is the physical substrate (buildings, power, cooling, grid interconnect), distinct from silicon (the chips themselves) and compute (the control-plane scheduling on those chips)."
+  - "Through 2025 and 2026 the binding constraint at the frontier shifted from chip allocation to electricity supply. Microsoft restarted Three Mile Island for Azure AI, OpenAI / SoftBank / Oracle committed $500B to Stargate, and sovereign-state programs (UAE G42, Saudi Humain, IndiaAI Mission) entered the capex race."
+  - "Organizational decentralization (Akash, io.net, Bittensor compute subnets) and physical decentralization (one company siting many small facilities, e.g., Crusoe's original flare-gas modular data centers) are different shapes. They're often conflated; they shouldn't be."
+  - "Crusoe migrated from the physically-distributed flare-gas model toward the hyperscaler default: it's the lead developer for the first Stargate site in Abilene, Texas. Companies move on the concentration-vs-distribution spectrum."
+  - "Almost no artifact at this layer is OSI-open. The relevant openness question shifts from license terms to whose jurisdiction the gigawatts sit in and how concentrated the operator set is."
+  - "The central editorial tension is concentration versus distribution of gigawatts. Whether 5 GW of frontier compute lives in 4 hyperscaler regions or 40 operators across 20 jurisdictions decides whether sovereign or individual AI is technically possible at frontier scale."
 ---
 
 import G from "../../components/G.astro";
 
-Where the math has to physically happen. The buildings, the
-electricity, the cooling, and the grid interconnect that determine
-whether a multi-gigawatt training run can even start. This layer
-sits below silicon (the chips themselves) and below compute (the
-control-plane scheduling that runs on those chips); it is the
-substrate the rest of the stack assumes. The question this layer
-answers is whether the math gets done at all, and on whose land,
-under whose regulator, drawing from whose grid.
+## Overview
+
+The infrastructure layer is where the math has to physically happen:
+the buildings, the electricity, the cooling, and the grid interconnect
+that determine whether a multi-gigawatt training run can even start.
+It sits below silicon (the chips themselves) and below compute (the
+control-plane scheduling that runs on those chips). The question
+this layer answers is whether the math gets done at all, and on
+whose land, under whose regulator, drawing from whose grid.
+
+Five things to keep in mind as you read:
+
+- **The binding constraint moved.** Through 2024 it was <G term="gpu">GPU</G>
+  allocation. Through 2025 and 2026 it became power.
+- **A new category of operator showed up.** Sovereign-state programs
+  (G42, Humain, IndiaAI) joined hyperscalers and AI-native lessors
+  (CoreWeave, Lambda, Crusoe, Nebius) in the capex race.
+- **There are two distinct shapes of "decentralized".** Marketplaces
+  of independent operators (Akash, io.net, Bittensor) versus one
+  company siting many small facilities (Crusoe's original model).
+  Don't conflate them.
+- **Almost nothing here is OSI-open.** "Openness" at this layer is
+  jurisdictional and organizational, not licensing.
+- **The editorial tension is concentration versus distribution.**
+  Whether 5 GW lives in 4 hyperscaler regions or 40 operators
+  across 20 jurisdictions decides what's technically possible.
+
+The rest of this page works through each of these in turn.
 
 ## The constraint moved from chips to electricity
 
-Through 2024, the binding constraint at the <G term="frontier">frontier</G> was <G term="gpu">GPU</G>
-allocation. Through 2025 and 2026 it became power. The marker
-events are concrete. Microsoft signed a 20-year power purchase
-agreement to restart Three Mile Island Unit 1 to feed Azure AI
-([Constellation press release, September 2024](https://www.constellationenergy.com/newsroom/2024/Constellation-to-Launch-Crane-Clean-Energy-Center-Restoring-Jobs-and-Carbon-Free-Power-to-The-Grid.html)),
-the first US nuclear restart driven by AI demand. OpenAI, SoftBank,
-and Oracle launched a $500B Stargate buildout in January 2025
-([OpenAI Stargate announcement](https://openai.com/index/announcing-the-stargate-project/))
-with $100B of immediate deployment. Amazon Web Services committed
-to colocating with a Talen Energy nuclear plant in Pennsylvania
-([AWS / Talen press release, March 2024](https://www.talenenergy.com/talen-energy-completes-sale-of-cumulus-data-data-center-campus-to-aws/)).
-A chip order with NVIDIA might take 6 to 12 months. A new nuclear
-reactor takes 5 to 10 years from interconnect filing to first
-power; bringing a decommissioned one back online is faster but
-still measured in years.
+Three events tell the story.
 
-That asymmetry reshapes who can compete at frontier scale. Chip
-procurement is a commercial problem with a clear counterparty.
-Power procurement is a multi-year political and regulatory
-problem involving utilities, grid operators, environmental
-review, and in many cases state legislatures.
+In September 2024, Microsoft signed a 20-year power purchase
+agreement to restart Three Mile Island Unit 1 to feed Azure AI
+([Constellation press release](https://www.constellationenergy.com/newsroom/2024/Constellation-to-Launch-Crane-Clean-Energy-Center-Restoring-Jobs-and-Carbon-Free-Power-to-The-Grid.html)).
+First US nuclear restart driven by AI demand. In January 2025,
+OpenAI, SoftBank, and Oracle announced the $500B Stargate buildout,
+with $100B of immediate deployment
+([OpenAI Stargate announcement](https://openai.com/index/announcing-the-stargate-project/)).
+In March 2024, Amazon Web Services bought a data center campus
+co-located with a Talen Energy nuclear plant in Pennsylvania
+([Talen press release](https://www.talenenergy.com/talen-energy-completes-sale-of-cumulus-data-data-center-campus-to-aws/)).
+
+The pattern is that the capital is no longer chasing GPUs. It's
+chasing electrons.
+
+The lead-time asymmetry is the reason. A chip order with NVIDIA
+takes months. Building gigawatt-scale generation takes years:
+nuclear restarts are the fastest path and still measure in
+multi-year increments; greenfield reactors are five to ten years
+from interconnect filing to first power; even gas turbines bump
+into queue constraints in the major markets. Chip procurement is
+a commercial problem with a clear counterparty. Power procurement
+is a multi-year political and regulatory problem involving
+utilities, grid operators, environmental review, and in many
+cases state legislatures.
 
 ## The capex race and the new entrants
 
-The hyperscaler set (Microsoft Azure, Google, AWS, Meta, Oracle)
-continues to dominate frontier-scale capacity, but two new
-categories have entered. The first is sovereign-state programs.
-The UAE's G42 partnered with Microsoft for a $1.5B initial round
-in 2024 and continues to expand under MGX
-([G42 / Microsoft announcement, April 2024](https://www.microsoft.com/en-us/microsoft-cloud/blog/2024/04/15/microsofts-1-5b-investment-in-uae-based-g42-expands-the-uaes-ai-capabilities/)).
+The hyperscalers (Microsoft Azure, Google, AWS, Meta, Oracle) still
+own most of the <G term="frontier">frontier</G>-scale capacity. Two new categories joined
+them.
+
+**Sovereign-state programs** put national budgets into AI
+infrastructure as a strategic asset. The UAE's G42 partnered with
+Microsoft for a $1.5B initial round in April 2024 and continues to
+expand under MGX
+([G42 / Microsoft announcement](https://www.microsoft.com/en-us/microsoft-cloud/blog/2024/04/15/microsofts-1-5b-investment-in-uae-based-g42-expands-the-uaes-ai-capabilities/)).
 Saudi Arabia's Humain, launched May 2025 under PIF, allocated
 $10B for <G term="sovereign-compute">sovereign AI infrastructure</G>
-([Humain launch coverage, Reuters, May 2025](https://www.reuters.com/world/middle-east/saudi-arabia-launches-ai-firm-humain-pif-2025-05-13/)).
+([Reuters](https://www.reuters.com/world/middle-east/saudi-arabia-launches-ai-firm-humain-pif-2025-05-13/)).
 The IndiaAI Mission committed $1.2B in March 2024 with explicit
 language about subsidizing GPU access for Indian startups and
 academia
-([Indian government announcement, March 2024](https://www.meity.gov.in/static/uploads/2024/03/2c61b6dc4e2b8de5fde9fb1f7f4daf03.pdf)).
+([Indian government announcement](https://www.meity.gov.in/static/uploads/2024/03/2c61b6dc4e2b8de5fde9fb1f7f4daf03.pdf)).
 
-The second category is AI-native infrastructure operators that
-sit between the hyperscalers and the long tail: CoreWeave (IPO'd
-March 2025), Lambda, Crusoe, and Nebius. These run AI-purpose-
-built campuses but lease capacity wholesale rather than serving
-end users. Their bargaining position is improving because they
+**AI-native infrastructure operators** sit between the
+hyperscalers and the long tail: CoreWeave (IPO'd March 2025),
+Lambda, Crusoe, and Nebius. They run AI-purpose-built campuses
+but lease capacity wholesale rather than serving end users. They
 moved on power-and-siting before the hyperscalers fully woke up
-to it.
+to it, which is now translating into bargaining leverage.
 
 ## Counterweights, categorized properly
 
-The decentralized response to the capex concentration comes in
-two organizationally distinct shapes. They are often conflated;
-they should not be.
+The decentralized response to capex concentration comes in two
+organizationally distinct shapes. They're often conflated. They
+shouldn't be.
 
-**Organizational decentralization** is a market design where
-many independent operators contribute capacity and a protocol
-matches supply to demand. Akash Network bids GPU jobs against
-node operators with a token-settled rail. io.net aggregates idle
-GPUs from independent providers and exposes a single API. The
-Bittensor compute subnets (Subnet 51 for compute, Subnet 27 for
-training) reward operators in TAO for serving requests. The
-operator set is permissionless, no single entity owns the capacity,
-and the worst-case failure is degraded service rather than a
-single-vendor outage.
+### Organizational decentralization
 
-**Physical decentralization** is when one company sites many
-small facilities instead of one giant campus. Crusoe's original
-play was modular data centers co-located with flare gas stacks in
-North Dakota and Texas oil fields, capturing energy that was
-otherwise being burned. That was physically distributed but
-organizationally centralized: Crusoe is a single proprietary
-company that owns and operates every site. The two models share
-a "not the hyperscaler default" vibe but solve different problems.
-Marketplace decentralization addresses operator-set diversity;
-physical decentralization addresses siting and energy economics.
+A market design where many independent operators contribute
+capacity and a protocol matches supply to demand. Akash Network
+bids GPU jobs against node operators with a token-settled rail.
+io.net aggregates idle GPUs from independent providers behind a
+single API. Bittensor's compute subnets (Subnet 51 for inference
+compute, Subnet 27 for distributed training) reward operators in
+TAO for serving requests. The operator set is permissionless, no
+single entity owns the capacity, and the worst-case failure is
+degraded service rather than a single-vendor outage.
 
-Crusoe itself illustrates that companies move on this spectrum.
-As of 2025, Crusoe is the lead developer of the first Stargate
-site in Abilene, Texas
-([Stargate Abilene reporting, Bloomberg, March 2025](https://www.bloomberg.com/news/articles/2025-03-20/openai-s-stargate-site-in-texas-faces-power-challenges)),
+### Physical decentralization
+
+One company sites many small facilities instead of one giant
+campus. Crusoe's original play was modular data centers co-located
+with flare gas stacks in North Dakota and Texas oil fields,
+capturing energy that was otherwise being burned. That's
+physically distributed but organizationally centralized: Crusoe
+is a single proprietary company that owns and operates every
+site.
+
+The two models share a "not the hyperscaler default" vibe but
+solve different problems. Marketplace decentralization addresses
+operator-set diversity. Physical decentralization addresses
+siting and energy economics.
+
+### Companies move on this spectrum
+
+Crusoe itself illustrates the point. As of 2025, Crusoe is the
+lead developer of the first Stargate site in Abilene, Texas
+([Bloomberg](https://www.bloomberg.com/news/articles/2025-03-20/openai-s-stargate-site-in-texas-faces-power-challenges)),
 a single concentrated multi-gigawatt campus. The company that
 started as the poster child for distributed flare-gas siting is
 now the contractor for the hyperscaler-default play. The category
-label "decentralized" does not stick to a company across its
-history; it sticks to the specific business model.
+label doesn't stick to a company across its history; it sticks
+to the specific business model.
 
-A third axis cross-cuts both. <G term="behind-the-meter">Behind-the-meter</G> siting (the data
-center sits on the same side of the utility meter as the
-generation, bypassing the <G term="grid-interconnect">grid interconnect queue</G>) is
-geographically agnostic and can serve either model. Some
-sovereign-state programs use behind-the-meter colocation to
-sidestep their own regulators.
+A third axis cross-cuts both. <G term="behind-the-meter">Behind-the-meter</G>
+siting (where the data center sits on the same side of the
+utility meter as the generation, bypassing the
+<G term="grid-interconnect">grid interconnect queue</G>) is
+geographically agnostic and can serve either model.
 
 ## What's open and what isn't
 
-Almost no artifact at this layer is open-source in the <G term="osi">OSI</G>
-sense. Data centers are buildings; transformers and switchgear
-are commercial products; power purchase agreements are private
-contracts. The relevant openness question at this layer is not
-license terms but jurisdiction and operator concentration: whose
-state has signing authority over the gigawatts, and how many
-independent operators are in the set. That is why this layer
-maps tightly to sovereignty (see the [sovereignty and
-decentralization primitives layer](/stack/sovereignty-decentralization))
+Almost nothing at this layer is open-source in the <G term="osi">OSI</G>
+sense. Data centers are buildings. Transformers and switchgear
+are commercial products. Power purchase agreements are private
+contracts. There is no equivalent here to <G term="vllm">vLLM</G> or <G term="deepseek">DeepSeek</G>-V3
+that you can fork and run.
+
+The relevant openness question shifts. Not "is the artifact
+open-source?" but "whose state has signing authority over the
+gigawatts, and how many independent operators are in the set?".
+That's why infrastructure maps tightly to the [sovereignty and
+decentralization primitives layer](/stack/sovereignty-decentralization)
 rather than to governance, which is about licensing further up
 the stack.
 
 ## The editorial tension
 
-Concentration versus distribution of gigawatts is the central
-debate. Whether 5 GW of frontier compute lives in 4 hyperscaler
-regions or 40 operators across 20 jurisdictions decides whether
+Concentration versus distribution of gigawatts. That's the
+debate.
+
+Whether 5 GW of frontier compute lives in 4 hyperscaler regions
+or 40 operators across 20 jurisdictions decides whether
 sovereign-state or individual-scale open-source AI is technically
-possible at frontier scale at all. The concentration side argues
-that frontier training requires tightly-coupled, high-bandwidth
-gigawatt-scale campuses that only hyperscalers and well-financed
-states can build; the distribution side argues that <G term="inference">inference</G>,
-<G term="fine-tuning">fine-tuning</G>, and even some training workloads can be served from
-heterogeneous physically-distributed compute, and that the
-sovereignty cost of running an open ecosystem on closed
-infrastructure eventually dominates the efficiency cost of
-running it on slower distributed alternatives. Both sides agree
-the trajectory is uncertain; the disagreement is which side has
-the lower long-run cost.
+possible at frontier scale at all.
+
+The concentration side argues that frontier training requires
+tightly-coupled, high-bandwidth gigawatt-scale campuses that
+only hyperscalers and well-financed states can build. The
+distribution side argues that <G term="inference">inference</G>,
+<G term="fine-tuning">fine-tuning</G>, and even some training
+workloads can be served from heterogeneous physically-distributed
+compute, and that the sovereignty cost of running an open
+ecosystem on closed infrastructure eventually dominates the
+efficiency cost of running it on slower distributed alternatives.
+
+Both sides agree the trajectory is uncertain. The disagreement
+is which side has the lower long-run cost.

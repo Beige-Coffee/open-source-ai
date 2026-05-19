@@ -26,6 +26,13 @@ export interface AnonModuleEntry {
   chat?: Partial<Record<ModulePhase, ChatTurn[]>>;
   synth?: string;
   why_open_saved?: string;
+  /**
+   * The learner's current phase for this module. Persists across
+   * page reloads for anonymous users. Logged-in users use
+   * module_progress server-side; the SSR loads it into
+   * `currentPhase` directly.
+   */
+  phase?: ModulePhase;
 }
 
 export interface AnonState {
@@ -101,6 +108,18 @@ export function writeAnonWhyOpen(moduleSlug: string, body: string): void {
   m.why_open_saved = body;
   state.modules[moduleSlug] = m;
   writeState(state);
+}
+
+export function writeAnonPhase(moduleSlug: string, phase: ModulePhase): void {
+  const state = readState();
+  const m = state.modules[moduleSlug] ?? {};
+  m.phase = phase;
+  state.modules[moduleSlug] = m;
+  writeState(state);
+}
+
+export function readAnonPhase(moduleSlug: string): ModulePhase | null {
+  return readState().modules[moduleSlug]?.phase ?? null;
 }
 
 export function writeAnonPassChoice(choice: "fast" | "deep"): void {

@@ -187,13 +187,18 @@ const prev = prevModule(moduleSlug);
       </p>
     </header>
 
-    <!-- Phase indicator ribbon -->
+    <!-- Phase indicator ribbon. "read" is no longer rendered as a
+         tab: the layer content is always visible to the left, so
+         calling it a phase the learner navigates to is misleading.
+         The initial state shows the four real phases with none
+         highlighted; once the learner moves into Probe the tab
+         lights up. -->
     <nav
       aria-label="Module phases"
       class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
     >
       {
-        PHASE_ORDER.filter((p) => p !== "complete").map((phase) => {
+        PHASE_ORDER.filter((p) => p !== "complete" && p !== "read").map((phase) => {
           const isCurrent = phase === currentPhase;
           const isDone =
             PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);
@@ -235,13 +240,10 @@ const prev = prevModule(moduleSlug);
         {
           layerEntry && LayerContent && (
             <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Read
-              </h2>
               <LayerContent />
 
               {relatedGlossary.length > 0 && (
-                <section class="mt-8 pt-6 border-t border-[var(--color-border)]">
+                <section class="mt-10 pt-6 border-t border-[var(--color-border)]">
                   <h3 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
                     Key terms for this layer
                   </h3>
@@ -266,21 +268,6 @@ const prev = prevModule(moduleSlug);
                     ))}
                   </ul>
                 </section>
-              )}
-
-              {currentPhase === "read" && (
-                <form
-                  method="POST"
-                  action={`/api/course/advance?module=${moduleSlug}`}
-                  class="mt-8"
-                >
-                  <button
-                    type="submit"
-                    class="px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
-                  >
-                    I've read it · move to Probe →
-                  </button>
-                </form>
               )}
 
               {currentPhase === "complete" && next && (

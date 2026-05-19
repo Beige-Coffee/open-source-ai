@@ -577,6 +577,99 @@ a:hover {
   animation: course-tool-pulse 1.1s ease-in-out infinite;
 }
 
+/* --- Course layer Read content typography (.prose-course) ---
+
+   The layer MDX renders inside <div class="prose-course"> on the
+   /learn/<module> page. Tailwind's reset zeroes default heading
+   sizes, so without these rules ## section headers render at body
+   size and the layer reads as one undifferentiated block of text.
+   Editorial voice here mirrors the rest of the site: serif headings
+   for content, mono for labels, sans for prose. */
+.prose-course {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  max-width: 65ch;
+}
+.prose-course > p,
+.prose-course > ul,
+.prose-course > ol {
+  margin: 0 0 1rem;
+}
+.prose-course h2 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 2.25rem 0 0.85rem;
+  color: var(--color-text);
+}
+.prose-course h2:first-child {
+  margin-top: 0;
+}
+.prose-course h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.75rem 0 0.6rem;
+  color: var(--color-text);
+}
+.prose-course h4 {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.4rem;
+}
+.prose-course strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.prose-course em {
+  font-style: italic;
+}
+.prose-course a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-strong);
+  text-underline-offset: 2px;
+}
+.prose-course a:hover {
+  text-decoration-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.prose-course ul,
+.prose-course ol {
+  padding-left: 1.25rem;
+}
+.prose-course li {
+  margin: 0.25rem 0;
+}
+.prose-course code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-surface-warm);
+  border: 1px solid var(--color-border);
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+}
+.prose-course blockquote {
+  margin: 1rem 0 1rem 0;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+/* The first paragraph after a heading sits closer to the heading
+   so the visual rhythm reads as "header → body" rather than two
+   floating elements. */
+.prose-course h2 + p,
+.prose-course h3 + p {
+  margin-top: 0;
+}
+
 /* --- Layer hover card (src/lib/layer-hover.ts) --- */
 
 /* One shared card lives in BaseLayout; the runtime moves it next

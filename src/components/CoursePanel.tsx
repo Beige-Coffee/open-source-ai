@@ -53,7 +53,9 @@ import {
   readAnonChat,
   readAnonModule,
   readAnonPassChoice,
+  readAnonPhase,
   writeAnonChat,
+  writeAnonPhase,
   writeAnonSynth,
   writeAnonWhyOpen,
 } from "../lib/course/anonStorage";
@@ -208,6 +210,19 @@ export default function CoursePanel({
     if (stored && stored !== effectivePass) setEffectivePass(stored);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  // For anonymous users, restore the saved phase from localStorage on
+  // mount and on module change. The page SSR can't read localStorage,
+  // so it always passes initialPhase="read" for anonymous learners —
+  // without this effect, a learner who had been chatting in Probe and
+  // then navigates away would land back on Read and never see the
+  // saved turns (because the load effect short-circuits during Read).
+  useEffect(() => {
+    if (userId) return;
+    const stored = readAnonPhase(moduleSlug);
+    if (stored && stored !== phase) setPhase(stored);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, moduleSlug]);
 
   // Load prior chat turns for the current (moduleSlug, phase). This is
   // the ONLY effect that calls setTurns with a DB / localStorage
@@ -526,7 +541,9 @@ export default function CoursePanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, phaseLoaded, turns.length, hasKey]);
 
-  // Phase advance: clear local state, write progress to Supabase, set new phase.
+  // Phase advance: clear local state, persist progress, set new phase.
+  // Logged-in users write to module_progress; anonymous users write to
+  // localStorage so a refresh resumes in the same phase.
   const advance = useCallback(async () => {
     if (phase === "read" || phase === "complete") return;
     const next = nextPhase(phase as ModulePhase);
@@ -537,6 +554,8 @@ export default function CoursePanel({
         phase: next,
         phase_started_at: new Date().toISOString(),
       });
+    } else if (!userId && next !== "complete") {
+      writeAnonPhase(moduleSlug, next as ModulePhase);
     }
     setPhase(next);
   }, [phase, userId, supabase, moduleSlug]);
@@ -619,27 +638,67 @@ export default function CoursePanel({
   }
 
   function PhaseHeader() {
+    // The read state is now framed as "not started yet" rather than
+    // a named phase — the phase ribbon hides Read too — so we suppress
+    // the right-side label until the learner is actually in Probe or
+    // later.
+    const phaseChip = phase === "read" ? null : phaseLabel(phase);
     return (
       <div class="px-4 py-2 border-b border-[var(--color-border)] flex items-baseline justify-between">
         <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
           Course agent
         </span>
-        <span class="font-mono text-[10px] text-[var(--color-text-subtle)]">
-          {phaseLabel(phase)}
-        </span>
+        {phaseChip && (
+          <span class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+            {phaseChip}
+          </span>
+        )}
       </div>
     );
   }
+
+  // Begin Probe: optimistically transition the panel into the Probe
+  // phase (the load + auto-start effects will then fire the opening
+  // question). Logged-in users get a module_progress upsert; anonymous
+  // users get a localStorage write. Either way, a refresh lands the
+  // learner back in Probe and the saved turns surface again.
+  const beginProbe = useCallback(async () => {
+    setPhase("probe");
+    if (userId && supabase) {
+      try {
+        await supabase.from("module_progress").upsert({
+          user_id: userId,
+          module_slug: moduleSlug,
+          phase: "probe",
+          phase_started_at: new Date().toISOString(),
+        });
+      } catch {
+        // Non-fatal: local phase has already moved, so the dialog
+        // proceeds. Persistence will retry on the next phase change.
+      }
+    } else if (!userId) {
+      writeAnonPhase(moduleSlug, "probe");
+    }
+  }, [userId, supabase, moduleSlug]);
 
   if (phase === "read") {
     return (
       <>
         <PhaseHeader />
-        <div class="p-4 text-sm text-[var(--color-text-muted)] leading-relaxed">
-          <p>
-            Reading phase. The agent waits until you advance to Probe;
-            then the dialogue begins.
+        <div class="flex-1 flex flex-col p-5 gap-4">
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Read the content beside this chat. When you're ready,
+            begin the Probe dialog — the agent will ask Socratic
+            questions grounded in what you've just covered, and the
+            content stays visible so you can refer back to it.
           </p>
+          <button
+            type="button"
+            onClick={beginProbe}
+            class="self-start px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+          >
+            Begin Probe →
+          </button>
         </div>
       </>
     );
