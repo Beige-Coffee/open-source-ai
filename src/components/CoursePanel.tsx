@@ -217,9 +217,28 @@ export default function CoursePanel({
   // without this effect, a learner who had been chatting in Probe and
   // then navigates away would land back on Read and never see the
   // saved turns (because the load effect short-circuits during Read).
+  //
+  // Legacy fallback: writeAnonPhase didn't exist before this commit
+  // landed, so older entries in localStorage have a saved chat but
+  // no saved phase. Infer it from where the chat history actually
+  // lives — if there are turns under "probe" or "compare" or
+  // "why_open", that's where the learner left off.
   useEffect(() => {
     if (userId) return;
-    const stored = readAnonPhase(moduleSlug);
+    let stored = readAnonPhase(moduleSlug);
+    if (!stored) {
+      const m = readAnonModule(moduleSlug);
+      const candidates: ModulePhase[] = ["why_open", "compare", "probe"];
+      for (const p of candidates) {
+        if (m.chat?.[p] && m.chat[p]!.length > 0) {
+          stored = p;
+          // Lift the inferred phase into proper storage so subsequent
+          // mounts hit the fast path instead of re-inferring.
+          writeAnonPhase(moduleSlug, p);
+          break;
+        }
+      }
+    }
     if (stored && stored !== phase) setPhase(stored);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, moduleSlug]);
