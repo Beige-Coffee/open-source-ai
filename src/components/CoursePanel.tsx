@@ -39,6 +39,8 @@ import { TOOLS, ToolBudget, executeTool } from "../lib/chat/tools";
 import { streamText, describeError } from "../lib/chat/stream";
 import { browserSupabase } from "../lib/course/supabase";
 import { buildSystemPrompt } from "../lib/course/prompts";
+import { encryptForStorage, readEncOrPlain } from "../lib/course/encrypted-io";
+import type { EncBlobJson } from "../lib/course/supabase";
 import {
   readAnonChat,
   readAnonModule,
@@ -136,18 +138,32 @@ export default function CoursePanel({
       if (userId && supabase) {
         const { data } = await supabase
           .from("chat_turns")
-          .select("role, content, turn_index")
+          .select("role, content, content_enc, turn_index")
           .eq("user_id", userId)
           .eq("module_slug", moduleSlug)
           .eq("phase", phase)
           .order("turn_index", { ascending: true });
-        loaded = (data ?? [])
-          .filter((t) => t.role === "user" || t.role === "assistant")
-          .map((t) => ({
-            role: t.role as "user" | "assistant",
-            content: t.content,
-            turn_index: t.turn_index,
-          }));
+        const rows = (data ?? []).filter(
+          (t) => t.role === "user" || t.role === "assistant",
+        );
+        try {
+          loaded = await Promise.all(
+            rows.map(async (t) => ({
+              role: t.role as "user" | "assistant",
+              content: await readEncOrPlain(t.content_enc as EncBlobJson | null, t.content),
+              turn_index: t.turn_index,
+            })),
+          );
+        } catch (err) {
+          // Locked or wrong key. Surface a clear error to the user
+          // rather than silently rendering empty turns.
+          if (!cancelled) {
+            setError(
+              "Your encrypted course data is locked. Log out and back in to unlock.",
+            );
+          }
+          return;
+        }
       } else {
         loaded = readAnonChat(moduleSlug, phase as ModulePhase);
       }
@@ -204,14 +220,21 @@ export default function CoursePanel({
       setTurns(nextTurns);
       if (phase === "read" || phase === "complete") return;
       if (userId && supabase) {
-        await supabase.from("chat_turns").insert({
-          user_id: userId,
-          module_slug: moduleSlug,
-          phase,
-          role,
-          content,
-          turn_index: newTurn.turn_index,
-        });
+        try {
+          const content_enc = await encryptForStorage(content);
+          await supabase.from("chat_turns").insert({
+            user_id: userId,
+            module_slug: moduleSlug,
+            phase,
+            role,
+            content_enc,
+            turn_index: newTurn.turn_index,
+          });
+        } catch (err) {
+          setError(
+            "Could not save this turn: your encryption key is locked. Log out and back in.",
+          );
+        }
       } else if (!userId) {
         writeAnonChat(moduleSlug, phase as ModulePhase, nextTurns);
       }

@@ -1,0 +1,57 @@
+---
+date: 2026-05-19
+editorial_letter: "Today's issue covers items from 2026-05-18 and 2026-05-19 across five layers: runtime, retrieval-memory, agents, protocols, and governance. The runtime layer recorded three same-day Ollama v0.30.0 release candidates (rc18, rc19, rc20) on 2026-05-18, continuing the rebase away from GGML toward direct llama.cpp and MLX support. The most significant primary release is HuggingFace's Ettin Reranker family, six Apache-2.0 ModernBERT cross-encoders from 17M to 1B parameters, with the 32M model reportedly outscoring BAAI bge-reranker-v2-m3 (568M) on MTEB Retrieval NDCG@10. The protocols layer logged Anthropic's acquisition of Stainless, the SDK and MCP-server generator that has powered Anthropic's official SDKs since the API's earliest days."
+item_count: 6
+layer_buckets:
+  runtime: 1
+  retrieval-memory: 1
+  agents: 1
+  protocols: 1
+  governance: 2
+---
+
+## Runtime
+
+### Ollama v0.30.0-rc18, rc19, rc20
+
+Ollama tagged three v0.30.0 release candidates in a single day on 2026-05-18, continuing the v0.30 line that the 2026-05-18 issue covered at rc17. The rc20 notes describe the same architectural shift: directly supporting llama.cpp instead of building on top of GGML, adding GGUF file-format compatibility, and switching Apple Silicon acceleration to MLX. Two model families remain unsupported in this candidate: laguna-xs.2 and llama3.2-vision. The v0.24 stable line continues in parallel.
+
+Source: [Ollama GitHub Releases](https://github.com/ollama/ollama/releases/tag/v0.30.0-rc20)
+
+## Retrieval-Memory
+
+### Ettin Reranker Family
+
+HuggingFace published the Ettin Reranker Family on 2026-05-19, six Apache-2.0 cross-encoder rerankers built on ModernBERT encoders, at parameter counts of 17M, 32M, 68M, 150M, 400M, and 1B. The post reports MTEB Retrieval NDCG@10 of 0.6114 for the 1B model and 0.5779 for the 32M, with the 32M reportedly outscoring BAAI bge-reranker-v2-m3 (568M) by 0.025. All models were distilled from mixedbread-ai/mxbai-rerank-large-v2 using a pointwise MSE loss over roughly 143M training triples. Throughput on H100 ranges from 928 pairs/sec at 1B to 7,517 pairs/sec at 17M.
+
+Source: [Hugging Face Blog](https://huggingface.co/blog/ettin-reranker)
+
+## Agents
+
+### General Agent: a self-evolving synthetic agent environment
+
+Prime Intellect published General Agent on 2026-05-18, a fully synthetic environment that generates agent tasks through a two-player game between a synthesizer agent and a solver agent. The corpus, as described, contains over 4,500 tasks across 1,040 domains with 8,000+ unique tools grounded in database operations. The post reports that supervised fine-tuning on 4.4k synthetic traces moves BFCL pass rate from 18.9% to 52.3% and MCP-Atlas from 0.6% to 12.1%. The authors describe this as "open-sourcing a first version" through their Environments Hub, with specific license terms not detailed in the post.
+
+Source: [Prime Intellect Blog](https://www.primeintellect.ai/blog/general-agent)
+
+## Protocols
+
+### Anthropic acquires Stainless
+
+Anthropic announced on 2026-05-18 that it is acquiring Stainless, the SDK and MCP-server generator founded in 2022. Stainless produces SDKs, CLIs, and MCP servers across TypeScript, Python, Go, Java, Kotlin, and other languages, and has powered Anthropic's official SDKs since the API's earliest days. Anthropic cited the rationale that "agents are only as useful as what they can connect to," framing the acquisition as expanding Claude's tool and data integration surface area. Acquisition price was not disclosed in the announcement.
+
+Source: [Anthropic News](https://www.anthropic.com/news/anthropic-acquires-stainless)
+
+## Governance
+
+### Open Technology Research Symposium 2026: call for proposals
+
+The Open Source Initiative posted on 2026-05-18 announcing the inaugural Open Technology Research Symposium, organized with OpenForum Europe, the Open Knowledge Foundation, and the Digital Infrastructure Insights Fund. The symposium runs 26-27 October 2026 at the University of Barcelona, with an expected attendance of 150 to 200 participants. The call for proposals deadline is 5 July 2026. The stated theme is "Shaping the Open Transition."
+
+Source: [Open Source Initiative](https://opensource.org/blog/open-technology-research-symposium-2026-opens-call-for-proposals)
+
+### Anthropic: 2028: Two scenarios for global AI leadership
+
+Anthropic published "2028: Two scenarios for global AI leadership" on 2026-05-14, a policy essay rather than a research paper. The piece presents two contrasting 2028 outcomes for U.S. and Chinese AI capability and outlines policy positions Anthropic supports, including compute access and protection against model theft. The post is positioned as an advocacy document to policymakers rather than a neutral empirical study. It is included here under the governance layer because its primary effect is on policy debate, not on the stack itself.
+
+Source: [Anthropic Research](https://www.anthropic.com/research/2028-ai-leadership)

@@ -1,11 +1,12 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-05-18T09:00:00-07:00",
+  "last_run_at": "2026-05-19T08:00:00-07:00",
   "sources": {
     "vllm-releases": {
-      "last_seen_tag": "v0.21.0",
-      "last_seen_at": "2026-05-15"
+      "last_seen_tag": "v0.21.1rc0",
+      "last_seen_at": "2026-05-15",
+      "note": "v0.21.1rc0 tagged 2026-05-15; not published as it is a release candidate. Continue to monitor for v0.21.1 stable."
     },
     "sglang-releases": {
       "last_seen_tag": "v0.5.12",
@@ -36,17 +37,17 @@
       "last_seen_at": "2026-05-07"
     },
     "latent-space": {
-      "last_seen_url": "https://www.latent.space/p/the-fourth-law",
-      "last_seen_at": "2026-05-18",
-      "note": "2026-05-18 episode is a defense-policy podcast on AI-guided weapons (Noah Smith with Yaroslav Azhnyuk); processed but not published as it is not stack-relevant."
+      "last_seen_url": "https://www.latent.space/p/ainews-how-to-land-a-job-at-a-frontier",
+      "last_seen_at": "2026-05-19",
+      "note": "2026-05-19 post is an AINews syndication of a frontier-lab pretraining careers piece; processed but not published as it is a syndicated digest rather than a primary stack release."
     },
     "lmarena-blog": {
       "last_seen_at": null,
       "note": "feed at blog.lmarena.ai/feed.xml 301-redirects to arena.ai/blog/feed.xml; arena.ai/blog/feed.xml returned 404 on 2026-05-14; sources.yaml entry needs human investigation"
     },
     "osi-blog": {
-      "last_seen_url": "https://opensource.org/blog/listening-learning-and-building-together-at-osi",
-      "last_seen_at": "2026-05-13"
+      "last_seen_url": "https://opensource.org/blog/open-technology-research-symposium-2026-opens-call-for-proposals",
+      "last_seen_at": "2026-05-18"
     },
     "import-ai": {
       "last_seen_url": "https://importai.substack.com/p/import-ai-457-ai-stuxnet-cursed-muon",
@@ -61,27 +62,29 @@
       "last_seen_at": "2025-04-10"
     },
     "ollama-releases": {
-      "last_seen_tag": "v0.30.0-rc17",
-      "last_seen_at": "2026-05-15",
-      "note": "Parallel release lines: v0.24.x stable culminated in v0.24.0 (2026-05-15); v0.30.x line iterating on rc17 (2026-05-15) introduces direct llama.cpp/GGUF support and MLX acceleration."
+      "last_seen_tag": "v0.30.0-rc20",
+      "last_seen_at": "2026-05-18",
+      "note": "v0.30.0 RC cadence continued on 2026-05-18 with rc18, rc19, rc20 same day. Published as a single grouped runtime item in 2026-05-19.mdx. v0.24 stable line still parallel. v0.25.0-rc0 (2026-05-15) skipped as CI-only build."
     },
     "llama-cpp-releases": {
-      "last_seen_tag": "b9209",
-      "last_seen_at": "2026-05-18",
-      "note": "Nightly tag bumps continue (b9145 → b9209 over this window); no milestone release identified, skipped per policy."
+      "last_seen_tag": "b9222",
+      "last_seen_at": "2026-05-19",
+      "note": "Nightly tag bumps continued through b9222 (2026-05-19). No milestone release identified; skipped per policy."
     },
     "huggingface-blog": {
-      "last_seen_url": "https://huggingface.co/blog/ibm-research/open-agent-leaderboard",
-      "last_seen_at": "2026-05-18"
+      "last_seen_url": "https://huggingface.co/blog/ettin-reranker",
+      "last_seen_at": "2026-05-19",
+      "note": "Ettin Reranker family (2026-05-19) published as retrieval-memory item. Cosmos Predict 2.5 fine-tuning (2026-05-18, robotics) and PaddleOCR 3.5 integration (2026-05-18) processed but not published as they are integration tutorials rather than stack releases."
     },
     "anthropic-news": {
-      "last_seen_url": "https://www.anthropic.com/news/pwc-expanded-partnership",
-      "last_seen_at": "2026-05-14",
-      "note": "PwC expanded-partnership post (2026-05-14) processed but not published; classified as enterprise partnership rather than a stack release."
+      "last_seen_url": "https://www.anthropic.com/news/anthropic-kpmg",
+      "last_seen_at": "2026-05-19",
+      "note": "Stainless acquisition (2026-05-18) published as protocols item. KPMG integration (2026-05-19) processed but not published; classified as enterprise partnership like PwC, not a stack release."
     },
     "anthropic-research": {
-      "last_seen_url": "https://www.anthropic.com/research/teaching-claude-why",
-      "last_seen_at": "2026-05-08"
+      "last_seen_url": "https://www.anthropic.com/research/2028-ai-leadership",
+      "last_seen_at": "2026-05-14",
+      "note": "Policy essay rather than research paper; published as governance item with that framing."
     },
     "ai2-blog": {
       "last_seen_url": "https://allenai.org/blog/aimip",
@@ -108,8 +111,9 @@
       "last_seen_at": "2026-04-13"
     },
     "nvidia-dev-blog": {
-      "last_seen_url": "https://developer.nvidia.com/blog/accelerated-x-ray-analysis-for-nanoscale-imaging-xani-of-novel-materials/",
-      "last_seen_at": "2026-05-13"
+      "last_seen_url": "https://developer.nvidia.com/blog/how-the-nvidia-vera-rubin-platform-is-solving-agentic-ais-scale-up-problem/",
+      "last_seen_at": "2026-05-14",
+      "note": "Vera Rubin platform post (2026-05-14) processed but not published; opinion essay framing rather than a stack release."
     },
     "mistral-news": {
       "last_seen_url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5",
@@ -128,8 +132,9 @@
       "note": "block.github.io/goose/blog/rss.xml returned 404 on 2026-05-14; logged to fetch-errors.jsonl."
     },
     "prime-intellect-blog": {
-      "last_seen_url": "https://www.primeintellect.ai/blog/renderers",
-      "last_seen_at": "2026-05-12"
+      "last_seen_url": "https://www.primeintellect.ai/blog/general-agent",
+      "last_seen_at": "2026-05-18",
+      "note": "General Agent (2026-05-18) published as agents item. Autonomous AI research for nanogpt speedrun (2026-05-14) processed but not published; chose General Agent over it on signal."
     },
     "grants_watch_frontier-model-forum-updates": {
       "last_seen_url": "https://www.frontiermodelforum.org/updates/fmf-announces-first-of-its-kind-information-sharing-agreement/",
