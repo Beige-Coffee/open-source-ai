@@ -137,6 +137,30 @@ const prev = prevModule(moduleSlug);
   title={`${courseModule.title} · Learn`}
   description={`Course module on ${courseModule.title}: ${courseModule.one_liner}`}
 >
+  {/* When /api/course/start sends an anonymous user here with
+      ?set_pass=fast|deep, the server cannot write localStorage. This
+      script picks the value up, stores it in the shared anon-storage
+      key, then strips the query param. Runs once per navigation. */}
+  <script is:inline>
+    {`
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var val = params.get("set_pass");
+          if (val !== "fast" && val !== "deep") return;
+          var KEY = "oas-course-v1";
+          var raw = window.localStorage.getItem(KEY);
+          var state = raw ? JSON.parse(raw) : { version: "v1", modules: {} };
+          state.pass_choice = val;
+          window.localStorage.setItem(KEY, JSON.stringify(state));
+          params.delete("set_pass");
+          var qs = params.toString();
+          var path = window.location.pathname + (qs ? "?" + qs : "");
+          window.history.replaceState({}, "", path);
+        } catch (e) { /* ignore */ }
+      })();
+    `}
+  </script>
   <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
     <!-- Module header -->
     <header class="mb-6">

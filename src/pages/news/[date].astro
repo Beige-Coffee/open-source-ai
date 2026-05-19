@@ -34,6 +34,17 @@ const buckets = Object.entries(issue.data.layer_buckets || {})
   .map(([slug, count]) => ({ layer: findLayer(slug), count }))
   .filter((b) => b.layer)
   .sort((a, b) => b.count - a.count);
+
+/** Split the editorial letter into short bullet sentences. ". " is a
+ *  safe boundary (version strings like vLLM v0.21.0 keep their dots
+ *  inside the token, no trailing space). */
+function bullets(letter: string): string[] {
+  return letter
+    .split(/\.\s+/)
+    .map((s) => s.trim().replace(/\.+$/, ""))
+    .filter((s) => s.length > 3)
+    .map((s) => s + ".");
+}
 ---
 
 <BaseLayout
@@ -51,9 +62,9 @@ const buckets = Object.entries(issue.data.layer_buckets || {})
     <h1 class="font-serif text-3xl md:text-4xl leading-tight tracking-tight mb-4">
       {longDate}
     </h1>
-    <p class="text-lg text-[var(--color-text)] leading-relaxed font-serif italic">
-      {issue.data.editorial_letter}
-    </p>
+    <ul class="text-base text-[var(--color-text)] leading-relaxed space-y-1.5 list-disc pl-5 marker:text-[var(--color-text-subtle)]">
+      {bullets(issue.data.editorial_letter).map((b) => <li>{b}</li>)}
+    </ul>
   </section>
 
   {

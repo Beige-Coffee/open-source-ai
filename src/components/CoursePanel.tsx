@@ -42,6 +42,7 @@ import { buildSystemPrompt } from "../lib/course/prompts";
 import {
   readAnonChat,
   readAnonModule,
+  readAnonPassChoice,
   writeAnonChat,
   writeAnonSynth,
   writeAnonWhyOpen,
@@ -90,6 +91,7 @@ export default function CoursePanel({
   const supabase = useMemo(() => browserSupabase(), []);
 
   const [phase, setPhase] = useState<ProgressPhase>(initialPhase);
+  const [effectivePass, setEffectivePass] = useState<"fast" | "deep">(passChoice);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -110,6 +112,17 @@ export default function CoursePanel({
     setPhaseCompleteSeen(false);
     setWhyOpenSaved(false);
   }, [moduleSlug, phase]);
+
+  // For anonymous users, hydrate pass_choice from localStorage on mount
+  // so the depth picker on /learn/start carries through. The server-
+  // provided prop is the truth for logged-in users; anonymous keeps it
+  // client-side only.
+  useEffect(() => {
+    if (userId) return;
+    const stored = readAnonPassChoice();
+    if (stored && stored !== effectivePass) setEffectivePass(stored);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   // Load prior chat turns. For logged-in users, query chat_turns from
   // Supabase. For anonymous users, hydrate from localStorage so writings
@@ -223,7 +236,7 @@ export default function CoursePanel({
       });
       const system = buildSystemPrompt(phase as ModulePhase, {
         module: courseModule,
-        passChoice,
+        passChoice: effectivePass,
         priorWritings,
       });
       const budget = new ToolBudget();
@@ -270,7 +283,7 @@ export default function CoursePanel({
       settings,
       phase,
       courseModule,
-      passChoice,
+      effectivePass,
       priorWritings,
       turns,
     ],

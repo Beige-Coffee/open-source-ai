@@ -168,11 +168,52 @@ const MODULES: Module[] = [
       </script>
     )
   }
+  <section class="max-w-3xl mx-auto px-6 mb-6">
+    <a
+      href="/learn/start"
+      class="block p-5 rounded-md bg-[var(--color-accent-strong)] hover:bg-[var(--color-accent)] text-white no-underline transition-colors"
+    >
+      <div class="flex items-baseline justify-between gap-3 flex-wrap">
+        <span class="font-serif text-xl">
+          Start the course
+        </span>
+        <span class="font-mono text-xs uppercase tracking-wider opacity-80">
+          Pick fast or deep · ~5 min orientation →
+        </span>
+      </div>
+      <p class="text-sm opacity-90 mt-1 leading-relaxed">
+        Read how the course works, pick a depth, then begin module 01.
+      </p>
+    </a>
+  </section>
+
   <section class="max-w-3xl mx-auto px-6 mb-16">
     <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
       The 15 modules
     </h2>
     <ol class="space-y-3">
+      <li>
+        <a
+          href="/learn/start"
+          class="block p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+        >
+          <div class="flex items-baseline justify-between gap-3 mb-1">
+            <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+              00
+            </span>
+            <span class="flex-1 font-serif text-base text-[var(--color-text)]">
+              How this course works
+            </span>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+              orientation
+            </span>
+          </div>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed pl-9">
+            What the 15 modules cover, how each module's phases work,
+            and the depth picker (fast vs deep).
+          </p>
+        </a>
+      </li>
       {
         MODULES.map((m) => (
           <li>

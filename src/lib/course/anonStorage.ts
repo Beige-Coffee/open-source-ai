@@ -31,6 +31,9 @@ export interface AnonModuleEntry {
 export interface AnonState {
   version: typeof STORAGE_VERSION;
   modules: Record<string, AnonModuleEntry>;
+  /** Picked at the depth-picker step on /learn/start. Logged-in users
+   *  store this in profiles.pass_choice instead. */
+  pass_choice?: "fast" | "deep";
 }
 
 function emptyState(): AnonState {
@@ -98,6 +101,16 @@ export function writeAnonWhyOpen(moduleSlug: string, body: string): void {
   m.why_open_saved = body;
   state.modules[moduleSlug] = m;
   writeState(state);
+}
+
+export function writeAnonPassChoice(choice: "fast" | "deep"): void {
+  const state = readState();
+  state.pass_choice = choice;
+  writeState(state);
+}
+
+export function readAnonPassChoice(): "fast" | "deep" | null {
+  return readState().pass_choice ?? null;
 }
 
 export function readAllAnonState(): AnonState {

@@ -12,15 +12,27 @@ if (user) {
 let errorMessage: string | null = null;
 let infoMessage: string | null = null;
 
+/** If the input looks like an email, use it directly. Otherwise treat
+ *  it as a username and synthesize a Supabase-compatible address at
+ *  the reserved `oas.local` host. Usernames are lowercased and stripped
+ *  to [a-z0-9._-] so the synthesized address is always valid. */
+function resolveLoginEmail(raw: string): { email: string; isUsername: boolean } {
+  const trimmed = raw.trim();
+  if (trimmed.includes("@")) return { email: trimmed, isUsername: false };
+  const slug = trimmed.toLowerCase().replace(/[^a-z0-9._-]/g, "");
+  return { email: `${slug}@oas.local`, isUsername: true };
+}
+
 if (Astro.request.method === "POST") {
   const form = await Astro.request.formData();
-  const email = String(form.get("email") ?? "").trim();
+  const identifier = String(form.get("identifier") ?? "").trim();
   const password = String(form.get("password") ?? "");
-  if (!email || !password) {
-    errorMessage = "Email and password are both required.";
+  if (!identifier || !password) {
+    errorMessage = "Username (or email) and password are both required.";
   } else if (password.length < 8) {
     errorMessage = "Password must be at least 8 characters.";
   } else {
+    const { email } = resolveLoginEmail(identifier);
     const { data, error } = await Astro.locals.supabase.auth.signUp({ email, password });
     if (error) {
       errorMessage = error.message;
@@ -68,15 +80,19 @@ if (Astro.request.method === "POST") {
       }
       <label class="block">
         <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">
-          Email
+          Email or username
         </span>
         <input
-          type="email"
-          name="email"
+          type="text"
+          name="identifier"
           required
-          autocomplete="email"
+          autocomplete="username"
           class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
         />
+        <span class="block text-xs text-[var(--color-text-subtle)] mt-1 leading-relaxed">
+          Pick a username if you'd rather not share an email; password reset
+          works only when a real email is on file.
+        </span>
       </label>
       <label class="block">
         <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">

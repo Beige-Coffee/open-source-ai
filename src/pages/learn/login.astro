@@ -10,15 +10,29 @@ if (user) {
   return Astro.redirect("/learn");
 }
 
-// On POST, attempt sign-in via Supabase. Email + password only.
+/** Mirror of signup's resolveLoginEmail. If the identifier doesn't
+ *  contain "@" we treat it as a username and look it up against the
+ *  synthesized `@oas.local` host. Keeping the two functions parallel
+ *  rather than DRY-ed because the signup file also reads it server-
+ *  side and importing across .astro frontmatter would need a shared
+ *  helper module; punt that until we add a third caller. */
+function resolveLoginEmail(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.includes("@")) return trimmed;
+  const slug = trimmed.toLowerCase().replace(/[^a-z0-9._-]/g, "");
+  return `${slug}@oas.local`;
+}
+
+// On POST, attempt sign-in via Supabase. Email/username + password.
 let errorMessage: string | null = null;
 if (Astro.request.method === "POST") {
   const form = await Astro.request.formData();
-  const email = String(form.get("email") ?? "").trim();
+  const identifier = String(form.get("identifier") ?? "").trim();
   const password = String(form.get("password") ?? "");
-  if (!email || !password) {
-    errorMessage = "Email and password are both required.";
+  if (!identifier || !password) {
+    errorMessage = "Username (or email) and password are both required.";
   } else {
+    const email = resolveLoginEmail(identifier);
     const { error } = await Astro.locals.supabase.auth.signInWithPassword({
       email,
       password,
@@ -59,13 +73,13 @@ if (Astro.request.method === "POST") {
       }
       <label class="block">
         <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">
-          Email
+          Email or username
         </span>
         <input
-          type="email"
-          name="email"
+          type="text"
+          name="identifier"
           required
-          autocomplete="email"
+          autocomplete="username"
           class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
         />
       </label>

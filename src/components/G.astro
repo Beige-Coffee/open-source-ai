@@ -53,7 +53,7 @@ const cardId = entry ? `g-card-${slug}-${Math.random().toString(36).slice(2, 8)}
         data-g-slug={slug}
         aria-describedby={cardId}
       >
-        <slot />
+        <slot /><span class="g-icon" aria-hidden="true">ⓘ</span>
       </button>
       <span
         id={cardId}
@@ -88,7 +88,10 @@ const cardId = entry ? `g-card-${slug}-${Math.random().toString(36).slice(2, 8)}
 }
 
 <style is:global>
-  /* Inline tagger: looks like prose, dotted underline to signal "more here." */
+  /* Inline tagger. The visual cue: a thicker dotted underline in the
+     muted body-text color plus a small superscript ⓘ icon. Background
+     stays transparent at rest so it does not distract from prose, but
+     the underline + icon together read clearly as "definition here." */
   .g-trigger {
     display: inline;
     padding: 0;
@@ -97,18 +100,30 @@ const cardId = entry ? `g-card-${slug}-${Math.random().toString(36).slice(2, 8)}
     border: 0;
     font: inherit;
     color: inherit;
-    text-decoration: underline dotted var(--color-border-strong);
+    text-decoration: underline dotted var(--color-text-muted);
+    text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
     cursor: help;
   }
+  .g-icon {
+    display: inline-block;
+    margin-left: 2px;
+    font-size: 0.7em;
+    line-height: 1;
+    color: var(--color-text-subtle);
+    vertical-align: super;
+    text-decoration: none;
+  }
   .g-trigger:hover,
   .g-trigger:focus-visible {
-    text-decoration-color: var(--color-text);
-    outline: none;
-  }
-  .g-trigger:focus-visible {
+    text-decoration: underline solid var(--color-text);
     background: var(--color-surface-warm);
     border-radius: 2px;
+    outline: none;
+  }
+  .g-trigger:hover .g-icon,
+  .g-trigger:focus-visible .g-icon {
+    color: var(--color-text);
   }
 
   .g-missing {

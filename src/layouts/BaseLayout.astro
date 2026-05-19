@@ -58,6 +58,26 @@ const isCourseRoute = Astro.url.pathname.startsWith("/learn");
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class={bodyClass}>
+    {/* Synchronously restore body[data-chat-open] + --chat-width before
+        the first paint. Without this, the page renders full-width on
+        navigation and React's hydration then snaps it inward, which
+        reads as a layout glitch when the chat is open. Keeps the
+        transition for genuine open/close after hydration. */}
+    <script is:inline>
+      {`
+        try {
+          var raw = localStorage.getItem("oss-ai-chat-threads-v2");
+          var parsed = raw ? JSON.parse(raw) : null;
+          var open = parsed && parsed.state && parsed.state.open;
+          var w = Number(localStorage.getItem("oss-ai-chat-width"));
+          if (!Number.isFinite(w) || w < 320) w = 480;
+          if (open) {
+            document.body.dataset.chatOpen = "true";
+            document.body.style.setProperty("--chat-width", w + "px");
+          }
+        } catch (e) { /* localStorage unavailable, leave default layout */ }
+      `}
+    </script>
     <Nav />
     <main class="min-h-[60vh]">
       <slot />

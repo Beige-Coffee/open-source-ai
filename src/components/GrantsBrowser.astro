@@ -261,16 +261,23 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
          shrinks. style="overflow-anchor: none" is inlined because
          Tailwind v4 has no utility for this. -->
     <div style="overflow-anchor: none;">
-      <!-- Search input. Filters across title, recipient, description
-           within the active tab. -->
-      <div class="mb-3">
-        <label class="sr-only" for="grants-search">Search grants</label>
+      <!-- Filter search box. Typing surfaces matching values across
+           every filter category (funder, layer, region, amount,
+           recency) plus free-text keyword. Selecting a suggestion
+           adds it to the active filters; the list does not filter
+           until a suggestion is chosen. -->
+      <div class="mb-3 relative">
+        <label class="sr-only" for="grants-search">Search filters</label>
         <div class="relative">
           <input
             id="grants-search"
             type="search"
             data-grants-search
-            placeholder="Search by title, recipient, or description..."
+            role="combobox"
+            aria-controls="grants-typeahead"
+            aria-expanded="false"
+            aria-autocomplete="list"
+            placeholder="Type a funder, layer, region, or keyword..."
             class="w-full pl-8 pr-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] focus:outline-none focus:border-[var(--color-accent)] placeholder:text-[var(--color-text-subtle)]"
             autocomplete="off"
           />
@@ -288,6 +295,12 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
             <path d="m21 21-4.3-4.3"></path>
           </svg>
         </div>
+        <ul
+          id="grants-typeahead"
+          data-grants-typeahead
+          role="listbox"
+          class="hidden absolute z-30 left-0 right-0 mt-1 max-h-80 overflow-y-auto rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] shadow-lg text-sm"
+        ></ul>
       </div>
 
       <!-- Active filter chips + count -->
@@ -403,6 +416,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     );
     const tabButtons = Array.from(root.querySelectorAll("[data-grants-tab]"));
     const searchInput = root.querySelector("[data-grants-search]");
+    const typeaheadEl = root.querySelector("[data-grants-typeahead]");
     const visibleCountEl = root.querySelector("[data-grants-visible-count]");
     const totalCountEl = root.querySelector("[data-grants-total-count]");
     const countLabelEl = root.querySelector("[data-grants-count-label]");
@@ -414,6 +428,33 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     // Active tab: "project" (default) or "program".
     let activeKind = "project";
     let searchQuery = "";
+
+    // ------------------------------------------------------------------
+    // Typeahead index: harvest each checkbox's category, value, and the
+    // displayed label so a single text query can surface matches across
+    // every filter sidebar group. Built once at startup and re-used.
+    // ------------------------------------------------------------------
+    const CATEGORY_LABELS = {
+      funder: "Funder",
+      layer: "Layer",
+      amount: "Amount",
+      region: "Region",
+      recency: "When",
+    };
+    const typeaheadIndex = checkboxes.map((cb) => {
+      const labelSpan =
+        cb.parentElement && cb.parentElement.querySelector("span");
+      const label = labelSpan ? labelSpan.textContent.trim() : cb.value;
+      return {
+        kind: "filter",
+        category: cb.dataset.grantsFilter,
+        value: cb.value,
+        label,
+        haystack: label.toLowerCase() + " " + cb.value.toLowerCase(),
+      };
+    });
+    let typeaheadCursor = -1;
+    let lastMatches = [];
 
     const labelFor = (key, value) => {
       const el = root.querySelector(
@@ -486,6 +527,18 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
         });
         chipsEl.appendChild(chip);
       }
+      if (searchQuery) {
+        const kwChip = document.createElement("button");
+        kwChip.type = "button";
+        kwChip.className =
+          "font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-accent-soft)] hover:bg-white cursor-pointer";
+        kwChip.textContent = '"' + searchQuery + '" ×';
+        kwChip.addEventListener("click", () => {
+          searchQuery = "";
+          apply();
+        });
+        chipsEl.appendChild(kwChip);
+      }
     }
 
     function apply() {
@@ -530,16 +583,148 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
       }
     }
 
-    // Debounce search input so typing doesn't fire apply() on every keystroke.
-    let searchTimer = null;
-    function onSearchInput(e) {
-      const value = (e.target.value || "").trim().toLowerCase();
-      if (searchTimer) window.clearTimeout(searchTimer);
-      searchTimer = window.setTimeout(() => {
-        searchQuery = value;
-        apply();
-      }, 120);
+    // ------------------------------------------------------------------
+    // Typeahead: as user types, surface matching filter values across
+    // every category plus a free-text fallback. Selecting a category
+    // suggestion checks the matching sidebar checkbox; selecting the
+    // free-text suggestion applies a keyword filter across grant
+    // title/recipient/description.
+    // ------------------------------------------------------------------
+    function buildMatches(rawQuery) {
+      const q = rawQuery.trim().toLowerCase();
+      if (q.length < 1) return [];
+      const filterMatches = typeaheadIndex
+        .filter((entry) => entry.haystack.includes(q))
+        .slice(0, 8);
+      // Always offer a keyword option so the user can fall back to
+      // full-text search across grant body when no filter category
+      // covers their query.
+      const keyword = { kind: "keyword", value: q, label: rawQuery.trim() };
+      return [...filterMatches, keyword];
     }
+
+    function hideTypeahead() {
+      if (!typeaheadEl) return;
+      typeaheadEl.classList.add("hidden");
+      typeaheadEl.innerHTML = "";
+      if (searchInput) searchInput.setAttribute("aria-expanded", "false");
+      typeaheadCursor = -1;
+      lastMatches = [];
+    }
+
+    function renderTypeahead(matches) {
+      if (!typeaheadEl) return;
+      if (matches.length === 0) {
+        hideTypeahead();
+        return;
+      }
+      typeaheadEl.innerHTML = "";
+      matches.forEach((m, i) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option");
+        li.dataset.idx = String(i);
+        const isCursor = i === typeaheadCursor;
+        li.className =
+          "flex items-baseline justify-between gap-3 px-3 py-2 cursor-pointer hover:bg-[var(--color-surface-warm)] border-b border-[var(--color-border)] last:border-b-0 " +
+          (isCursor ? "bg-[var(--color-surface-warm)]" : "");
+        const tag =
+          m.kind === "filter" ? CATEGORY_LABELS[m.category] || m.category : "Keyword";
+        const detail = m.kind === "keyword" ? "" : m.value;
+        li.innerHTML =
+          '<span class="text-[var(--color-text)] truncate">' +
+          escapeHtml(m.label) +
+          (m.kind === "keyword"
+            ? ' <span class="text-[var(--color-text-subtle)] italic">(search grant text)</span>'
+            : '') +
+          "</span>" +
+          '<span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] shrink-0">' +
+          escapeHtml(tag) +
+          (detail ? " · " + escapeHtml(detail) : "") +
+          "</span>";
+        li.addEventListener("mousedown", (ev) => {
+          ev.preventDefault();
+          selectMatch(i);
+        });
+        typeaheadEl.appendChild(li);
+      });
+      typeaheadEl.classList.remove("hidden");
+      if (searchInput) searchInput.setAttribute("aria-expanded", "true");
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function selectMatch(idx) {
+      const m = lastMatches[idx];
+      if (!m) return;
+      if (m.kind === "filter") {
+        const cb = root.querySelector(
+          'input[data-grants-filter="' +
+            m.category +
+            '"][value="' +
+            (window.CSS && window.CSS.escape ? window.CSS.escape(m.value) : m.value) +
+            '"]',
+        );
+        if (cb) {
+          cb.checked = true;
+          // Manually call apply rather than dispatching a synthetic
+          // change event: that avoids re-binding the typeahead and
+          // keeps the focus on the input for fast successive picks.
+          apply();
+        }
+      } else {
+        searchQuery = m.value;
+        apply();
+      }
+      if (searchInput) searchInput.value = "";
+      hideTypeahead();
+    }
+
+    function onSearchInput(e) {
+      const value = e.target.value || "";
+      lastMatches = buildMatches(value);
+      typeaheadCursor = lastMatches.length > 0 ? 0 : -1;
+      renderTypeahead(lastMatches);
+    }
+
+    function onSearchKeyDown(e) {
+      if (lastMatches.length === 0) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        typeaheadCursor = (typeaheadCursor + 1) % lastMatches.length;
+        renderTypeahead(lastMatches);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        typeaheadCursor =
+          (typeaheadCursor - 1 + lastMatches.length) % lastMatches.length;
+        renderTypeahead(lastMatches);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (typeaheadCursor >= 0) selectMatch(typeaheadCursor);
+      } else if (e.key === "Escape") {
+        hideTypeahead();
+      }
+    }
+
+    // Close the dropdown on click outside.
+    document.addEventListener("mousedown", (ev) => {
+      if (!typeaheadEl) return;
+      if (typeaheadEl.classList.contains("hidden")) return;
+      const target = ev.target;
+      if (
+        target instanceof Node &&
+        !typeaheadEl.contains(target) &&
+        target !== searchInput
+      ) {
+        hideTypeahead();
+      }
+    });
 
     function setActiveTab(kind) {
       activeKind = kind;
@@ -565,12 +750,21 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
     }
     if (searchInput) {
       searchInput.addEventListener("input", onSearchInput);
+      searchInput.addEventListener("keydown", onSearchKeyDown);
+      searchInput.addEventListener("focus", (e) => {
+        if ((e.target.value || "").length > 0) {
+          lastMatches = buildMatches(e.target.value);
+          typeaheadCursor = lastMatches.length > 0 ? 0 : -1;
+          renderTypeahead(lastMatches);
+        }
+      });
     }
     if (clearAllBtn) {
       clearAllBtn.addEventListener("click", () => {
         for (const cb of checkboxes) cb.checked = false;
         if (searchInput) searchInput.value = "";
         searchQuery = "";
+        hideTypeahead();
         apply();
       });
     }
