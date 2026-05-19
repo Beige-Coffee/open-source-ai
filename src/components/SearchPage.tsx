@@ -81,7 +81,12 @@ export default function SearchPage({ initialQuery = "" }: Props) {
     }
     setLoading(true);
     const t = setTimeout(async () => {
-      const r = await searchAll(query, { limit: 100 });
+      // Permissive threshold on the dedicated search page (0.08):
+      // browsing context, user wants to see secondary mentions
+      // ("which layer discusses Prime Intellect?", not just the
+      // canonical project page). The popover uses 0.25 for the
+      // opposite reason.
+      const r = await searchAll(query, { limit: 100, thresholdRatio: 0.08 });
       setHits(r);
       setLoading(false);
     }, 80);

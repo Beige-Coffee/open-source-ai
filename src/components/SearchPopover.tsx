@@ -96,7 +96,11 @@ export default function SearchPopover() {
       return;
     }
     const t = setTimeout(async () => {
-      const r = await searchAll(query, { limit: 80 });
+      // Tight threshold on the popover (0.25): the user wants to
+      // GO somewhere fast, so only show clearly-relevant matches.
+      // "See all results" jumps to /search where the threshold is
+      // more permissive for browsing.
+      const r = await searchAll(query, { limit: 80, thresholdRatio: 0.25 });
       // Cap per-type before flattening so the popover shows breadth.
       const buckets = new Map<SearchType, SearchHit[]>();
       for (const h of r) {

@@ -250,18 +250,22 @@ try {
     });
   }
 
-  // Glossary
+  // Glossary. The aliases field is indexed (and title-boosted) so a
+  // search for "moe" surfaces the mixture-of-experts entry directly,
+  // even though "moe" isn't in the canonical title.
   for (const e of glossaryEntries) {
     const slug = e.slug;
+    const aliases = e.aliases ?? [];
     search.push({
       id: `glossary:${slug}`,
       type: "glossary",
       title: e.term,
+      aliases: aliases.join(" "),
       summary: e.summary ?? "",
       body: clip(`${e.summary ?? ""} ${stripMdx(e.body ?? "")}`, 600),
       url: `/glossary/${slug}`,
       layers: [e.primary_layer, ...(e.secondary_layers ?? [])].filter(Boolean),
-      meta: { aliases: e.aliases ?? [] },
+      meta: { aliases },
     });
   }
 
