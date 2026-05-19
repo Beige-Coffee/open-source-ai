@@ -22,10 +22,10 @@ human would prefer. Stage 3: use a reinforcement learning algorithm
 with a KL penalty to keep the policy near the SFT initialization.
 
 This was the canonical <G term="alignment">alignment</G> recipe behind InstructGPT, ChatGPT, and
-the first wave of Claude and <G term="llama">Llama</G>-Chat models. The reward model is the
-load-bearing piece: if it is miscalibrated, RL amplifies the
-miscalibration, producing "reward hacking" outputs that score high but
-fail in deployment.
+the first wave of Claude and <G term="llama">Llama</G>-Chat models. The reward model is
+what the rest of the pipeline depends on: if it is miscalibrated, RL
+amplifies the miscalibration, producing "reward hacking" outputs that
+score high but fail in deployment.
 
 `DPO` and its variants replaced RLHF as the open-source default during
 2024 because they skip the reward model and the RL loop entirely, using

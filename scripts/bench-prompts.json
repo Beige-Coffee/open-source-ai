@@ -121,7 +121,7 @@
       "expected_tools": ["read_project"],
       "expected_marker_kinds": ["Project"],
       "min_markers": 1,
-      "page_context": { "kind": "project", "slug": "vllm" },
+      "page_context": { "pathname": "/projects/vllm", "entity": { "kind": "project", "slug": "vllm" } },
       "judge_rubric": "Did the model use read_project for vllm, explain it in 2-4 paragraphs (PagedAttention, role in runtime, license), with (Project: vllm) marker? 5 = accurate explainer. 1 = wrong or shallow."
     },
     {

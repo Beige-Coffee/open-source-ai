@@ -1378,8 +1378,8 @@ grants:
       financial rails. The app combines a country-specific Nostr feed where activists can post and reshare on-the-ground
       events, a map of users worldwide, a self-custodial Bitcoin wallet built on the Breeze SDK that supports instant
       private micro-donations, integration with Bitchat for offline messaging during internet shutdowns, and an AI
-      assistant powered by Maple AI for organizing-strategy questions. The donation rails are the load-bearing piece: in
-      pilot use in Venezuela, contributors earned bitcoin for sharing verified images of political prisoners,
+      assistant powered by Maple AI for organizing-strategy questions. The donation rails are what the rest depends on:
+      in pilot use in Venezuela, contributors earned bitcoin for sharing verified images of political prisoners,
       demonstrating the bounty-style mechanism the app encodes. A beta build is available on the Google Play store for
       Android and at pathos.place.
 
@@ -1480,8 +1480,7 @@ grants:
       that frontier models train on, which means an AI commons for the live arts has to be assembled deliberately rather
       than scraped, and a funding model has to compensate the contributors who make that assembly happen. The Sphere
       sits at the sovereignty-decentralization meta-layer of the open-source AI stack with the data layer as secondary
-      attribution, because the load-bearing question it answers is who owns and governs a small, curated,
-      non-Common-Crawl corpus.
+      attribution, because the question it answers is who owns and governs a small, curated, non-Common-Crawl corpus.
     sources:
       - title: Announcing Cosmos Ventures
         url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
@@ -2065,8 +2064,8 @@ grants:
       Raphael Milliere, at the time of the December 17, 2024 Cosmos award an Assistant Professor in Philosophy of
       Artificial Intelligence at Macquarie University, works on the cognitive science of large neural networks. He has
       since moved to the University of Oxford's Institute for Ethics in AI. His research program treats variable
-      binding, the ability to temporarily associate symbols with values while keeping their identity, as a load-bearing
-      question for whether transformer models can perform genuinely symbolic computation.
+      binding, the ability to temporarily associate symbols with values while keeping their identity, as the question
+      that decides whether transformer models can perform genuinely symbolic computation.
 
 
       The technical work, published as "How Do Transformers Learn Variable Binding in Symbolic Programs?" on arXiv

@@ -93,7 +93,7 @@ export function citationHref(c: ParsedCitation): string {
       // Per-project pages exist for ~35 high-priority projects with
       // explainers. For projects without an explainer the route is a
       // 404; that is acceptable for now (the agent's citation makes
-      // the slug visible inline, which is the load-bearing signal).
+      // the slug visible inline, which is what the user actually reads).
       return `/projects/${c.ref}`;
     case "reading":
       // No per-reading page; deep-link the stack overview.

@@ -212,7 +212,7 @@ projects:
       Apple's M-series chips (M1, M2, M3, M4 across Pro, Max, Ultra
       tiers) are SoCs designed for laptops and desktops. Closed
       silicon on a custom ARM-based ISA, closed accelerator (the
-      Neural Engine plus the GPU). What makes them load-bearing for
+      Neural Engine plus the GPU). What makes them matter for
       open-source AI is the unified memory architecture: CPU, GPU,
       and Neural Engine share the same physical memory, so a 192GB
       Mac Studio has 192GB of "VRAM" for inference purposes.

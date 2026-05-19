@@ -429,7 +429,11 @@ There is no scheduled write to these files.
   public-facing work, not specific to this repo.
 - **No buzzwords.** Banned: `delve, tapestry, transformative, robust,
   leveraging, utilize, fascinating, landscape (as a verb-y filler),
-  elevate, unlock, paradigm, ecosystem (when used vaguely)`.
+  elevate, unlock, paradigm, ecosystem (when used vaguely),
+  load-bearing`. The "load-bearing" ban is universal across all of
+  Austin's public-facing work; rewrite as something concrete
+  ("determines whether X can happen", "the binding constraint",
+  "what the rest depends on").
 - **Neutral observational voice** is the default for all explanatory
   content (layer pages, project descriptions, grant writeups). Read
   like Bloomberg, not like a marketing post.

@@ -60,7 +60,7 @@ in the Open Questions section). Locked.
 ### 6. Curriculum: 15 modules, strict bottom-up, meta-layers slotted
 
 The course walks the stack from infrastructure to protocols, with
-meta-layers inserted where they first become load-bearing.
+meta-layers inserted where they first start to shape the stack.
 Sovereignty-decentralization sits as the capstone synthesis module
 at the end. The "why open source matters here" thread runs through
 every module and accumulates into the user's exit essay.
