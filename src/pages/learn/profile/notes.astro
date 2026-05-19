@@ -2,17 +2,17 @@
 export const prerender = false;
 
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { loadPersonalNotes } from "../../../lib/course/notes";
+import { loadPersonalNotesCipher } from "../../../lib/course/notes";
+import PersonalNotesView from "../../../components/PersonalNotesView.tsx";
 
 const { user, supabase } = Astro.locals;
 if (!user || !supabase) {
   return Astro.redirect("/learn/login");
 }
 
-const doc = await loadPersonalNotes(supabase, user.id, user.email ?? "");
-const completedDate = doc.completed_at
-  ? new Date(doc.completed_at).toISOString().slice(0, 10)
-  : null;
+// Server collects the encrypted document; decryption + render happens
+// in the client island. The server never sees plaintext.
+const cipherDoc = await loadPersonalNotesCipher(supabase, user.id, user.email ?? "");
 ---
 
 <BaseLayout
@@ -26,80 +26,7 @@ const completedDate = doc.completed_at
     <h1 class="font-serif text-4xl md:text-5xl text-[var(--color-text)] mb-2 leading-tight">
       My Open-Source AI Stack Notes
     </h1>
-    <p class="text-sm text-[var(--color-text-muted)] mb-2">
-      {doc.display_name}
-      {completedDate ? ` · completed ${completedDate}` : " · in progress"}
-    </p>
-    <p class="text-base text-[var(--color-text-muted)] max-w-prose leading-relaxed mb-6">
-      This is your own summary of the open-source AI stack, written as
-      you worked through the course. It accumulates as you complete
-      each module's Synthesize and Why-Open phases.
-    </p>
 
-    <!-- Export actions -->
-    <div class="flex flex-wrap gap-2 mb-10">
-      <a
-        href="/api/notes/markdown"
-        download={`open-source-ai-stack-notes-${doc.display_name.toLowerCase().replace(/\s+/g, "-")}.md`}
-        class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
-      >
-        Download Markdown
-      </a>
-      <a
-        href="/api/notes/pdf"
-        download={`open-source-ai-stack-notes-${doc.display_name.toLowerCase().replace(/\s+/g, "-")}.pdf`}
-        class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
-      >
-        Download PDF
-      </a>
-      <a
-        href="/learn/profile"
-        class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
-      >
-        Back to profile
-      </a>
-    </div>
-
-    {
-      doc.slices.length === 0 ? (
-        <p class="text-sm text-[var(--color-text-muted)] italic">
-          You haven't written any notes yet. Complete the Synthesize or
-          Why-Open phase of any module and your writing will appear here.
-        </p>
-      ) : (
-        <div class="space-y-10">
-          {doc.slices.map((slice) => (
-            <section class="border-t border-[var(--color-border)] pt-6">
-              <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
-                <span class="font-mono text-sm text-[var(--color-text-subtle)] mr-2">
-                  {String(slice.module.order).padStart(2, "0")}
-                </span>
-                {slice.module.title}
-              </h2>
-              {slice.synthesize && (
-                <Fragment>
-                  <h3 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
-                    My summary
-                  </h3>
-                  <div class="prose prose-base max-w-none text-[var(--color-text)] leading-relaxed mb-6 whitespace-pre-wrap">
-                    {slice.synthesize}
-                  </div>
-                </Fragment>
-              )}
-              {slice.why_open && (
-                <Fragment>
-                  <h3 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
-                    Why open source matters here
-                  </h3>
-                  <div class="prose prose-base max-w-none text-[var(--color-text)] leading-relaxed whitespace-pre-wrap">
-                    {slice.why_open}
-                  </div>
-                </Fragment>
-              )}
-            </section>
-          ))}
-        </div>
-      )
-    }
+    <PersonalNotesView client:only="react" cipherDoc={cipherDoc} />
   </article>
 </BaseLayout>

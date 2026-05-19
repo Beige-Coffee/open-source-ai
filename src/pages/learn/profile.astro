@@ -265,7 +265,60 @@ const totalComplete = [...progressBySlug.values()].filter(
         Account
       </h2>
       <div class="space-y-4 p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
-        <div class="flex items-baseline justify-between gap-4 flex-wrap">
+        <details>
+          <summary class="text-sm text-[var(--color-text-muted)] cursor-pointer">
+            Change password
+          </summary>
+          <form id="change-password-form" class="mt-4 space-y-3 max-w-sm">
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+              Changes both your login password and the key that protects
+              your encrypted course writing. The old password unlocks the
+              key; you must know it. Password reset (forgot) cannot recover
+              your encrypted notes.
+            </p>
+            <div>
+              <label
+                for="cp-old"
+                class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1"
+              >
+                Current password
+              </label>
+              <input
+                id="cp-old"
+                type="password"
+                name="old"
+                required
+                autocomplete="current-password"
+                class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+              />
+            </div>
+            <div>
+              <label
+                for="cp-new"
+                class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1"
+              >
+                New password (8 chars or more)
+              </label>
+              <input
+                id="cp-new"
+                type="password"
+                name="new"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+              />
+            </div>
+            <p id="cp-status" class="text-sm" data-state="idle"></p>
+            <button
+              type="submit"
+              class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            >
+              Change password
+            </button>
+          </form>
+        </details>
+        <div class="flex items-baseline justify-between gap-4 flex-wrap pt-4 border-t border-[var(--color-border)]">
           <p class="text-sm text-[var(--color-text-muted)]">
             Log out of this device.
           </p>
@@ -311,4 +364,58 @@ const totalComplete = [...progressBySlug.values()].filter(
       </div>
     </section>
   </article>
+
+  <script>
+    // Client-side password change. Re-derives KEK from old password,
+    // unwraps DK, re-wraps under a new KEK, updates user_keys row and
+    // Supabase auth password. See src/lib/course/keys.ts:changePassword.
+    import { browserSupabase } from "../../lib/course/supabase";
+    import { changePassword } from "../../lib/course/keys";
+
+    const form = document.getElementById("change-password-form") as HTMLFormElement | null;
+    const status = document.getElementById("cp-status") as HTMLParagraphElement | null;
+
+    function setStatus(text: string, state: "idle" | "busy" | "ok" | "error") {
+      if (!status) return;
+      status.textContent = text;
+      status.dataset.state = state;
+      status.className =
+        "text-sm " +
+        (state === "ok"
+          ? "text-[var(--color-text)]"
+          : state === "error"
+            ? "text-red-700"
+            : "text-[var(--color-text-muted)]");
+    }
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const sb = browserSupabase();
+      if (!sb) {
+        setStatus("Supabase not configured.", "error");
+        return;
+      }
+      const data = new FormData(form);
+      const oldPw = String(data.get("old") ?? "");
+      const newPw = String(data.get("new") ?? "");
+      if (!oldPw || !newPw) {
+        setStatus("Both fields required.", "error");
+        return;
+      }
+      setStatus("Changing password...", "busy");
+      try {
+        await changePassword(sb, oldPw, newPw);
+        setStatus("Password changed. Your encrypted notes are still readable.", "ok");
+        form.reset();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setStatus(
+          msg.includes("OperationError") || msg.includes("rewrap")
+            ? "Old password was wrong. Nothing changed."
+            : msg,
+          "error",
+        );
+      }
+    });
+  </script>
 </BaseLayout>

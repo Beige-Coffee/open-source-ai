@@ -135,36 +135,75 @@ const MODULES: Module[] = [
   {
     user && (
       <script>
-        {`
-          // Anonymous-writings restore: if we got here with ?restore=anon
-          // and there are stashed entries in localStorage, promote them
-          // to the user's Supabase rows via /api/course/restore-anon,
-          // then clear localStorage and strip the query param.
-          (async () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get("restore") !== "anon") return;
-            const KEY = "oas-course-v1";
-            let raw = null;
-            try { raw = window.localStorage.getItem(KEY); } catch { /* ignore */ }
-            const clean = () => {
-              params.delete("restore");
-              const qs = params.toString();
-              window.history.replaceState({}, "", "/learn" + (qs ? "?" + qs : ""));
-            };
-            if (!raw) { clean(); return; }
-            try {
-              const res = await fetch("/api/course/restore-anon", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: raw,
+        // Anonymous-writings restore (E2EE): if we got here with
+        // ?restore=anon and there are stashed entries in localStorage,
+        // encrypt each entry client-side with the just-unlocked DK and
+        // upsert directly to Supabase. The server never sees plaintext.
+        import { browserSupabase } from "../../lib/course/supabase";
+        import { encryptForStorage } from "../../lib/course/encrypted-io";
+        import { loadDK } from "../../lib/crypto/keystore";
+        import { MODULE_BY_SLUG } from "../../lib/course/modules";
+
+        (async () => {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get("restore") !== "anon") return;
+          const clean = () => {
+            params.delete("restore");
+            const qs = params.toString();
+            window.history.replaceState({}, "", "/learn" + (qs ? "?" + qs : ""));
+          };
+          const KEY = "oas-course-v1";
+          let raw: string | null = null;
+          try { raw = window.localStorage.getItem(KEY); } catch { /* ignore */ }
+          if (!raw) { clean(); return; }
+
+          // DK must be unlocked first; if it isn't, defer the restore (the
+          // user can retry on next login). Don't write cleartext.
+          const dk = await loadDK();
+          if (!dk) { clean(); return; }
+          const sb = browserSupabase();
+          if (!sb) { clean(); return; }
+          const { data: u } = await sb.auth.getUser();
+          const userId = u?.user?.id;
+          if (!userId) { clean(); return; }
+
+          let payload: any;
+          try { payload = JSON.parse(raw); } catch { clean(); return; }
+          const modules = payload?.modules ?? {};
+          for (const [moduleSlug, entry] of Object.entries(modules) as Array<[string, any]>) {
+            if (!MODULE_BY_SLUG[moduleSlug]) continue;
+            if (typeof entry?.synth === "string" && entry.synth.trim().length > 0) {
+              const body_enc = await encryptForStorage(entry.synth.trim());
+              await sb.from("synthesize_notes").upsert({
+                user_id: userId, module_slug: moduleSlug, body_enc,
               });
-              if (res.ok) {
-                try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
+            }
+            if (typeof entry?.why_open_saved === "string" && entry.why_open_saved.trim().length > 0) {
+              const body_enc = await encryptForStorage(entry.why_open_saved.trim());
+              await sb.from("why_open_notes").upsert({
+                user_id: userId, module_slug: moduleSlug, body_enc,
+              });
+            }
+            for (const [phase, turns] of Object.entries(entry?.chat ?? {})) {
+              if (!Array.isArray(turns)) continue;
+              for (const t of turns) {
+                if (!t || (t.role !== "user" && t.role !== "assistant")) continue;
+                const content_enc = await encryptForStorage(String(t.content ?? ""));
+                await sb.from("chat_turns").insert({
+                  user_id: userId,
+                  module_slug: moduleSlug,
+                  phase: phase as any,
+                  role: t.role,
+                  content_enc,
+                  turn_index: t.turn_index ?? 0,
+                });
               }
-            } catch { /* ignore network errors; user can retry by signing in again */ }
-            clean();
-          })();
-        `}
+            }
+          }
+
+          try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
+          clean();
+        })();
       </script>
     )
   }

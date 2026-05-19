@@ -10,7 +10,8 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { MODULES, MODULE_BY_SLUG, type CourseModule } from "./modules";
-import type { Database } from "./supabase";
+import { readEncOrPlain } from "./encrypted-io";
+import type { Database, EncBlobJson } from "./supabase";
 
 export interface ModuleNoteSlice {
   module: CourseModule;
@@ -18,23 +19,38 @@ export interface ModuleNoteSlice {
   why_open?: string;
 }
 
+/**
+ * Raw form with ciphertext envelopes attached. Server loaders return this
+ * shape; the client decrypts via decryptPersonalNotes before render.
+ */
+export interface PersonalNotesCipherDoc {
+  display_name: string;
+  email: string;
+  completed_at: string | null;
+  cipherSlices: Array<{
+    module: CourseModule;
+    synthesize: { body: string | null; body_enc: EncBlobJson | null } | null;
+    why_open: { body: string | null; body_enc: EncBlobJson | null } | null;
+  }>;
+}
+
 export interface PersonalNotesDoc {
   display_name: string;
   email: string;
   completed_at: string | null;
-  slices: ModuleNoteSlice[]; // ordered by module.order
+  slices: ModuleNoteSlice[];
 }
 
 /**
- * Load all notes for the given user, ordered by module order. Returns
- * a `slices` array with one entry per module the user has written
- * anything in (empty modules are filtered out).
+ * Load all notes as a CIPHERTEXT document. The server can assemble the
+ * structural metadata (display name, which modules have entries, in
+ * what order) without ever seeing plaintext. Decryption is client-side.
  */
-export async function loadPersonalNotes(
+export async function loadPersonalNotesCipher(
   supabase: SupabaseClient<Database>,
   userId: string,
   email: string,
-): Promise<PersonalNotesDoc> {
+): Promise<PersonalNotesCipherDoc> {
   const [{ data: profile }, { data: syntheses }, { data: whyOpens }] = await Promise.all([
     supabase
       .from("profiles")
@@ -43,33 +59,63 @@ export async function loadPersonalNotes(
       .maybeSingle(),
     supabase
       .from("synthesize_notes")
-      .select("module_slug, body")
+      .select("module_slug, body, body_enc")
       .eq("user_id", userId),
     supabase
       .from("why_open_notes")
-      .select("module_slug, body")
+      .select("module_slug, body, body_enc")
       .eq("user_id", userId),
   ]);
 
-  const synthBySlug = new Map<string, string>(
-    (syntheses ?? []).map((r) => [r.module_slug, r.body]),
+  const synthBySlug = new Map(
+    (syntheses ?? []).map((r) => [r.module_slug, r] as const),
   );
-  const whyOpenBySlug = new Map<string, string>(
-    (whyOpens ?? []).map((r) => [r.module_slug, r.body]),
+  const whyOpenBySlug = new Map(
+    (whyOpens ?? []).map((r) => [r.module_slug, r] as const),
   );
 
-  const slices: ModuleNoteSlice[] = MODULES.filter((m) => {
-    return synthBySlug.has(m.slug) || whyOpenBySlug.has(m.slug);
-  }).map((m) => ({
-    module: m,
-    synthesize: synthBySlug.get(m.slug),
-    why_open: whyOpenBySlug.get(m.slug),
-  }));
+  const cipherSlices = MODULES.filter(
+    (m) => synthBySlug.has(m.slug) || whyOpenBySlug.has(m.slug),
+  ).map((m) => {
+    const s = synthBySlug.get(m.slug);
+    const w = whyOpenBySlug.get(m.slug);
+    return {
+      module: m,
+      synthesize: s ? { body: s.body, body_enc: s.body_enc } : null,
+      why_open: w ? { body: w.body, body_enc: w.body_enc } : null,
+    };
+  });
 
   return {
     display_name: profile?.display_name ?? email.split("@")[0],
     email,
     completed_at: profile?.completed_at ?? null,
+    cipherSlices,
+  };
+}
+
+/**
+ * Client-side: decrypt every body_enc blob and return a plaintext
+ * PersonalNotesDoc. Throws if the session is locked.
+ */
+export async function decryptPersonalNotes(
+  doc: PersonalNotesCipherDoc,
+): Promise<PersonalNotesDoc> {
+  const slices: ModuleNoteSlice[] = await Promise.all(
+    doc.cipherSlices.map(async (cs) => ({
+      module: cs.module,
+      synthesize: cs.synthesize
+        ? (await readEncOrPlain(cs.synthesize.body_enc, cs.synthesize.body)) || undefined
+        : undefined,
+      why_open: cs.why_open
+        ? (await readEncOrPlain(cs.why_open.body_enc, cs.why_open.body)) || undefined
+        : undefined,
+    })),
+  );
+  return {
+    display_name: doc.display_name,
+    email: doc.email,
+    completed_at: doc.completed_at,
     slices,
   };
 }

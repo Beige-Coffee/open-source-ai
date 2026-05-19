@@ -179,18 +179,25 @@ export default function CoursePanel({
     };
   }, [userId, supabase, moduleSlug, phase]);
 
-  // Load synthesize body. Logged-in -> Supabase; anonymous -> localStorage.
+  // Load synthesize body. Logged-in -> Supabase (decrypting body_enc);
+  // anonymous -> localStorage.
   useEffect(() => {
     if (phase !== "synthesize") return;
     if (userId && supabase) {
       (async () => {
         const { data } = await supabase
           .from("synthesize_notes")
-          .select("body")
+          .select("body, body_enc")
           .eq("user_id", userId)
           .eq("module_slug", moduleSlug)
           .maybeSingle();
-        if (data?.body) setSynthBody(data.body);
+        if (!data) return;
+        try {
+          const text = await readEncOrPlain(data.body_enc as EncBlobJson | null, data.body);
+          if (text) setSynthBody(text);
+        } catch {
+          setError("Your encrypted summary is locked. Log out and back in to unlock.");
+        }
       })();
     } else {
       const anon = readAnonModule(moduleSlug);
@@ -341,16 +348,21 @@ export default function CoursePanel({
     setPhase(next);
   }, [phase, userId, supabase, moduleSlug]);
 
-  // Save synthesize body. Logged-in -> Supabase synthesize_notes;
-  // anonymous -> localStorage.
+  // Save synthesize body. Logged-in -> Supabase synthesize_notes encrypted
+  // into body_enc; anonymous -> localStorage.
   const saveSynth = useCallback(
     async (body: string) => {
       if (userId && supabase) {
-        await supabase.from("synthesize_notes").upsert({
-          user_id: userId,
-          module_slug: moduleSlug,
-          body,
-        });
+        try {
+          const body_enc = await encryptForStorage(body);
+          await supabase.from("synthesize_notes").upsert({
+            user_id: userId,
+            module_slug: moduleSlug,
+            body_enc,
+          });
+        } catch {
+          setError("Could not save your summary: encryption key is locked.");
+        }
       } else if (!userId) {
         writeAnonSynth(moduleSlug, body);
       }
@@ -359,7 +371,8 @@ export default function CoursePanel({
   );
 
   // Save the last substantive user turn from the Why-Open phase.
-  // Logged-in -> /api/course/save-why-open (writes to why_open_notes).
+  // Logged-in -> direct upsert to why_open_notes with body_enc (encryption
+  // happens client-side so the server never sees plaintext).
   // Anonymous -> localStorage; signup will promote it later.
   const saveWhyOpen = useCallback(async () => {
     if (phase !== "why_open") return;
@@ -369,26 +382,27 @@ export default function CoursePanel({
       setError("Your last answer is too short to save. Write more, then try again.");
       return;
     }
-    if (userId) {
+    if (userId && supabase) {
       try {
-        const res = await fetch("/api/course/save-why-open", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ module_slug: moduleSlug, body }),
+        const body_enc = await encryptForStorage(body);
+        const { error: e } = await supabase.from("why_open_notes").upsert({
+          user_id: userId,
+          module_slug: moduleSlug,
+          body_enc,
         });
-        if (!res.ok) {
-          setError(`Save failed: ${await res.text()}`);
+        if (e) {
+          setError(`Save failed: ${e.message}`);
           return;
         }
-      } catch (e) {
-        setError(`Save failed: ${e instanceof Error ? e.message : String(e)}`);
+      } catch (err) {
+        setError(`Save failed: ${err instanceof Error ? err.message : String(err)}`);
         return;
       }
-    } else {
+    } else if (!userId) {
       writeAnonWhyOpen(moduleSlug, body);
     }
     setWhyOpenSaved(true);
-  }, [phase, userId, turns, moduleSlug]);
+  }, [phase, userId, supabase, turns, moduleSlug]);
 
   // ---- Render ----
 
