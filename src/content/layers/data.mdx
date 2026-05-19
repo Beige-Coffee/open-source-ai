@@ -7,24 +7,163 @@ order: 3
 lock_in_vector: data
 sovereignty_relevance: 4
 related_layers: [training, weights, governance]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Almost every open-weights model keeps its training data secret or only partially discloses it, making this the layer where openness is most ambiguous."
-  - "Genuinely open datasets include OLMo and Dolma, RedPajama, FineWeb, and the Common Pile, built mostly as filtered subsets of Common Crawl."
-  - "Licensed-data deals between labs and publishers are non-transferable, which constrains who can build on the same corpus."
-  - "NYT v. OpenAI is unresolved, and its outcome shapes what counts as fair training data."
-  - "The OSAID debate hinges on whether disclosing training data is required for a release to count as open source at all."
+  - "The data layer is where 'open' is most ambiguous. Most open-weights models keep their training data secret or only partially disclose it; releasing weights is not the same as releasing data."
+  - "Genuinely-open training datasets include OLMo's Dolma, RedPajama, FineWeb / FineWeb-Edu, and the Common Pile. They are filtered subsets of Common Crawl plus curated additions."
+  - "The legal posture is unsettled. NYT v. OpenAI (filed Dec 2023) is unresolved, and licensed-data deals between labs and publishers are non-transferable, which means downstream users of a model cannot inherit the lab's licensing position."
+  - "The OSAID v1.0 definition (October 2024) made training-data availability a contested point: the v1.0 text requires 'sufficient detail to retrain', not full data release, which is why critics argue most open-weights releases still wouldn't qualify."
+  - "OLMo (AI2) is one of the very few model families open at the weights, data, AND training-code layers simultaneously, which makes it the reference for what 'open AI' looks like under the strictest reading."
 ---
 
 import G from "../../components/G.astro";
 
-The training corpora. The text, code, images, audio, and synthetic data
-that go into <G term="pretraining">pretraining</G> and <G term="fine-tuning">fine-tuning</G>. This is the layer where "open"
-is most ambiguous: almost every open-weights model keeps its training
-data secret or only partially discloses it. Genuinely open data exists
-for a small set of models (OLMo and Dolma, <G term="redpajama">RedPajama</G>, <G term="fineweb">FineWeb</G>, Common
-<G term="the-pile">Pile</G>), built mostly as filtered subsets of <G term="common-crawl">Common Crawl</G>. The legal and
-licensing landscape is the binding constraint: licensed-data deals are
-non-transferable, NYT v. OpenAI is unresolved, and the <G term="osaid">OSAID</G> debate
-hinges on whether disclosure of data is required for a release to be
-"open source" at all.
+## Overview
+
+The training corpora. The text, code, images, audio, and
+synthetic data that go into <G term="pretraining">pretraining</G> and <G term="fine-tuning">fine-tuning</G>. This
+is the layer where the word "open" carries the most weight,
+because releasing weights without releasing data lets a lab
+claim openness while still owning the part competitors couldn't
+reproduce.
+
+Five things to keep in mind as you read:
+
+- **Open weights and open data are different.** Most
+  "open-weights" releases keep training data closed.
+- **A handful of fully-open datasets exist.** OLMo's <G term="dolma">Dolma</G>,
+  <G term="redpajama">RedPajama</G>, <G term="fineweb">FineWeb</G>, the Common Pile. Almost all derive
+  from <G term="common-crawl">Common Crawl</G> plus filtering.
+- **The legal posture is unsettled.** NYT v. OpenAI is
+  unresolved; the answer changes what training data labs
+  can use.
+- **Licensed-data deals are non-transferable.** When a lab pays
+  a publisher for training data, that license doesn't pass to
+  downstream users of the resulting model.
+- **<G term="osaid">OSAID</G> v1.0 made this the central definitional fight.**
+  Whether full data release is required, or whether "enough
+  detail to retrain" suffices, is the open argument in 2026.
+
+The rest of this page works through each.
+
+## The fully-open datasets
+
+A small canon. They share two properties: source documents are
+mostly Common Crawl, and the filtering / deduplication pipeline
+is published.
+
+- **Dolma** (AI2, 2024) — 3 trillion tokens, used to pretrain
+  the OLMo family. Among the cleanest and most-documented open
+  pretraining corpora ([Dolma paper, arXiv 2402.00159](https://arxiv.org/abs/2402.00159)).
+- **RedPajama** (Together AI, 2023; v2 in 2024) — open
+  reproduction of LLaMA's training data with a 30T-token v2
+  release ([RedPajama-Data-v2 announcement](https://www.together.ai/blog/redpajama-data-v2)).
+- **FineWeb / FineWeb-Edu** (HuggingFace, 2024) — 15T tokens of
+  filtered Common Crawl, with an "edu" variant focused on
+  high-quality text ([FineWeb release](https://huggingface.co/datasets/HuggingFaceFW/fineweb)).
+- **Common Pile** (EleutherAI et al., 2025) — successor to The
+  Pile, with cleaner provenance and a permissive license posture
+  ([Common Pile project](https://github.com/EleutherAI/common-pile)).
+
+The realistic frontier training run uses tens of trillions of
+tokens. The fully-open corpora are now in that range, which
+means a lab that wants to do open training has the raw material;
+the binding constraint has moved to compute and pipeline
+engineering rather than data.
+
+## The legal landscape
+
+Three live threads.
+
+**NYT v. OpenAI** (S.D.N.Y. 1:23-cv-11195, filed December 2023)
+alleges that OpenAI's training on Times articles constitutes
+copyright infringement, that ChatGPT can regurgitate Times
+content nearly verbatim, and that the fair-use defense doesn't
+apply at the scale of training a commercial model
+([initial complaint, NYT](https://nytco-assets.nytimes.com/2023/12/NYT_Complaint_Dec2023.pdf)).
+The case is unresolved through 2026; how it resolves changes
+what training data labs in US jurisdiction can legally use.
+
+**Licensed-data deals** have become the dominant compliance
+story for the major labs. OpenAI signed publisher deals with
+Axel Springer (Dec 2023), the Financial Times (Apr 2024), News
+Corp (May 2024), and Vox Media (May 2024); Google has comparable
+arrangements via Reddit and others. These are typically
+non-transferable: the lab's license to train on the corpus does
+not extend to downstream users of the resulting model.
+
+**Regional regimes diverge.** The EU AI Act, in force from
+August 2024, requires training-data summaries for general-purpose
+AI models placed on the EU market
+([EU AI Act, Recital 107](https://artificialintelligenceact.eu/article/53/)).
+The US has no federal training-data disclosure requirement; what
+exists is a patchwork of state-level rules and the active NYT
+litigation. China's rules require training data to comply with
+the country's content policies, but don't require disclosure.
+
+## The OSAID definition fight
+
+The Open Source AI Definition v1.0 from OSI, finalized October
+2024, is the first formal attempt to say what counts as "open
+source AI" ([OSAID 1.0 announcement](https://opensource.org/ai/open-source-ai-definition)).
+The text requires three things: the weights, the training
+code, and "sufficiently detailed information about the data
+used to train the system so that a skilled person can build a
+substantially equivalent system" — not the data itself.
+
+That clause is the entire fight. The pro-OSAID-v1.0 reading is
+that requiring full data release would exclude almost every
+commercially-trained model (because of the publisher deals
+above) and so kill the definition's adoption. The
+critics' reading is that "describe how to build it" without
+shipping the actual training data lets labs claim openness
+while keeping the part competitors actually need.
+
+The labs that ship full data alongside weights (AI2's OLMo, the
+EleutherAI work on the Common Pile) make a clean case for the
+strict reading. The labs that ship weights only with detailed
+docs (Meta's Llama, Mistral's open models) make a clean case
+for the v1.0 reading. The 2026 OSAID revision cycle is the
+operational moment when this argument resolves one way or the
+other.
+
+## What's open and what isn't
+
+The matrix:
+
+- **Open weights AND open data AND open training code**: OLMo,
+  Pythia (legacy), a handful of EleutherAI releases. The strict
+  "open source AI" definition.
+- **Open weights, partial / no data**: Llama, Mistral, Gemma,
+  Qwen, DeepSeek, Kimi, GLM. The "open-weights" category, which
+  is what most users mean by "open AI" in practice.
+- **Open data, no model release**: the dataset projects (Dolma,
+  RedPajama, FineWeb, Common Pile) before anyone has trained on
+  them.
+- **Closed weights, closed data**: GPT-5, Claude 4, Gemini 3.
+  The frontier-lab default.
+
+The asymmetry: openness on weights is easy to ship (one file
+upload); openness on data is hard (terabytes, license review,
+publisher relationships). Almost no lab makes the second trade
+unless their funding source explicitly requires it (AI2 from
+Microsoft / Paul Allen estate, EleutherAI from grant funding).
+
+## The editorial tension
+
+The training-data question is where the rest of the openness
+debate ultimately resolves. A model whose weights are open but
+whose data is unknown can be run, fine-tuned, and inspected;
+it cannot be re-trained, audited for bias-by-omission, or
+defended against a "we trained on stolen IP" claim. The
+sovereignty argument for full data release is that without it,
+you depend on the lab's word about what went in.
+
+The argument against requiring full data release is economic:
+the major labs spent billions on the publisher deals that made
+their training corpora legally clean, and forcing disclosure of
+those corpora would invalidate the deals. A definition that
+nobody at frontier scale meets is a definition that doesn't
+shape the market. OSAID v1.0 made the pragmatic call. Whether
+that call holds through the 2026 revision is what the next
+year decides.

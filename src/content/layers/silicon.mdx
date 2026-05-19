@@ -7,24 +7,170 @@ order: 1
 lock_in_vector: silicon
 sovereignty_relevance: 5
 related_layers: [compute, runtime]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Silicon is the slowest-moving layer in the stack, and everything above it inherits its constraints."
-  - "Two independent questions live here: whether the ISA is open (RISC-V yes, ARM and x86 no) and whether the accelerator is open."
-  - "Tenstorrent is the noteworthy exception on the open-accelerator side; almost no other production accelerator qualifies."
-  - "NVIDIA's H100 and H200 line on the proprietary CUDA stack remains the dominant production accelerator."
-  - "AMD MI300X, Cerebras, Groq, and Apple Silicon are the credible alternatives at different points in the performance-availability trade space."
+  - "Silicon has two independent openness questions. Is the ISA open (RISC-V yes, ARM and x86 no)? Is the accelerator open (almost none, with Tenstorrent as the noteworthy exception)?"
+  - "The dominant production accelerator is NVIDIA's H100 / H200 line on the proprietary CUDA software stack. AMD MI300X, Cerebras, Groq, and Apple Silicon are the credible alternatives at different points in the performance-and-availability trade space."
+  - "The real lock-in at this layer is the CUDA software ecosystem (cuDNN, cuBLAS, NCCL, TensorRT-LLM), not the chips themselves. ROCm and HIP exist; performance and coverage gaps remain."
+  - "Silicon is the slowest-moving layer in the stack. A chip taped out today ships ~18 months later and is in service for a decade. Everything above silicon inherits its constraints."
+  - "Open ISAs (RISC-V) and open accelerators (Tenstorrent) are not the same conversation as open weights or open runtime; they move on a different clock and answer a different question."
 ---
 
 import G from "../../components/G.astro";
 
-The substrate. Instruction set architectures (ISAs) and the physical
-accelerators that execute matrix math. Silicon is the slowest-moving
-layer in the stack and the one everything above inherits constraints
-from. Two questions live here and they are independent: is the ISA open
-(<G term="risc-v">RISC-V</G> is, ARM and x86 are not) and is the accelerator open (almost
-none are; <G term="tenstorrent">Tenstorrent</G> is the noteworthy exception). The dominant
-production accelerator remains NVIDIA's H100/H200 line on the
-proprietary <G term="cuda">CUDA</G> software stack; AMD MI300X, <G term="cerebras">Cerebras</G>, <G term="groq">Groq</G>, and Apple
-Silicon are the credible alternatives at different points in the
-performance-and-availability trade space.
+## Overview
+
+The substrate. Instruction set architectures (<G term="isa">ISAs</G>) and the
+physical accelerators that execute matrix math. Silicon is the
+slowest-moving layer in the stack and the one everything above
+inherits constraints from: a chip that tapes out today ships ~18
+months later and stays in service for a decade. Decisions made
+here propagate up through compute, runtime, weights, and agents
+for years.
+
+Five things to keep in mind as you read:
+
+- **Two independent openness questions live here.** Is the
+  instruction set open? Is the physical accelerator open? They
+  don't have the same answers.
+- **<G term="risc-v">RISC-V</G> is the open ISA.** ARM and x86 are not. ARM ships
+  under a paid license; x86 is jointly held by Intel and AMD.
+- **Almost no production accelerator is open.** <G term="tenstorrent">Tenstorrent</G> is
+  the noteworthy exception; everyone else (NVIDIA, AMD, Cerebras,
+  <G term="groq">Groq</G>, Apple) ships closed silicon.
+- **The real lock-in is software, not silicon.** <G term="cuda">CUDA</G> plus its
+  library stack (cuDNN, cuBLAS, NCCL, TensorRT-LLM) is what makes
+  NVIDIA hard to leave even when alternative chips exist.
+- **This layer moves on a different clock than the rest of the
+  stack.** A new runtime ships in weeks; a new ISA takes a decade.
+
+The rest of this page works through each question in turn.
+
+## The ISA question
+
+An <G term="isa">ISA</G> is the contract between software and hardware. It
+defines the instructions a chip exposes and the registers and
+memory model software can rely on. ISAs are intellectual property
+in their own right, separable from the chips that implement them.
+
+**RISC-V** is the open ISA. Originally a 2010 Berkeley research
+project, the base specification is BSD-licensed and ratified by
+RISC-V International ([RISC-V specifications](https://riscv.org/specifications/)).
+Anyone can design and ship a RISC-V chip without paying a
+licensing fee. The catch for AI workloads is that RISC-V's
+vector and matrix extensions (the parts that matter for ML) are
+still maturing, and the production AI silicon shipping today on
+RISC-V is small relative to the NVIDIA volume.
+
+**ARM** is the most-licensed proprietary ISA. ARM ships under a
+paid architecture license; Apple's M-series, NVIDIA's Grace, and
+AWS Graviton all hold ARM architecture licenses. The
+implementations are proprietary; the ISA itself is closed but
+widely-licensed.
+
+**x86** is jointly held by Intel and AMD via the 1995 cross-license
+agreement that ended their litigation. No third party can
+implement x86 legally. For data-center AI inference, x86 still
+runs the CPU side of most clusters but the accelerator math
+happens on something else.
+
+## The accelerator question
+
+A separate question. Even with an open ISA, the physical chip
+design can be open or closed; the two are independent.
+
+The dominant production accelerator remains NVIDIA's H100 (80GB
+HBM3) and H200 (141GB HBM3e) data-center GPUs
+([NVIDIA H100 product page](https://www.nvidia.com/en-us/data-center/h100/)),
+plus the Blackwell B100/B200/GB200 family shipping into 2025-2026.
+Closed silicon, closed schematics, closed firmware.
+
+The credible alternatives, each closed but each playing a
+different game:
+
+- **AMD MI300X / MI325X** (192GB / 256GB HBM3e): more memory than
+  NVIDIA per accelerator, software stack via ROCm and HIP, used
+  by Microsoft, Meta, and most recently by some OpenAI inference
+  workloads ([AMD Instinct MI300X](https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html))
+- **Cerebras WSE-3**: wafer-scale chip, 900,000 cores on a single
+  die, optimized for low-latency batch-1 inference
+  ([Cerebras WSE-3 announcement](https://www.cerebras.net/blog/cerebras-wse-3))
+- **Groq LPU**: deterministic compiler-scheduled silicon, very
+  fast token throughput on dense transformer inference
+  ([Groq inference benchmarks](https://groq.com/inference-benchmarks/))
+- **Apple Silicon** (M-series with Neural Engine + GPU): the
+  open-weights ecosystem's preferred local-inference platform,
+  via <G term="mlx">MLX</G> and Metal
+- **Tenstorrent Wormhole / Blackhole**: the noteworthy
+  open-silicon counter-bet, RISC-V-based, the only credible
+  production accelerator with openly-published RTL
+  ([Tenstorrent open hardware](https://tenstorrent.com/hardware/))
+
+The competitive question is not whether these chips exist (they
+do, and they ship at scale) but whether their software stacks
+let real workloads move off CUDA. So far the answer is "for
+defined inference workloads, sometimes; for training, almost
+never."
+
+## The CUDA moat
+
+The lock-in at this layer is software. NVIDIA's CUDA platform
+shipped in 2007. The accumulated kernels, libraries, and tuning
+work since then (cuDNN for deep learning primitives, cuBLAS for
+linear algebra, NCCL for multi-GPU communication, TensorRT-LLM
+for inference) are what make NVIDIA hard to leave even when the
+underlying chips have credible competitors.
+
+AMD's response is ROCm (the rough CUDA equivalent) and HIP (a
+source-to-source translation layer that lets CUDA code run on
+ROCm). HIP works, but the published benchmark gap and the
+operator-coverage gap between CUDA and ROCm on real workloads
+remains a few-x and a long tail respectively. As of 2026, AMD
+is closing it; closed isn't the same as caught up.
+
+The underlying point is that "the chip" and "the productive
+software stack for that chip" are different things to be open
+or closed about. A learner who only asks "is the silicon open?"
+misses the question that actually decides which workloads can
+move.
+
+## What's open and what isn't
+
+ISA-open and accelerator-open are independent.
+
+- **Open ISA, closed accelerator**: most modern ARM chips
+  (licensed ARM ISA, proprietary implementations). Doesn't apply
+  cleanly to AI accelerators today.
+- **Open ISA, open accelerator**: Tenstorrent. The only entry
+  with both at production scale.
+- **Closed ISA, closed accelerator**: NVIDIA H100/H200,
+  Blackwell, AMD MI300X, Cerebras, Groq, Apple Silicon. Almost
+  everything else.
+- **Open ISA, open accelerator, open software stack**: nothing
+  yet at production scale. The asymptote toward which
+  Tenstorrent plus an open compiler stack would point.
+
+The OSI doesn't define open hardware; the Open Source Hardware
+Association (OSHWA) does
+([OSHWA definition](https://www.oshwa.org/definition/)), and the
+RISC-V International specs follow it. Open hardware definitions
+are still less binding than open software definitions in
+practice because almost no AI silicon meets them yet.
+
+## The editorial tension
+
+Open silicon as a sovereignty bet has the longest payoff horizon
+of any layer on this site. Even if Tenstorrent ships well and
+the open ROCm story matures, the production AI capacity won't
+shift on the timescale of policy debates. The realistic
+five-year story is that CUDA stays dominant, AMD captures some
+share, and open-ISA silicon survives in research and
+specialty-inference niches rather than dethroning anyone.
+
+The argument against shrugging anyway is that silicon decisions
+made today set the constraint surface for the next decade. The
+2026 capex going into hyperscaler GPUs is the 2036 installed
+base. If sovereign-state programs (UAE, Saudi, India) all
+default to NVIDIA, they've quietly chosen who can audit and who
+can withhold ten years out. The open-silicon bet is slow because
+silicon is slow, not because it doesn't matter.

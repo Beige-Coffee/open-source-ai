@@ -6,26 +6,181 @@ tier: core
 order: 2
 lock_in_vector: none
 sovereignty_relevance: 5
-related_layers: [silicon, runtime]
-updated: 2026-05-13
+related_layers: [silicon, runtime, infrastructure]
+updated: 2026-05-19
 probe_primer:
-  - "Three categories share this layer: self-hosted hardware, centralized cloud, and decentralized marketplaces like Akash, io.net, and Gensyn."
-  - "Each category trades sovereignty, scalability, and reliability against the others."
-  - "This is where decentralized-infrastructure narratives from Bitcoin, IPFS, and DePIN most cleanly map to AI workloads."
-  - "The open side is closest to economic parity with hyperscalers specifically for inference, not for training."
-  - "Training at frontier scale remains a hyperscaler problem, and decentralized training is shipping but unproven at that scale."
+  - "Compute is the control plane on top of silicon: scheduling, networking, batching, the API surface that turns hardware into 'a GPU you can rent for an hour'. Distinct from infrastructure (the physical buildings and power) below it."
+  - "Three operating models share this layer: self-hosted (own the hardware), centralized cloud (AWS, Azure, GCP, plus AI-native lessors like CoreWeave and Lambda), and decentralized marketplaces (Akash, io.net, Hyperbolic, Bittensor compute subnets, Gensyn)."
+  - "Each model trades sovereignty, scalability, and reliability differently. Self-hosted maximizes sovereignty but caps at hardware budget; cloud maximizes scalability but routes through a single counterparty; marketplaces split the difference and add a token-economy layer."
+  - "Decentralized marketplaces are closest to economic parity with hyperscalers for inference workloads, not for training. Training at frontier scale remains a hyperscaler problem; decentralized training is shipping but unproven at that scale."
+  - "This is where the cypherpunk lineage (Bitcoin, IPFS, DePIN) maps most cleanly onto AI workloads, but the mapping is partial: idle-GPU markets handle bursty inference well and tightly-coupled training poorly."
 ---
 
 import G from "../../components/G.astro";
 
-Where silicon physically lives and how it gets accessed. Three
-categories share this layer: self-hosted (you own the hardware),
-centralized cloud (AWS, Azure, GCP, plus dedicated AI clouds like
-CoreWeave and Lambda), and decentralized marketplaces (Akash, io.net,
-Hyperbolic, Bittensor, Gensyn). Each trades sovereignty, scalability,
-and reliability against each other. This is the layer where
-decentralized-infrastructure narratives from Bitcoin, IPFS, and DePIN
-most cleanly map to AI workloads, and it is also where the open
-ecosystem is closest to economic parity with hyperscalers for <G term="inference">inference</G>.
-Training at scale remains a hyperscaler problem; <G term="decentralized-training">decentralized training</G>
-is moving but unproven at <G term="frontier">frontier</G> scale.
+## Overview
+
+The control plane on top of silicon. Where chips physically live
+and how someone other than the chip's owner gets access to them.
+This layer is distinct from infrastructure (the buildings, the
+power, the cooling that sit below it) and from silicon (the
+chips themselves). The question this layer answers is: given
+that the math has to run on a chip somewhere, who owns the
+chip, who controls the scheduler, and what counterparty
+relationship does the user accept?
+
+Five things to keep in mind as you read:
+
+- **Three operating models share the layer.** Self-hosted,
+  centralized cloud, decentralized marketplace. Each makes a
+  different sovereignty trade.
+- **Self-hosted maximizes sovereignty but caps at budget.** You
+  own the chips; you also own the hiring problem and the power
+  bill. Practical for individuals, hard for large training runs.
+- **Centralized cloud maximizes scalability through one
+  counterparty.** AWS, Azure, GCP, plus AI-native lessors
+  (CoreWeave, Lambda, Crusoe, Nebius). Fast to provision; the
+  TOS is the binding constraint.
+- **Decentralized marketplaces sit between.** Akash, io.net,
+  Hyperbolic, Bittensor compute subnets, Gensyn. Permissionless
+  GPU supply, token-settled, no single throat to choke.
+- **The decentralized side is competitive for inference, not for
+  training.** That asymmetry is the editorial story at this layer.
+
+The rest of this page works through each model, then arrives at
+the asymmetry.
+
+## Self-hosted
+
+You own the hardware. This shape ranges from a single Apple
+Silicon laptop running <G term="llama-cpp">llama.cpp</G> to an enterprise
+hundred-GPU cluster.
+
+The 2026 sovereignty story for individuals lives here. <G term="ollama">Ollama</G>,
+<G term="llama-cpp">llama.cpp</G>, and <G term="mlx">MLX</G> made local <G term="inference">inference</G> on Mac and Linux a
+real path for open-weights models up to ~70B parameters. Apple
+Silicon's unified memory architecture (the M4 Max ships with up
+to 128GB shared between CPU and GPU) made it the
+most-practical-per-dollar local inference platform for a single
+operator.
+
+For organizations, self-hosted means buying a small cluster
+(typically 8 to 64 NVIDIA GPUs) and running it under
+Kubernetes or Slurm. The bottleneck is no longer the chips (you
+can order them) but the building: power, cooling, and
+high-bandwidth interconnect. Most teams that try self-hosted at
+scale find themselves rebuilding the work the AI-native cloud
+lessors already did, which is why the colocation-plus-bare-metal
+shape (lease the rack from a Crusoe or a Nebius, bring your own
+operators) has become more common than full self-hosted at
+enterprise scale.
+
+## Centralized cloud
+
+The hyperscalers (AWS, Azure, GCP) plus the AI-native lessors
+(CoreWeave, Lambda, Crusoe, Nebius). The dominant model by
+revenue.
+
+The hyperscalers offer general-purpose cloud with AI-accelerated
+instance types. The AI-native lessors offer
+AI-purpose-built clusters with tight InfiniBand or NVLink
+fabric, optimized scheduling for training, and pricing that
+undercuts the hyperscalers for sustained large-batch workloads.
+CoreWeave went public in March 2025 at a valuation that priced
+in the bet that AI-purpose-built clouds would keep gaining
+share from hyperscalers
+([CoreWeave S-1 prospectus](https://www.sec.gov/Archives/edgar/data/1769628/000119312525031293/d899798ds1.htm)).
+
+The sovereignty cost is the TOS. You don't own the chips, you
+rent them. The cloud operator can change terms, raise prices,
+or revoke access for any cause defined in the contract. For
+most teams that's a fine trade; for ones that need cryptographic
+guarantees about who can see model weights or user data, it's
+the point at which they look at <G term="confidential-computing">confidential computing</G> (covered
+under [identity and trust](/stack/identity-trust)) or move
+elsewhere.
+
+## Decentralized marketplaces
+
+A token-settled market design where many independent operators
+contribute GPU capacity and a protocol matches supply to
+demand. The major shapes:
+
+- **Akash Network** — a Cosmos-SDK chain with a GPU marketplace.
+  Tenants bid jobs against operator capacity; the chain settles
+  in AKT. Operators are permissionless
+  ([Akash GPU marketplace](https://akash.network/gpu/)).
+- **io.net** — aggregates idle GPUs from independent providers
+  behind a unified API. Pitched as "Airbnb for GPUs", settles in
+  IO ([io.net documentation](https://docs.io.net/)).
+- **Hyperbolic Labs** — GPU marketplace plus an inference API
+  layer; runs both the supply side and a SaaS layer that hides
+  the marketplace from end users
+  ([Hyperbolic platform](https://hyperbolic.xyz/)).
+- **Bittensor compute subnets** — Subnet 51 (compute) and Subnet
+  27 (training) reward operators in TAO for serving workloads;
+  the subnet design is more incentive-mechanism than
+  classical marketplace ([Bittensor subnets](https://taostats.io/subnets)).
+- **Gensyn** — specifically targeting verifiable decentralized
+  training (not just inference), with cryptographic
+  proof-of-learning to keep operators honest
+  ([Gensyn protocol](https://www.gensyn.ai/)).
+
+The cypherpunk lineage shows up cleanly here. The design
+ancestors are Bitcoin (permissionless settlement),
+Filecoin / IPFS (verifiable storage as a market), and the
+broader DePIN movement (decentralized physical infrastructure
+networks). The AI workload fits the shape well for inference
+and partial-batch fine-tuning; it fits worse for
+tightly-coupled multi-node training.
+
+## What's open and what isn't
+
+The compute layer isn't open or closed in the licensing sense.
+What it has is a sovereignty axis from minimum-trust
+(self-hosted) to maximum-trust (single hyperscaler cloud) with
+the decentralized marketplaces sitting between.
+
+The marketplace protocols themselves (Akash chain, Bittensor
+subnet code, Gensyn protocol) are mostly open source. The
+hyperscaler stacks are entirely closed. The hardware
+underneath everyone is mostly closed (see [silicon](/stack/silicon)).
+
+The reverse-lock-in risk is the API surface. As long as
+"a GPU you can rent" looks the same across providers (run a
+container, mount a volume, expose a port), workloads remain
+portable and the layer is effectively commoditized. The risk
+is the hyperscalers wrapping AI workloads in proprietary
+managed services (think Bedrock, Vertex AI) that are easier to
+adopt and harder to leave than plain GPU rental.
+
+## The editorial tension
+
+Inference and training pull this layer in different
+directions.
+
+**Inference** is bursty, latency-sensitive, geographically
+dispersed, and stateless. Decentralized marketplaces handle
+this well: any GPU near the user can serve a request, the
+worst-case failure is a slower fallback, and the workload
+parallelizes trivially across operators. The decentralized
+side is closest to economic parity with hyperscalers here.
+
+**Training** is sustained, latency-tolerant within a cluster,
+extremely latency-sensitive across clusters, and stateful. It
+needs hundreds to thousands of GPUs talking to each other over
+high-bandwidth interconnect (InfiniBand, NVLink), running for
+weeks. Decentralized training (Prime Intellect's INTELLECT-1
+and INTELLECT-2, Nous DisTrO, Templar, Pluralis) is shipping
+working models but at small enough scale and slow enough
+wall-clock that it has not yet displaced the hyperscaler
+default for frontier training runs.
+
+The strategic question is whether the decentralized model
+eventually closes the training gap by improving its
+communication efficiency, or stays in the inference and
+fine-tuning niche while hyperscalers keep frontier training.
+Both outcomes are consistent with the trajectory through 2026;
+which one wins is a function of how fast the bandwidth-efficient
+training research (DiLoCo, OpenDiLoCo, DisTrO) matures relative
+to NVIDIA's NVLink roadmap.
