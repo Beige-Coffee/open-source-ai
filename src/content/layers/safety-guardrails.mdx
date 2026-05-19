@@ -8,6 +8,12 @@ lock_in_vector: safety
 sovereignty_relevance: 3
 related_layers: [weights, agents, evaluation]
 updated: 2026-05-13
+probe_primer:
+  - "Safety constraints apply at three points in the pipeline: training time (Constitutional AI, RLHF, DPO), inference time (Llama Guard, NeMo Guardrails), and agent runtime (sandbox-escape evals, capability-token enforcement)."
+  - "The open safety stack is growing but not yet at parity with closed labs' internal stacks, which are proprietary by design."
+  - "Closed safety stacks are increasingly heavy on capability evaluation rather than only output filtering."
+  - "AISI Inspect, METR, and Apollo Research are the most credible open and semi-open evaluators of dangerous capabilities."
+  - "The reverse-lock-in risk is that closed-lab safety claims cannot be independently verified by outsiders."
 ---
 
 import G from "../../components/G.astro";

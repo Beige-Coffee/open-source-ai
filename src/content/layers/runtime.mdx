@@ -8,6 +8,12 @@ lock_in_vector: runtime
 sovereignty_relevance: 5
 related_layers: [silicon, weights, agents]
 updated: 2026-05-13
+probe_primer:
+  - "The same model can cost ten times more on a poorly-tuned runtime than a well-tuned one, making runtime decisive for production economics."
+  - "vLLM uses PagedAttention for production-grade serving, SGLang uses RadixAttention plus structured generation, and llama.cpp targets local-first via GGUF."
+  - "Open runtime projects repeatedly catch up to or beat closed equivalents like TensorRT-LLM, often within months."
+  - "Runtime is the layer most invisible to end users but most decisive for what serving actually costs."
+  - "When the workload is well-defined, open runtime wins on technical merits, even though closed runtime still dominates hyperscaler revenue."
 ---
 
 import G from "../../components/G.astro";

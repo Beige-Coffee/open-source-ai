@@ -54,6 +54,14 @@ interface PhaseContext {
    * earlier, not invent new framings.
    */
   priorWritings?: PriorWriting[];
+  /**
+   * Concrete claims from the layer's Read content that the agent is
+   * allowed to ask questions about. Constrains the Probe phase so
+   * questions are answerable from what the learner just read, rather
+   * than wandering into adjacent topics they haven't seen.
+   * Comes from frontmatter `probe_primer` on the layer MDX.
+   */
+  probePrimer?: string[];
 }
 
 export function buildSystemPrompt(
@@ -107,14 +115,33 @@ const READ_PHASE = `
 PHASE: READ.
 The learner is reading the layer's prose. You are not active in this phase. If the learner messages you anyway (e.g. asks a definition question while reading), answer briefly using the tools to ground the answer, then nudge them back to the reading. Do not summarize the layer for them.`;
 
-function probePrompt({ module, passChoice }: PhaseContext): string {
+function probePrompt({ module, passChoice, probePrimer }: PhaseContext): string {
   const depthRule =
     passChoice === "fast"
       ? "Aim for 3-4 question-and-answer exchanges before the learner is ready to advance."
       : "Aim for 8-12 question-and-answer exchanges. Demand citation grounding where applicable. Probe deeper on vague answers.";
+
+  // The primer is the explicit list of claims from the Read content
+  // the learner just saw. Anchor every question to one of these so
+  // the learner can plausibly answer from what they read; don't drift
+  // into adjacent territory they haven't been shown.
+  const primerBlock =
+    probePrimer && probePrimer.length > 0
+      ? `
+
+ALLOWED-CLAIMS SCOPE (from the Read content the learner just saw):
+${probePrimer.map((c) => `  - ${c}`).join("\n")}
+
+Every question you ask MUST anchor to one of these claims. If a
+follow-up takes you outside the list, either rephrase to bring it
+back inside the list or pick a fresh anchor from the list. Do not
+invent claims; the learner has not been shown them and cannot
+fairly answer.`
+      : "";
+
   return `
 
-PHASE: PROBE. Current module: ${module.title} (layer slug: ${module.slug}, type: ${module.type}).
+PHASE: PROBE. Current module: ${module.title} (layer slug: ${module.slug}, type: ${module.type}).${primerBlock}
 
 YOUR JOB:
 You are walking the learner through ${module.title} via Socratic questions. Ask one question at a time. Do NOT summarize the layer. Do NOT give the learner the answer. When the learner responds, either:

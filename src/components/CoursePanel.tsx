@@ -116,6 +116,7 @@ interface Props {
   userId: string | null;
   passChoice: "fast" | "deep";
   priorWritings?: PriorWriting[];
+  probePrimer?: string[];
 }
 
 export default function CoursePanel({
@@ -124,6 +125,7 @@ export default function CoursePanel({
   userId,
   passChoice,
   priorWritings,
+  probePrimer,
 }: Props): JSX.Element {
   const courseModule = MODULE_BY_SLUG[moduleSlug];
   // Subscribe to the specific fields we read so the panel re-renders the
@@ -341,6 +343,7 @@ export default function CoursePanel({
           module: courseModule,
           passChoice: effectivePass,
           priorWritings,
+          probePrimer,
         });
         const budget = new ToolBudget();
         const allMessages = [
@@ -420,6 +423,7 @@ export default function CoursePanel({
       apiKey,
       model,
       phase,
+      probePrimer,
       courseModule,
       effectivePass,
       priorWritings,

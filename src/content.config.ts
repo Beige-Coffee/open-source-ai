@@ -47,6 +47,15 @@ const layers = defineCollection({
     sovereignty_relevance: z.number().int().min(1).max(5),
     related_layers: z.array(z.string()).default([]),
     updated: z.coerce.date(),
+    /**
+     * Probe primer: 3-5 concrete claims about this layer that the
+     * course agent is allowed to ask Socratic questions about. The
+     * agent system prompt explicitly constrains questions to claims
+     * the learner could plausibly answer from the Read content;
+     * primer bullets are also surfaced from the Read prose. Empty
+     * array means the agent falls back to the short_description.
+     */
+    probe_primer: z.array(z.string()).default([]),
   }),
 });
 

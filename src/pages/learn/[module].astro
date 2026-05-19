@@ -31,6 +31,7 @@ const layerEntries = await getCollection("layers");
 const primaryLayerSlug = courseModule.layer_slugs[0];
 const layerEntry = layerEntries.find((l) => l.id === primaryLayerSlug);
 const LayerContent = layerEntry ? (await render(layerEntry)).Content : null;
+const probePrimer = layerEntry?.data.probe_primer ?? [];
 
 // Load glossary entries primarily-attached to this layer for the Read passage.
 const glossaryEntries = await getCollection("glossary");
@@ -220,12 +221,14 @@ const prev = prevModule(moduleSlug);
       }
     </nav>
 
-    <!-- 60/40 split: content + course panel -->
+    <!-- 60/40 split: ALWAYS show the Read content on the left so the
+         learner can refer back to it during Probe / Compare / Why-Open /
+         Synthesize. The right column carries the phase-specific chat or
+         writing surface. -->
     <div class="grid gap-6 md:grid-cols-[3fr_2fr]">
-      <!-- Left: phase-specific content (currently just Read; later phases swap in) -->
       <div class="prose-course min-h-[60vh]">
         {
-          currentPhase === "read" && layerEntry && LayerContent && (
+          layerEntry && LayerContent && (
             <Fragment>
               <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
                 Read
@@ -260,110 +263,34 @@ const prev = prevModule(moduleSlug);
                 </section>
               )}
 
-              <form
-                method="POST"
-                action={`/api/course/advance?module=${moduleSlug}`}
-                class="mt-8"
-              >
-                <button
-                  type="submit"
-                  class="px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+              {currentPhase === "read" && (
+                <form
+                  method="POST"
+                  action={`/api/course/advance?module=${moduleSlug}`}
+                  class="mt-8"
                 >
-                  I've read it · move to Probe →
-                </button>
-              </form>
-            </Fragment>
-          )
-        }
+                  <button
+                    type="submit"
+                    class="px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+                  >
+                    I've read it · move to Probe →
+                  </button>
+                </form>
+              )}
 
-        {
-          currentPhase === "probe" && (
-            <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Probe
-              </h2>
-              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-6">
-                Work through the agent's questions in the panel on the right.
-                When the agent indicates you've answered enough, the
-                "Continue to Compare" button below activates.
-              </p>
-              <p class="text-sm text-[var(--color-text-subtle)] italic">
-                (Probe-phase wiring: in progress; the agent panel is being built.)
-              </p>
-            </Fragment>
-          )
-        }
-
-        {
-          currentPhase === "compare" && (
-            <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Compare
-              </h2>
-              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-                {courseModule.compare_axis_label}
-              </p>
-              <p class="text-sm text-[var(--color-text-subtle)] italic">
-                (Compare-phase wiring: in progress; the comparison surface is being built.)
-              </p>
-            </Fragment>
-          )
-        }
-
-        {
-          currentPhase === "why_open" && (
-            <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Why open source matters here
-              </h2>
-              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-                Why does open source specifically matter at this layer?
-                Not as an abstract value; as a concrete mechanism. Who does
-                it protect, against what, in what scenario? Write your
-                answer in the panel.
-              </p>
-              <p class="text-sm text-[var(--color-text-subtle)] italic">
-                (Why-open phase wiring: in progress.)
-              </p>
-            </Fragment>
-          )
-        }
-
-        {
-          currentPhase === "synthesize" && (
-            <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Synthesize
-              </h2>
-              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-                Write your own summary of this layer in your own words. This
-                becomes part of your Personal Notes document at the end of
-                the course.
-              </p>
-              <p class="text-sm text-[var(--color-text-subtle)] italic">
-                (Synthesize-phase wiring: in progress.)
-              </p>
-            </Fragment>
-          )
-        }
-
-        {
-          currentPhase === "complete" && (
-            <Fragment>
-              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-                Module complete
-              </h2>
-              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-6">
-                You've completed this module. Move on to the next, or
-                revisit any phase from the ribbon above.
-              </p>
-              {next && (
-                <a
-                  href={`/learn/${next.slug}`}
-                  class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
-                >
-                  Next: {next.title} →
-                </a>
+              {currentPhase === "complete" && next && (
+                <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+                  <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                    You've completed this module. Move on to the next, or
+                    revisit any phase from the ribbon above.
+                  </p>
+                  <a
+                    href={`/learn/${next.slug}`}
+                    class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                  >
+                    Next: {next.title} →
+                  </a>
+                </div>
               )}
             </Fragment>
           )
@@ -382,6 +309,7 @@ const prev = prevModule(moduleSlug);
             userId={user?.id ?? null}
             passChoice={passChoice}
             priorWritings={priorWritings}
+            probePrimer={probePrimer}
           />
         </div>
         <div class="mt-6">

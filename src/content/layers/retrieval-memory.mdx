@@ -8,6 +8,12 @@ lock_in_vector: retrieval
 sovereignty_relevance: 3
 related_layers: [weights, agents]
 updated: 2026-05-13
+probe_primer:
+  - "Three things live at this layer: vector databases like Qdrant and pgvector, embedding models like BGE and jina-embeddings, and agent-memory frameworks like Letta, mem0, and Zep."
+  - "The open side is well-covered at every sub-layer, with Pinecone as the closed counterpart and pgvector as the boring-tech default for most teams."
+  - "Vectors plus metadata is a portable format, so the database itself is not the real lock-in story."
+  - "The interesting lock-in is one layer up: an agent whose memory lives server-side at someone else's cloud is not portable regardless of vector format."
+  - "Accumulated context, not the underlying store, is what binds users to a particular provider."
 ---
 
 import G from "../../components/G.astro";
