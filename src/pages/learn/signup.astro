@@ -188,17 +188,46 @@ if (Astro.request.method === "POST") {
           p.textContent = msg;
           form.insertBefore(p, form.firstChild);
         };
-        const { data: authData, error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          showError(error.message);
-          return;
+        // Real-email signups go through the public path so password reset
+        // stays available. Username signups (synthesized `<slug>@oas.local`)
+        // route to /api/auth/signup because Supabase's public email
+        // validator rejects reserved TLDs like .local.
+        const isUsername = !identifier.includes("@");
+        if (isUsername) {
+          const res = await fetch("/api/auth/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          if (!res.ok) {
+            showError(await res.text());
+            return;
+          }
+          const { error: signInErr } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (signInErr) {
+            showError(`Account created but sign-in failed: ${signInErr.message}`);
+            return;
+          }
+        } else {
+          const { data: authData, error } = await supabase.auth.signUp({
+            email,
+            password,
+          });
+          if (error) {
+            showError(error.message);
+            return;
+          }
+          if (!authData.session) {
+            // Email confirmation flow: account exists but session isn't
+            // live yet. Keys will be initialized on first confirmed login.
+            showError("Account created. Check your email for a confirmation link, then log in.");
+            return;
+          }
         }
-        if (!authData.session) {
-          // Email confirmation flow: account exists but session isn't
-          // live yet. Keys will be initialized on first confirmed login.
-          showError("Account created. Check your email for a confirmation link, then log in.");
-          return;
-        }
+
         try {
           await initKeys(supabase, password);
         } catch (err) {
