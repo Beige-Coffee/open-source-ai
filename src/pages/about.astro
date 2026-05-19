@@ -7,13 +7,7 @@ import G from "../components/G.astro";
   title="About"
   description="How the open-source-ai-stack site is built, what the scheduled agent does, and the editorial methodology."
 >
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12 prose">
-    <p
-      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
-      style="font-family: var(--font-mono);"
-    >
-      About
-    </p>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-12 prose">
     <h1>How this site is built and updated</h1>
 
     <p>
@@ -23,207 +17,313 @@ import G from "../components/G.astro";
       once a day at 08:00 Pacific.
     </p>
 
-    <h2>Data posture (per feature)</h2>
-    <p>
-      The site historically described itself as "pure BYOK, no PII, no
-      server." That language is retired. The self-paced course at
-      <a href="/learn">/learn</a> needs a logged-in profile to track
-      progress and produce the take-home Personal Notes; the rest of
-      the site remains server-less in the relevant sense. Per feature:
-    </p>
-    <ul>
-      <li>
-        <strong>Reference site</strong> (the stack pages, grants, news,
-        predictions, glossary): static HTML. No server-side state, no
-        cookies needed to read.
-      </li>
-      <li>
-        <strong>In-site chat agent</strong> (the floating bubble): pure
-        BYOK. The API key you paste on <a href="/settings">/settings</a>
-        stays in your browser localStorage. No proxy, no shared key.
-      </li>
-      <li>
-        <strong>Daily news routine</strong>: a scheduled agent updates
-        the news MDX files; no user data involved.
-      </li>
-      <li>
-        <strong>Course at <code>/learn</code></strong>: email-and-password
-        profile at Supabase. Saves your progress, the synthesis
-        paragraphs you write, and the chat dialogues with the course
-        agent. Self-service delete on <a href="/learn/profile">/learn/profile</a>.
-      </li>
-    </ul>
-    <p>
-      Specifics are documented at <a href="/privacy">/privacy</a>:
-      what's collected, where it lives, who has access, and how to
-      export or delete.
+    <p class="about-hint">
+      Click any section to expand.
     </p>
 
-    <h2>The agent and what it does</h2>
-    <p>
-      A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:
-      it pulls about thirty layer-specific RSS feeds and Atom feeds (GitHub
-      releases, vendor blogs, academic newsletters) plus a handful of
-      HTML-scrape sources for vendor blogs without RSS. Items go into an
-      inbox keyed on a content hash. <strong>Dedupe and route</strong>: URLs are
-      normalized, SimHash clustering removes near-duplicates, and each
-      remaining item is classified by stack layer. <strong>Summarize and
-      publish</strong>: per-layer summaries are generated with prompt-cached
-      system prompts, an editorial letter is drafted, and the day's MDX
-      file is committed to the repo. Vercel rebuilds and the site goes
-      live.
-    </p>
+    <details open class="about-section">
+      <summary>Data posture (per feature)</summary>
+      <div class="about-section-body">
+        <p>
+          The site historically described itself as "pure BYOK, no PII, no
+          server." That language is retired. The self-paced course at
+          <a href="/learn">/learn</a> needs a logged-in profile to track
+          progress and produce the take-home Personal Notes; the rest of
+          the site remains server-less in the relevant sense. Per feature:
+        </p>
+        <ul>
+          <li>
+            <strong>Reference site</strong> (the stack pages, grants, news,
+            predictions, glossary): static HTML. No server-side state, no
+            cookies needed to read.
+          </li>
+          <li>
+            <strong>In-site chat agent</strong> (the floating bubble): pure
+            BYOK. The API key you paste on <a href="/settings">/settings</a>
+            stays in your browser localStorage. No proxy, no shared key.
+          </li>
+          <li>
+            <strong>Daily news routine</strong>: a scheduled agent updates
+            the news MDX files; no user data involved.
+          </li>
+          <li>
+            <strong>Course at <code>/learn</code></strong>: email-and-password
+            profile at Supabase. Saves your progress, the synthesis
+            paragraphs you write, and the chat dialogues with the course
+            agent. Self-service delete on <a href="/learn/profile">/learn/profile</a>.
+          </li>
+        </ul>
+        <p>
+          Specifics are documented at <a href="/privacy">/privacy</a>:
+          what's collected, where it lives, who has access, and how to
+          export or delete.
+        </p>
+      </div>
+    </details>
 
-    <h2>What is on each layer page</h2>
-    <p>
-      Each of the 15 layer pages is a five-in-one view. <strong>What it is</strong>:
-      a 3-5 sentence editorial intro. <strong>Key projects</strong>: a curated
-      catalog (5-10 per layer, ordered open-first, with license, maturity,
-      and a one-line description) sourced from
-      <code>data/projects.yaml</code> in the repo.
-      <strong>Latest news</strong>: the count of items at this layer in
-      today's daily issue, with a link out. <strong>Grants flowing in</strong>:
-      the most recent grants tagged to this layer, sourced from
-      <code>data/grants.yaml</code>. <strong>Predictions baseline</strong>:
-      falsifiable predictions we've filed at this layer, with horizons and
-      resolution criteria. <strong>Learn more</strong>: a curated reading
-      list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
-      A sidebar carries quick-glance metadata: lock-in vector, sovereignty
-      relevance, related layers.
-    </p>
+    <details class="about-section">
+      <summary>The agent and what it does</summary>
+      <div class="about-section-body">
+        <p>
+          A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:
+          it pulls about thirty layer-specific RSS feeds and Atom feeds (GitHub
+          releases, vendor blogs, academic newsletters) plus a handful of
+          HTML-scrape sources for vendor blogs without RSS. Items go into an
+          inbox keyed on a content hash. <strong>Dedupe and route</strong>: URLs are
+          normalized, SimHash clustering removes near-duplicates, and each
+          remaining item is classified by stack layer. <strong>Summarize and
+          publish</strong>: per-layer summaries are generated with prompt-cached
+          system prompts, an editorial letter is drafted, and the day's MDX
+          file is committed to the repo. Vercel rebuilds and the site goes
+          live.
+        </p>
+      </div>
+    </details>
 
-    <h2>Glossary</h2>
-    <p>
-      About 130 technical terms are defined at
-      <a href="/glossary">/glossary</a> (for example, <G term="mixture-of-experts">mixture of experts</G> or <G term="paged-attention">PagedAttention</G>), grouped by stack layer and
-      cross-referenced by alias. Each entry has a 30-word summary
-      (the hover-card definition) and a deeper page with a 3-4
-      paragraph senior-engineer explanation. Inline terms tagged in
-      prose show a definition on hover or tap; the card has a
-      "Chat about this" button that opens the in-site chat with the
-      term as context. The chat agent's <code>read_glossary</code>
-      tool fetches a term's full body by canonical slug or any alias.
-    </p>
+    <details class="about-section">
+      <summary>What is on each layer page</summary>
+      <div class="about-section-body">
+        <p>
+          Each of the 15 layer pages is a five-in-one view. <strong>What it is</strong>:
+          a 3-5 sentence editorial intro. <strong>Key projects</strong>: a curated
+          catalog (5-10 per layer, ordered open-first, with license, maturity,
+          and a one-line description) sourced from
+          <code>data/projects.yaml</code> in the repo.
+          <strong>Latest news</strong>: the count of items at this layer in
+          today's daily issue, with a link out. <strong>Grants flowing in</strong>:
+          the most recent grants tagged to this layer, sourced from
+          <code>data/grants.yaml</code>. <strong>Predictions baseline</strong>:
+          falsifiable predictions we've filed at this layer, with horizons and
+          resolution criteria. <strong>Learn more</strong>: a curated reading
+          list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
+          A sidebar carries quick-glance metadata: lock-in vector, sovereignty
+          relevance, related layers.
+        </p>
+      </div>
+    </details>
 
-    <h2>Predictions tracker</h2>
-    <p>
-      Every prediction filed on this site is public, dated, and falsifiable.
-      Confidence is on a 1-5 scale (1 is vibes, 5 is market-priced); each
-      prediction names a horizon and a resolution criterion. When a prediction
-      resolves the original text stays in place and the outcome gets noted in
-      the news log on the resolution date. The full ledger is at
-      <a href="/predictions">/predictions</a>.
-    </p>
+    <details class="about-section">
+      <summary>Glossary</summary>
+      <div class="about-section-body">
+        <p>
+          About 130 technical terms are defined at
+          <a href="/glossary">/glossary</a> (for example, <G term="mixture-of-experts">mixture of experts</G> or <G term="paged-attention">PagedAttention</G>), grouped by stack layer and
+          cross-referenced by alias. Each entry has a 30-word summary
+          (the hover-card definition) and a deeper page with a 3-4
+          paragraph senior-engineer explanation. Inline terms tagged in
+          prose show a definition on hover or tap; the card has a
+          "Chat about this" button that opens the in-site chat with the
+          term as context. The chat agent's <code>read_glossary</code>
+          tool fetches a term's full body by canonical slug or any alias.
+        </p>
+      </div>
+    </details>
 
-    <h2>What the agent does not do</h2>
-    <p>
-      It does not modify the taxonomy. It does not write opinion. It does
-      not auto-publish unverified claims. Items that lack a primary source
-      go to a needs-review queue instead of being published.
-    </p>
+    <details class="about-section">
+      <summary>Predictions tracker</summary>
+      <div class="about-section-body">
+        <p>
+          Every prediction filed on this site is public, dated, and falsifiable.
+          Confidence is on a 1-5 scale (1 is vibes, 5 is market-priced); each
+          prediction names a horizon and a resolution criterion. When a prediction
+          resolves the original text stays in place and the outcome gets noted in
+          the news log on the resolution date. The full ledger is at
+          <a href="/predictions">/predictions</a>.
+        </p>
+      </div>
+    </details>
 
-    <h2>Editorial voice</h2>
-    <p>
-      Neutral-observational. The editorial letter at the top of each day
-      describes what moved; per-item summaries are factual and source-linked.
-      A linter rejects vocabulary that drifts into AI-slop ("delve,"
-      "tapestry," "landscape," "fascinating") and marketing buzzwords
-      ("transformative," "robust," "leveraging," "utilize").
-    </p>
+    <details class="about-section">
+      <summary>What the agent does not do</summary>
+      <div class="about-section-body">
+        <p>
+          It does not modify the taxonomy. It does not write opinion. It does
+          not auto-publish unverified claims. Items that lack a primary source
+          go to a needs-review queue instead of being published.
+        </p>
+      </div>
+    </details>
 
-    <h2>Source list</h2>
-    <p>
-      Per-layer feeds plus a few aggregators. AI News by smol AI
-      (news.smol.ai) is the spine; SemiAnalysis, Interconnects, Latent
-      Space, Import AI, and The Batch are the highest-signal newsletters
-      across layers. GitHub release feeds (<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, <G term="llama-cpp">llama.cpp</G>, <G term="mcp">MCP</G>,
-      OpenHands, Aider) plus vendor blogs cover the rest. Full source
-      list is at <code>data/sources.yaml</code> in the repo.
-    </p>
+    <details class="about-section">
+      <summary>Editorial voice</summary>
+      <div class="about-section-body">
+        <p>
+          Neutral-observational. The editorial letter at the top of each day
+          describes what moved; per-item summaries are factual and source-linked.
+          A linter rejects vocabulary that drifts into AI-slop ("delve,"
+          "tapestry," "landscape," "fascinating") and marketing buzzwords
+          ("transformative," "robust," "leveraging," "utilize").
+        </p>
+      </div>
+    </details>
 
-    <h2>Grants methodology</h2>
-    <p>
-      Funder profiles come from public announcement pages, RFP texts, and
-      grants-announcement posts. Grant entries link to the primary source
-      where possible. The funded-vs-underfunded rollup attributes each
-      grant to one or more stack layers based on the project's primary
-      focus; cross-layer grants count toward each layer. Underfunded
-      areas are synthesized from a May 2026 ecosystem research pass,
-      cross-checked against currently-funded projects; project-shape
-      descriptions are concrete enough that a grant application could
-      quote them.
-    </p>
+    <details class="about-section">
+      <summary>Source list</summary>
+      <div class="about-section-body">
+        <p>
+          Per-layer feeds plus a few aggregators. AI News by smol AI
+          (news.smol.ai) is the spine; SemiAnalysis, Interconnects, Latent
+          Space, Import AI, and The Batch are the highest-signal newsletters
+          across layers. GitHub release feeds (<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, <G term="llama-cpp">llama.cpp</G>, <G term="mcp">MCP</G>,
+          OpenHands, Aider) plus vendor blogs cover the rest. Full source
+          list is at <code>data/sources.yaml</code> in the repo.
+        </p>
+      </div>
+    </details>
 
-    <h2>Grants coverage and limitations</h2>
-    <p>
-      The grants page is a curated map, not a comprehensive index of
-      every open-source-AI grant ever made. Coverage is intentionally
-      stronger in some places than others, because the audience this
-      site is built for is "someone who used to fund Bitcoin OSS and
-      is now considering open-source AI."
-    </p>
-    <p>
-      <strong>Strong coverage</strong>: cypherpunk-adjacent and
-      sovereignty-positioned funders (HRF, OpenSats, Cosmos Institute,
-      Foresight Institute, Block / <G term="goose">Goose</G>), major AI-safety funders
-      (Open Philanthropy, FLI, SFF, Manifund, Lightspeed Grants),
-      and major OSS infrastructure programs (NLnet NGI Zero, Sovereign
-      Tech Fund, Mozilla Builders, Linux Foundation AAIF). For these
-      we have most known recent grants and most relevant context.
-    </p>
-    <p>
-      <strong>Thin coverage</strong>: academic NSF and DOE grants,
-      regional public funders outside the US / EU / UK, individual
-      fellowship-style grants under $50K, hyperscaler in-house grant
-      programs (most are not externally accessible anyway), and any
-      grants in languages other than English where the announcement
-      did not get covered in English-language outlets.
-    </p>
-    <p>
-      <strong>Three routines keep this honest, on different cycles</strong>:
-    </p>
-    <ul>
-      <li>
-        <strong>Weekly grants-watch</strong> (Mondays 09:00 PT):
-        surfaces new grant announcements from RSS feeds of funders we
-        already track, to a review queue.
-      </li>
-      <li>
-        <strong>Monthly grants-discovery</strong> (1st of each month
-        11:00 PT): actively searches for funders and grants we do NOT
-        already track, to a separate candidate queue.
-      </li>
-      <li>
-        <strong>Quarterly grants-audit</strong> (1st of Mar / Jun /
-        Sep / Dec 10:00 PT): re-verifies every existing entry against
-        its live source for dead links and fact drift, plus a
-        per-funder coverage pass that flags funders where our grant
-        count appears low relative to what their grants page lists.
-      </li>
-    </ul>
-    <p>
-      None of the three routines auto-publish to the site. Findings
-      go to <code>data/inbox/</code> and require human review before
-      they land in the canonical YAML files. Missing a funder or a
-      grant? File an issue on{" "}
-      <a href="https://github.com/Beige-Coffee/open-source-ai/issues"
-        >GitHub</a
-      >.
-    </p>
+    <details class="about-section">
+      <summary>Grants methodology</summary>
+      <div class="about-section-body">
+        <p>
+          Funder profiles come from public announcement pages, RFP texts, and
+          grants-announcement posts. Grant entries link to the primary source
+          where possible. The funded-vs-underfunded rollup attributes each
+          grant to one or more stack layers based on the project's primary
+          focus; cross-layer grants count toward each layer. Underfunded
+          areas are synthesized from a May 2026 ecosystem research pass,
+          cross-checked against currently-funded projects; project-shape
+          descriptions are concrete enough that a grant application could
+          quote them.
+        </p>
+      </div>
+    </details>
 
-    <h2>Open methodology</h2>
-    <p>
-      The site, the agent prompt, the source list, the layer taxonomy, and
-      the per-day issues are all in the repo. Pull requests welcome.
-      Errata channel: file a GitHub issue.
-    </p>
+    <details class="about-section">
+      <summary>Grants coverage and limitations</summary>
+      <div class="about-section-body">
+        <p>
+          The grants page is a curated map, not a comprehensive index of
+          every open-source-AI grant ever made. Coverage is intentionally
+          stronger in some places than others, because the audience this
+          site is built for is "someone who used to fund Bitcoin OSS and
+          is now considering open-source AI."
+        </p>
+        <p>
+          <strong>Strong coverage</strong>: cypherpunk-adjacent and
+          sovereignty-positioned funders (HRF, OpenSats, Cosmos Institute,
+          Foresight Institute, Block / <G term="goose">Goose</G>), major AI-safety funders
+          (Open Philanthropy, FLI, SFF, Manifund, Lightspeed Grants),
+          and major OSS infrastructure programs (NLnet NGI Zero, Sovereign
+          Tech Fund, Mozilla Builders, Linux Foundation AAIF). For these
+          we have most known recent grants and most relevant context.
+        </p>
+        <p>
+          <strong>Thin coverage</strong>: academic NSF and DOE grants,
+          regional public funders outside the US / EU / UK, individual
+          fellowship-style grants under $50K, hyperscaler in-house grant
+          programs (most are not externally accessible anyway), and any
+          grants in languages other than English where the announcement
+          did not get covered in English-language outlets.
+        </p>
+        <p>
+          <strong>Three routines keep this honest, on different cycles</strong>:
+        </p>
+        <ul>
+          <li>
+            <strong>Weekly grants-watch</strong> (Mondays 09:00 PT):
+            surfaces new grant announcements from RSS feeds of funders we
+            already track, to a review queue.
+          </li>
+          <li>
+            <strong>Monthly grants-discovery</strong> (1st of each month
+            11:00 PT): actively searches for funders and grants we do NOT
+            already track, to a separate candidate queue.
+          </li>
+          <li>
+            <strong>Quarterly grants-audit</strong> (1st of Mar / Jun /
+            Sep / Dec 10:00 PT): re-verifies every existing entry against
+            its live source for dead links and fact drift, plus a
+            per-funder coverage pass that flags funders where our grant
+            count appears low relative to what their grants page lists.
+          </li>
+        </ul>
+        <p>
+          None of the three routines auto-publish to the site. Findings
+          go to <code>data/inbox/</code> and require human review before
+          they land in the canonical YAML files. Missing a funder or a
+          grant? File an issue on{" "}
+          <a href="https://github.com/Beige-Coffee/open-source-ai/issues"
+            >GitHub</a
+          >.
+        </p>
+      </div>
+    </details>
 
-    <h2>Provenance</h2>
-    <p>
-      The stack taxonomy and the layer overview prose started from a
-      personal wiki built by Austin in May 2026 (a Karpathy-style
-      LLM-wiki, separately maintained). The wiki seeded the foundations;
-      this site is the public, daily-updated, polished form.
-    </p>
+    <details class="about-section">
+      <summary>Open methodology</summary>
+      <div class="about-section-body">
+        <p>
+          The site, the agent prompt, the source list, the layer taxonomy, and
+          the per-day issues are all in the repo. Pull requests welcome.
+          Errata channel: file a GitHub issue.
+        </p>
+      </div>
+    </details>
+
+    <details class="about-section">
+      <summary>Provenance</summary>
+      <div class="about-section-body">
+        <p>
+          The stack taxonomy and the layer overview prose started from a
+          personal wiki built by Austin in May 2026 (a Karpathy-style
+          LLM-wiki, separately maintained). The wiki seeded the foundations;
+          this site is the public, daily-updated, polished form.
+        </p>
+      </div>
+    </details>
   </section>
+
+  <style is:global>
+    .about-hint {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-text-subtle);
+      margin: 1.5rem 0 2rem;
+    }
+    .about-section {
+      border-top: 1px solid var(--color-border);
+      margin: 0;
+      padding: 0;
+    }
+    .about-section:last-of-type {
+      border-bottom: 1px solid var(--color-border);
+    }
+    .about-section > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1rem 0;
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .about-section > summary::-webkit-details-marker {
+      display: none;
+    }
+    .about-section > summary::after {
+      content: "+";
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--color-text-subtle);
+      transition: transform 0.18s ease;
+    }
+    .about-section[open] > summary::after {
+      content: "−";
+      color: var(--color-text);
+    }
+    .about-section > summary:hover {
+      color: var(--color-accent);
+    }
+    .about-section-body {
+      padding-bottom: 1.25rem;
+    }
+    .about-section-body p:first-child {
+      margin-top: 0;
+    }
+  </style>
 </BaseLayout>

@@ -11,6 +11,7 @@ const rollup = buildLayerRollup();
 interface Row {
   slug: string;
   title: string;
+  description: string;
   value: number;
   label: string;
 }
@@ -26,6 +27,7 @@ function buildRows(metric: "dollars" | "grants" | "gaps"): Row[] {
       rows.push({
         slug,
         title: layer.title,
+        description: layer.short_description,
         value: row.total_usd,
         label: formatUsd(row.total_usd),
       });
@@ -34,6 +36,7 @@ function buildRows(metric: "dollars" | "grants" | "gaps"): Row[] {
       rows.push({
         slug,
         title: layer.title,
+        description: layer.short_description,
         value: row.grant_count,
         label: String(row.grant_count),
       });
@@ -42,6 +45,7 @@ function buildRows(metric: "dollars" | "grants" | "gaps"): Row[] {
       rows.push({
         slug,
         title: layer.title,
+        description: layer.short_description,
         value: row.underfunded_count,
         label: String(row.underfunded_count),
       });
@@ -110,8 +114,8 @@ const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
             <li class="flex items-center gap-2 text-xs">
               <a
                 href={`/stack/${r.slug}`}
-                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
-                title={r.title}
+                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline cursor-help"
+                title={r.description}
               >
                 {r.title}
               </a>
@@ -143,8 +147,8 @@ const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
             <li class="flex items-center gap-2 text-xs">
               <a
                 href={`/stack/${r.slug}`}
-                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
-                title={r.title}
+                class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline cursor-help"
+                title={r.description}
               >
                 {r.title}
               </a>

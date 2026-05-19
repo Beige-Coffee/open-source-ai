@@ -138,12 +138,88 @@ const orderedProjects = [...projects].sort(
   <div
     class="max-w-5xl mx-auto px-6 grid gap-12 md:grid-cols-[1fr_240px] mt-8 pb-16"
   >
-    <article>
-      <!-- What it is: the MDX body. Editorial intro, 3-5 sentences. -->
-      <section class="prose mb-12">
+    <article id="layer-article">
+      <!-- What it is: the MDX body. Editorial intro, 3-5 sentences.
+           Stays above the tab bar; it's the canonical intro everyone
+           wants regardless of which tab they end up on. -->
+      <section class="prose mb-8">
         <h2 class="!mt-0">What it is</h2>
         <Content />
       </section>
+
+      <!-- Tab bar: switches the panels below. Each tab is conditional
+           on its panel having content (no Grants tab if 0 grants). -->
+      <div
+        role="tablist"
+        aria-label="Layer detail sections"
+        class="sticky top-16 z-10 -mx-2 px-2 py-2 mb-6 bg-[var(--color-bg)] border-b border-[var(--color-border)]"
+      >
+        <div class="flex gap-1 flex-wrap">
+          {projects.length > 0 && (
+            <button
+              type="button"
+              role="tab"
+              data-layer-tab="projects"
+              aria-selected="true"
+              class="px-3 py-1.5 rounded-md font-medium text-sm bg-[var(--color-accent-soft)] text-[var(--color-accent)] cursor-pointer"
+            >
+              Projects
+              <span class="font-mono text-xs ml-1 opacity-70">{projects.length}</span>
+            </button>
+          )}
+          <button
+            type="button"
+            role="tab"
+            data-layer-tab="news"
+            aria-selected={projects.length === 0 ? "true" : "false"}
+            class={projects.length === 0
+              ? "px-3 py-1.5 rounded-md font-medium text-sm bg-[var(--color-accent-soft)] text-[var(--color-accent)] cursor-pointer"
+              : "px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            }
+          >
+            News
+            {latestNewsCount > 0 && (
+              <span class="font-mono text-xs ml-1 opacity-70">{latestNewsCount}</span>
+            )}
+          </button>
+          {layerGrantsCount > 0 && (
+            <button
+              type="button"
+              role="tab"
+              data-layer-tab="grants"
+              aria-selected="false"
+              class="px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            >
+              Grants
+              <span class="font-mono text-xs ml-1 opacity-70">{layerGrantsCount}</span>
+            </button>
+          )}
+          {predictions.length > 0 && (
+            <button
+              type="button"
+              role="tab"
+              data-layer-tab="predictions"
+              aria-selected="false"
+              class="px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            >
+              Predictions
+              <span class="font-mono text-xs ml-1 opacity-70">{predictions.length}</span>
+            </button>
+          )}
+          {allReadings.length > 0 && (
+            <button
+              type="button"
+              role="tab"
+              data-layer-tab="readings"
+              aria-selected="false"
+              class="px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            >
+              Readings
+              <span class="font-mono text-xs ml-1 opacity-70">{allReadings.length}</span>
+            </button>
+          )}
+        </div>
+      </div>
 
       <!-- Key projects: medium cards seeded from data/projects.yaml.
            Per-project "Ask about this" button dispatches a chat-trigger
@@ -151,7 +227,7 @@ const orderedProjects = [...projects].sort(
            have an inline expandable explainer with cited sources. -->
       {
         projects.length > 0 && (
-          <section class="mb-12">
+          <div data-layer-panel="projects" class="mb-8">
             <h2 class="font-sans text-xl font-semibold mb-1">
               Key projects
             </h2>
@@ -222,12 +298,12 @@ const orderedProjects = [...projects].sort(
                 </li>
               ))}
             </ul>
-          </section>
+          </div>
         )
       }
 
-      <!-- Latest news: link to the daily issue with bucket count. -->
-      <section class="mb-12">
+      <!-- Latest news panel. -->
+      <div data-layer-panel="news" class={projects.length === 0 ? "mb-8" : "mb-8 hidden"}>
         <h2 class="font-sans text-xl font-semibold mb-1">Latest news</h2>
         <p class="text-sm text-[var(--color-text-subtle)] mb-3 font-mono">
           Updates daily at 08:00 PT
@@ -265,12 +341,12 @@ const orderedProjects = [...projects].sort(
             </p>
           )
         }
-      </section>
+      </div>
 
-      <!-- Grants flowing in: summary plus top 5 grants tagged at this layer. -->
+      <!-- Grants flowing in panel. -->
       {
         layerGrantsCount > 0 && (
-          <section class="mb-12">
+          <div data-layer-panel="grants" class="mb-8 hidden">
             <h2 class="font-sans text-xl font-semibold mb-1">
               Grants flowing in
             </h2>
@@ -282,28 +358,27 @@ const orderedProjects = [...projects].sort(
             </p>
             <ul class="space-y-2">
               {layerGrants.map((g) => (
-                <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)] flex items-start gap-3 flex-wrap">
-                  <span class="font-mono text-xs text-[var(--color-text-subtle)] whitespace-nowrap">
+                <li class="border border-[var(--color-border)] rounded-md px-4 py-3 bg-[var(--color-surface)] flex items-start gap-4">
+                  <time class="font-mono text-xs text-[var(--color-text-subtle)] whitespace-nowrap shrink-0 w-20 tabular-nums pt-0.5">
                     {g.date}
-                  </span>
+                  </time>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm">
-                      <a
-                        href={g.url}
-                        target="_blank"
-                        rel="noopener"
-                        class="font-medium no-underline hover:underline"
-                      >
-                        {g.title}
-                      </a>
-                    </p>
-                    <p class="text-xs text-[var(--color-text-subtle)]">
+                    <a
+                      href={g.url}
+                      target="_blank"
+                      rel="noopener"
+                      class="font-medium text-sm text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline"
+                    >
+                      {g.title}
+                    </a>
+                    <p class="text-xs text-[var(--color-text-subtle)] mt-1 leading-snug">
                       {g.funder} &rarr; {g.recipient}
+                      {" · "}
+                      <span class="font-mono text-[var(--color-status-fresh)]">
+                        {g.amount_label}
+                      </span>
                     </p>
                   </div>
-                  <span class="font-mono text-xs whitespace-nowrap text-[var(--color-status-fresh)]">
-                    {g.amount_label}
-                  </span>
                 </li>
               ))}
             </ul>
@@ -312,14 +387,14 @@ const orderedProjects = [...projects].sort(
                 See all grants &rarr;
               </a>
             </p>
-          </section>
+          </div>
         )
       }
 
-      <!-- Predictions: layer-scoped baseline. -->
+      <!-- Predictions panel. -->
       {
         predictions.length > 0 && (
-          <section class="mb-12">
+          <div data-layer-panel="predictions" class="mb-8 hidden">
             <h2 class="font-sans text-xl font-semibold mb-1">
               Predictions baseline
             </h2>
@@ -344,14 +419,14 @@ const orderedProjects = [...projects].sort(
                 See all predictions &rarr;
               </a>
             </p>
-          </section>
+          </div>
         )
       }
 
-      <!-- Reading list: full curated list, grouped by type. -->
+      <!-- Reading list panel. -->
       {
         allReadings.length > 0 && (
-          <section class="mb-12">
+          <div data-layer-panel="readings" class="mb-8 hidden">
             <h2 class="font-sans text-xl font-semibold mb-1">Reading list</h2>
             <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
               {allReadings.length} hand-picked &middot; primary sources first &middot; recent within each group
@@ -388,7 +463,7 @@ const orderedProjects = [...projects].sort(
                 </ul>
               </div>
             ))}
-          </section>
+          </div>
         )
       }
     </article>
@@ -483,6 +558,50 @@ const orderedProjects = [...projects].sort(
         window.dispatchEvent(
           new CustomEvent("chat-trigger", { detail: { prompt } }),
         );
+      });
+    }
+  })();
+</script>
+
+<script is:inline>
+  // Layer-page tab switcher. Tabs (Projects / News / Grants /
+  // Predictions / Readings) toggle the panels below. Active tab
+  // persists in the URL hash so deep-linking works (e.g.
+  // /stack/runtime#grants opens with the Grants tab active).
+  (function () {
+    const root = document.getElementById("layer-article");
+    if (!root) return;
+    const tabs = Array.from(root.querySelectorAll("[data-layer-tab]"));
+    const panels = Array.from(root.querySelectorAll("[data-layer-panel]"));
+    if (!tabs.length) return;
+
+    const activeClasses = ["bg-[var(--color-accent-soft)]", "text-[var(--color-accent)]"];
+    const inactiveClasses = ["text-[var(--color-text-muted)]", "hover:text-[var(--color-text)]", "hover:bg-[var(--color-surface-warm)]"];
+
+    function setActive(name) {
+      for (const t of tabs) {
+        const on = t.dataset.layerTab === name;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        for (const c of activeClasses) t.classList.toggle(c, on);
+        for (const c of inactiveClasses) t.classList.toggle(c, !on);
+      }
+      for (const p of panels) {
+        p.classList.toggle("hidden", p.dataset.layerPanel !== name);
+      }
+    }
+
+    // Honor URL hash on load if it matches a known tab.
+    const hash = window.location.hash.replace(/^#/, "");
+    const validTabs = tabs.map((t) => t.dataset.layerTab);
+    if (hash && validTabs.includes(hash)) {
+      setActive(hash);
+    }
+
+    for (const t of tabs) {
+      t.addEventListener("click", () => {
+        const name = t.dataset.layerTab;
+        setActive(name);
+        history.replaceState(null, "", "#" + name);
       });
     }
   })();
