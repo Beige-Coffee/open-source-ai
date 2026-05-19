@@ -88,23 +88,30 @@ Closed silicon, closed schematics, closed firmware.
 The credible alternatives, each closed but each playing a
 different game:
 
-- **AMD MI300X / MI325X** (192GB / 256GB HBM3e): more memory than
-  NVIDIA per accelerator, software stack via ROCm and HIP, used
-  by Microsoft, Meta, and most recently by some OpenAI inference
-  workloads ([AMD Instinct MI300X](https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html))
-- **Cerebras WSE-3**: wafer-scale chip, 900,000 cores on a single
-  die, optimized for low-latency batch-1 inference
-  ([Cerebras WSE-3 announcement](https://www.cerebras.net/blog/cerebras-wse-3))
-- **Groq LPU**: deterministic compiler-scheduled silicon, very
-  fast token throughput on dense transformer inference
-  ([Groq inference benchmarks](https://groq.com/inference-benchmarks/))
-- **Apple Silicon** (M-series with Neural Engine + GPU): the
+- **AMD MI300X** (192GB HBM3, 5.3 TB/s) and **MI325X** (256GB
+  HBM3e, 6 TB/s): more memory per accelerator than the NVIDIA
+  contemporaries, software stack via ROCm and HIP, used by
+  Microsoft and Meta with growing OpenAI inference adoption
+  ([AMD Instinct MI300X](https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html))
+- **Cerebras WSE-3**: wafer-scale chip, 900,000 cores and 4
+  trillion transistors on a single 5nm die, 44 GB on-chip SRAM,
+  optimized for low-latency batch-1 inference
+  ([Cerebras WSE-3 press release](https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine))
+- **Groq LPU**: deterministic compiler-scheduled silicon, 230 MB
+  on-chip SRAM (no external memory), very fast token throughput
+  on dense transformer inference
+  ([Groq LPU architecture](https://groq.com/lpu-architecture))
+- **Apple Silicon** (M-series with Neural Engine + GPU + unified
+  memory; M4 Max ships up to 128 GB of unified memory): the
   open-weights ecosystem's preferred local-inference platform,
   via <G term="mlx">MLX</G> and Metal
-- **Tenstorrent Wormhole / Blackhole**: the noteworthy
-  open-silicon counter-bet, RISC-V-based, the only credible
-  production accelerator with openly-published RTL
-  ([Tenstorrent open hardware](https://tenstorrent.com/hardware/))
+  ([Apple M4 Pro / M4 Max announcement](https://www.apple.com/newsroom/2024/10/apple-introduces-m4-pro-and-m4-max/))
+- **Tenstorrent Wormhole and Blackhole**: the noteworthy
+  open-silicon counter-bet, RISC-V-based (Wormhole uses Tensix
+  cores with RISC-V control processors; Blackhole adds 16 "big"
+  RISC-V CPU cores and up to 32GB GDDR6), with open software
+  stack
+  ([Tenstorrent Wormhole product page](https://tenstorrent.com/en/hardware/wormhole))
 
 The competitive question is not whether these chips exist (they
 do, and they ship at scale) but whether their software stacks
