@@ -49,8 +49,19 @@ export interface Grant {
   url: string;
   description: string;
   /**
+   * Optional multi-paragraph explainer rendered on /grants/<slug>. Only
+   * a subset of grants have one (those where research yielded
+   * verifiable depth beyond the one-line description). Mirrors the
+   * `explainer` field on projects.yaml. Every factual claim in the
+   * explainer must trace back to an entry in `sources` per the
+   * citation-discipline rule in CLAUDE.md.
+   */
+  explainer?: string;
+  /**
    * Additional sources beyond `url`. Most grant entries do not need
-   * this because their `url` is the announcement.
+   * this because their `url` is the announcement. Required when
+   * `explainer` is populated and references claims not documented at
+   * `url`.
    */
   sources?: Source[];
 }
@@ -169,6 +180,38 @@ export function buildLayerRollup(): Record<string, LayerRollup> {
     if (u.priority === "high") row.underfunded_high_count += 1;
   }
   return result;
+}
+
+/**
+ * Derive a URL slug from a grant title. Grants don't have a slug
+ * field in YAML (their primary key is the title string); this is the
+ * single source of truth. Used by the per-grant route at
+ * /grants/<slug> and by the card-link on /grants.
+ *
+ * Collisions across grants would break routing. `assertGrantSlugsUnique`
+ * runs at build time and throws on duplicates so the failure surfaces
+ * during astro build, not at request time.
+ */
+export function grantSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function assertGrantSlugsUnique(grants: Grant[]): void {
+  const seen = new Map<string, string>();
+  for (const g of grants) {
+    const slug = grantSlug(g.title);
+    const prior = seen.get(slug);
+    if (prior) {
+      throw new Error(
+        `Two grants slug to "${slug}": ${JSON.stringify(prior)} and ${JSON.stringify(g.title)}. Rename one to disambiguate.`,
+      );
+    }
+    seen.set(slug, g.title);
+  }
 }
 
 export function formatUsd(amount: number | undefined): string {

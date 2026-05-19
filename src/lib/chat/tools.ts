@@ -121,7 +121,7 @@ export const TOOLS = [
   {
     name: "read_grant",
     description:
-      "Fetch a single grant by exact title. Use when the user asks about a specific named grant. Limit: 3 calls per turn.",
+      "Fetch a single grant by exact title. Returns all fields (recipient, funder, amount, layers, url, description) plus optional `explainer` (multi-paragraph research) and `sources` array when a richer writeup exists. Use when the user asks about a specific named grant; prefer this over find_grants when you already know the title. Limit: 3 calls per turn.",
     input_schema: {
       type: "object",
       properties: {

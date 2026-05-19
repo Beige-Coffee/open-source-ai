@@ -4,6 +4,7 @@ import {
   loadGrants,
   amountBucket,
   recencyBucket,
+  grantSlug,
 } from "../lib/grants";
 import { loadLayers } from "../lib/layers";
 
@@ -335,7 +336,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
         {
           grantsWithMeta.map((g) => (
             <li
-              class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+              class="relative border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-warm)] transition-colors"
               data-grant
               data-kind={g.kind}
               data-funder={g.funder}
@@ -346,15 +347,18 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
               data-recency={g.recency_bucket}
             >
               <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
+                {/* Card-link overlay: the title link's ::before
+                    extends to fill the entire <li>, so clicking
+                    anywhere on the card navigates to the grant page.
+                    Nested funder + layer links escape the overlay via
+                    relative z-10. */}
                 <a
-                  href={g.url}
-                  class="font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:no-underline text-base"
-                  target="_blank"
-                  rel="noopener"
+                  href={`/grants/${grantSlug(g.title)}`}
+                  class="font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:no-underline text-base before:absolute before:inset-0 before:content-[''] before:rounded-md"
                 >
                   {g.title}
                 </a>
-                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+                <span class="font-mono text-xs text-[var(--color-text-subtle)] relative z-10">
                   {g.date} &middot; {g.amount_label}
                 </span>
               </div>
@@ -366,7 +370,7 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
                     &middot; funded by{" "}
                     <a
                       href={`/grants/funder/${g.funder_obj.slug}`}
-                      class="no-underline hover:underline"
+                      class="no-underline hover:underline relative z-10"
                     >
                       {g.funder_obj.name}
                     </a>
@@ -380,14 +384,14 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
               <p class="text-sm text-[var(--color-text)] mb-3">
                 {g.description}
               </p>
-              <div class="flex flex-wrap gap-1.5">
+              <div class="flex flex-wrap gap-1.5 relative z-10">
                 {g.layers.map((slug) => {
                   const layer = findLayer(slug);
                   if (!layer) return null;
                   return (
                     <a
                       href={`/stack/${layer.slug}`}
-                      class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-[var(--color-border)] rounded no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] text-[var(--color-text-muted)]"
+                      class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-[var(--color-border)] rounded no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] text-[var(--color-text-muted)] bg-[var(--color-surface)]"
                     >
                       {layer.title}
                     </a>

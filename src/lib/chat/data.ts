@@ -51,6 +51,11 @@ interface Funder {
   notable_recent: string;
 }
 
+interface GrantSource {
+  title: string;
+  url: string;
+}
+
 interface Grant {
   title: string;
   kind: "project" | "program";
@@ -63,6 +68,10 @@ interface Grant {
   region: string;
   url: string;
   description: string;
+  /** Multi-paragraph deeper writeup; only on grants with verified research. */
+  explainer?: string;
+  /** Additional sources beyond the primary `url`. */
+  sources?: GrantSource[];
 }
 
 interface Reading {
