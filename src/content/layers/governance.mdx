@@ -7,25 +7,188 @@ order: 2
 lock_in_vector: governance
 sovereignty_relevance: 4
 related_layers: [data, weights, protocols]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Governance does not produce silicon, weights, or runtime, but it produces the definitions by which the other layers get judged."
-  - "OSAID v1.0 (October 2024) is the first formal definition of open source AI, contested mostly around whether full training-data disclosure should be required."
-  - "The Linux Foundation hosts AAIF and A2A, and the Apache Foundation stewards Apache 2.0."
-  - "Lab-specific license families (Llama Community License, Gemma Terms, Mistral Research Tiers) operate outside the OSI process and accumulate their own followings by default."
-  - "The 2026 OSAID revision cycle is the operational moment for tightening or loosening the open-source-AI definition."
+  - "Governance does not produce silicon, weights, or runtime, but it produces the definitions by which the other layers get judged. The word 'open' means different things to different audiences, and governance is where those meanings get fought out."
+  - "OSAID v1.0 (Open Source AI Definition, OSI, October 2024) is the first formal definition of open-source AI. It requires weights + training code + sufficient information to reproduce, but not full training-data release. That last clause is contested."
+  - "Foundations matter because they hold the IP and govern the spec evolution. The Linux Foundation stewards MCP, A2A, AAIF, plus the AI Alliance Foundation. The Apache Foundation stewards Apache 2.0 and many ML libraries."
+  - "Lab-specific license families (Llama Community License, Gemma Terms, Mistral Research Tiers) operate outside the OSI process and have accumulated their own ecosystems. None are OSI-open; most users treat them as such."
+  - "The 2026 OSAID revision cycle is the operational moment when the open-source-AI definition either tightens (requiring more data disclosure) or loosens (codifying the Llama-style source-available shape as acceptable)."
 ---
 
 import G from "../../components/G.astro";
 
-Definitions, licenses, foundations, and standards bodies. Governance
-does not produce silicon, weights, or runtime, but it produces the
-definitions by which the other layers get judged. The dominant body is
-the <G term="osi">Open Source Initiative</G>; <G term="osaid">OSAID</G> v1.0 (October 2024) is the first
-formal definition of "open source AI" and is contested mostly around
-whether full training-data disclosure should be required. Other actors:
-the Linux Foundation hosts AAIF and <G term="a2a">A2A</G>, the Apache Foundation stewards
-<G term="apache-2-0">Apache 2.0</G>, and the lab-specific license families (<G term="llama">Llama</G> Community
-License, <G term="gemma">Gemma</G> Terms, <G term="mistral">Mistral</G> Research Tiers) operate outside the <G term="osi">OSI</G>
-process and accumulate their own ecosystems by default. The 2026 <G term="osaid">OSAID</G>
-revision cycle is the operational moment for definitional rigor.
+## Overview
+
+Definitions, licenses, foundations, and standards bodies.
+Governance does not produce silicon, weights, or runtime, but it
+produces the definitions by which the other layers get judged.
+"Open AI" means seven different things to seven different
+audiences; governance is where the meanings get reconciled or
+not.
+
+Five things to keep in mind as you read:
+
+- **Governance grades the rest of the stack.** A model is
+  "open" only relative to a definition; the definition is the
+  governance artifact.
+- **<G term="osi">OSI</G> is the dominant standards body for software.** <G term="osaid">OSAID</G>
+  v1.0 (October 2024) is its first formal AI definition.
+- **The OSAID fight is about data.** Required for "open AI" or
+  not? The text says "sufficient information to reproduce",
+  not full release; critics want full release.
+- **Foundations hold the IP.** Linux Foundation stewards MCP,
+  A2A, AAIF, and the AI Alliance. Apache stewards Apache 2.0.
+- **Lab-specific licenses live outside this process.** Llama
+  Community License, Gemma Terms. None are OSI-open; many users
+  treat them as such anyway.
+
+The rest of this page walks the definitional fight, the
+foundations, and the lab-license category, then arrives at the
+2026 revision cycle.
+
+## The OSAID v1.0 definition fight
+
+The Open Source AI Definition v1.0 is the load-bearing
+governance artifact at this layer. Finalized by OSI in October
+2024 after a two-year multi-stakeholder process
+([OSAID 1.0 announcement](https://opensource.org/ai/open-source-ai-definition)).
+
+The text requires three components to be released under
+OSI-conformant terms:
+
+1. The model weights and parameters
+2. The training code, sufficient to retrain the system
+3. "Sufficiently detailed information about the data used to
+   train the system so that a skilled person can build a
+   substantially equivalent system"
+
+Clause 3 is the entire fight. The pro-OSAID-v1.0 reading
+(OSI's): requiring full training-data release would exclude
+every commercially-trained model because of publisher licensing
+agreements that prevent redistribution. A definition no major
+lab can meet doesn't shape the market.
+
+The critics' reading (notably Bruce Perens, the AI Now
+Institute, and parts of the EleutherAI / AI2 communities):
+"describe how to build it" without shipping the actual data
+lets labs claim openness while keeping the part competitors
+need. By analogy: would we call Linux "open source" if Linus
+shipped binaries plus a thorough README on how to write your
+own kernel, but not the source code? Of course not.
+
+Both readings have force. The pragmatic-OSAID position lets
+the definition shape current practice; the strict-OSAID
+position keeps the definition meaningful by refusing to bend
+it. The 2026 revision cycle is where the tension comes due.
+
+## The foundations
+
+The neutral hosts that hold spec IP and govern its evolution.
+These matter because a spec under one company's control is
+vulnerable to that company changing it; a spec at a foundation
+has a multi-stakeholder process for change.
+
+- **Linux Foundation** — the most-active host for AI
+  governance. Stewards MCP (since late 2025), A2A, AAIF, plus
+  the AI Alliance Foundation (AAIF the standards body, not to
+  be confused with AAIF the agent-identity protocol; the names
+  are unfortunate)
+  ([LF AI & Data](https://lfaidata.foundation/)).
+- **Apache Software Foundation** — stewards Apache 2.0
+  (the most-used open license for ML), plus Apache Spark,
+  Kafka, and many ML adjacent projects ([Apache projects](https://www.apache.org/index.html#projects-list)).
+- **Open Source Initiative** — stewards OSAID and the
+  10-criterion OSD that defines open-source software. Doesn't
+  host code; defines and certifies licenses
+  ([OSI](https://opensource.org/)).
+- **OpenChain / SPDX** — supply-chain governance and
+  software-bill-of-materials standards. Not AI-specific but
+  relevant for ML model packaging.
+- **Free Software Foundation** — the GPL-and-copyleft tradition.
+  Has been notably absent from the OSAID conversation;
+  considers OSAID v1.0 too permissive ([FSF on AI](https://www.fsf.org/news/fsf-statement-on-mit-license-2-0)).
+
+The Linux Foundation's strategy of attracting AI protocol
+governance early is the most visible "neutral host" play of
+2024-2026. Whether it works depends on whether the original
+lab sponsors (Anthropic for MCP, Google for A2A) continue to
+treat the foundation-hosted spec as authoritative when their
+internal priorities conflict with the multi-vendor consensus.
+
+## The lab-license category
+
+Operating outside the OSI process. Each is a take-it-or-leave-it
+contract written by a single lab.
+
+- **Llama Community License** (Meta, current at Llama 4 in
+  2025) — free for most uses, acceptable-use policy bars
+  certain applications, revocation clause at 700M MAU
+  ([Llama 4 License](https://www.llama.com/llama4/license/)).
+- **Gemma Terms** (Google) — similar shape, with Google's own
+  AUP and a use-restriction list
+  ([Gemma Prohibited Use Policy](https://ai.google.dev/gemma/prohibited_use_policy)).
+- **Mistral Research License** (for the larger Mistral models)
+  — research-only, no commercial use without separate license
+  ([Mistral Research License](https://mistral.ai/news/mistral-research-license)).
+- **DeepSeek License** — varies by model; some MIT-equivalent,
+  some with additional terms. Read the LICENSE file per release.
+- **OpenRAIL-M family** (used by some BigScience / BLOOM
+  releases) — responsible-AI license category that adds
+  use-restrictions to an otherwise-permissive shape
+  ([RAIL definition](https://www.licenses.ai/)).
+
+None of these are OSI-open. The OpenRAIL family was
+explicitly designed to NOT be open-source by OSI standards
+because adding use-restrictions violates OSD criterion 6
+(no discrimination against fields of endeavor). The
+lab-license families inherit similar tensions.
+
+In practice, most users treat the lab licenses as "open
+enough" because the realistic alternative is
+fully-proprietary API access. The governance argument is that
+"open enough" is a strategic concession that lets the
+definition drift toward what the labs want it to mean.
+
+## What's open and what isn't
+
+The governance layer is open by nature (definitions are
+public; specs are published) but the question of which
+definition counts is itself contested.
+
+- **OSI-conformant licenses**: Apache 2.0, MIT, BSD-3-Clause,
+  and the OSI-approved list. These are unambiguously open.
+- **OSAID v1.0-conformant releases**: OLMo, a handful of
+  others. Defined by OSI as "open source AI".
+- **Lab licenses**: Llama, Gemma, Mistral Research. Widely-used,
+  not OSI-open.
+- **OpenRAIL family**: explicitly not-open by OSI, with
+  use-restrictions. Used by some research releases.
+- **Proprietary**: GPT, Claude, Gemini. No license; API ToS.
+
+The reverse-lock-in risk at this layer is definitional drift.
+If "open AI" comes to mean "Llama-style source-available", the
+strict definition loses its market influence, and labs face
+no incentive to ship data or training code.
+
+## The editorial tension
+
+The OSAID v1.0 settlement was a pragmatic compromise. The
+2026 revision cycle is where it either holds or breaks.
+
+The case for holding the v1.0 line: the definition is finally
+in production use. Major labs are starting to label releases
+"OSAID-conformant" where applicable. Changing the rules
+quickly would destroy the brand the definition is building.
+
+The case for tightening: nearly every "open-weights" release
+in 2025-2026 met v1.0's text by writing more thorough README
+files, not by shipping more data. The labs hit the spec
+without ever changing their data-disclosure practice, which
+suggests the bar is too low.
+
+Whether the open-source-AI definition is something that gets
+strict enough to actually distinguish what AI2 ships from what
+Meta ships, or stays loose enough to accommodate both, is the
+governance question that decides what "open AI" means for the
+next five years.

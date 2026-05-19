@@ -7,26 +7,206 @@ order: 1
 lock_in_vector: evaluation
 sovereignty_relevance: 3
 related_layers: [data, weights, agents]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Evaluation is a meta-layer because it observes the rest of the stack rather than sitting between two production-pipeline layers."
-  - "lm-evaluation-harness is the de facto reference harness, while HELM and AISI Inspect are the principled large-scale frameworks."
-  - "LMArena is the most-respected human-preference evaluation in the open ecosystem."
-  - "Contamination (models trained on eval data score artificially well) and saturation (public benchmarks no longer separate frontier from near-frontier) are the unsolved problems, not openness."
-  - "HLE, GPQA Diamond, FrontierMath, and SWE-bench Verified are the current benchmarks still resistant to frontier saturation."
+  - "Evaluation is a meta-layer because it observes the rest of the stack rather than sitting between two production-pipeline layers. Every other layer's claims about 'better' depend on what evaluation accepts as proof."
+  - "lm-evaluation-harness (EleutherAI) is the de facto reference harness. HELM (Stanford) and AISI Inspect (UK AI Safety Institute) are the principled large-scale frameworks. LMArena is the most-respected human-preference evaluation in the open ecosystem."
+  - "The unsolved problems are not openness but contamination (models trained on eval data score artificially well) and saturation (public benchmarks no longer separate frontier from near-frontier)."
+  - "HLE (Humanity's Last Exam), GPQA Diamond, FrontierMath, and SWE-bench Verified are the current benchmarks still resistant to frontier saturation through 2026."
+  - "Closed labs run extensive internal evals that are not public; AISI / METR / Apollo run semi-public capability evaluations as a public-interest counterweight."
 ---
 
 import G from "../../components/G.astro";
 
-How we measure progress. The benchmarks, harnesses, and leaderboards
-that decide which models are "better." This is a meta-layer rather than
-a stack layer because it observes the rest of the stack rather than
-sitting between two production-pipeline layers. The open ecosystem is in
-mostly-good shape here: <G term="lm-eval-harness">lm-evaluation-harness</G> is the de facto reference
-harness, HELM and AISI Inspect are the principled large-scale
-frameworks, and LMArena is the most-respected human-preference
-evaluation. The unsolved problems are not openness but contamination
-(models trained on eval data score artificially well) and saturation
-(most public benchmarks no longer distinguish <G term="frontier">frontier</G> from
-near-<G term="frontier">frontier</G>). HLE, GPQA Diamond, FrontierMath, and SWE-bench Verified
-are the current <G term="frontier">frontier</G>-resistant benchmarks.
+## Overview
+
+How we measure progress. The benchmarks, harnesses, and
+leaderboards that decide which models are "better" and which
+agent products work. This is a meta-layer because it observes
+the rest of the stack rather than sitting between two
+production-pipeline layers. Every claim of "better" anywhere
+else on the stack depends on what evaluation accepts as proof.
+
+Five things to keep in mind as you read:
+
+- **Evaluation is the layer that grades the rest.** Without it,
+  "open is competitive" and "open is behind" are both
+  unfalsifiable.
+- **Open coverage is good.** <G term="lm-eval-harness">lm-evaluation-harness</G>, HELM, AISI
+  Inspect, LMArena. The infrastructure is mostly open.
+- **The unsolved problems aren't openness.** They're
+  contamination (eval data leaked into training data) and
+  saturation (benchmarks topped out).
+- **A small set of benchmarks still discriminates.** HLE, GPQA
+  Diamond, FrontierMath, SWE-bench Verified.
+- **Closed labs run private evals.** AISI, METR, and Apollo
+  Research are the credible semi-public counterweights.
+
+The rest of this page walks the open harnesses, the
+contamination-and-saturation problems, the
+frontier-resistant benchmarks, and the private-eval
+counterweight question.
+
+## The open harnesses
+
+What the open ecosystem uses to score models.
+
+**lm-evaluation-harness** (EleutherAI) is the de facto
+reference. Hundreds of academic benchmarks behind a single
+CLI. Cited in nearly every open-weights release paper from
+2022 onward. The "if you don't know which harness to use, use
+this" answer ([lm-eval repository](https://github.com/EleutherAI/lm-evaluation-harness)).
+
+**HELM** (Stanford CRFM) is the principled large-scale
+alternative. Defines a fixed taxonomy of scenarios and
+metrics (accuracy, robustness, fairness, calibration, etc.)
+and runs every model on the same fixed grid for
+apples-to-apples comparison
+([HELM project](https://crfm.stanford.edu/helm/)).
+
+**AISI Inspect** (UK AI Safety Institute) is the
+safety-evaluation-focused framework. Designed for capability
+evaluations (can the model do dangerous thing X?) rather than
+benchmark-style accuracy tests
+([AISI Inspect repository](https://github.com/UKGovernmentBEIS/inspect_ai)).
+
+**LMArena** (Chatbot Arena, originally LMSYS) is the
+human-preference evaluation. Anonymous head-to-head
+comparisons between models from real users, Elo-ranked. The
+most-cited "real users prefer X over Y" data source in the
+field through 2025 ([LMArena leaderboard](https://lmarena.ai/leaderboard)).
+
+The closed equivalents are mostly internal-only. Anthropic,
+OpenAI, and Google all run substantial internal evaluation
+suites that don't get published; what they release publicly is
+typically selected results from public benchmarks.
+
+## Contamination and saturation
+
+The two structural problems that aren't about openness.
+
+**Contamination** is when a model was trained on data that
+includes the evaluation. A model trained on the internet may
+have seen MMLU questions verbatim in training; if so, its
+score is artificially inflated. Detection methods exist
+(perplexity-on-test-set, membership inference attacks) but
+they're imperfect and the labs aren't incentivized to
+self-report. The most-trusted defense is to evaluate on
+benchmarks released AFTER the model's training cutoff.
+
+**Saturation** is when a benchmark is so close to its ceiling
+that it no longer separates models. MMLU saturated for
+frontier models around 2023-2024; GSM8K saturated through
+2024. The benchmarks that made open-vs-closed comparisons
+meaningful five years ago no longer do, because the leading
+models cluster within the benchmark's noise floor.
+
+Both problems push the eval community toward newer, harder,
+private-test-set benchmarks faster than the academic
+publication cycle can handle. The frontier-resistant set
+turns over roughly annually.
+
+## The frontier-resistant benchmarks (2026)
+
+The current set that still discriminates between top models.
+
+- **HLE** (Humanity's Last Exam, CAIS + Scale AI, 2025) — 3000
+  questions across math, science, humanities, designed
+  explicitly to be at the upper bound of human expert
+  capability. Frontier models score 20-40% as of mid-2026
+  ([HLE paper](https://arxiv.org/abs/2501.14249)).
+- **GPQA Diamond** (Rein et al., 2023) — 198 graduate-level
+  science questions where experts in adjacent fields still
+  score below 50%. Frontier models cracked 70% in late 2025
+  ([GPQA paper](https://arxiv.org/abs/2311.12022)).
+- **FrontierMath** (Epoch AI, 2024) — research-grade
+  mathematics, designed to be hard for both humans and models.
+  Frontier models score below 10% as of 2026
+  ([FrontierMath benchmark](https://epoch.ai/frontiermath)).
+- **SWE-bench Verified** (Princeton + OpenAI, 2024) — real
+  GitHub issues that require multi-file edits to resolve, with
+  a hand-verified subset. Tests agent capability, not just
+  language modeling
+  ([SWE-bench Verified release](https://openai.com/index/introducing-swe-bench-verified/)).
+- **AIDER LLM benchmark** — code-editing benchmark from the
+  Aider project; less academic but more representative of
+  real coding-agent work ([Aider leaderboard](https://aider.chat/docs/leaderboards/)).
+
+The pattern is that benchmarks resistant to saturation share
+two properties: they require expertise that's hard to scrape
+from the internet, and they have private test sets that the
+labs can't pretrain on. When either property fails, the
+benchmark saturates quickly.
+
+## The capability-evaluation counterweight
+
+Beyond model-quality benchmarks, a separate evaluation
+practice has grown around dangerous-capability assessment.
+
+- **AISI** (UK AI Safety Institute) — runs pre-release
+  evaluations on frontier models from Anthropic, OpenAI,
+  Google DeepMind under voluntary agreements
+  ([AISI evaluations](https://www.aisi.gov.uk/work/our-evaluations)).
+- **METR** (Model Evaluation and Threat Research) — focused on
+  autonomy and agentic-capability evaluations; runs the
+  largest external evaluations of frontier models for
+  catastrophic-risk indicators
+  ([METR research](https://metr.org/research)).
+- **Apollo Research** — focused on deception, scheming, and
+  in-context reasoning failures
+  ([Apollo research](https://www.apolloresearch.ai/research)).
+
+These three together are the closest the field has to
+independent verification of what frontier models can do. Their
+methods are mostly public; specific evaluation results from
+specific model-lab pairs are typically under non-disclosure.
+The arrangement is uncomfortable (the evaluators depend on
+voluntary lab cooperation) but is currently the only path to
+any external scrutiny at all.
+
+## What's open and what isn't
+
+- **Open harnesses**: lm-evaluation-harness, HELM, AISI Inspect.
+  Cover most of the evaluation surface.
+- **Open benchmark datasets**: MMLU, GSM8K, GPQA, ARC,
+  HellaSwag, plus hundreds of smaller-scale academic
+  benchmarks. Mostly under permissive academic licenses.
+- **Private-test-set benchmarks**: HLE, FrontierMath, SWE-bench
+  Verified. The harness is open, the test set is held back to
+  prevent contamination. Standard practice for
+  saturation-resistant benchmarks.
+- **Closed labs' internal evals**: the most extensive evaluation
+  work in the field, and almost entirely unpublished.
+
+The reverse-lock-in risk at this layer is that the
+closed-lab internal evals shape the actual training
+trajectories of the closed models, while the public benchmarks
+shape what we know about them. The gap between "what closed
+labs actually know about their models" and "what the public
+can verify about them" is the largest information asymmetry
+on the stack.
+
+## The editorial tension
+
+The accountable-AI argument for evaluation is that without
+external verification of what models can do, claims about
+safety, capability, and alignment are unfalsifiable. The
+AISI / METR / Apollo work is the strongest version of that
+argument actually shipping.
+
+The pragmatic counterargument is that the public benchmark
+canon is saturated for the questions that matter most
+(frontier capability, dangerous behavior), and that the
+private-test-set benchmarks are run by a small number of
+organizations the field is increasingly dependent on. If
+HLE's questions leak, or FrontierMath's curators get bought,
+the field loses one of its few remaining measurement
+instruments at frontier scale.
+
+The strategic question is whether the public-interest
+evaluation infrastructure (AISI, METR, Apollo, plus the
+academic benchmark community) scales with the labs it
+evaluates. If yes, the field has a real counterweight. If no,
+the labs increasingly grade themselves, and "open-weights
+beats closed weights" becomes a claim no external party can
+verify.

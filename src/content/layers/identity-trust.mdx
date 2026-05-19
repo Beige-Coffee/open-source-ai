@@ -7,26 +7,209 @@ order: 3
 lock_in_vector: identity
 sovereignty_relevance: 4
 related_layers: [silicon, runtime, agents, protocols]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Four sub-clusters share this layer: TEEs, confidential-computing services, verifiable inference, and agent-identity primitives."
-  - "TEE examples include Intel SGX, AMD SEV, NVIDIA H100 Confidential Computing, and Apple Secure Enclave."
-  - "Verifiable-inference projects like EZKL, Modulus, and Lagrange's ZKML attempt to prove what a model did without trusting the operator."
-  - "Trust primitives depend on silicon-vendor cooperation, which means the silicon-vendor monopoly can re-entrench at the trust layer."
-  - "ZKML tries to make trust silicon-agnostic via pure cryptography, at substantial performance cost."
+  - "Four sub-clusters share this layer. Trusted Execution Environments (TEEs, hardware), confidential-computing services (managed TEE), verifiable inference (cryptographic proof of what a model did), and agent-identity primitives (DIDs, AAIF passports, L402 macaroons)."
+  - "TEEs include Intel SGX, AMD SEV, NVIDIA H100/H200 Confidential Computing, and Apple Secure Enclave. They run code in an enclave the host OS cannot inspect, with hardware attestation that the enclave is what it claims to be."
+  - "Verifiable inference projects (EZKL, Modulus Labs, Lagrange ZKML, Gensyn) try to prove cryptographically what a model did without trusting the operator. ZKML is the standard term; performance overhead is currently substantial."
+  - "Trust primitives at this layer depend on silicon-vendor cooperation. The NVIDIA Confidential Computing path is contingent on NVIDIA continuing to ship the feature; SGX is deprecated on consumer Intel chips. The silicon-vendor monopoly at Layer 1 can re-entrench at the trust layer."
+  - "Agent identity (who is this agent, who is responsible for it, what is it allowed to do) is a separate sub-cluster from inference verifiability. DIDs (W3C), verifiable credentials, AAIF passports, and L402 macaroons each address part of the agent-identity problem from different angles."
 ---
 
 import G from "../../components/G.astro";
 
-The cryptographic and hardware infrastructure that lets you verify what
-a model is doing or who an agent is. Four sub-clusters share this
-layer: Trusted Execution Environments (<G term="sgx">Intel SGX</G>, AMD SEV, NVIDIA H100
-<G term="confidential-computing">Confidential Computing</G>, Apple Secure Enclave); confidential-computing
-services (Apple PCC, Phala, AWS Nitro Enclaves); <G term="verifiable-inference">verifiable inference</G>
-(EZKL, Modulus, Lagrange's <G term="zkml">ZKML</G>); and agent-identity primitives (DIDs,
-verifiable credentials, AAIF agent passports, <G term="l402">L402</G> macaroons). Trust
-primitives depend on silicon vendor cooperation, which means the
-silicon-vendor monopoly at Layer 1 can re-entrench at the trust layer
-unless open-silicon counter-bets develop their own trust-anchor stories.
-<G term="zkml">ZKML</G> tries to make trust silicon-agnostic via pure cryptography, at
-substantial performance cost.
+## Overview
+
+The cryptographic and hardware infrastructure that lets you
+verify what a model is doing, or who an agent is. This layer
+becomes load-bearing when an agent acts on the user's behalf
+across trust boundaries (across organizations, across legal
+jurisdictions, across user accounts) and the receiving system
+needs to know that the request is legitimate.
+
+Five things to keep in mind as you read:
+
+- **Four sub-clusters share the layer.** TEEs, confidential-
+  computing services, verifiable inference, agent identity.
+- **<G term="tee">TEEs</G> are hardware enclaves.** Intel SGX, AMD SEV, NVIDIA
+  H100/H200 Confidential Computing, Apple Secure Enclave.
+- **<G term="confidential-computing">Confidential computing</G> is the managed-service shape.**
+  Apple PCC, Phala Network, AWS Nitro Enclaves.
+- **<G term="verifiable-inference">Verifiable inference</G> uses cryptography, not trusted
+  hardware.** <G term="zkml">ZKML</G> via EZKL, Modulus, Lagrange.
+- **Agent identity is the fourth sub-cluster.** DIDs, AAIF
+  passports, <G term="l402">L402</G> macaroons.
+
+The rest of this page walks the four sub-clusters and then
+arrives at the silicon-vendor-dependency question.
+
+## Trusted Execution Environments
+
+Hardware enclaves on the CPU or GPU that run code the host
+operating system cannot inspect.
+
+- **Intel SGX** — the foundational TEE for x86. Deprecated on
+  consumer Intel chips after 2021 due to side-channel attack
+  history; still supported on Xeon Scalable. Used by Confidential
+  Compute Consortium, Microsoft Azure Confidential Computing
+  ([Intel SGX product page](https://www.intel.com/content/www/us/en/architecture-and-technology/software-guard-extensions.html)).
+- **AMD SEV** (Secure Encrypted Virtualization) — full-VM
+  encryption with attestation. Used by Google Cloud and Azure
+  for VM-level confidential computing
+  ([AMD SEV documentation](https://www.amd.com/en/developer/sev.html)).
+- **NVIDIA H100/H200 Confidential Computing** — the GPU-side
+  story. Encrypts model weights and inputs against the host,
+  with TPM-style attestation. Critical for AI workloads
+  because the math doesn't happen on the CPU
+  ([NVIDIA CC documentation](https://docs.nvidia.com/cc-deployment-guide-snp.pdf)).
+- **Apple Secure Enclave** — the consumer TEE story. Used for
+  on-device biometrics and increasingly for on-device AI
+  inference where the inputs shouldn't leave the device
+  ([Secure Enclave overview](https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web)).
+- **ARM TrustZone** — the mobile-ecosystem default. Ubiquitous
+  but with a less rigorous attestation story than the
+  data-center alternatives.
+
+The technical contribution of a TEE is hardware-attested
+isolation. You can ship a model into the enclave, run it
+against user data, and produce a cryptographic statement
+"this output was produced by this code on this hardware",
+verifiable by an external auditor without trusting the host.
+
+## Confidential computing services
+
+The managed-service layer on top of TEEs.
+
+- **Apple Private Cloud Compute** (PCC) — Apple's on-server
+  confidential inference for Apple Intelligence. Servers run
+  inside enclaves; Apple cryptographically attests to running
+  only published images and stores no user data
+  ([Apple PCC security overview](https://security.apple.com/blog/private-cloud-compute/)).
+- **Phala Network** — confidential-compute marketplace using
+  Intel SGX, integrated with token-economy settlement
+  ([Phala documentation](https://docs.phala.network/)).
+- **Microsoft Azure Confidential Computing** — managed TEE
+  service across Intel SGX and AMD SEV-SNP, plus a
+  Confidential GPU offering for H100
+  ([Azure Confidential Computing](https://azure.microsoft.com/en-us/solutions/confidential-compute/)).
+- **Google Cloud Confidential Computing** — AMD SEV-SNP and
+  Intel TDX based, with GPU support for confidential workloads
+  ([Google Confidential Computing](https://cloud.google.com/security/products/confidential-computing)).
+- **AWS Nitro Enclaves** — a different architectural approach
+  (isolation by hypervisor rather than CPU enclave), with the
+  same end goal of isolating workloads from the host
+  ([AWS Nitro Enclaves](https://aws.amazon.com/ec2/nitro/nitro-enclaves/)).
+
+Apple PCC is the cleanest deployment of the "confidential
+inference at scale" pattern as of 2026. The downside is that
+the trust chain is rooted in Apple's hardware and Apple's
+attestation servers; an open equivalent would need to root
+trust somewhere else.
+
+## Verifiable inference
+
+A different architecture. Instead of trusting hardware to keep
+secrets, use cryptography to prove what a computation did
+without revealing the inputs or weights.
+
+ZKML (zero-knowledge machine learning) is the term. The
+projects:
+
+- **EZKL** — proves arbitrary ONNX models in ZK. The most-used
+  open ZKML toolchain
+  ([EZKL repository](https://github.com/zkonduit/ezkl)).
+- **Modulus Labs** — focused on bringing ZKML to on-chain
+  applications (decentralized finance, autonomous worlds)
+  ([Modulus Labs](https://www.moduluslabs.xyz/)).
+- **Lagrange ZK Coprocessor** — different shape; provides
+  proof-as-a-service infrastructure for protocols that need
+  verifiable computation
+  ([Lagrange documentation](https://docs.lagrange.dev/zk-coprocessor)).
+- **Gensyn** — verifiable training (not just inference) via
+  proof-of-learning protocols, targeting the decentralized
+  training market ([Gensyn protocol overview](https://www.gensyn.ai/)).
+
+The advantage over TEEs: no silicon-vendor dependency. ZKML
+proofs are verifiable on any hardware that can run the
+verifier. The disadvantage: substantial performance overhead.
+Proving an inference can be orders of magnitude slower than
+just running the inference, which limits ZKML to applications
+where the verification is more valuable than the speed.
+
+## Agent identity
+
+A separate problem from inference verification. When an agent
+sends a request across the internet, the receiving system
+needs to know: who is this agent, who's accountable for it,
+and what is it allowed to do?
+
+The primitives:
+
+- **DIDs** (Decentralized Identifiers, W3C, 2022) — a URI
+  format for self-sovereign identity that doesn't depend on a
+  central registry ([DID Core spec](https://www.w3.org/TR/did-core/)).
+- **Verifiable Credentials** (W3C) — cryptographically-signed
+  attestations that can be presented to verify claims about a
+  DID-identified subject
+  ([VC Data Model](https://www.w3.org/TR/vc-data-model/)).
+- **AAIF agent passports** (Linux Foundation) — the
+  AI-specific extension; defines what an agent passport must
+  carry (provenance, capabilities, accountability chain).
+- **L402 macaroons** (Lightning Labs) — bearer tokens with
+  attenuated capabilities, paid-for via Lightning. Used for
+  permissionless agent-to-tool access.
+
+The agent-identity stack is less mature than the other three
+sub-clusters. As of 2026 most production agent traffic still
+authenticates with API keys (long-lived bearer secrets) rather
+than the cryptographically-rich shapes above. That changes as
+agent-to-agent traffic grows beyond single-vendor deployments.
+
+## What's open and what isn't
+
+Mixed.
+
+- **TEE hardware**: closed. Intel SGX, AMD SEV, NVIDIA CC,
+  Apple Secure Enclave are all proprietary silicon
+  implementations.
+- **TEE attestation protocols**: mostly open. The
+  Confidential Compute Consortium (CCC) publishes attestation
+  formats; the trust roots are vendor-controlled.
+- **Open confidential-compute services**: Phala (Apache 2.0
+  protocol code); the hyperscaler offerings are closed-managed.
+- **Open ZKML**: EZKL is Apache 2.0; Lagrange is partially
+  open; Gensyn protocol code is open.
+- **Open agent-identity**: DIDs and Verifiable Credentials are
+  W3C standards. AAIF is Linux Foundation. L402 spec is open.
+
+The reverse-lock-in risk is the silicon dependency. The TEE
+and confidential-computing path depends on the silicon vendor
+shipping the feature and keeping it supported. SGX's
+deprecation on consumer Intel chips is the precedent for what
+vendor abandonment looks like. ZKML routes around this by
+making the trust silicon-agnostic, at performance cost.
+
+## The editorial tension
+
+Two parallel paths to the same goal of verifiable AI
+execution.
+
+The **hardware-trust path** (TEEs, confidential computing) is
+mature, fast, and works at production scale today. Apple PCC,
+Azure Confidential GPU, Phala — these are real deployments
+running real workloads. The trade is that you trust silicon
+vendors, and the silicon vendors are concentrated.
+
+The **cryptographic-trust path** (ZKML, proof-of-learning) is
+silicon-agnostic and doesn't require trusting any vendor. The
+trade is performance overhead that currently restricts it to
+high-value low-throughput applications.
+
+The strategic question is whether ZKML's performance overhead
+keeps shrinking faster than the data-center AI workload grows
+(in which case it becomes a general substrate over the next
+decade), or whether TEE-based confidential computing wins by
+default because it's cheap and the silicon vendors continue
+to ship it. The 2026 trajectory is that both grow in parallel
+serving different workload classes; whether they converge or
+stay specialized through 2030 is the structural question.

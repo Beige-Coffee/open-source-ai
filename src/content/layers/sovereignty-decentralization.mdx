@@ -7,28 +7,218 @@ order: 5
 lock_in_vector: sovereignty
 sovereignty_relevance: 5
 related_layers: [compute, training, runtime, agents, protocols]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "This meta-layer names the framing distinction the rest of the site is built on: individual sovereignty versus state sovereignty."
-  - "State sovereignty is the NVIDIA, Mistral, and G42 Sovereign AI framing where the actor is a nation-state, not a person."
-  - "Individual-sovereignty primitives include decentralized training (Prime Intellect, Nous DisTrO, Templar, Pluralis) and decentralized inference (Petals)."
-  - "Local-first patterns rely on llama.cpp, Ollama, MLX, and personal-AI appliances; permissionless agentic payments use L402 and x402."
-  - "Each primitive in isolation does not displace the centralized incumbent; combined, they compound into a complete alternative stack a small organization can run end-to-end."
+  - "This meta-layer names the framing distinction the rest of the site is built on. Individual sovereignty (cypherpunk-adjacent, personal ownership of compute / data / models) versus state sovereignty (the NVIDIA / Mistral / G42 'Sovereign AI' framing where the actor is a nation-state)."
+  - "Both framings push back against the hyperscaler default, but they have different beneficiaries. State sovereignty makes France / India / UAE the actor instead of Microsoft / Anthropic. Individual sovereignty makes a single user or small org the actor."
+  - "The individual-sovereignty primitives that make the framing operationally real: decentralized training (Prime Intellect, Nous DisTrO, Templar, Pluralis), decentralized inference (Petals), local-first patterns (llama.cpp, Ollama, MLX), personal-AI appliances, and permissionless agentic payments (L402, x402)."
+  - "Each primitive in isolation does not displace the centralized incumbent. Combined, they compound into a complete alternative stack a small organization can run end-to-end. The compounding is the actual sovereignty argument."
+  - "This is the audience-of-two layer. The reader most likely to find it relevant is someone who funded Bitcoin OSS in the 2010s and is now considering how the same individual-sovereignty argument applies to AI."
 ---
 
 import G from "../../components/G.astro";
 
-The political and architectural patterns that distinguish "open AI"
-from "open AI you can actually own." This meta-layer names the framing
-distinction the rest of the site is built on: individual sovereignty
-(cypherpunk, Bitcoin-and-Lightning-adjacent, personal ownership of
-compute and data) versus state sovereignty (the NVIDIA / <G term="mistral">Mistral</G> / G42
-"Sovereign AI" framing where the actor is a nation-state). It also
-covers the primitives that make individual sovereignty viable:
-<G term="decentralized-training">decentralized training</G> (Prime Intellect, Nous DisTrO, Templar,
-Pluralis), decentralized <G term="inference">inference</G> (<G term="petals">Petals</G>), <G term="local-first">local-first</G> patterns
-(<G term="llama-cpp">llama.cpp</G>, <G term="ollama">Ollama</G>, <G term="mlx">MLX</G>, personal-AI appliances), and permissionless
-<G term="agentic-payments">agentic payments</G> (<G term="l402">L402</G>, <G term="x402">x402</G>). Each primitive in isolation does not
-displace the centralized incumbent; combined, they compound into a
-complete alternative stack an individual or small organization can run
-end-to-end.
+## Overview
+
+The political and architectural patterns that distinguish "open
+AI" from "open AI you can actually own". This meta-layer is the
+framing distinction the rest of the site is built on. Other
+layers describe what's open and what isn't; this layer asks
+who the openness is for.
+
+Five things to keep in mind as you read:
+
+- **Two framings, both anti-hyperscaler, different beneficiaries.**
+  Individual sovereignty (one user, one org) versus state
+  sovereignty (one country).
+- **Cypherpunk lineage.** The individual side inherits from
+  Bitcoin, GPG, Tor, Freenet, IPFS. The technical patterns and
+  the political argument both descend from there.
+- **The state-sovereignty pitch is mainstream.** NVIDIA,
+  Mistral, G42 all sell variants. The individual-sovereignty
+  pitch is niche.
+- **Each individual-sovereignty primitive is partial.** Decentralized
+  training alone, or local-first inference alone, doesn't
+  displace the hyperscaler default.
+- **Combined, they compound into a complete stack.** That's the
+  whole sovereignty argument.
+
+The rest of this page works through the two framings, then the
+individual-sovereignty primitives that make the framing
+operational.
+
+## Individual versus state sovereignty
+
+Both framings push back against the same default (hyperscaler
+control of frontier AI capacity). They have different
+beneficiaries.
+
+**State sovereignty** is the framing where a nation-state, not
+a person, is the actor whose autonomy matters. NVIDIA's "AI
+Factory" pitch to governments, Mistral's positioning as a
+French national champion, the UAE G42 / Saudi Humain / IndiaAI
+Mission capex (covered at [infrastructure](/stack/infrastructure))
+are all variants. The argument: a country that depends on US-
+hosted AI is dependent on US export policy; building domestic
+capacity restores national autonomy. The implicit beneficiary
+is the state, and the implicit failure mode is that the state
+restricts citizens' access in the same way the previous
+foreign provider did.
+
+**Individual sovereignty** is the framing where a single person
+or small organization is the actor. The lineage is direct from
+Bitcoin: a permissionless system the holder can run without
+asking permission from any institution. The argument: state
+sovereignty just replaces one centralized actor with another;
+real autonomy requires primitives an individual can deploy.
+The implicit beneficiary is the person, and the implicit
+failure mode is that the individual primitives never reach
+performance parity with the centralized alternatives.
+
+The two framings overlap mechanically (both want open weights,
+both want sovereign compute) but diverge politically. A
+hardliner cypherpunk treats state sovereignty as another
+flavor of the same problem; a hardliner state-sovereignty
+advocate treats individual sovereignty as practically
+irrelevant at frontier scale.
+
+## The individual-sovereignty primitives
+
+What makes the individual framing operationally real.
+
+**<G term="decentralized-training">Decentralized training</G>** lets a model be trained across
+geographically distributed compute that no single entity owns.
+Covered at [training](/stack/training); the projects are
+Prime Intellect (INTELLECT-1 in late 2024, INTELLECT-2 32B in
+May 2025), Nous DisTrO, Templar, Pluralis. As of 2026,
+shipping at 30B-class scale with the bandwidth-efficient
+algorithms (DiLoCo, OpenDiLoCo, DisTrO) closing the gap
+against centralized training.
+
+**Decentralized inference** lets a model run across distributed
+compute without a single operator. <G term="petals">Petals</G> (BigScience, 2022)
+is the foundational reference; a swarm of nodes each running
+some layers, requests routed through the swarm
+([Petals paper](https://arxiv.org/abs/2209.01188)). The pattern
+works for moderate-size models on commodity hardware; the
+performance trade against centralized inference is real but
+the architectural point (no single operator) is the value.
+
+**Local-first patterns.** Inference on hardware the user owns.
+<G term="llama-cpp">llama.cpp</G> for cross-platform; <G term="ollama">Ollama</G> for the consumer wrapper;
+<G term="mlx">MLX</G> for Apple Silicon; plus the emerging personal-AI appliance
+category (devices like the Tinybox, the Friend AI necklace,
+Apple's on-device inference). The 2026 local-first
+sovereignty story for individuals is real and getting
+stronger: Llama-class models on a Mac, M-series unified memory
+making 70B-parameter local inference viable, Ollama making
+the install trivial.
+
+**Permissionless agentic payments.** <G term="l402">L402</G> on Bitcoin Lightning
+(Lightning Labs / Fewsats), <G term="x402">x402</G> on stablecoin (Coinbase /
+Base). Covered at [protocols](/stack/protocols). The point is
+that an agent can pay another agent for API access, data, or
+compute without going through a vendor-mediated billing
+relationship. The Bitcoin / Lightning lineage makes this the
+most cypherpunk-flavored part of the stack.
+
+**Sovereign agent stacks.** An agent built from open
+components: open weights running on local or decentralized
+compute, open agent framework, open memory layer, all owned
+by the user. <G term="goose">Goose</G> with self-hosted weights, an OpenHands
+running against a Bittensor-compute-subnet inference endpoint,
+an Aider session against a local <G term="ollama">Ollama</G>. These exist; the
+realistic 2026 user is technical and the experience is
+rougher than the closed defaults.
+
+## The compounding argument
+
+Each primitive in isolation does not displace the centralized
+default. Decentralized training is slower than centralized
+training. Decentralized inference is slower than centralized
+inference. Local-first inference is more limited than
+hyperscaler-API inference. Permissionless payments add friction
+versus Stripe. Open agent products lag the closed defaults on
+UX.
+
+The argument for taking these primitives seriously anyway is
+that they compound. A small organization wanting to operate
+end-to-end open AI in 2026 has, for the first time, a
+complete-enough set of components to do so:
+
+- Self-hosted compute on consumer or prosumer hardware, or
+  marketplace compute from Akash / io.net
+- Open-weights models (Qwen 3, DeepSeek V3, Llama 4)
+- Open runtime (vLLM for serving, llama.cpp for local)
+- Open retrieval stack (pgvector + BGE embeddings + Letta
+  memory)
+- Open agent product (Goose or OpenHands)
+- Open protocols (MCP for tool use, A2A for agent-to-agent)
+- Permissionless payment rails if agents need to transact
+
+None of these were complete enough five years ago. All of them
+are now. The stack is rougher than the closed default, slower
+in some respects, but it exists end-to-end without any single
+vendor whose continued cooperation the user depends on.
+
+That is the operational version of the sovereignty argument.
+Not "open AI is morally better"; "open AI is now a complete
+enough stack that an individual or small organization can
+build production systems without depending on any particular
+hyperscaler or lab".
+
+## What's open and what isn't
+
+This isn't a technical layer; it's a framing layer. The
+question is which framing the rest of the site advocates.
+
+This site advocates the individual-sovereignty framing
+specifically and the open-AI position more broadly. The
+audience is partly individuals who want the technical primitives
+to deploy, and partly funders who used to fund Bitcoin OSS and
+are now considering whether the same individual-sovereignty
+argument applies to AI.
+
+State sovereignty is covered descriptively because it's where
+most of the actual capex flows, but it's not the framing the
+site is advocating.
+
+## The editorial tension
+
+Whether individual sovereignty for AI is a serious bet or a
+romantic one is the framing-layer question.
+
+The skeptical read is that frontier capability requires
+gigawatt-scale concentrated compute (covered at
+[infrastructure](/stack/infrastructure)) that no individual
+or small org can match, that the closed agent products will
+maintain a developer-experience lead the open products
+cannot close, and that the realistic outcome is a two-tier
+AI economy where individuals use closed APIs and only states
+and hyperscalers train frontier models. Individual sovereignty
+in that world is a hobby, not a serious alternative.
+
+The believer read is that the same was said about personal
+computing in 1980 and about personal cryptography in 1995, and
+that the compounding primitives at the individual-sovereignty
+layer eventually become competitive enough that the
+two-tier outcome doesn't hold. Bitcoin specifically is the
+strongest precedent: an individual-sovereignty primitive that
+nobody took seriously in 2010 and that's load-bearing
+infrastructure now.
+
+Both reads are consistent with the 2026 trajectory. Which is
+correct is determined by what happens at the training and
+inference layers over the next three to five years. The case
+for taking individual sovereignty seriously is that it costs
+relatively little to invest in the primitives now and the
+payoff if they compound is large; the case against is that
+it diverts attention from the state-sovereignty path that's
+actually getting the capital.
+
+The site's editorial position is that both are worth tracking
+and that the individual-sovereignty case is under-funded
+relative to its strategic importance. Most of the
+audience-of-two for this site arrived because they share that
+position. The grants page exists to surface the funders who
+do too.

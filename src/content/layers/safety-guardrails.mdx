@@ -7,25 +7,219 @@ order: 4
 lock_in_vector: safety
 sovereignty_relevance: 3
 related_layers: [weights, agents, evaluation]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Safety constraints apply at three points in the pipeline: training time (Constitutional AI, RLHF, DPO), inference time (Llama Guard, NeMo Guardrails), and agent runtime (sandbox-escape evals, capability-token enforcement)."
-  - "The open safety stack is growing but not yet at parity with closed labs' internal stacks, which are proprietary by design."
-  - "Closed safety stacks are increasingly heavy on capability evaluation rather than only output filtering."
-  - "AISI Inspect, METR, and Apollo Research are the most credible open and semi-open evaluators of dangerous capabilities."
-  - "The reverse-lock-in risk is that closed-lab safety claims cannot be independently verified by outsiders."
+  - "Safety constraints apply at three points in the pipeline. Training time (Constitutional AI, RLHF, DPO, RLAIF) shapes what the base model will do. Inference time (Llama Guard, NeMo Guardrails, Granite Guardian) filters at the API boundary. Agent runtime (sandbox-escape evals, capability-token enforcement) constrains what an agent can do once running."
+  - "The open safety stack is growing but not yet at parity with closed labs' internal safety stacks, which are proprietary by design and increasingly capability-evaluation-heavy."
+  - "AISI Inspect, METR, and Apollo Research are the most-credible open and semi-open evaluators of dangerous AI capabilities. Their work is the closest thing the field has to independent verification of safety claims."
+  - "The reverse-lock-in risk at this layer is that closed-lab safety claims cannot be independently verified by outsiders. 'Our model is safe because our internal evals say so' is uncheckable from the outside."
+  - "Llama Guard, NeMo Guardrails, and Granite Guardian are the open inference-time guard models. Each is an LLM trained to classify outputs (and sometimes inputs) against a defined harm taxonomy."
 ---
 
 import G from "../../components/G.astro";
 
-The tools and techniques for constraining what a model or agent is
-allowed to do. Constraints apply across the production pipeline: at
-training time (<G term="constitutional-ai">Constitutional AI</G>, <G term="rlhf">RLHF</G>, <G term="dpo">DPO</G>), at <G term="inference">inference</G> time (output
-classifiers like <G term="llama-guard">Llama Guard</G> and <G term="nemo-guardrails">NeMo Guardrails</G>), and at agent runtime
-(sandbox-escape evaluations, capability-token enforcement). The open
-ecosystem here is growing but not yet at parity with closed labs'
-internal safety stacks, which are proprietary by design and increasingly
-capability-evaluation-heavy. AISI Inspect, METR, and Apollo Research are
-the most-credible open and semi-open evaluators of dangerous
-capabilities. The reverse-lock-in risk at this layer is that closed-lab
-safety claims cannot be independently verified.
+## Overview
+
+The tools and techniques for constraining what a model or
+agent is allowed to do. Distinct from the trust-and-identity
+layer (which is about verifying what happened); this layer is
+about preventing certain outcomes in the first place.
+
+Five things to keep in mind as you read:
+
+- **Safety applies at three points in the pipeline.** Training
+  time, inference time, agent runtime. Different tools at each.
+- **Training-time safety shapes the base model.** <G term="constitutional-ai">Constitutional
+  AI</G>, <G term="rlhf">RLHF</G>, <G term="dpo">DPO</G>, RLAIF. The model "learns" what not to do.
+- **Inference-time safety filters at the API boundary.** <G term="llama-guard">Llama
+  Guard</G>, <G term="nemo-guardrails">NeMo Guardrails</G>, Granite Guardian.
+- **Agent runtime safety is the newest area.** Sandbox escapes,
+  capability tokens, action-policy enforcement.
+- **External evaluators are the load-bearing accountability
+  layer.** AISI, METR, Apollo Research. Without them, safety
+  claims are uncheckable.
+
+The rest of this page walks the three pipeline points, then
+the evaluator counterweight, then arrives at the
+verifiability question.
+
+## Training-time safety
+
+What the lab does to shape the base model's behavior before
+release.
+
+The major techniques:
+
+- **RLHF** (Reinforcement Learning from Human Feedback) — the
+  foundational technique. Human raters rank model outputs, a
+  reward model learns from the rankings, the base model gets
+  fine-tuned against the reward model. Christiano et al. 2017
+  ([Deep RL from Human Preferences](https://arxiv.org/abs/1706.03741))
+  is the canonical reference; OpenAI's InstructGPT (2022)
+  was the first widely-deployed application.
+- **Constitutional AI** (Anthropic) — uses an explicit
+  "constitution" (a list of principles) plus model-generated
+  critique-and-revision instead of pure human feedback.
+  Reduces the human labeling burden
+  ([Constitutional AI paper](https://arxiv.org/abs/2212.08073)).
+- **DPO** (Direct Preference Optimization, Rafailov et al.
+  2023) — skips the explicit reward model; directly optimizes
+  the policy against preference pairs. Much cheaper than RLHF
+  ([DPO paper](https://arxiv.org/abs/2305.18290)). The
+  open-finetuning-community default in 2025-2026.
+- **RLAIF** (RL from AI Feedback) — the labeler is another
+  model instead of a human. Used in combination with
+  Constitutional AI.
+
+The open ecosystem has all of these techniques implemented in
+the standard libraries (TRL, HuggingFace, the Axolotl recipes).
+The closed labs have more sophisticated internal variants
+(Anthropic's HHH framework, OpenAI's deliberative alignment)
+that don't get fully published. The gap between published
+techniques and internal techniques is hard to estimate; the
+labs assert it's substantial.
+
+## Inference-time safety (guard models)
+
+Filters at the API boundary. The pattern: before sending a
+prompt to a model, classify it with a small guard model; if
+classified as a violation, refuse. Similarly for outputs
+before returning to the user.
+
+The major open guards:
+
+- **Llama Guard** (Meta) — currently at Llama Guard 4. Trained
+  to classify prompts and responses against a harm taxonomy.
+  Apache 2.0
+  ([Llama Guard 4 release](https://www.llama.com/llama-guard/)).
+- **NeMo Guardrails** (NVIDIA) — a programmable safety
+  framework that lets you define guardrails as code (Colang
+  DSL); broader than just a guard model
+  ([NeMo Guardrails repository](https://github.com/NVIDIA/NeMo-Guardrails)).
+- **Granite Guardian** (IBM) — IBM Research's open guard model
+  family, comparable in scope to Llama Guard
+  ([Granite Guardian release](https://www.ibm.com/products/granite/guardian)).
+- **ShieldGemma** (Google) — the Gemma-family guard, used in
+  the Google ecosystem
+  ([ShieldGemma model card](https://huggingface.co/google/shieldgemma-9b)).
+
+The closed equivalents are inside the API surface of the major
+labs (Anthropic's classifier, OpenAI's moderation API). The
+open guards are at rough parity for the categories that have
+public training data (CSAM, violent extremism, self-harm); the
+closed labs are typically ahead on categories that require
+careful definitions (CBRN, manipulation, deception).
+
+## Agent-runtime safety
+
+The newest area. As agents start executing arbitrary code,
+browsing the web, and taking actions on user accounts, the
+relevant safety question shifts from "did the model output
+something bad?" to "did the agent do something the user
+didn't intend?".
+
+The techniques:
+
+- **Sandboxing** — agents run in isolated containers or VMs
+  that limit what they can affect. Standard for code-execution
+  agents (OpenHands runs in a Docker sandbox; Goose can run in
+  one).
+- **Sandbox-escape evals** — explicit testing of whether an
+  agent will try to break out of its sandbox under adversarial
+  conditions. METR has published the most-systematic public
+  work here
+  ([METR sandbox-escape evaluations](https://metr.org/blog/2024-08-06-update-on-evaluations/)).
+- **Capability tokens** — the agent must present a token
+  authorizing each action. Lets the user / platform constrain
+  the agent's reach in fine-grained ways. AAIF (Layer 13) is
+  the protocol-level expression of this pattern.
+- **Action policies** — declarative rules about what the agent
+  can and cannot do (e.g., "can read filesystem; cannot
+  network outside allowlist; cannot call shell commands
+  matching X").
+
+The open ecosystem here is largely the agent-product community
+(Goose, OpenHands, Aider) implementing sandboxing as part of
+their products. Generic agent-runtime-safety frameworks
+(comparable to Llama Guard for outputs) don't really exist
+yet.
+
+## The evaluator counterweight
+
+The accountability layer. Three organizations do most of the
+externally-credible safety evaluation of frontier models.
+
+- **AISI** (UK AI Safety Institute) — runs pre-release
+  evaluations on frontier models from Anthropic, OpenAI,
+  Google DeepMind under voluntary agreements. The most-funded
+  public safety-evaluation org
+  ([AISI evaluations](https://www.aisi.gov.uk/work/our-evaluations)).
+- **METR** (Model Evaluation and Threat Research) — focused on
+  autonomy and agentic capabilities; specifically the question
+  "is this model capable of taking dangerous actions over long
+  horizons?"
+  ([METR research](https://metr.org/research)).
+- **Apollo Research** — focused on deception, scheming, and
+  in-context reasoning failures. The most-public work on
+  "does the model deceive its evaluators?"
+  ([Apollo research](https://www.apolloresearch.ai/research)).
+- **MLCommons AILuminate** — industry-consortium safety
+  benchmark, less rigorous than AISI / METR but standardized
+  ([AILuminate](https://ailuminate.mlcommons.org/)).
+
+These are the closest the field has to independent verification
+of safety claims. Their methods are public; the specific
+results from specific model-lab pairs are usually under NDA.
+The arrangement is uncomfortable but is currently the only
+external scrutiny that exists at all.
+
+## What's open and what isn't
+
+- **Open training-time techniques**: RLHF, DPO, Constitutional
+  AI are all published and have open implementations. The
+  closed-lab variants are more sophisticated and
+  unpublished.
+- **Open inference-time guards**: Llama Guard, NeMo Guardrails,
+  Granite Guardian, ShieldGemma. Cover the standard harm
+  taxonomy categories.
+- **Closed inference-time guards**: the classifier stacks
+  inside Anthropic's, OpenAI's, and Google's API surfaces.
+- **Open agent-runtime safety**: ad-hoc, mostly per-product
+  sandboxing. No general framework yet.
+- **Open evaluator work**: AISI, METR, Apollo publish methods
+  and aggregate results. Specific lab-pair results typically
+  not.
+- **Closed lab internal safety stacks**: the most substantial
+  safety work in the field, almost entirely unpublished by
+  design.
+
+The reverse-lock-in risk is that closed-lab safety claims
+cannot be independently verified. "Our model is safe because
+our internal evals say so" is a claim the public has no way to
+check. The AISI / METR / Apollo work is the partial answer; it
+depends on lab cooperation.
+
+## The editorial tension
+
+The argument for closed safety stacks is principled: detailed
+safety techniques (how to red-team for CBRN uplift, how to
+detect deception, what specifically the model knows about
+bioweapons) are themselves dangerous information, and
+publishing them helps adversaries as much as defenders. The
+labs that take this position are not unreasonable; the
+calculation about disclosure has different weights for
+safety-relevant information than for capability-relevant
+information.
+
+The argument for open safety stacks is verification. A safety
+claim that no external party can check is just marketing. The
+external evaluators (AISI / METR / Apollo) are partial
+verification; they depend on labs voluntarily participating
+and don't get to publish the most-damaging findings.
+
+The strategic question is whether the partial-verification
+arrangement scales as frontier capabilities grow, or breaks
+down at some point and the field needs a more confrontational
+disclosure regime. The 2026 trajectory is the partial one;
+whether it survives the first major capability surprise that
+external evaluators didn't predict is the open question.
