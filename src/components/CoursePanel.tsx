@@ -126,8 +126,13 @@ export default function CoursePanel({
   priorWritings,
 }: Props): JSX.Element {
   const courseModule = MODULE_BY_SLUG[moduleSlug];
-  const settings = useSettings();
-  const hasKey = settings.hasKey();
+  // Subscribe to the specific fields we read so the panel re-renders the
+  // moment the API key gets pasted on /settings (zustand persist syncs
+  // store instances across tabs). Reading via the whole-store hook plus
+  // a method call captures a snapshot at render time and misses updates.
+  const apiKey = useSettings((s) => s.apiKey);
+  const model = useSettings((s) => s.model);
+  const hasKey = apiKey.length > 0;
   const supabase = useMemo(() => browserSupabase(), []);
 
   const [phase, setPhase] = useState<ProgressPhase>(initialPhase);
@@ -318,7 +323,7 @@ export default function CoursePanel({
         // Build the client inside the try block so a missing key (or any
         // other init error) is surfaced via setError rather than leaving
         // streaming=true forever.
-        const client = makeClient(settings.apiKey);
+        const client = makeClient(apiKey);
         const system = buildSystemPrompt(phase as ModulePhase, {
           module: courseModule,
           passChoice: effectivePass,
@@ -331,7 +336,7 @@ export default function CoursePanel({
         ];
         await streamText({
           client,
-          model: settings.model,
+          model,
           system,
           messages: allMessages,
           tools: TOOLS,
@@ -399,7 +404,8 @@ export default function CoursePanel({
       hasKey,
       streaming,
       recordTurn,
-      settings,
+      apiKey,
+      model,
       phase,
       courseModule,
       effectivePass,
@@ -502,7 +508,7 @@ export default function CoursePanel({
           The course agent needs your API key to drive the dialogue.
         </p>
         <p class="mb-4">
-          Open <a href="/settings" class="text-[var(--color-text)] underline">Settings</a> and paste an Anthropic or OpenRouter key. It stays in your browser; the server never sees it.
+          Open <a href="/settings" class="text-[var(--color-text)] underline">Settings</a> and paste an OpenRouter key. It stays in your browser; the server never sees it.
         </p>
         <a
           href="/settings"

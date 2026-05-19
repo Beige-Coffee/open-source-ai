@@ -201,10 +201,10 @@ export default function ChatBubble() {
   const [input, setInput] = useState("");
   const [renamingId, setRenamingId] = useState<string | null>(null);
 
-  const hasKey = useSettings((s) => s.hasKey);
   const apiKey = useSettings((s) => s.apiKey);
   const model = useSettings((s) => s.model);
   const enterToSend = useSettings((s) => s.enterToSend);
+  const hasKey = apiKey.length > 0;
 
   const threads = useThreads((s) => s.threads);
   const activeThreadId = useThreads((s) => s.activeThreadId);
@@ -347,7 +347,7 @@ export default function ChatBubble() {
   async function send(promptText: string) {
     setError(null);
     if (!promptText.trim()) return;
-    if (!hasKey()) {
+    if (!hasKey) {
       setOpen(true);
       setError("No API key set. Open Settings to add one.");
       return;
@@ -668,7 +668,7 @@ export default function ChatBubble() {
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
               {messages.length === 0 ? (
                 <div className="space-y-3">
-                  {!hasKey() ? (
+                  {!hasKey ? (
                     <p className="text-sm text-[var(--color-text-muted)]">
                       No API key yet.{" "}
                       <a href="/settings" className="text-[var(--color-accent)] hover:underline">
@@ -724,8 +724,8 @@ export default function ChatBubble() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder={hasKey() ? "Ask about grants, layers, projects..." : "Add an API key on Settings to chat"}
-                disabled={!hasKey() || streaming}
+                placeholder={hasKey ? "Ask about grants, layers, projects..." : "Add an API key on Settings to chat"}
+                disabled={!hasKey || streaming}
                 rows={2}
                 className="w-full px-2 py-1.5 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] resize-none focus:outline-none focus:border-[var(--color-accent)] disabled:opacity-50"
               />
@@ -735,7 +735,7 @@ export default function ChatBubble() {
                 </span>
                 <button
                   type="submit"
-                  disabled={!hasKey() || streaming || !input.trim()}
+                  disabled={!hasKey || streaming || !input.trim()}
                   className="px-3 py-1 text-xs rounded-md bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-strong)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {streaming ? "…" : "Send"}
