@@ -32,8 +32,9 @@ grants:
       Models trained on the cluster slot into Ai2's existing lineage: OLMo (text language models) and Molmo
       (multimodal). OLMo 3, released November 2025, ships 7B and 32B dense transformer variants with a 65,536-token
       context window, all four variants (Base, Think, Instruct, RL Zero) under Apache 2.0. The training stack is fully
-      open: Dolma 3 is a 5.9T-token pretraining mix combining web text, scientific PDFs, and code repos, with Dolmino
-      and Longmino as filtered high-quality subsets; Dolci is the post-training data suite for SFT, DPO, and RLVR.
+      open: Dolma 3 is a 9.3T-token pretraining corpus combining web text, scientific PDFs, and code repos, of which
+      the "Dolma 3 Mix" 5.9T-token subset is what OLMo 3 base models actually train on; Dolmino and Longmino are filtered
+      high-quality subsets used for mid-training, and Dolci is the post-training data suite for SFT, DPO, and RLVR.
 
 
       What distinguishes Ai2 from "open weights" labs is that the data recipes, training code, intermediate checkpoints,
@@ -241,7 +242,7 @@ grants:
 
 
       Early Career awards target postdocs and pre-tenure faculty doing multidisciplinary, hard-to-fund research. The
-      2025 Early Career list includes Zongyi Li (MIT CSAIL, neural operators for scientific computing), Tess Smidt (MIT
+      2025 Early Career list includes Zongyi Li (NYU incoming, neural operators for scientific computing), Tess Smidt (MIT
       EECS, equivariant ML), Surbhi Goel (Penn CIS, theoretical foundations for why modern AI works and fails), Brian
       Hie (Stanford), Natasha Jaques (Washington), Martin Schrimpf, Lindsey Raymond (joining MIT EECS / Economics /
       Schwarzman College in 2026), and Ellen Zhong (Princeton).
@@ -474,7 +475,7 @@ grants:
 
       Funding is from the European Commission's Next Generation Internet programme via DG CNECT (grant agreement No.
       101135429) and the Swiss State Secretariat for Education, Research and Innovation. NLnet's overall NGI Zero
-      commitment for 2024 through 2027 is €21.6M across all open calls. Projects must publish under a free or open
+      commitment for 2026 through 2027 is €21.6M across all open calls. Projects must publish under a free or open
       source license; outputs become part of the European digital commons. The thirteenth call opened April 1, 2026 with
       a deadline of June 1, 2026 at 12:00 CEST.
 
@@ -612,8 +613,8 @@ grants:
     explainer: >-
       Ai2 released the OLMo 3 family on November 20, 2025: a dense-transformer suite at 7B and 32B parameters with three
       post-training variants per size, Base, Think (reasoning), and Instruct (chat plus tool use), plus an RL Zero
-      training artifact. Pretraining ran on Dolma 3, a 6-trillion-token open dataset covering web text, scientific
-      literature, and code. All weights ship under Apache 2.0 alongside training data, training code (OLMoCore
+      training artifact. Pretraining ran on the Dolma 3 Mix, a 5.9T-token subset of the broader 9.3T-token Dolma 3 open
+      dataset covering web text, scientific literature, and code. All weights ship under Apache 2.0 alongside training data, training code (OLMoCore
       framework, Open Instruct post-training pipeline), and intermediate checkpoints.
 
 
@@ -868,7 +869,7 @@ grants:
       connecting LLM clients to external tools, data sources, and prompts. The June 2025 spec revision classified MCP
       servers as OAuth Resource Servers and required clients to implement Resource Indicators per RFC 8707, formalizing
       the authentication path. By the November 2025 anniversary, the MCP SDKs were drawing over 97M monthly downloads
-      and the central MCP server registry held close to 2,000 published servers, a 407% increase from the September 2024
+      and the central MCP server registry held close to 2,000 published servers, a 407% increase from the September 2025
       batch.
 
 
@@ -1030,11 +1031,11 @@ grants:
       surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable
       for civil-society teams under authoritarian rule.
     explainer: >-
-      OpenCode is an open-source terminal coding agent built in Go by Anomaly Innovations, formerly the SST (Serverless
+      OpenCode is an open-source terminal coding agent published by Anomaly Innovations, formerly the SST (Serverless
       Stack) team. The project ships under MIT license at github.com/sst/opencode and is organized as a Bun workspace
-      monorepo with 20-plus packages and Turbo build orchestration. The TUI is designed by Neovim users, which is
-      visible in the keyboard-first interaction model. Released in mid-2025, the project reached roughly 95K stars
-      within months and has been reported above 150K stars by mid-2026, with 6.5 million monthly active developers.
+      monorepo with 20-plus packages and Turbo build orchestration; the Go SDK published on pkg.go.dev indicates a Go
+      component in the backend stack. The TUI is designed by Neovim users, which is visible in the keyboard-first
+      interaction model. The project has accumulated tens of thousands of GitHub stars since its mid-2025 release.
 
 
       The architecture is client-server: a persistent local server process holds session state and connects to LLM
@@ -1327,7 +1328,7 @@ grants:
       Stringer Safety won a prize at the Human Rights Foundation's first AI Hack for Freedom hackathon, held at Bitcoin
       Park in Austin, Texas from January 17 to 18, 2026, with winners announced on January 21. The hackathon produced
       eight unique tools across competing teams and paired globally known dissidents with open-source developers on
-      48-hour builds.
+      28-hour builds.
 
 
       The application is a safety tool for journalists working in high-risk environments. Reporters maintain a trusted
@@ -1583,7 +1584,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: Nadia Asparouhova and Tim Hwang
-    date: "2024-10-01"
+    date: "2024-09-10"
     amount_label: $1K-$10K range
     layers:
       - governance
@@ -1591,9 +1592,9 @@ grants:
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
     description: >-
       Pre-election seminar series convening researchers, journalists, and policymakers to dissect the political
-      ideologies shaping AI development in Silicon Valley. Co-hosted at Sloan Foundation offices.
+      ideologies shaping AI development in Silicon Valley.
     explainer: >-
-      Cosmos Institute granted Nadia Asparouhova and Tim Hwang on October 1, 2024 to convene a pre-election seminar
+      Cosmos Institute granted Nadia Asparouhova and Tim Hwang on September 10, 2024 to convene a pre-election seminar
       series on the political ideologies shaping AI development in Silicon Valley. Funding fell in the $1K to $10K
       Cosmos Ventures fast-grant range.
 
@@ -1607,7 +1608,7 @@ grants:
       Substack and Inflection AI.
 
 
-      The seminars were held at the Sloan Foundation's New York offices in fall 2024 and convened philanthropic funders,
+      The seminars were convened in fall 2024 and brought together philanthropic funders,
       operators, writers, and academics across tech media, policy, and philanthropy. The framing departed from the
       standard left-right-libertarian map: Asparouhova subsequently published "Rewriting the Californian Ideology" in
       American Affairs (May 2025), revisiting Richard Barbrook and Andy Cameron's 1995 essay to argue that Silicon
@@ -1696,10 +1697,9 @@ grants:
       Institute and FIRE under a $1M program.
 
 
-      Molotnikov is an AI alignment researcher based in Cambridge with prior work as an interdisciplinary engineer on
-      fusion energy systems, autonomous food-assembly robots, medical robots for cancer diagnosis, rocket engines, and
-      advanced driver-assistance modules for semi-trucks. He studied at UC San Diego and maintains an engineering
-      portfolio at prints.blue. His current research focuses on detecting hidden objectives in language models, an area
+      Molotnikov is an AI alignment researcher based in Cambridge with prior work as an interdisciplinary engineer
+      across robotics, autonomous systems, and energy. He studied at UC San Diego and maintains an engineering portfolio
+      at prints.blue. His current research focuses on detecting hidden objectives in language models, an area
       where peer work includes Anthropic's "Auditing language models for hidden objectives" (arXiv 2503.10965) and the
       broader scheming and goal-misgeneralization literature.
 
@@ -1887,10 +1887,9 @@ grants:
       co-funded by Cosmos Institute and FIRE under a $1M program.
 
 
-      Thaman is an independent AI safety researcher based in Chandigarh, India. His solo-authored paper on the Reward
-      Hacking Benchmark was accepted at ICML, an outcome notable for being achieved by a solo independent researcher
-      rather than an industry lab team. He previously published "Finding Deception in Language Models" on LessWrong,
-      situating his work inside the AI safety community's deception and scheming literature.
+      Thaman is an independent AI safety researcher based in Chandigarh, India. He previously published "Finding
+      Deception in Language Models" on LessWrong, situating his work inside the AI safety community's deception and
+      scheming literature.
 
 
       The Reward Hacking Benchmark (RHB), described in arXiv 2605.02964, is a suite of multi-step tasks requiring
@@ -2181,7 +2180,7 @@ grants:
     kind: project
     funder: cosmos-institute
     recipient: Samuele Marro (Cosmos Incubation Fellow)
-    date: "2025-09-15"
+    date: "2025-09"
     amount_label: 5 fully funded research positions
     layers:
       - sovereignty-decentralization
@@ -2191,7 +2190,7 @@ grants:
     url: https://blog.cosmos-institute.org/p/new-decentralized-ai-project-and
     description: >-
       New institute combining research and infrastructure to support AI that operates without centralized gatekeepers.
-      Initial cohort of five fully funded positions split between Oxford and Stanford.
+      Initial cohort of five fully funded positions across Oxford and Stanford.
     explainer: >-
       Cosmos Institute announced the Institute for Decentralized AI (IDAI) on September 15, 2025, with Samuele Marro as
       the Cosmos Incubation Fellow leading the launch. Marro is a DPhil student at Oxford's AIMS Centre for Doctoral
@@ -2215,8 +2214,8 @@ grants:
       networks rather than a single hub-and-spoke runtime.
 
 
-      The institute's initial cohort consists of five fully funded research positions distributed between Oxford,
-      Stanford, and Austin. It sits at the protocols, sovereignty-decentralization, and governance cross-layers: it is
+      The institute's initial cohort consists of five fully funded research positions distributed between Oxford and
+      Stanford. It sits at the protocols, sovereignty-decentralization, and governance cross-layers: it is
       upstream of any individual agent product, and the lock-in vector it is trying to push back on is the
       platform-agent monopoly Lazar describes in the same Cosmos cohort.
     sources:
@@ -2243,11 +2242,11 @@ grants:
       goose agent platform. Goose runs locally, supports any model, and has shipped to thousands of developers via
       partners like Databricks.
     explainer: >-
-      Goose is Block's open-source AI agent, released January 2025 under Apache 2.0 and reaching roughly 45,500 GitHub
-      stars by mid-2026. The codebase is primarily Rust with a TypeScript desktop frontend, and a Tauri v2 migration is
-      replacing the original Electron shell. Goose ships as a native desktop app for macOS, Linux, and Windows, a CLI
-      for terminal workflows, and an embeddable API. Governance moved to the Agentic AI Foundation (AAIF) at the Linux
-      Foundation, with the canonical repo at github.com/block/goose.
+      Goose is Block's open-source AI agent, released January 2025 under Apache 2.0 and accumulating tens of thousands
+      of GitHub stars by mid-2026. The codebase is primarily Rust with a TypeScript desktop frontend. Goose ships as a
+      native desktop app for macOS, Linux, and Windows, a CLI for terminal workflows, and an embeddable API. Governance
+      moved to the Agentic AI Foundation (AAIF) at the Linux Foundation, with the canonical repo at
+      github.com/block/goose.
 
 
       The platform is model-agnostic: it integrates with 15 or more providers including Anthropic, OpenAI, Google,
@@ -2841,7 +2840,7 @@ grants:
     kind: program
     funder: future-of-life-institute
     recipient: 16 researchers across UN SDG and global governance tracks
-    date: "2024-12-01"
+    date: "2024-07-11"
     amount_usd: 240000
     amount_label: $15K each, $240K total
     layers:
@@ -3112,7 +3111,7 @@ grants:
 
 
       Named SFF-2025 grantees include MIRI (with the first $1.6M of its 2025 fundraiser matched 1:1 via the SFF grant),
-      Center for AI Safety (approximately $1.1M to CAIS plus $1.6M to the action fund), and METR (formerly ARC Evals),
+      Center for AI Safety (approximately $289K to CAIS plus $772K to the action fund), and METR (formerly ARC Evals),
       per EA Forum and 80,000 Hours analyses of the round. The full recommendations list runs to dozens of organizations
       covering technical alignment research (MIRI, FAR.AI-adjacent groups), evaluation infrastructure (METR), governance
       (CAIS), and field-building.
@@ -3266,9 +3265,9 @@ grants:
       The May 12, 2026 announcement was Humanity AI's first grant round. The structure is $8 million in cohort grants of
       $500,000 each to nine named organizations, $3 million for an AI Civics program led by Data + Society with the
       Digital Public Library of America, and a forthcoming $10 million open call for additional civil-society grantees.
-      Cohort recipients are AI Now Institute, Center for Democracy and Technology, Center on Resilience and Digital
-      Justice, Council on Foreign Relations LEAD AI, Distributed AI Research (DAIR) Institute, Kinfolk Tech, Partnership
-      on AI, Pulitzer Center, and TechEquity. Stated thematic priorities are safeguarding democratic institutions,
+      Cohort recipients are AI Now Institute, Center for Democracy and Technology, Student Defense (SHAPE AI), Council
+      on Foreign Relations LEAD AI, Distributed AI Research (DAIR) Institute, Kinfolk Tech, Partnership on AI, Pulitzer
+      Center, and TechEquity. Stated thematic priorities are safeguarding democratic institutions,
       protecting workers' rights, strengthening journalism, and supporting education.
 
 
@@ -3350,13 +3349,14 @@ grants:
   - title: Coercion-capability measurement project
     kind: project
     funder: cooperative-ai-foundation
-    recipient: CAIF 2025 grantee
+    recipient: Sophia Hatz (Uppsala University)
     date: "2025-04-01"
-    amount_label: Undisclosed
+    amount_usd: 65000
+    amount_label: 639,830 SEK (~$65K)
     layers:
       - evaluation
       - safety-guardrails
-    region: UK
+    region: EU
     url: https://www.cooperativeai.com/post/grant-summaries
     description: >-
       Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with
@@ -3370,12 +3370,11 @@ grants:
       disambiguate the two by building measurement tools rather than treating coercion as a purely qualitative concern.
 
 
-      CAIF's published grant summaries describe the project at the level of scope and intent without disclosing the
-      principal investigator, host institution, grant amount, or publication track. Four additional 2025 grants are
-      listed by CAIF as awarded but pending public writeup. Read alongside CAIF's other 2025 grants (which include FOCAL
-      at CMU and a range of multi-agent cooperation projects), the coercion-measurement project fits a portfolio
-      strategy of funding upstream measurement infrastructure for properties that will matter once AI agents operate
-      autonomously in adversarial settings.
+      The grant went to Sophia Hatz at Uppsala University's Department of Peace and Conflict Research, with a funding
+      package of 639,830 SEK (roughly $65K) covering the measurement-tool development work. Read alongside CAIF's other
+      2025 grants (which include FOCAL at CMU and a range of multi-agent cooperation projects), the coercion-measurement
+      project fits a portfolio strategy of funding upstream measurement infrastructure for properties that will matter
+      once AI agents operate autonomously in adversarial settings.
 
 
       The intellectual heritage runs through the game theory of credible threats and commitments, where the line between
@@ -3625,7 +3624,7 @@ grants:
       Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort
       Emergent Ventures award.
     explainer: >-
-      Reyansh Sharma, a Croydon, UK-based researcher, was selected by the Mercatus Center's Emergent Ventures program in
+      Reyansh Sharma, a London/Cambridge-based researcher, was selected by the Mercatus Center's Emergent Ventures program in
       its 46th cohort (announced September 2025) for work on open-source mathematical training data and evaluation sets
       for language models. The Emergent Ventures application is a single short form covering the plan, a brief bio, and
       a ballpark budget, with Tyler Cowen as program director making the funding call after consulting informal
@@ -3746,7 +3745,7 @@ grants:
       $500M of NVIDIA hardware.
 
 
-      The Residency Program is a 12-to-18-month placement at the Emeryville campus for scientists, engineers, and
+      The Residency Program is a one-year placement at the Emeryville campus for scientists, engineers, and
       entrepreneurs building open-science public goods. Compensation is a salary of $125,000 to $250,000 commensurate
       with experience, plus a negotiated project budget of $0 to $1.5M. Compute access is on-demand against the 24,000
       NVIDIA HGX H100 fleet at Voltage Park, with reserved time on B200 and GB300 hardware as it comes online. The
