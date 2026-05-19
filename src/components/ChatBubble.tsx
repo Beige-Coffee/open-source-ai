@@ -250,6 +250,7 @@ export default function ChatBubble() {
   useEffect(() => {
     setMounted(true);
     setPageCtx(derivePageContext());
+    document.getElementById("chat-panel-placeholder")?.remove();
     const onPop = () => setPageCtx(derivePageContext());
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);

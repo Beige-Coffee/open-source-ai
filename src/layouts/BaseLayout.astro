@@ -71,9 +71,22 @@ const isCourseRoute = Astro.url.pathname.startsWith("/learn");
           var open = parsed && parsed.state && parsed.state.open;
           var w = Number(localStorage.getItem("oss-ai-chat-width"));
           if (!Number.isFinite(w) || w < 320) w = 480;
-          if (open) {
+          if (open && !window.location.pathname.startsWith("/learn")) {
             document.body.dataset.chatOpen = "true";
             document.body.style.setProperty("--chat-width", w + "px");
+            // Render a static placeholder so the reserved chat area
+            // doesn't flash empty between page paint and React hydration.
+            // ChatBubble removes it on mount.
+            if (window.matchMedia && window.matchMedia("(min-width: 901px)").matches) {
+              var ph = document.createElement("div");
+              ph.id = "chat-panel-placeholder";
+              ph.style.cssText =
+                "position:fixed;top:0;right:0;bottom:0;z-index:49;" +
+                "width:" + w + "px;" +
+                "background:var(--color-surface,#ffffff);" +
+                "border-left:1px solid var(--color-border-strong,#d4d4d4);";
+              document.body.appendChild(ph);
+            }
           }
         } catch (e) { /* localStorage unavailable, leave default layout */ }
       `}
