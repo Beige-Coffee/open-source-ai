@@ -15,6 +15,7 @@
     "build-data": "node scripts/build-data.mjs",
     "lint": "node scripts/lint-citations.mjs && node scripts/lint-glossary.mjs",
     "lint:glossary": "node scripts/lint-glossary.mjs",
+    "bench": "node scripts/bench-models.mjs",
     "test": "node --import tsx --test 'test/**/*.test.ts'",
     "audit:layer1": "bash audit/check.sh",
     "audit:links": "INCLUDE_LINKS=1 node audit/verify/verify_links.mjs",

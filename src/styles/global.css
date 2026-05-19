@@ -306,3 +306,135 @@ a:hover {
   background: var(--color-surface-warm);
   font-weight: 600;
 }
+
+/* ---------------------------------------------------------------------------
+ * Inline glossary <G> popover. Styles live here (not in G.astro's is:global
+ * block) so they apply to <G> usage inside MDX content too — Astro doesn't
+ * always carry component-scoped global CSS through the MDX render path.
+ * ------------------------------------------------------------------------ */
+
+.g-trigger {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline dotted var(--color-text-muted);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+.g-icon {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 0.7em;
+  line-height: 1;
+  color: var(--color-text-subtle);
+  vertical-align: super;
+  text-decoration: none;
+}
+.g-trigger:hover,
+.g-trigger:focus-visible {
+  text-decoration: underline solid var(--color-text);
+  background: var(--color-surface-warm);
+  border-radius: 2px;
+  outline: none;
+}
+.g-trigger:hover .g-icon,
+.g-trigger:focus-visible .g-icon {
+  color: var(--color-text);
+}
+
+.g-missing {
+  display: inline;
+}
+
+.g-card {
+  display: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  font-family: var(--font-sans);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+}
+.g-card:popover-open {
+  display: block;
+}
+
+.g-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+.g-card-term {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.g-card-layer {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.g-card-summary {
+  display: block;
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+.g-card-actions {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-warm);
+}
+.g-card-chat,
+.g-card-link {
+  flex: 1;
+  padding: 7px 10px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.g-card-chat:hover,
+.g-card-link:hover,
+.g-card-chat:focus-visible,
+.g-card-link:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+}
+.g-card-chat {
+  border-right: 1px solid var(--color-border);
+  border-radius: 4px 0 0 4px;
+}
+.g-card-link {
+  border-radius: 0 4px 4px 0;
+}
