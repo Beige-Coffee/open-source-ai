@@ -181,34 +181,39 @@ const kindLabel = grant.kind === "project" ? "Project grant" : "Program";
     </article>
 
     <aside class="text-sm space-y-6">
-      <div
-        class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]"
+      <dl
+        class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] divide-y divide-[var(--color-border)]"
       >
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-          Date
-        </p>
-        <p class="font-mono text-sm mb-3">{grant.date}</p>
-
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-          Amount
-        </p>
-        <p class="font-mono text-sm mb-3">{grant.amount_label}</p>
-
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-          Region
-        </p>
-        <p class="font-mono text-sm mb-3">{grant.region}</p>
-
-        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-          Kind
-        </p>
-        <p class="font-mono text-sm">{kindLabel}</p>
-      </div>
+        <div class="px-4 py-3">
+          <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-text)] font-medium mb-1">
+            Date
+          </dt>
+          <dd class="font-serif text-base text-[var(--color-text)]">{grant.date}</dd>
+        </div>
+        <div class="px-4 py-3">
+          <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-text)] font-medium mb-1">
+            Amount
+          </dt>
+          <dd class="font-serif text-base text-[var(--color-text)]">{grant.amount_label}</dd>
+        </div>
+        <div class="px-4 py-3">
+          <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-text)] font-medium mb-1">
+            Region
+          </dt>
+          <dd class="font-serif text-base text-[var(--color-text)]">{grant.region}</dd>
+        </div>
+        <div class="px-4 py-3">
+          <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-text)] font-medium mb-1">
+            Kind
+          </dt>
+          <dd class="font-serif text-base text-[var(--color-text)]">{kindLabel}</dd>
+        </div>
+      </dl>
 
       {
         grant.layers.length > 0 && (
           <div>
-            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text)] font-medium mb-2">
               Layers
             </p>
             <ul class="flex flex-wrap gap-1.5">
