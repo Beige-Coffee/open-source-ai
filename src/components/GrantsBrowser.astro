@@ -165,10 +165,9 @@ const programCount = grantsWithMeta.filter((g) => g.kind === "program").length;
         <ul class="space-y-1 max-h-48 overflow-y-auto pr-1">
           {
             layerFacets.map((l) => (
-              <li>
+              <li data-layer-hover={l.slug}>
                 <label
                   class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-                  title={l.short_description}
                 >
                   <input
                     type="checkbox"

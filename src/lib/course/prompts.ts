@@ -57,8 +57,9 @@ interface PhaseContext {
   /**
    * Concrete claims from the layer's Read content that the agent is
    * allowed to ask questions about. Constrains the Probe phase so
-   * questions are answerable from what the learner just read, rather
-   * than wandering into adjacent topics they haven't seen.
+   * questions are answerable from what the learner can see in the
+   * Read panel beside this chat, rather than wandering into adjacent
+   * topics they have not been shown.
    * Comes from frontmatter `probe_primer` on the layer MDX.
    */
   probePrimer?: string[];
@@ -122,21 +123,28 @@ function probePrompt({ module, passChoice, probePrimer }: PhaseContext): string 
       : "Aim for 8-12 question-and-answer exchanges. Demand citation grounding where applicable. Probe deeper on vague answers.";
 
   // The primer is the explicit list of claims from the Read content
-  // the learner just saw. Anchor every question to one of these so
-  // the learner can plausibly answer from what they read; don't drift
-  // into adjacent territory they haven't been shown.
+  // the learner can see in the panel beside this chat. Anchor every
+  // question to one of these so the learner can answer from what is
+  // in front of them; don't drift into adjacent territory they
+  // haven't been shown.
   const primerBlock =
     probePrimer && probePrimer.length > 0
       ? `
 
-ALLOWED-CLAIMS SCOPE (from the Read content the learner just saw):
+ALLOWED-CLAIMS SCOPE (from the Read content visible beside this chat):
 ${probePrimer.map((c) => `  - ${c}`).join("\n")}
 
 Every question you ask MUST anchor to one of these claims. If a
 follow-up takes you outside the list, either rephrase to bring it
 back inside the list or pick a fresh anchor from the list. Do not
 invent claims; the learner has not been shown them and cannot
-fairly answer.`
+fairly answer.
+
+The Read content remains visible to the learner alongside this
+chat. You can reference what they can see in front of them ("the
+paragraph about <X>", "the second key-term card", etc.); avoid
+language like "you just read" or "earlier you saw" that implies
+the Read content has been hidden.`
       : "";
 
   return `
@@ -155,7 +163,7 @@ ${depthRule}
 When the learner has demonstrated understanding of the core concepts at this layer, end your reply with the literal token <PROBE_COMPLETE/> on its own line. That tells the UI the learner can advance to Compare. Do not emit this token until the learner has earned it.
 
 OPENING:
-For your first message, start with a question that opens the layer. Don't introduce yourself or recap. Just ask the question.`;
+For your first message, start with a question that opens the layer. Don't introduce yourself or recap the Read content (the learner can see it beside this chat). Just ask the question.`;
 }
 
 function comparePrompt({ module, passChoice }: PhaseContext): string {

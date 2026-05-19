@@ -114,8 +114,8 @@ const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
             <li class="flex items-center gap-2 text-xs">
               <a
                 href={`/stack/${r.slug}`}
+                data-layer-hover={r.slug}
                 class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline cursor-help"
-                title={r.description}
               >
                 {r.title}
               </a>
@@ -147,8 +147,8 @@ const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
             <li class="flex items-center gap-2 text-xs">
               <a
                 href={`/stack/${r.slug}`}
+                data-layer-hover={r.slug}
                 class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline cursor-help"
-                title={r.description}
               >
                 {r.title}
               </a>
@@ -185,8 +185,8 @@ const gapsMax = Math.max(1, ...gapsRows.map((r) => r.value));
               <li class="flex items-center gap-2 text-xs">
                 <a
                   href={`/stack/${r.slug}`}
-                  class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline"
-                  title={r.title}
+                  data-layer-hover={r.slug}
+                  class="w-32 sm:w-36 shrink-0 text-right text-[var(--color-text-muted)] hover:text-[var(--color-text)] truncate no-underline cursor-help"
                 >
                   {r.title}
                 </a>

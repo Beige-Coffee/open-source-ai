@@ -438,3 +438,225 @@ a:hover {
 .g-card-link {
   border-radius: 0 4px 4px 0;
 }
+
+/* --- Course chat (CoursePanel.tsx) frontier-chat visual language --- */
+
+/* Assistant message prose: tighter than the global .prose defaults
+   so dense Socratic questions don't blow out vertical space. Lists
+   and paragraphs share consistent rhythm with the surrounding chat. */
+.course-msg-assistant > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.course-msg-assistant > * + * {
+  margin-top: 0.5rem;
+}
+.course-msg-assistant strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.course-msg-assistant em {
+  font-style: italic;
+}
+.course-msg-assistant a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 2px;
+}
+.course-msg-assistant a:hover {
+  text-decoration-color: var(--color-accent);
+}
+.course-msg-assistant code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-surface-warm);
+  border: 1px solid var(--color-border);
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+}
+.course-msg-assistant pre {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: var(--color-surface-warm);
+  border: 1px solid var(--color-border);
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  white-space: pre;
+}
+.course-msg-assistant pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.course-msg-assistant ul,
+.course-msg-assistant ol {
+  padding-left: 1.25rem;
+}
+.course-msg-assistant li + li {
+  margin-top: 0.15rem;
+}
+.course-msg-assistant blockquote {
+  margin-left: 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* Streaming caret: a one-character blinker so the user knows the
+   stream is still alive between deltas. Anchored to the baseline so
+   it doesn't push the last line of text around. */
+@keyframes course-caret-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+.course-caret {
+  animation: course-caret-blink 1s steps(1) infinite;
+}
+
+/* Typing indicator: three dots that fade in sequence while the agent
+   is starting up (before any tokens or tool activity arrives). */
+.course-typing {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+.course-typing span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-text-subtle);
+  animation: course-typing-fade 1.2s ease-in-out infinite;
+}
+.course-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.course-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes course-typing-fade {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* Scroll container: a thin scrollbar that doesn't fight the chat
+   visual. Keeps Firefox sane and Chromium minimal. */
+.course-chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+.course-chat-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.course-chat-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.course-chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Input textarea: drop the default chrome so it nests into the
+   rounded composer pill without a double-border. */
+.course-input {
+  field-sizing: content;
+  font: inherit;
+}
+
+/* --- Layer hover card (src/lib/layer-hover.ts) --- */
+
+/* One shared card lives in BaseLayout; the runtime moves it next
+   to whichever [data-layer-hover] trigger the cursor is over. */
+.layer-hover-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: min(320px, calc(100vw - 24px));
+  padding: 0.75rem 0.85rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  pointer-events: auto;
+}
+.layer-hover-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 0.4rem;
+}
+.layer-hover-tier {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+.layer-hover-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.layer-hover-title:hover {
+  color: var(--color-accent);
+}
+.layer-hover-desc {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  margin: 0 0 0.55rem;
+}
+.layer-hover-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+}
+.layer-hover-key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  flex: 0 0 4.5rem;
+}
+.layer-hover-val {
+  color: var(--color-text-muted);
+  flex: 1;
+  min-width: 0;
+}
+.layer-hover-val a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.layer-hover-val a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+.layer-hover-foot {
+  margin-top: 0.6rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--color-border);
+}
+.layer-hover-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.layer-hover-link:hover {
+  color: var(--color-accent);
+}

@@ -41,7 +41,7 @@ function bgForIndex(index: number): string {
               return (
                 <a
                   href={`/stack/${layer.slug}`}
-                  title={layer.short_description}
+                  data-layer-hover={layer.slug}
                   class={`block group transition-colors no-underline hover:no-underline border-b border-[var(--color-border-strong)] hover:bg-[var(--color-accent-soft)] ${isLast ? "border-b-2" : ""}`}
                   style={`background: ${bgForIndex(i)};`}
                 >
@@ -79,7 +79,7 @@ function bgForIndex(index: number): string {
           meta.map((layer) => (
             <a
               href={`/stack/${layer.slug}`}
-              title={layer.short_description}
+              data-layer-hover={layer.slug}
               class="block group border border-[var(--color-border)] bg-[var(--color-tier-meta-soft)] hover:border-[var(--color-tier-meta)] transition-colors rounded-md px-3 py-2 no-underline hover:no-underline"
             >
               <span class="font-medium text-sm text-[var(--color-text)] group-hover:text-[var(--color-tier-meta)]">
