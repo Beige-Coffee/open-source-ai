@@ -10,12 +10,14 @@ export interface ProviderModel {
 
 /**
  * Rich detail used by the OpenRouter model picker on /settings.
- * Pricing and context windows on this site are kept in sync with the
- * openrouter.ai model pages; numbers below verified 2026-05-14.
+ * Pricing and context windows are kept in sync with the openrouter.ai
+ * model pages; numbers below verified 2026-05-19.
  *
- * Capability ratings (0-5) are this site's editorial judgment for the
- * specific task profile here: tool-use + reasoning + strict citation
- * format. They are NOT general capability scores.
+ * Lineup refresh 2026-05-19: replaced Gemini 2.5 Pro -> 3.1 Pro,
+ * GPT-5 -> GPT-5.5, Qwen3 235B -> Kimi K2.6; added DeepSeek V4 Pro
+ * (default) and GLM-5.1. Descriptions are intentionally minimal until
+ * we have empirical results from the bench harness; capabilities are
+ * uniform 3/3/3 placeholders, NOT measured ratings.
  */
 export interface ModelDetails {
   id: string;
@@ -69,10 +71,24 @@ export const ANTHROPIC_MODELS: ProviderModel[] = [
   },
 ];
 
-// OpenRouter: curated for THIS site's task profile (tool-use + reasoning
-// + strict citation discipline). Verified 2026-05-14 against
-// openrouter.ai model pages.
+// OpenRouter: 8-model lineup, refreshed 2026-05-19. Descriptions
+// kept intentionally minimal (no editorial claims about quality,
+// discipline, or instruct-following) pending empirical results from
+// the bench harness. Capability dots are uniform 3/3/3 placeholders.
 export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
+  {
+    id: "deepseek/deepseek-v4-pro",
+    name: "DeepSeek V4 Pro",
+    vendor: "DeepSeek",
+    inputPerM: 0.435,
+    outputPerM: 0.87,
+    contextLabel: "1M",
+    speedLabel: "Fast",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    description:
+      "Open-weights MoE, 1.6T total / 49B active parameters. Launch-promo pricing through 2026-05-31; rises to $1.74/$3.48 after.",
+    recommendedFor: "Default",
+  },
   {
     id: "anthropic/claude-sonnet-4.6",
     name: "Claude Sonnet 4.6",
@@ -81,10 +97,8 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 15.0,
     contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 5, reasoning: 5, instruct: 5 },
-    description:
-      "The default workhorse. Best instruction-following of the lot, excellent at wiki-grounded synthesis, very reliable about emitting the (Layer: ...) / (Project: ...) citation markers verbatim. Start here.",
-    recommendedFor: "Recommended default",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    description: "Anthropic mid-tier.",
   },
   {
     id: "anthropic/claude-opus-4.7",
@@ -94,10 +108,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 25.0,
     contextLabel: "1M",
     speedLabel: "Moderate",
-    capabilities: { tools: 5, reasoning: 5, instruct: 5 },
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
     description:
-      "Highest capability ceiling. Noticeably more expensive than Sonnet but better on multi-tool-call sessions where the agent has to thread many entries together. Worth it for hard cross-layer questions.",
-    recommendedFor: "Deepest",
+      "Anthropic flagship. New tokenizer uses ~35% more tokens than 4.6 for the same English text, so effective cost is higher than the headline rate.",
   },
   {
     id: "anthropic/claude-haiku-4.5",
@@ -107,48 +120,54 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 5.0,
     contextLabel: "200K",
     speedLabel: "Very Fast",
-    capabilities: { tools: 4, reasoning: 4, instruct: 5 },
-    description:
-      "Fastest Anthropic option and the cheapest one that holds the citation-format discipline reliably. Slightly weaker on multi-step reasoning than Sonnet. Good default for casual browsing.",
-    recommendedFor: "Cheapest Anthropic",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    description: "Anthropic cheap tier.",
   },
   {
-    id: "google/gemini-2.5-pro",
-    name: "Gemini 2.5 Pro",
+    id: "google/gemini-3.1-pro-preview",
+    name: "Gemini 3.1 Pro Preview",
     vendor: "Google",
-    inputPerM: 1.25,
-    outputPerM: 10.0,
+    inputPerM: 2.0,
+    outputPerM: 12.0,
     contextLabel: "1M",
-    speedLabel: "Very Fast",
-    capabilities: { tools: 4, reasoning: 4, instruct: 4 },
-    description:
-      "Wide context window and strong cost-to-capability ratio. Slightly looser on the strict citation-marker discipline than the Anthropic models, but the price-and-context combination is hard to beat for browse-style sessions.",
-    recommendedFor: "Best value",
+    speedLabel: "Fast",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    description: "Google flagship with configurable thinking levels.",
   },
   {
-    id: "openai/gpt-5",
-    name: "GPT-5",
+    id: "openai/gpt-5.5",
+    name: "GPT-5.5",
     vendor: "OpenAI",
-    inputPerM: 1.25,
-    outputPerM: 10.0,
-    contextLabel: "400K",
+    inputPerM: 5.0,
+    outputPerM: 30.0,
+    contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 5, reasoning: 4, instruct: 4 },
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
     description:
-      "OpenAI's flagship. Strong tool-calling, comparable to Sonnet on synthesis. Tends to be more declarative and slightly less rigorous about emitting citations on every factual claim; nudge it if you want the strict discipline.",
+      "OpenAI flagship, released April 23, 2026. Input above 272K tokens doubles in price.",
   },
   {
-    id: "qwen/qwen3-235b-a22b",
-    name: "Qwen3 235B A22B",
-    vendor: "Alibaba",
-    inputPerM: 0.455,
-    outputPerM: 1.82,
-    capabilities: { tools: 4, reasoning: 5, instruct: 4 },
-    contextLabel: "131K",
+    id: "moonshotai/kimi-k2.6",
+    name: "Kimi K2.6",
+    vendor: "Moonshot AI",
+    inputPerM: 0.73,
+    outputPerM: 3.49,
+    contextLabel: "256K",
     speedLabel: "Fast",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
     description:
-      "Open-weights MoE model, hosted on OpenRouter. Strong reasoning (with thinking mode), tool-calling is solid, instruction-following is a notch below Anthropic on the strict citation format. By far the cheapest credible option. The on-brand choice for this site if you want to dogfood open weights.",
-    recommendedFor: "Open weights",
+      "Open-weights MoE, 1T total / 32B active parameters. Modified-MIT license.",
+  },
+  {
+    id: "z-ai/glm-5.1",
+    name: "GLM-5.1",
+    vendor: "Z.ai",
+    inputPerM: 0.98,
+    outputPerM: 3.08,
+    contextLabel: "200K",
+    speedLabel: "Fast",
+    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    description: "MIT-licensed open weights.",
   },
 ];
 
@@ -161,7 +180,7 @@ export const OPENROUTER_MODELS: ProviderModel[] =
 
 export const DEFAULT_MODELS: Record<Provider, string> = {
   anthropic: "claude-sonnet-4-6",
-  openrouter: "anthropic/claude-sonnet-4.6",
+  openrouter: "deepseek/deepseek-v4-pro",
 };
 
 export function modelsFor(provider: Provider): ProviderModel[] {
