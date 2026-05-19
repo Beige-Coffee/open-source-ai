@@ -11,6 +11,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { MODULES, MODULE_BY_SLUG, type CourseModule } from "./modules";
 import { readEncOrPlain } from "./encrypted-io";
+import { displayIdentity } from "./identity";
 import type { Database, EncBlobJson } from "./supabase";
 
 export interface ModuleNoteSlice {
@@ -87,7 +88,7 @@ export async function loadPersonalNotesCipher(
   });
 
   return {
-    display_name: profile?.display_name ?? email.split("@")[0],
+    display_name: profile?.display_name ?? displayIdentity(email),
     email,
     completed_at: profile?.completed_at ?? null,
     cipherSlices,

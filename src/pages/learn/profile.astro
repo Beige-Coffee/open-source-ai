@@ -3,6 +3,7 @@ export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MODULES, phaseLabel, PHASE_ORDER, type ProgressPhase } from "../../lib/course/modules";
+import { displayIdentity, isSynthesizedUsername } from "../../lib/course/identity";
 
 const { user, supabase } = Astro.locals;
 if (!user || !supabase) {
@@ -35,7 +36,9 @@ const [{ data: profile }, { data: progressRows }, { data: synthRows }, { data: w
   ]);
 
 const displayName =
-  profile?.display_name ?? (user.email ?? "").split("@")[0] ?? "";
+  profile?.display_name ?? displayIdentity(user.email) ?? "";
+const identity = displayIdentity(user.email);
+const isUsername = isSynthesizedUsername(user.email);
 const passChoice = (profile?.pass_choice ?? "fast") as "fast" | "deep";
 const completedAt = profile?.completed_at ?? null;
 
@@ -84,7 +87,7 @@ const totalComplete = [...progressBySlug.values()].filter(
       {displayName}
     </h1>
     <p class="text-sm text-[var(--color-text-muted)] mb-2">
-      {user.email}
+      {identity}{isUsername && <span class="text-[var(--color-text-subtle)]"> · username (no email on file)</span>}
     </p>
     <p class="text-xs text-[var(--color-text-subtle)] mb-10">
       {totalComplete} of {MODULES.length} modules complete
@@ -343,14 +346,14 @@ const totalComplete = [...progressBySlug.values()].filter(
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
               Deletes your auth row and cascades to your profile,
               progress, chat turns, synthesize notes, and why-open notes.
-              No recovery. Type your email below to confirm.
+              No recovery. Type your {isUsername ? "username" : "email"} below to confirm.
             </p>
             <input
               type="text"
               name="confirm"
               required
               autocomplete="off"
-              placeholder={user.email ?? "your-email@example.com"}
+              placeholder={identity || "your-email@example.com"}
               class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
             />
             <button

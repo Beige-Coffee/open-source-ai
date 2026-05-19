@@ -4,6 +4,7 @@ export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { loadLayers } from "../../lib/layers";
+import { displayIdentity } from "../../lib/course/identity";
 
 const { user } = Astro.locals;
 
@@ -109,7 +110,7 @@ const MODULES: Module[] = [
       <section class="max-w-3xl mx-auto px-6 mb-8">
         <div class="p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] flex items-baseline justify-between gap-4 flex-wrap">
           <p class="text-sm text-[var(--color-text-muted)]">
-            Logged in as <strong class="text-[var(--color-text)]">{user.email}</strong>.
+            Logged in as <strong class="text-[var(--color-text)]">{displayIdentity(user.email)}</strong>.
           </p>
           <div class="flex gap-2">
             <a

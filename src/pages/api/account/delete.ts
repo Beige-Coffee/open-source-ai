@@ -16,6 +16,7 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../../../lib/course/supabase";
+import { displayIdentity } from "../../../lib/course/identity";
 
 export const POST: APIRoute = async ({ request, locals, redirect }) => {
   const { user, supabase } = locals;
@@ -25,9 +26,11 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
 
   const form = await request.formData();
   const confirm = String(form.get("confirm") ?? "").trim().toLowerCase();
-  if (!confirm || confirm !== (user.email ?? "").toLowerCase()) {
+  const expected = displayIdentity(user.email).toLowerCase();
+  const fullEmail = (user.email ?? "").toLowerCase();
+  if (!confirm || (confirm !== expected && confirm !== fullEmail)) {
     return new Response(
-      "Confirmation email did not match. Go back and try again.",
+      "Confirmation did not match. Go back and try again.",
       { status: 400 },
     );
   }
