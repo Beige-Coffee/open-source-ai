@@ -1,13 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-export type Provider = "anthropic" | "openrouter";
-
-export interface ProviderModel {
-  id: string;
-  label: string;
-  description: string;
-}
-
 /**
  * Rich detail used by the OpenRouter model picker on /settings.
  * Pricing and context windows verified against openrouter.ai 2026-05-19.
@@ -47,6 +39,12 @@ export interface ModelDetails {
   recommendedFor?: string; // chip text
 }
 
+export interface ProviderModel {
+  id: string;
+  label: string;
+  description: string;
+}
+
 // Estimated cost-per-turn assumes a typical turn at this site:
 // ~8,000 input tokens (system prompt + page context + tool-result
 // inflation across 3-5 tool calls) and ~1,500 output tokens.
@@ -62,25 +60,6 @@ export function estimateCostPerTurn(m: {
     1_000_000
   );
 }
-
-// Anthropic native: 3 models, all relevant.
-export const ANTHROPIC_MODELS: ProviderModel[] = [
-  {
-    id: "claude-opus-4-7",
-    label: "Claude Opus 4.7",
-    description: "Deepest reasoning, slower, costlier",
-  },
-  {
-    id: "claude-sonnet-4-6",
-    label: "Claude Sonnet 4.6",
-    description: "Balanced default",
-  },
-  {
-    id: "claude-haiku-4-5-20251001",
-    label: "Claude Haiku 4.5",
-    description: "Fast and cheap, near-frontier discipline",
-  },
-];
 
 // OpenRouter: 8-model lineup, refreshed 2026-05-19. Descriptions cite
 // the most-relevant public benchmark per model. Capability ratings
@@ -193,28 +172,19 @@ export const OPENROUTER_MODELS: ProviderModel[] =
     description: m.description,
   }));
 
-export const DEFAULT_MODELS: Record<Provider, string> = {
-  anthropic: "claude-sonnet-4-6",
-  openrouter: "deepseek/deepseek-v4-pro",
-};
-
-export function modelsFor(provider: Provider): ProviderModel[] {
-  return provider === "anthropic" ? ANTHROPIC_MODELS : OPENROUTER_MODELS;
-}
+export const DEFAULT_MODEL = "deepseek/deepseek-v4-pro";
 
 /**
- * Build a client for the given provider and key. Pure BYOK: no shared
- * key fallback. If apiKey is empty, callers should redirect the user
- * to /settings.
+ * Build an OpenRouter client for the given API key. Pure BYOK: no
+ * shared key fallback. If apiKey is empty, callers should redirect
+ * the user to /settings rather than calling this.
+ *
+ * OpenRouter exposes the Anthropic-compatible Messages endpoint at
+ * /api/v1/messages; the SDK appends "/v1/messages" to baseURL, so
+ * the baseURL must stop at "/api".
  */
-export function makeClient(provider: Provider, apiKey: string): Anthropic {
+export function makeClient(apiKey: string): Anthropic {
   if (!apiKey) throw new Error("API key required");
-  if (provider === "anthropic") {
-    return new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
-  }
-  // OpenRouter exposes the Anthropic-compat Messages endpoint at
-  // /api/v1/messages. The SDK appends "/v1/messages" to baseURL, so
-  // the baseURL must stop at "/api".
   return new Anthropic({
     apiKey,
     baseURL: "https://openrouter.ai/api",

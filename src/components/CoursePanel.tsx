@@ -300,21 +300,6 @@ export default function CoursePanel({
       setStreamingText("");
       abortRef.current = new AbortController();
 
-      const client = makeClient({
-        provider: settings.provider,
-        apiKey: settings.activeKey(),
-      });
-      const system = buildSystemPrompt(phase as ModulePhase, {
-        module: courseModule,
-        passChoice: effectivePass,
-        priorWritings,
-      });
-      const budget = new ToolBudget();
-      const allMessages = [
-        ...turns.map((t) => ({ role: t.role, content: t.content })),
-        { role: "user" as const, content: text },
-      ];
-
       let accumulated = "";
       // Watchdog: if nothing arrives (no deltas, no tool activity) for
       // STALL_MS, abort the stream and surface an error. Reset on each
@@ -330,9 +315,23 @@ export default function CoursePanel({
       armStallTimer();
 
       try {
+        // Build the client inside the try block so a missing key (or any
+        // other init error) is surfaced via setError rather than leaving
+        // streaming=true forever.
+        const client = makeClient(settings.apiKey);
+        const system = buildSystemPrompt(phase as ModulePhase, {
+          module: courseModule,
+          passChoice: effectivePass,
+          priorWritings,
+        });
+        const budget = new ToolBudget();
+        const allMessages = [
+          ...turns.map((t) => ({ role: t.role, content: t.content })),
+          { role: "user" as const, content: text },
+        ];
         await streamText({
           client,
-          model: settings.activeModel(),
+          model: settings.model,
           system,
           messages: allMessages,
           tools: TOOLS,

@@ -201,10 +201,9 @@ export default function ChatBubble() {
   const [input, setInput] = useState("");
   const [renamingId, setRenamingId] = useState<string | null>(null);
 
-  const provider = useSettings((s) => s.provider);
   const hasKey = useSettings((s) => s.hasKey);
-  const activeKey = useSettings((s) => s.activeKey);
-  const activeModel = useSettings((s) => s.activeModel);
+  const apiKey = useSettings((s) => s.apiKey);
+  const model = useSettings((s) => s.model);
   const enterToSend = useSettings((s) => s.enterToSend);
 
   const threads = useThreads((s) => s.threads);
@@ -367,7 +366,7 @@ export default function ChatBubble() {
     const t = useThreads.getState().threads.find((x) => x.id === threadId);
     if (t?.isStreaming) return;
 
-    const key = activeKey();
+    const key = apiKey;
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
@@ -389,7 +388,7 @@ export default function ChatBubble() {
     const toolEvents: ToolEventLog[] = [];
 
     try {
-      const client = makeClient(provider, key);
+      const client = makeClient(key);
       const system = ANSWER_SYSTEM_PROMPT + "\n\n" + buildContextBlock(pageCtx);
       const allMsgs = [
         ...(useThreads.getState().threads.find((x) => x.id === threadId)?.messages ?? []),
@@ -401,7 +400,7 @@ export default function ChatBubble() {
       let buf = "";
       await streamText({
         client,
-        model: activeModel(),
+        model,
         system,
         messages: apiMessages,
         tools: TOOLS,

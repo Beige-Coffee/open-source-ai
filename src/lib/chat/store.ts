@@ -1,57 +1,42 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Provider } from "./anthropic";
-import { DEFAULT_MODELS } from "./anthropic";
+import { DEFAULT_MODEL } from "./anthropic";
 import type { ChatMessage, Mode } from "./types";
 
 // ---------------------------------------------------------------------------
-// Settings (BYOK key, provider, model preference)
+// Settings (BYOK key, model preference). OpenRouter-only: the previous
+// Anthropic-direct path was retired; OpenRouter exposes Claude, GPT,
+// Gemini, and the open-weights tier under one key, which keeps the
+// /settings UX to one panel.
 // ---------------------------------------------------------------------------
 
 interface SettingsState {
-  provider: Provider;
-  modelByProvider: Record<Provider, string>;
-  anthropicKey: string;
-  openrouterKey: string;
+  apiKey: string;
+  model: string;
   enterToSend: boolean;
-  setProvider: (p: Provider) => void;
-  setModel: (p: Provider, m: string) => void;
-  setAnthropicKey: (k: string) => void;
-  setOpenrouterKey: (k: string) => void;
+  setApiKey: (k: string) => void;
+  setModel: (m: string) => void;
   setEnterToSend: (v: boolean) => void;
-  activeKey: () => string;
-  activeModel: () => string;
   hasKey: () => boolean;
 }
 
 export const useSettings = create<SettingsState>()(
   persist(
     (set, get) => ({
-      provider: "anthropic",
-      modelByProvider: { ...DEFAULT_MODELS },
-      anthropicKey: "",
-      openrouterKey: "",
+      apiKey: "",
+      model: DEFAULT_MODEL,
       enterToSend: true,
-      setProvider: (p) => set({ provider: p }),
-      setModel: (p, m) =>
-        set((s) => ({
-          modelByProvider: { ...s.modelByProvider, [p]: m },
-        })),
-      setAnthropicKey: (k) => set({ anthropicKey: k }),
-      setOpenrouterKey: (k) => set({ openrouterKey: k }),
+      setApiKey: (k) => set({ apiKey: k }),
+      setModel: (m) => set({ model: m }),
       setEnterToSend: (v) => set({ enterToSend: v }),
-      activeKey: () => {
-        const s = get();
-        return s.provider === "anthropic" ? s.anthropicKey : s.openrouterKey;
-      },
-      activeModel: () => {
-        const s = get();
-        return s.modelByProvider[s.provider];
-      },
-      hasKey: () => Boolean(get().activeKey()),
+      hasKey: () => Boolean(get().apiKey),
     }),
     {
-      name: "oss-ai-chat-settings-v1",
+      // v2 because the shape changed and we don't carry the old provider
+      // toggle / Anthropic key forward. Existing users re-paste their
+      // OpenRouter key once after deploy; their threads stay intact
+      // (those live in a separate persist namespace).
+      name: "oss-ai-chat-settings-v2",
       storage: createJSONStorage(() => localStorage),
     },
   ),
