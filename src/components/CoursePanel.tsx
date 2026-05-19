@@ -138,6 +138,12 @@ export default function CoursePanel({
   const [phase, setPhase] = useState<ProgressPhase>(initialPhase);
   const [effectivePass, setEffectivePass] = useState<"fast" | "deep">(passChoice);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
+  // Tracks whether the load-prior-turns effect has settled for the
+  // current (moduleSlug, phase). Without this, the auto-start effect
+  // could fire send("Begin.") in parallel with the load query, and a
+  // late-arriving setTurns(loaded) would overwrite the user turn that
+  // send() just appended. See the comment on the load effect.
+  const [phaseLoaded, setPhaseLoaded] = useState(false);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [streamingText, setStreamingText] = useState("");
@@ -149,9 +155,12 @@ export default function CoursePanel({
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Reset state when phase changes or module changes.
+  // Reset state when phase changes or module changes. phaseLoaded
+  // flips back to false so the auto-start effect waits for the next
+  // load cycle to settle before firing send("Begin.").
   useEffect(() => {
     setTurns([]);
+    setPhaseLoaded(false);
     setInput("");
     setStreamingText("");
     setToolStatus(null);
@@ -171,12 +180,16 @@ export default function CoursePanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  // Load prior chat turns. For logged-in users, query chat_turns from
-  // Supabase. For anonymous users, hydrate from localStorage so writings
-  // survive intra-tab navigation. Marks phaseCompleteSeen if the most
-  // recent assistant turn already contains the completion token.
+  // Load prior chat turns for the current (moduleSlug, phase). This is
+  // the ONLY effect that calls setTurns with a DB / localStorage
+  // snapshot; subsequent setTurns calls only come from recordTurn,
+  // which appends. Sets phaseLoaded=true at the very end so the
+  // auto-start effect can fire afterwards, never in parallel.
   useEffect(() => {
-    if (phase === "read" || phase === "complete") return;
+    if (phase === "read" || phase === "complete") {
+      setPhaseLoaded(true);
+      return;
+    }
     let cancelled = false;
     (async () => {
       let loaded: ChatTurn[] = [];
@@ -200,12 +213,11 @@ export default function CoursePanel({
             })),
           );
         } catch (err) {
-          // Locked or wrong key. Surface a clear error to the user
-          // rather than silently rendering empty turns.
           if (!cancelled) {
             setError(
               "Your encrypted course data is locked. Log out and back in to unlock.",
             );
+            setPhaseLoaded(true);
           }
           return;
         }
@@ -218,6 +230,7 @@ export default function CoursePanel({
       if (lastAssistant && lastAssistant.content.includes(PHASE_COMPLETE_TOKENS[phase as ModulePhase])) {
         setPhaseCompleteSeen(true);
       }
+      setPhaseLoaded(true);
     })();
     return () => {
       cancelled = true;
@@ -414,10 +427,15 @@ export default function CoursePanel({
     ],
   );
 
-  // Auto-start the agent on Probe / Compare / Why-Open phases (no prior turns).
-  // The agent's opening question is the first message.
+  // Auto-start the agent on Probe / Compare / Why-Open phases when no
+  // prior turns exist. Gated on phaseLoaded so the load effect always
+  // settles before we fire send("Begin.") — otherwise a late-arriving
+  // setTurns(loaded) from the load effect would overwrite the user
+  // turn that recordTurn appended, making the learner's first message
+  // (and sometimes the agent's first reply) appear briefly then vanish.
   useEffect(() => {
     if (
+      phaseLoaded &&
       (phase === "probe" || phase === "compare" || phase === "why_open") &&
       turns.length === 0 &&
       hasKey &&
@@ -426,7 +444,7 @@ export default function CoursePanel({
       send("Begin.");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, turns.length, hasKey]);
+  }, [phase, phaseLoaded, turns.length, hasKey]);
 
   // Phase advance: clear local state, write progress to Supabase, set new phase.
   const advance = useCallback(async () => {
