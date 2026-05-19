@@ -276,6 +276,19 @@ export default function CoursePanel({
       ];
 
       let accumulated = "";
+      // Watchdog: if nothing arrives (no deltas, no tool activity) for
+      // STALL_MS, abort the stream and surface an error. Reset on each
+      // delta so a slow-but-progressing stream isn't cut off.
+      const STALL_MS = 45_000;
+      let stallTimer: number | null = null;
+      const armStallTimer = () => {
+        if (stallTimer !== null) window.clearTimeout(stallTimer);
+        stallTimer = window.setTimeout(() => {
+          abortRef.current?.abort();
+        }, STALL_MS);
+      };
+      armStallTimer();
+
       try {
         await streamText({
           client,
@@ -287,20 +300,43 @@ export default function CoursePanel({
           onDelta: (delta) => {
             accumulated += delta;
             setStreamingText(accumulated);
+            armStallTimer();
           },
           signal: abortRef.current.signal,
         });
-        await recordTurn("assistant", accumulated);
-        if (
-          phase !== "read" &&
-          phase !== "complete" &&
-          accumulated.includes(PHASE_COMPLETE_TOKENS[phase as ModulePhase])
-        ) {
-          setPhaseCompleteSeen(true);
+        if (accumulated.trim().length === 0) {
+          // The stream finished but produced no text. Surface that
+          // explicitly rather than silently appending an empty turn.
+          setError(
+            "The agent returned an empty response. Check your API key on /settings, or try again.",
+          );
+        } else {
+          await recordTurn("assistant", accumulated);
+          if (
+            phase !== "read" &&
+            phase !== "complete" &&
+            accumulated.includes(PHASE_COMPLETE_TOKENS[phase as ModulePhase])
+          ) {
+            setPhaseCompleteSeen(true);
+          }
         }
       } catch (e) {
-        setError(describeError(e));
+        const aborted =
+          (e as { name?: string })?.name === "AbortError" ||
+          abortRef.current?.signal.aborted;
+        if (aborted && accumulated.trim().length === 0) {
+          setError(
+            "Stopped — the agent took too long to respond. Check your API key on /settings, or try again.",
+          );
+        } else if (aborted) {
+          // Partial response then stopped; save what we have rather
+          // than discarding it.
+          await recordTurn("assistant", accumulated);
+        } else {
+          setError(describeError(e));
+        }
       } finally {
+        if (stallTimer !== null) window.clearTimeout(stallTimer);
         setStreaming(false);
         setStreamingText("");
         abortRef.current = null;
@@ -546,7 +582,18 @@ export default function CoursePanel({
           </div>
         )}
         {streaming && !streamingText && (
-          <p class="text-xs text-[var(--color-text-subtle)] italic">Thinking...</p>
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-xs text-[var(--color-text-subtle)] italic">
+              Thinking...
+            </p>
+            <button
+              type="button"
+              onClick={() => abortRef.current?.abort()}
+              class="text-xs px-2 py-1 rounded-md border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] cursor-pointer"
+            >
+              Stop
+            </button>
+          </div>
         )}
         {error && (
           <p class="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded">
