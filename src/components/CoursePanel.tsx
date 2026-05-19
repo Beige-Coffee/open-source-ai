@@ -24,15 +24,23 @@
  *   - streamText   (Anthropic streaming + tool loop)
  */
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
   type FormEvent,
+  type ReactNode,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import {
+  chunkText,
+  citationHref,
+  citationLabel,
+  type ParsedCitation,
+} from "../lib/chat/citations";
 import { useSettings } from "../lib/chat/store";
 import { makeClient } from "../lib/chat/anthropic";
 import { TOOLS, ToolBudget, executeTool } from "../lib/chat/tools";
@@ -66,41 +74,42 @@ const PHASE_COMPLETE_TOKENS: Record<ModulePhase, string> = {
   synthesize: "<SYNTHESIZE_COMPLETE/>",
 };
 
-/** Turn a tool call into a readable status line for the "Thinking..."
- *  area. Falls back to the tool name when we don't have a friendlier
- *  phrasing handy. */
+/** Turn a tool call into a short verb-led status line, like
+ *  "Reading the silicon overview" or "Searching for: RISC-V".
+ *  Falls back to the tool name when we don't have a friendlier
+ *  phrasing. */
 function humanizeTool(name: string, input: Record<string, unknown>): string {
   const arg = (k: string) =>
     typeof input?.[k] === "string" ? (input[k] as string) : "";
   switch (name) {
     case "read_layer":
-      return `the ${arg("slug") || "layer"} overview`;
+      return `Reading the ${arg("slug") || "layer"} overview`;
     case "read_funder":
-      return `funder ${arg("slug")}`;
+      return `Reading funder ${arg("slug")}`;
     case "read_grant":
-      return `grant "${arg("title")}"`;
+      return `Reading grant "${arg("title")}"`;
     case "read_project":
-      return `project ${arg("slug")}`;
+      return `Reading project ${arg("slug")}`;
     case "read_prediction":
-      return `predictions for ${arg("layer")}`;
+      return `Reading predictions for ${arg("layer")}`;
     case "read_glossary":
-      return `glossary entry ${arg("slug")}`;
+      return `Reading glossary entry ${arg("slug")}`;
     case "find_grants":
-      return "grants matching your filters";
+      return "Searching grants";
     case "find_funders":
-      return "funders matching your filters";
+      return "Searching funders";
     case "find_projects":
-      return "projects matching your filters";
+      return "Searching projects";
     case "find_readings":
-      return "readings matching your filters";
+      return "Searching readings";
     case "find_glossary":
-      return "glossary entries";
+      return "Searching glossary";
     case "today_news":
-      return "today's news";
+      return "Reading today's news";
     case "search":
-      return `search results for "${arg("query")}"`;
+      return `Searching the wiki for "${arg("query")}"`;
     default:
-      return name;
+      return `Using ${name}`;
   }
 }
 
@@ -140,6 +149,12 @@ export default function CoursePanel({
   const [phase, setPhase] = useState<ProgressPhase>(initialPhase);
   const [effectivePass, setEffectivePass] = useState<"fast" | "deep">(passChoice);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
+  // Live tool trace for the currently-streaming assistant turn. Each
+  // entry is one tool call. `done` flips true on the matching end event.
+  // Cleared at the start of each new send().
+  const [toolTrace, setToolTrace] = useState<
+    Array<{ id: string; name: string; input: Record<string, unknown>; done: boolean }>
+  >([]);
   // Tracks whether the load-prior-turns effect has settled for the
   // current (moduleSlug, phase). Without this, the auto-start effect
   // could fire send("Begin.") in parallel with the load query, and a
@@ -177,6 +192,7 @@ export default function CoursePanel({
     setInput("");
     setStreamingText("");
     setToolStatus(null);
+    setToolTrace([]);
     setError(null);
     setPhaseCompleteSeen(false);
     setWhyOpenSaved(false);
@@ -343,6 +359,7 @@ export default function CoursePanel({
       // it took the persistence round-trip to finish.
       setInput("");
       setStreaming(true);
+      setToolTrace([]);
       await recordTurn("user", text);
       setStreamingText("");
       abortRef.current = new AbortController();
@@ -387,19 +404,38 @@ export default function CoursePanel({
           onDelta: (delta) => {
             accumulated += delta;
             setStreamingText(accumulated);
-            setToolStatus(null);
+            // Don't clear toolStatus on text delta any more; tool may
+            // still be in flight and we want the user to see it. The
+            // status clears on the matching tool "done" event below.
             armStallTimer();
           },
           onToolEvent: (event) => {
             // Surface tool activity so the user sees the agent making
-            // progress (reading the layer, looking up grants, etc.)
+            // progress (reading the layer, searching grants, etc.)
             // instead of a silent spinner. Each event resets the stall
             // watchdog because tool calls are real progress.
             armStallTimer();
+            const label = humanizeTool(event.name, event.input);
             if (event.kind === "start") {
-              setToolStatus(`Reading ${humanizeTool(event.name, event.input)}...`);
+              setToolStatus(label);
+              setToolTrace((prev) => [
+                ...prev,
+                {
+                  id: event.id,
+                  name: event.name,
+                  input: event.input,
+                  done: false,
+                },
+              ]);
             } else if (event.kind === "done") {
-              setToolStatus(null);
+              // Clear the live status if this was the most recent
+              // start; mark the matching trace entry as done.
+              setToolStatus((current) => (current === label ? null : current));
+              setToolTrace((prev) =>
+                prev.map((t) =>
+                  t.id === event.id ? { ...t, done: true } : t,
+                ),
+              );
             }
           },
           signal: abortRef.current.signal,
@@ -679,23 +715,37 @@ export default function CoursePanel({
           {visibleTurns.map((t, i) => (
             <ChatMessage key={i} role={t.role} content={stripToken(t.content)} />
           ))}
-          {streaming && streamingText && (
-            <ChatMessage role="assistant" content={stripToken(streamingText)} streaming />
-          )}
-          {streaming && !streamingText && (
-            <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)]">
-              <span class="course-typing" aria-hidden="true">
-                <span /><span /><span />
-              </span>
-              <span>{toolStatus ?? "Thinking"}</span>
-              <button
-                type="button"
-                onClick={() => abortRef.current?.abort()}
-                class="ml-auto font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] cursor-pointer"
-              >
-                Stop
-              </button>
-            </div>
+          {streaming && (
+            <>
+              {/* Live trace: every tool call the agent has made on
+                  this turn, with an inline status row for the one in
+                  flight. The trace persists below the streaming text
+                  so the learner can see what was researched. */}
+              {toolTrace.length > 0 && (
+                <ToolTrace trace={toolTrace} live={toolStatus} />
+              )}
+              {streamingText ? (
+                <ChatMessage
+                  role="assistant"
+                  content={stripToken(streamingText)}
+                  streaming
+                />
+              ) : (
+                <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)]">
+                  <span class="course-typing" aria-hidden="true">
+                    <span /><span /><span />
+                  </span>
+                  <span>{toolStatus ?? "Thinking"}</span>
+                  <button
+                    type="button"
+                    onClick={() => abortRef.current?.abort()}
+                    class="ml-auto font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] cursor-pointer"
+                  >
+                    Stop
+                  </button>
+                </div>
+              )}
+            </>
           )}
           {error && (
             <p class="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded">
@@ -790,6 +840,10 @@ export default function CoursePanel({
  * messages render as a soft right-aligned bubble. No role labels,
  * no borders, no boxes around the assistant — the typographic
  * difference and alignment carry the role distinction.
+ *
+ * Assistant messages run through CitationProse, which parses the
+ * agent's (Project: slug) / (Layer: slug) / (Glossary: slug) etc.
+ * markers and renders them as clickable pills inline with the prose.
  */
 function ChatMessage({
   role,
@@ -812,7 +866,7 @@ function ChatMessage({
   return (
     <div class="text-[var(--color-text)]">
       <div class="course-msg-assistant text-sm leading-relaxed">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <CitationProse text={content} />
         {streaming && (
           <span
             aria-hidden="true"
@@ -820,6 +874,122 @@ function ChatMessage({
           />
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Renders markdown prose AND inline citation pills. The agent emits
+ * markers like `(Project: vllm)` in the prose; chunkText splits them
+ * out and we render each as a small clickable pill that points to
+ * the local entry's page.
+ */
+function CitationProse({ text }: { text: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        p: ({ children }) => <p>{injectCitations(children)}</p>,
+        li: ({ children }) => <li>{injectCitations(children)}</li>,
+        strong: ({ children }) => <strong>{injectCitations(children)}</strong>,
+        em: ({ children }) => <em>{injectCitations(children)}</em>,
+        h1: ({ children }) => <h3>{injectCitations(children)}</h3>,
+        h2: ({ children }) => <h3>{injectCitations(children)}</h3>,
+        h3: ({ children }) => <h3>{injectCitations(children)}</h3>,
+        h4: ({ children }) => <h4>{injectCitations(children)}</h4>,
+      }}
+    >
+      {text}
+    </ReactMarkdown>
+  );
+}
+
+function CitationPill({ citation }: { citation: ParsedCitation }) {
+  const href = citationHref(citation);
+  return (
+    <a
+      href={href}
+      class="inline-block align-baseline mx-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-accent-soft)] no-underline hover:bg-white"
+      title={`${citation.kind}: ${citation.ref}`}
+    >
+      {citation.kind}: {citationLabel(citation)}
+    </a>
+  );
+}
+
+function withCitations(s: string): ReactNode {
+  const chunks = chunkText(s);
+  if (chunks.length === 1 && chunks[0].kind === "text") return s;
+  return (
+    <>
+      {chunks.map((c, i) =>
+        c.kind === "text" ? (
+          <Fragment key={i}>{c.text}</Fragment>
+        ) : (
+          <CitationPill key={i} citation={c.citation} />
+        ),
+      )}
+    </>
+  );
+}
+
+function injectCitations(children: ReactNode): ReactNode {
+  if (children == null) return children;
+  if (typeof children === "string") return withCitations(children);
+  if (Array.isArray(children)) {
+    return children.map((child, i) =>
+      typeof child === "string" ? (
+        <Fragment key={i}>{withCitations(child)}</Fragment>
+      ) : (
+        <Fragment key={i}>{child}</Fragment>
+      ),
+    );
+  }
+  return children;
+}
+
+/**
+ * Inline tool-call trace for the in-flight assistant turn. Each row
+ * is one tool call (read_layer, find_grants, search, etc.) with a
+ * humanized label and a status indicator (… while in flight, ✓ when
+ * done). The current in-flight call animates a small pulse so it
+ * reads as "live work" rather than a static log line.
+ */
+function ToolTrace({
+  trace,
+  live,
+}: {
+  trace: Array<{ id: string; name: string; input: Record<string, unknown>; done: boolean }>;
+  live: string | null;
+}) {
+  return (
+    <div class="border-l-2 border-[var(--color-border-strong)] pl-3 py-1 space-y-1">
+      {trace.map((t) => {
+        const label = humanizeTool(t.name, t.input);
+        const isLive = !t.done && live === label;
+        return (
+          <div
+            key={t.id}
+            class={`flex items-center gap-2 text-xs ${
+              t.done
+                ? "text-[var(--color-text-muted)]"
+                : "text-[var(--color-text)]"
+            }`}
+          >
+            <span
+              class={`font-mono text-[10px] w-3 inline-flex justify-center ${
+                t.done
+                  ? "text-[var(--color-status-fresh)]"
+                  : "text-[var(--color-text-subtle)]"
+              }`}
+              aria-hidden="true"
+            >
+              {t.done ? "✓" : isLive ? <span class="course-tool-pulse">●</span> : "…"}
+            </span>
+            <span>{label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }

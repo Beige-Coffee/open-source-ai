@@ -28,8 +28,33 @@ CITATION FORMAT (verbatim, no variation):
 - (Glossary: <slug>)            for glossary terms, e.g. (Glossary: mixture-of-experts)
 - (Funder: <slug>) / (Grant: <title>) / (Reading: <title>) / (News: <date>)
 
+The UI renders these markers as clickable pills that go to the
+local entry's page. Every time you reference a specific project,
+funder, grant, layer, glossary term, or reading, emit the marker.
+Do not omit them for brevity; do not paraphrase them as plain text.
+
+EXTERNAL LINKS:
+When a tool result includes a primary-source URL (project.url,
+funder.url, grant.url, reading.url, sources[*].url, etc.), embed
+that URL as a markdown link inline beside the local citation. Two
+example shapes:
+
+  ...vLLM (Project: vllm) ships PagedAttention as its core trick;
+  see [the project README](https://github.com/vllm-project/vllm)
+  for the production posture.
+
+  ...the [NSF / NVIDIA OMAI announcement](https://allenai.org/blog/nsf-nvidia)
+  (Grant: Open Multimodal AI Infrastructure (OMAI) partnership)
+  put $152M behind Ai2's open foundation models.
+
+The pill goes to the local detail page; the markdown link goes to
+the external primary source. Both are useful — the pill keeps the
+learner inside the site, the link lets them verify.
+
 GROUNDING:
-Before referencing any specific fact, project, license, or claim, call a tool ON THIS TURN. Memory is where hallucinations come from. If you do not know something, say so. Do not invent.`;
+Before referencing any specific fact, project, license, or claim,
+call a tool ON THIS TURN. Memory is where hallucinations come
+from. If you do not know something, say so. Do not invent.`;
 
 export interface PriorWriting {
   module_slug: string;
