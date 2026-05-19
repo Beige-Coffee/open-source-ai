@@ -7,25 +7,156 @@ order: 5
 lock_in_vector: weights
 sovereignty_relevance: 4
 related_layers: [data, training, runtime, governance]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Having the weights lets you run, fine-tune, and inspect a model, but it does not let you re-train or reproduce it."
-  - "Apache 2.0 is genuinely open, while the Llama Community License and Gemma terms are source-available with revocable acceptable-use clauses."
-  - "OLMo is one of the few model families open at the weights, data, and training-code layers simultaneously."
-  - "The 2026 open-weights side is dominated by Chinese labs (Qwen, DeepSeek, Kimi, GLM), Meta's Llama, Mistral, Google's Gemma, and AI2's OLMo."
-  - "Under the strictest reading of OSAID, most of these widely-used open-weights releases do not actually count as open source AI."
+  - "Having the weights lets you run, fine-tune, and inspect a model; it does not let you retrain or reproduce it. Weights are the most superficial layer of openness because they don't include the data or the training code."
+  - "Three license tiers matter. Apache 2.0 (genuinely open, e.g. Qwen 3, Mistral 7B), Llama-style community licenses (source-available with revocable acceptable-use clauses), and proprietary (Claude, GPT, Gemini). OSAID distinguishes these but most users do not."
+  - "The 2026 open-weights ecosystem is dominated by Chinese labs (Qwen from Alibaba, DeepSeek, Kimi from Moonshot, GLM from Zhipu), Meta (Llama), Mistral, Google (Gemma), and AI2 (OLMo as the only fully-open-stack release among them)."
+  - "OLMo is the reference for what 'fully open' means: weights, data, training code, and training logs all released. Almost no other production model meets this bar."
+  - "The OSAID v1.0 definition (October 2024) makes the weights layer's openness debate operational. Under the strictest reading, most widely-used 'open-weights' releases do not actually count as open-source AI."
 ---
 
 import G from "../../components/G.astro";
 
-The model files. Having the weights means you can run the model,
-<G term="fine-tuning">fine-tune</G> it, and inspect it; it does not mean you can re-train or
-reproduce it. This is the most superficial layer of openness and also
-where license diversity hides the most: <G term="apache-2-0">Apache 2.0</G> is genuinely open;
-the <G term="llama">Llama</G> Community License and <G term="gemma">Gemma</G>'s terms are <G term="source-available">source-available</G> with
-revocable <G term="acceptable-use">acceptable-use</G> clauses; OLMo is one of the few families open
-at the weights, data, and training-code layers all at once. The
-open-weights ecosystem in 2026 is dominated by Chinese labs (<G term="qwen">Qwen</G>,
-<G term="deepseek">DeepSeek</G>, Kimi, GLM), Meta's <G term="llama">Llama family</G>, <G term="mistral">Mistral</G>, Google's <G term="gemma">Gemma</G>, and
-AI2's OLMo. The <G term="osaid">OSAID</G> definition decides which of these counts as "open
-source AI"; under the strictest reading, most do not.
+## Overview
+
+The model files. The serialized parameters that constitute "the
+model" in the everyday sense. Having the weights means you can
+run, <G term="fine-tuning">fine-tune</G>, and inspect the model; it does not mean you
+can retrain or reproduce it.
+
+Five things to keep in mind as you read:
+
+- **Weights are the most superficial layer of openness.** They
+  don't include the data or the training code. Most "open AI"
+  releases stop here.
+- **Three license tiers matter.** Apache 2.0 / MIT (genuinely
+  open), Llama-style community licenses (source-available with
+  revocable use clauses), and proprietary (Claude, GPT, Gemini).
+- **The open-weights side is led by Chinese labs.** <G term="qwen">Qwen</G>,
+  <G term="deepseek">DeepSeek</G>, Kimi, GLM. Plus Meta's <G term="llama">Llama</G> family, <G term="mistral">Mistral</G>,
+  Google's <G term="gemma">Gemma</G>, AI2's OLMo.
+- **OLMo is the reference for "fully open".** Weights, data,
+  training code, training logs. Almost no other production model
+  meets this bar.
+- **<G term="osaid">OSAID</G> v1.0 makes this debate operational.** Under the
+  strictest reading, most "open-weights" releases don't count as
+  open source AI.
+
+The rest of this page walks the license tiers and the major
+families, then arrives at the OSAID question.
+
+## The license tiers
+
+Three buckets that matter in practice.
+
+**Genuinely open** (Apache 2.0 or MIT). You can run, fine-tune,
+redistribute, sell derivatives. No acceptable-use clauses, no
+revocation rights, no jurisdictional carve-outs. The default
+for Qwen 3, Mistral 7B, OLMo, Pythia, and a long tail of
+smaller releases.
+
+**Source-available with revocable terms.** The Llama Community
+License is the prototype: free for most uses, but with an
+acceptable-use policy ([Llama AUP](https://www.llama.com/llama4/use-policy/))
+that prohibits certain applications, and an automatic-revocation
+clause if the user exceeds the size threshold (700M monthly
+active users when Llama 3 launched). Google's Gemma uses a
+similar shape ([Gemma terms](https://ai.google.dev/gemma/terms)),
+as does Mistral's research-tier releases. These are not OSI-open
+by definition.
+
+**Proprietary.** Closed weights, accessed only via API. GPT-5,
+Claude 4, Gemini 3. The frontier-lab default. You don't have
+the weights at all; you have rate-limited inference through
+someone else's gate.
+
+A fourth shape is worth naming for completeness: **lab-internal
+research releases** (e.g., some early Mistral checkpoints
+released to specific researchers under bespoke agreements).
+Functionally proprietary; nominally "open" in lab-speak. Ignore
+this category unless a lab explicitly invokes it.
+
+## The major families (2026)
+
+The open-weights leaders, roughly in order of how often they
+show up in production inference workloads.
+
+**Chinese labs.** The single biggest shift since 2024 is that
+the open-weights frontier is led by Chinese labs.
+
+- **Qwen** (Alibaba): the Qwen 3 family, Apache 2.0, the most
+  consistently strong open-weights line of 2026
+  ([Qwen 3 release notes](https://qwenlm.github.io/blog/qwen3/))
+- **DeepSeek** (High-Flyer Capital): V3 (671B MoE, December 2024)
+  and R1 (reasoning model, January 2025) under the DeepSeek
+  License (MIT-equivalent for V3) — the V3 paper showed frontier
+  performance at a fraction of the rumored training cost of
+  closed-lab equivalents
+  ([DeepSeek-V3 technical report](https://arxiv.org/abs/2412.19437))
+- **Kimi** (Moonshot AI): Kimi K2, long-context-strong, MIT
+  license ([Kimi K2 release](https://github.com/MoonshotAI/Kimi-K2))
+- **GLM** (Zhipu / Tsinghua): the GLM-4.5 series, MIT license,
+  research-strong but less production-tuned than Qwen
+  ([GLM-4.5](https://github.com/THUDM/GLM-4.5))
+
+**Western open-weights.**
+
+- **Meta Llama** (Llama 4, April 2025): the source-available
+  family that anchored the open-weights ecosystem from 2023
+  onward; Community License terms
+  ([Llama 4 announcement](https://ai.meta.com/blog/llama-4-multimodal-intelligence/))
+- **Mistral**: Apache 2.0 small models, separate research-tier
+  for the larger frontier releases ([Mistral models](https://mistral.ai/news/))
+- **Google Gemma** (Gemma 3, March 2025): the Gemma family,
+  Gemma Terms ([Gemma 3 release](https://deepmind.google/discover/blog/gemma-3-the-most-capable-model-you-can-run-on-a-single-gpu-or-tpu/))
+- **AI2 OLMo** (OLMo 2): the only frontier-adjacent family that
+  ships weights + data + training code + training logs together
+  ([OLMo 2 release](https://allenai.org/blog/olmo2))
+
+## What's open and what isn't
+
+The matrix:
+
+- **Open weights AND open data AND open training code**: OLMo,
+  Pythia, the Common Pile-trained EleutherAI releases. The
+  strict-OSAID-reading category.
+- **Open weights, partial training-data disclosure**: most of
+  the Chinese-lab releases, Mistral's open tier.
+- **Source-available weights**: Llama, Gemma. Functionally open
+  for most uses; not OSI-open.
+- **Closed weights**: Claude, GPT, Gemini. API-only.
+
+The asymmetry: shipping weights is easy (one file upload).
+Shipping the data and training code is hard (terabytes,
+licensing review, internal pipeline cleanup). AI2 is the only
+production-grade lab that makes the second trade consistently;
+their funding source (Microsoft via the Paul Allen estate)
+explicitly funds the cost of doing so.
+
+## The editorial tension
+
+Two open questions decide where this layer goes.
+
+**One.** The Chinese-lab lead on open weights is a 2024-2026
+phenomenon. Whether it persists depends on US export controls
+(the H100 / H200 / Blackwell restrictions to Chinese entities),
+the Chinese government's domestic AI policy, and whether the
+Chinese labs' research velocity continues to outpace their
+Western counterparts'. If the gap widens, the open-weights
+ecosystem becomes increasingly bifurcated by jurisdiction; if
+it narrows, the open-weights leader-by-volume might shift back.
+
+**Two.** The OSAID v1.0 revision cycle in 2026 will determine
+whether "open-weights" continues to mean "Llama-style
+source-available" or tightens to require data and training-code
+disclosure. The strict reading would invalidate most current
+"open-source AI" claims and put pressure on labs to either ship
+more or stop calling themselves open. The pragmatic reading
+keeps OSAID broadly applicable but lets weights-only releases
+keep the label.
+
+Neither outcome is good for an audience that needs to make
+sovereignty bets today. The pragmatic move is to read the
+license per release, ignore the "open" claim in the press
+release, and judge each artifact on what it actually ships.

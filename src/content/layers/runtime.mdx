@@ -7,25 +7,182 @@ order: 6
 lock_in_vector: runtime
 sovereignty_relevance: 5
 related_layers: [silicon, weights, agents]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "The same model can cost ten times more on a poorly-tuned runtime than a well-tuned one, making runtime decisive for production economics."
-  - "vLLM uses PagedAttention for production-grade serving, SGLang uses RadixAttention plus structured generation, and llama.cpp targets local-first via GGUF."
-  - "Open runtime projects repeatedly catch up to or beat closed equivalents like TensorRT-LLM, often within months."
-  - "Runtime is the layer most invisible to end users but most decisive for what serving actually costs."
-  - "When the workload is well-defined, open runtime wins on technical merits, even though closed runtime still dominates hyperscaler revenue."
+  - "Runtime is the layer most invisible to end users but most decisive for production economics. The same model can cost ten times more on a poorly-tuned runtime than a well-tuned one."
+  - "vLLM (PagedAttention, production-grade) is the most-deployed open inference engine. SGLang adds RadixAttention and structured generation. llama.cpp targets local-first via GGUF and runs on Mac / consumer hardware."
+  - "Open runtime projects repeatedly catch up to or beat closed equivalents like TensorRT-LLM, often within months. The technical pattern is that runtime innovations (PagedAttention, RadixAttention, speculative decoding) emerge in open research and get absorbed by closed runtimes a quarter or two later, not the reverse."
+  - "Server-class engines (vLLM, SGLang, TGI, TensorRT-LLM) are tuned for many concurrent users on H100/H200/B200. Local-first engines (llama.cpp, Ollama, MLX) are tuned for one user on a Mac or consumer GPU."
+  - "When the workload is well-defined, open runtime wins on technical merits. Closed runtime still dominates hyperscaler revenue because closed managed services (Bedrock, Vertex) are easier for enterprise procurement."
 ---
 
 import G from "../../components/G.astro";
 
-How weights become <G term="inference">inference</G>. The engines that take a <G term="transformer">transformer</G> model
-and serve tokens efficiently on actual hardware. Runtime is the layer
-most invisible to end users but most decisive for production economics:
-the same model can cost ten times more on a poorly-tuned runtime than a
-well-tuned one. This is also the layer where the open ecosystem has done
-its most surprising work. <G term="vllm">vLLM</G> (<G term="paged-attention">PagedAttention</G>, production-grade),
-<G term="sglang">SGLang</G> (<G term="radix-attention">RadixAttention</G>, structured generation), and <G term="llama-cpp">llama.cpp</G>
-(<G term="local-first">local-first</G>, <G term="gguf">GGUF</G>) are open projects that repeatedly catch up to or
-beat closed equivalents like <G term="tensorrt-llm">TensorRT-LLM</G>, often within months. When the
-workload is well-defined, open runtime wins on technical merits even
-when closed runtime still dominates hyperscaler revenue.
+## Overview
+
+The engines that take a <G term="transformer">transformer</G> model and serve tokens
+efficiently on actual hardware. Runtime is the layer most
+invisible to end users (you don't see it from a chat UI) but
+most decisive for production economics: the same model can cost
+ten times more on a poorly-tuned runtime than a well-tuned one.
+
+Five things to keep in mind as you read:
+
+- **Runtime decides what serving actually costs.** The model
+  doesn't change; the engine that runs it does.
+- **Two ecosystems split the layer.** Server-class (many users
+  per GPU, datacenter hardware) and local-first (one user, Mac
+  or consumer GPU).
+- **<G term="vllm">vLLM</G> is the server-class default for open serving.** <G term="sglang">SGLang</G>
+  and TGI compete; <G term="tensorrt-llm">TensorRT-LLM</G> is the closed equivalent.
+- **<G term="llama-cpp">llama.cpp</G> is the local-first default.** <G term="ollama">Ollama</G> wraps it;
+  <G term="mlx">MLX</G> is the Apple-native variant.
+- **The open side leads on runtime research.** <G term="paged-attention">PagedAttention</G>,
+  <G term="radix-attention">RadixAttention</G>, speculative decoding all emerged here first.
+
+The rest of this page walks the two ecosystems and then arrives
+at the asymmetry between technical merits and enterprise
+adoption.
+
+## Server-class runtime
+
+What runs a model on datacenter hardware for many concurrent
+users. Optimized for throughput, batching efficiency, and
+hardware utilization.
+
+**vLLM** is the de facto open default. Originated at UC Berkeley
+in 2023 with the PagedAttention paper
+([Kwon et al., 2023](https://arxiv.org/abs/2309.06180)), which
+treats the KV cache as paged memory the way operating systems
+treat process memory. The result is significantly higher GPU
+utilization on concurrent inference than the naive
+implementation. The vLLM project has since grown into a broader
+serving framework with continuous batching, speculative
+decoding, and multi-LoRA inference. Most open serving today
+runs on vLLM under the hood
+([vLLM repository](https://github.com/vllm-project/vllm)).
+
+**SGLang** is the credible alternative. Built around
+RadixAttention (prefix-tree-based KV cache sharing across
+requests with overlapping prompts) and a structured-generation
+DSL that constrains output to a grammar
+([SGLang paper, NeurIPS 2024](https://arxiv.org/abs/2312.07104)).
+SGLang wins for workloads with high prompt-prefix overlap
+(agent traces with a shared system prompt) and for cases where
+you need guaranteed JSON output without sampling-and-retry.
+
+**TGI** (Text Generation Inference, HuggingFace) was the
+production-grade open engine before vLLM ate its share. Still
+used in the HuggingFace ecosystem but no longer the default
+open recommendation
+([TGI repository](https://github.com/huggingface/text-generation-inference)).
+
+**TensorRT-LLM** (NVIDIA) is the closed equivalent.
+NVIDIA-optimized kernels, tightest integration with
+H100/H200/Blackwell, used by the hyperscaler-hosted endpoints
+and many enterprise deployments
+([TensorRT-LLM repository](https://github.com/NVIDIA/TensorRT-LLM)).
+Performance-competitive with vLLM but not portable off NVIDIA.
+
+## Local-first runtime
+
+The other half of the layer. Optimized for one user on a Mac
+or consumer GPU.
+
+**llama.cpp** is the foundation. C++ implementation, GGUF
+quantization format (4-bit and 5-bit being the popular
+trade-off points), runs efficiently on Apple Silicon, x86 CPUs,
+and consumer NVIDIA / AMD GPUs. The reason "Llama-class models
+on a laptop" became normal in 2024-2026
+([llama.cpp repository](https://github.com/ggml-org/llama.cpp)).
+
+**Ollama** wraps llama.cpp in a "docker run" style CLI: pulls a
+model from a registry, runs it locally, exposes a simple HTTP
+API. Made local model inference accessible to people who didn't
+want to deal with llama.cpp's command-line flags
+([Ollama project](https://ollama.com/)).
+
+**MLX** is Apple's native ML framework for Apple Silicon.
+Tighter integration with the M-series unified memory than
+llama.cpp's Metal backend, and increasingly the engine of
+choice for serious local-AI work on Macs
+([MLX repository](https://github.com/ml-explore/mlx)).
+
+**LM Studio** is the consumer GUI layer over llama.cpp. Not a
+runtime per se, but it's how non-developers run local models on
+Windows and Mac.
+
+## The runtime-research pattern
+
+A consistent observation across 2023-2026: the major runtime
+innovations emerge in open research first and get absorbed by
+closed runtimes a quarter or two later, not the reverse.
+
+PagedAttention (open, vLLM, 2023) → adopted by closed serving
+infrastructure within months. FlashAttention (open, Stanford,
+2022; FlashAttention-2 in 2023; FlashAttention-3 in 2024) →
+absorbed into TensorRT-LLM and into the hyperscaler-hosted
+endpoints. Speculative decoding (research papers, open
+implementations, then commercial adoption). RadixAttention
+(open, SGLang, 2024) → adopted by other engines.
+
+The pattern matters because it reverses the usual default
+("closed labs do the hard work, open catches up"). At the
+runtime layer the open ecosystem leads. That's partly because
+the work happens at universities and partly because runtime
+optimizations are operator-replicable in a way that
+billion-dollar pretraining runs are not.
+
+## What's open and what isn't
+
+Most of the runtime stack is open source.
+
+- **Open server-class**: vLLM, SGLang, TGI, llamafile, Aphrodite
+  Engine, MII (Microsoft, open). Cover most production
+  open-serving deployments.
+- **Closed server-class**: TensorRT-LLM, the proprietary
+  inference engines inside Bedrock / Vertex / Together /
+  Anyscale / Fireworks managed offerings.
+- **Open local-first**: llama.cpp, Ollama, MLX, LM Studio (UI),
+  Jan, GPT4All.
+- **Closed local-first**: almost nothing. The local-first
+  category is essentially open by default because there's no
+  enterprise revenue to defend.
+
+The reverse-lock-in risk is at the managed-service layer. A
+team that deploys to Bedrock's Claude or Together's hosted
+DeepSeek isn't using the open runtime even when the model is
+open-weights; they're using a closed managed service whose
+runtime details are opaque. Portability across managed services
+is workable (the OpenAI-compatible API has become the de facto
+interchange format) but full sovereignty over the runtime
+requires self-hosting.
+
+## The editorial tension
+
+Two observations that pull in different directions.
+
+**On technical merits, open runtime wins.** The PagedAttention
+→ RadixAttention → speculative-decoding lineage shows the
+open side leading the research and the closed runtimes
+catching up. For a sophisticated team that wants to optimize
+its own inference stack, vLLM plus SGLang plus llama.cpp is
+the strongest combination available.
+
+**On enterprise adoption, closed runtime still dominates by
+revenue.** Most production AI inference billable to enterprise
+customers routes through Bedrock, Vertex AI, OpenAI's API, or
+Anthropic's API. The technical superiority of open runtime
+doesn't translate into market share because enterprise
+procurement values "one throat to choke" over "lowest per-token
+cost", and managed services bundle the runtime with the
+billing, the SLA, and the legal indemnification.
+
+The strategic question for an open-AI advocate is whether the
+open runtime's technical lead eventually breaks through to
+enterprise procurement, or whether the closed managed-service
+layer remains a permanent moat regardless of what's underneath
+it. As of 2026, the second outcome looks more likely than the
+first, which is why open runtime advocates increasingly focus
+on enabling sovereign-state and individual-scale deployments
+rather than competing for hyperscaler API revenue head-on.

@@ -7,26 +7,177 @@ order: 4
 lock_in_vector: none
 sovereignty_relevance: 4
 related_layers: [data, weights, runtime]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Pretraining infrastructure like Megatron-LM, DeepSpeed, FSDP, and JAX stacks is used by frontier labs to build base models from scratch."
-  - "Fine-tuning infrastructure like Unsloth, Axolotl, LLaMA-Factory, and HuggingFace TRL is used by individuals and small teams to adapt open-weights models."
-  - "Decentralized training projects (Prime Intellect, Nous DisTrO, Templar, Pluralis) are slower than centralized frontier training but are shipping working models."
-  - "Fine-tuning Llama-class models went from A100 only to consumer GPU plus a Mac, the cleanest sovereignty story of 2026."
-  - "The open fine-tuning ecosystem, not the pretraining stack, is what made that consumer-hardware shift possible."
+  - "Training is a tool layer, not a model layer. It produces weights; the weights themselves live one layer up."
+  - "Two distinct ecosystems share this layer. Pretraining infrastructure (Megatron-LM, DeepSpeed, FSDP, JAX-based stacks) is what frontier labs use to build base models from scratch on thousands of GPUs. Fine-tuning infrastructure (Unsloth, Axolotl, LLaMA-Factory, HuggingFace TRL) is what individuals and small teams use to adapt existing open-weights models on one to eight GPUs."
+  - "A third cluster is decentralized training (Prime Intellect, Nous DisTrO, Templar, Pluralis). It is slower than centralized frontier training but is shipping working models, e.g. INTELLECT-1 (10B, late 2024) and INTELLECT-2 (32B, May 2025)."
+  - "Fine-tuning Llama-class models moved from 'A100 only' in 2023 to 'consumer GPU plus a Mac' by 2026, primarily because of LoRA / QLoRA and the open fine-tuning stack. This is the cleanest sovereignty story of 2026."
+  - "The technical research on bandwidth-efficient distributed training (DiLoCo, OpenDiLoCo, DisTrO) is what determines whether the decentralized side eventually closes the frontier-training gap or stays in the fine-tuning niche."
 ---
 
 import G from "../../components/G.astro";
 
-The tools that take open data plus an architecture and produce weights.
-Two related ecosystems share this layer: <G term="pretraining">pretraining</G> infrastructure
-(<G term="megatron">Megatron-LM</G>, <G term="deepspeed">DeepSpeed</G>, FSDP, JAX-based stacks) used by <G term="frontier">frontier</G> labs
-to build base models from scratch, and <G term="fine-tuning">fine-tuning</G> infrastructure
-(<G term="unsloth">Unsloth</G>, <G term="axolotl">Axolotl</G>, <G term="llama">LLaMA</G>-Factory, <G term="hugging-face">HuggingFace</G> <G term="trl">TRL</G>) used by individuals
-and small teams to adapt existing open-weights models. A third
-sub-cluster is <G term="decentralized-training">decentralized training</G> (Prime Intellect, Nous DisTrO,
-Templar, Pluralis), which is still slower than centralized
-<G term="frontier">frontier</G> training but is shipping working models. The single cleanest
-sovereignty story of 2026 lives here: <G term="fine-tuning">fine-tuning</G> <G term="llama">Llama</G>-class models
-went from "A100 only" to "consumer <G term="gpu">GPU</G> plus a Mac," and the open
-<G term="fine-tuning">fine-tuning</G> ecosystem is what made that happen.
+## Overview
+
+The tools that take open data plus an architecture and produce
+weights. This is a tool layer, not a model layer; the weights it
+produces live one layer up at [weights](/stack/weights).
+
+Five things to keep in mind as you read:
+
+- **Two distinct ecosystems share the layer.** Pretraining
+  infrastructure (frontier labs, thousands of GPUs) and
+  <G term="fine-tuning">fine-tuning</G> infrastructure (individuals, one to eight GPUs).
+- **<G term="pretraining">Pretraining</G> stacks**: Megatron-LM, DeepSpeed, FSDP, JAX
+  on TPU. Used to train base models from scratch.
+- **Fine-tuning stacks**: Unsloth, Axolotl, LLaMA-Factory,
+  HuggingFace TRL. Used to adapt existing open-weights models.
+- **Decentralized training is a third cluster.** Prime Intellect,
+  Nous DisTrO, Templar, Pluralis. Smaller and slower than
+  centralized frontier training, but shipping.
+- **The 2026 sovereignty story lives in fine-tuning.** Llama-class
+  models went from "needs an A100" to "runs on a Mac plus a
+  consumer GPU" because of the open fine-tuning stack.
+
+The rest of this page works through each ecosystem and then the
+research direction that decides where this layer goes.
+
+## Pretraining infrastructure
+
+What frontier labs use to train a base model from scratch on a
+cluster of thousands of GPUs over weeks or months.
+
+The dominant stacks:
+
+- **Megatron-LM** (NVIDIA, open source) — the reference
+  implementation for tensor parallelism, pipeline parallelism,
+  and sequence parallelism on NVIDIA hardware. Most non-Google
+  frontier labs build on Megatron or a descendant
+  ([Megatron-LM repository](https://github.com/NVIDIA/Megatron-LM)).
+- **DeepSpeed** (Microsoft, open source) — ZeRO-style memory
+  partitioning for very large models on relatively modest GPU
+  counts. Pairs with Megatron in the "Megatron-DeepSpeed"
+  combination most labs settle on
+  ([DeepSpeed announcement](https://www.microsoft.com/en-us/research/blog/deepspeed-extreme-scale-model-training-for-everyone/)).
+- **FSDP** (PyTorch native, Meta) — Fully Sharded Data Parallel,
+  the PyTorch-native answer to ZeRO. Easier integration into
+  PyTorch projects than Megatron-DeepSpeed; less mature for the
+  very largest scales
+  ([FSDP documentation](https://pytorch.org/docs/stable/fsdp.html)).
+- **JAX on TPU** (Google) — what Google uses internally. Pallas
+  for custom kernels, Flax for model code. Open source but tightly
+  coupled to TPU, which is closed silicon you can't buy
+  ([JAX repository](https://github.com/jax-ml/jax)).
+
+These stacks are open in the sense that anyone can clone the
+repos. They are not open in the sense that anyone can usefully
+run them: a frontier pretraining run needs a thousand-plus GPU
+cluster on a tight InfiniBand fabric, which exists at fewer than
+fifty operators worldwide. The tools are democratized; the
+hardware to run them at scale is not.
+
+## Fine-tuning infrastructure
+
+The other half of the layer. Takes an existing open-weights base
+model and adapts it to a domain, task, or style, usually with a
+much smaller dataset and far less compute.
+
+The dominant stacks:
+
+- **HuggingFace TRL** (Transformer Reinforcement Learning) — the
+  reference fine-tuning library, ships with SFT, DPO, GRPO, and
+  PPO trainers ([TRL repository](https://github.com/huggingface/trl)).
+- **Unsloth** — kernel-level optimizations for fine-tuning,
+  ~2-5x faster than baseline HuggingFace for many setups, fits
+  larger models on a single GPU via aggressive memory
+  optimization ([Unsloth repository](https://github.com/unslothai/unsloth)).
+- **Axolotl** — a YAML-config wrapper over the lower-level
+  libraries, the most-used fine-tuning recipe layer for serious
+  practitioners ([Axolotl repository](https://github.com/axolotl-ai-cloud/axolotl)).
+- **LLaMA-Factory** — Chinese-community-favorite alternative to
+  Axolotl, broader model and method coverage including the
+  Chinese open-weights families
+  ([LLaMA-Factory repository](https://github.com/hiyouga/LLaMA-Factory)).
+
+The technical pivot that made this category accessible was
+parameter-efficient fine-tuning (PEFT), specifically <G term="lora">LoRA</G> and
+QLoRA. LoRA trains a small set of low-rank "adapter" matrices
+instead of the full model weights, cutting memory cost by an
+order of magnitude. QLoRA combines that with 4-bit quantization
+of the frozen base model, which is what made the "fine-tune a
+70B model on a single 24GB GPU" stories possible from late
+2023 forward.
+
+## Decentralized training
+
+The third cluster. Smaller and slower than centralized frontier
+training, but shipping working models that prove the basic
+viability.
+
+- **Prime Intellect** ran INTELLECT-1 (10B, late 2024) and
+  INTELLECT-2 (32B, May 2025) as fully-distributed training runs
+  across volunteer compute, using the OpenDiLoCo algorithm to
+  cut cross-node bandwidth requirements
+  ([INTELLECT-2 technical report](https://www.primeintellect.ai/blog/intellect-2)).
+- **Nous DisTrO** is a training framework that compresses the
+  cross-node gradient updates aggressively (orders of magnitude),
+  letting a training run survive on commodity internet
+  bandwidth instead of InfiniBand
+  ([DisTrO project](https://github.com/NousResearch/DisTrO)).
+- **Templar** and **Pluralis** are research-stage projects in the
+  same family, with different trade-offs on the
+  bandwidth-vs-accuracy axis.
+
+The technical bet is that the bandwidth-efficient communication
+algorithms (DiLoCo / OpenDiLoCo / DisTrO) eventually compress
+the communication cost enough that geographically-distributed
+training matches centralized training for the same compute
+budget. As of 2026, the gap has closed enough that 30B-scale
+training is viable; the question is whether it scales to 100B+
+without re-acquiring the bandwidth hunger that makes
+centralized clusters necessary.
+
+## What's open and what isn't
+
+The training stacks are mostly open source software. What is
+not open is the hardware to run pretraining at scale (covered
+in [compute](/stack/compute) and [infrastructure](/stack/infrastructure))
+and the training data (covered in [data](/stack/data)).
+
+The asymmetry: anyone can clone Megatron-DeepSpeed and read the
+parallelism implementations. Almost nobody can rent the cluster
+to run them at frontier scale. The "open training stack" matters
+most for fine-tuning, where the hardware is accessible, and
+least for pretraining, where the hardware is the binding
+constraint.
+
+The reverse-lock-in risk at this layer is when the training
+stack itself becomes proprietary. NVIDIA's NeMo framework is the
+example: it's an integrated training-and-deployment stack that's
+easier to use than raw Megatron but binds the training pipeline
+to NVIDIA's ecosystem more tightly than the lower-level
+libraries do.
+
+## The editorial tension
+
+The democratization story at this layer is real and recent.
+Fine-tuning a Llama-class model went from "needs a $30k A100
+cluster" in early 2023 to "runs on a $1500 consumer GPU plus a
+Mac" by late 2025. That happened because of LoRA / QLoRA, the
+open fine-tuning libraries, and the open-weights model releases
+that gave practitioners something to fine-tune.
+
+The frontier-pretraining story is the opposite. The compute
+needed to pretrain a competitive frontier model went up by an
+order of magnitude over the same period, and the lab count that
+can run a frontier pretraining run has stayed roughly constant
+(or shrunk). The training stacks are open; the access to
+training is concentrating.
+
+The decentralized training research is the wildcard. If it
+keeps closing the bandwidth-efficiency gap, the
+hyperscaler-only pretraining era ends and the layer becomes
+genuinely sovereign-accessible. If it stalls in the 30-100B
+range, the open fine-tuning ecosystem stays vibrant but the
+frontier remains a hyperscaler problem indefinitely.
