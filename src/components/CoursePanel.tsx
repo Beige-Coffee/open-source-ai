@@ -66,6 +66,44 @@ const PHASE_COMPLETE_TOKENS: Record<ModulePhase, string> = {
   synthesize: "<SYNTHESIZE_COMPLETE/>",
 };
 
+/** Turn a tool call into a readable status line for the "Thinking..."
+ *  area. Falls back to the tool name when we don't have a friendlier
+ *  phrasing handy. */
+function humanizeTool(name: string, input: Record<string, unknown>): string {
+  const arg = (k: string) =>
+    typeof input?.[k] === "string" ? (input[k] as string) : "";
+  switch (name) {
+    case "read_layer":
+      return `the ${arg("slug") || "layer"} overview`;
+    case "read_funder":
+      return `funder ${arg("slug")}`;
+    case "read_grant":
+      return `grant "${arg("title")}"`;
+    case "read_project":
+      return `project ${arg("slug")}`;
+    case "read_prediction":
+      return `predictions for ${arg("layer")}`;
+    case "read_glossary":
+      return `glossary entry ${arg("slug")}`;
+    case "find_grants":
+      return "grants matching your filters";
+    case "find_funders":
+      return "funders matching your filters";
+    case "find_projects":
+      return "projects matching your filters";
+    case "find_readings":
+      return "readings matching your filters";
+    case "find_glossary":
+      return "glossary entries";
+    case "today_news":
+      return "today's news";
+    case "search":
+      return `search results for "${arg("query")}"`;
+    default:
+      return name;
+  }
+}
+
 interface ChatTurn {
   role: "user" | "assistant";
   content: string;
@@ -98,6 +136,7 @@ export default function CoursePanel({
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [streamingText, setStreamingText] = useState("");
+  const [toolStatus, setToolStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [phaseCompleteSeen, setPhaseCompleteSeen] = useState(false);
   const [synthBody, setSynthBody] = useState("");
@@ -110,6 +149,7 @@ export default function CoursePanel({
     setTurns([]);
     setInput("");
     setStreamingText("");
+    setToolStatus(null);
     setError(null);
     setPhaseCompleteSeen(false);
     setWhyOpenSaved(false);
@@ -300,7 +340,20 @@ export default function CoursePanel({
           onDelta: (delta) => {
             accumulated += delta;
             setStreamingText(accumulated);
+            setToolStatus(null);
             armStallTimer();
+          },
+          onToolEvent: (event) => {
+            // Surface tool activity so the user sees the agent making
+            // progress (reading the layer, looking up grants, etc.)
+            // instead of a silent spinner. Each event resets the stall
+            // watchdog because tool calls are real progress.
+            armStallTimer();
+            if (event.kind === "start") {
+              setToolStatus(`Reading ${humanizeTool(event.name, event.input)}...`);
+            } else if (event.kind === "done") {
+              setToolStatus(null);
+            }
           },
           signal: abortRef.current.signal,
         });
@@ -339,6 +392,7 @@ export default function CoursePanel({
         if (stallTimer !== null) window.clearTimeout(stallTimer);
         setStreaming(false);
         setStreamingText("");
+        setToolStatus(null);
         abortRef.current = null;
       }
     },
@@ -584,7 +638,7 @@ export default function CoursePanel({
         {streaming && !streamingText && (
           <div class="flex items-center justify-between gap-2">
             <p class="text-xs text-[var(--color-text-subtle)] italic">
-              Thinking...
+              {toolStatus ?? "Thinking..."}
             </p>
             <button
               type="button"
