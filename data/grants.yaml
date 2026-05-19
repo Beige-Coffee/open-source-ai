@@ -12,7 +12,26 @@ grants:
       - compute
     region: US
     url: https://allenai.org/blog/nsf-nvidia
-    description: First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus open data plus OLMo lineage.
+    description: >-
+      First major US public funding crossing into open foundation-model training at scale. Compute infrastructure plus
+      open data plus OLMo lineage.
+    explainer: >-
+      The Allen Institute for AI (Ai2) was awarded a combined $152M to build a national-scale fully open AI training
+      program, with $75M from the U.S. National Science Foundation and $77M from NVIDIA. The partnership was announced
+      on August 14, 2025.
+
+
+      The program covers compute infrastructure plus open training data plus the OLMo model lineage, Ai2's family of
+      openly released foundation models. The structure pairs federal research funding with industry-supplied
+      accelerators rather than routing public dollars through a closed lab.
+
+
+      In context, this is the largest single commitment of U.S. public money to fully open foundation-model training at
+      frontier scale. It positions Ai2 alongside European efforts like OpenEuroLLM as one of the few institutions with
+      both the compute and the mandate to release weights, data, and training code together.
+    sources:
+      - title: "Ai2 announcement: NSF and NVIDIA partnership"
+        url: https://allenai.org/blog/nsf-nvidia
   - title: Technical AI Safety RFP
     kind: program
     funder: open-philanthropy
@@ -26,11 +45,29 @@ grants:
     region: Global
     url: https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/
     description: Closed April 15, 2025. Distributed across 21 technical safety areas.
+    explainer: >-
+      Open Philanthropy (now operating as Coefficient Giving) issued a Technical AI Safety request for proposals that
+      closed on April 15, 2025, with roughly $40M planned across the cohort over the following five months. The RFP
+      partitioned funding across 21 distinct technical research areas, the breadth signaled in the funder's own
+      announcement title.
+
+
+      The 21 areas span interpretability, scalable oversight, alignment theory, robustness, evaluations, and adjacent
+      technical safety questions. Individual grant sizes were not pre-specified at the funder level; the program was
+      designed to absorb varied proposal scales rather than fund a single named cohort.
+
+
+      The RFP page now redirects through Open Philanthropy's rebrand to coefficientgiving.org. As a single-cycle
+      commitment, this was among the larger technical safety funding pools opened to outside researchers in 2025 and
+      sets a useful baseline for what mid-7-figure safety RFPs look like at scale.
     sources:
-      - title: coefficientgiving.org (audit-verified)
+      - title: Open Philanthropy Technical AI Safety RFP (redirects to Coefficient Giving)
+        url: https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/
+      - title: Coefficient Giving Technical AI Safety RFP page
         url: https://coefficientgiving.org/request-for-proposals-technical-ai-safety-research
-      - title: forum.effectivealtruism.org (audit-verified)
-        url: https://forum.effectivealtruism.org/posts/XtgDaunRKtCPzyCWg/open-philanthropy-technical-ai-safety-rfp-usd40m-available
+      - title: Open Philanthropy Technical AI Safety RFP - $40M available across 21 research areas (EA Forum)
+        url: >-
+          https://forum.effectivealtruism.org/posts/XtgDaunRKtCPzyCWg/open-philanthropy-technical-ai-safety-rfp-usd40m-available
   - title: FAR.AI / FAR.Futures field-building grant
     kind: project
     funder: open-philanthropy
@@ -43,14 +80,23 @@ grants:
     region: US
     url: https://www.openphilanthropy.org/
     description: Field-building grant for AI safety research community.
+    explainer: >-
+      Open Philanthropy recommended a grant of $6,650,000 to FAR.AI over two years to support FAR.Futures, the
+      organization's AI safety field-building arm. The grant supports community infrastructure, convenings, and
+      researcher pipeline activity rather than a single research output.
+
+
+      FAR.AI also has an independent research line and is a recurring grantee across the AI safety funder set. The Open
+      Philanthropy URL for this grant now redirects to coefficientgiving.org following the funder's late-2025 rebrand to
+      Coefficient Giving.
     sources:
-      - title: openphilanthropy.org (audit-verified)
+      - title: "Open Philanthropy: FAR.AI - AI Field Building (2025)"
         url: https://www.openphilanthropy.org/grants/far-ai-ai-field-building-2025/
   - title: Alignment Project cohort
     kind: program
     funder: aisi-alignment-project
     recipient: 60+ projects (UK)
-    date: '2025'
+    date: "2025"
     amount_usd: 35000000
     amount_label: £27M (~$35M)
     layers:
@@ -59,11 +105,27 @@ grants:
     region: UK
     url: https://alignmentproject.aisi.gov.uk/
     description: 60+ alignment projects funded; individual grants up to £1M.
+    explainer: >-
+      The UK AI Safety Institute's Alignment Project awarded over £27M (approximately $35M) to more than 60 alignment
+      projects in its 2025 cohort. Individual grants were capped at up to £1M, allowing the program to fund both small
+      exploratory work and multi-researcher efforts.
+
+
+      The Alignment Project sits inside AISI's broader mandate but operates as a discrete grants vehicle aimed at the
+      external alignment research community rather than internal AISI staff. The £1M ceiling places it between the
+      typical academic grant tier and the larger cohort-style awards from U.S. private funders.
+
+
+      As a UK government-backed program with international applicants, the cohort is one of the larger public
+      commitments to alignment-specific research outside the United States in 2025.
+    sources:
+      - title: Alignment Project (UK AISI)
+        url: https://alignmentproject.aisi.gov.uk/
   - title: AI2050 Fellows cohort
     kind: program
     funder: schmidt-sciences
     recipient: Multiple researchers
-    date: '2025'
+    date: "2025"
     amount_usd: 18000000
     amount_label: $18M cohort
     layers:
@@ -73,6 +135,18 @@ grants:
     region: Global
     url: https://www.schmidtsciences.org/2025-ai2050-fellows-announcement/
     description: Annual AI2050 fellowships program.
+    explainer: >-
+      The 2025 AI2050 Fellows cohort from Schmidt Sciences totaled $18M across the fellowship class. AI2050 is an annual
+      program; the 2025 announcement is the latest in a recurring cadence.
+
+
+      The fellowship targets researchers working on hard, neglected problems in AI safety, governance, and evaluation,
+      with awards structured to support multi-year individual research agendas rather than time-bounded projects. Eric
+      Schmidt's philanthropic vehicle has positioned AI2050 as one of the principal individual-researcher fellowships in
+      the field, alongside its parallel project-cohort programs.
+    sources:
+      - title: Schmidt Sciences 2025 AI2050 Fellows announcement
+        url: https://www.schmidtsciences.org/2025-ai2050-fellows-announcement/
   - title: AI Safety Science program
     kind: program
     funder: schmidt-sciences
@@ -84,11 +158,29 @@ grants:
       - safety-guardrails
     region: Global
     url: https://www.schmidtsciences.org/trustworthy-ai/
-    description: Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per project.
+    description: >-
+      Cohort includes Bengio, Kolter, Tramer, Narasimhan, Narayanan, Raghunathan, Kumar, Bajcsy. Average ~$370K per
+      project.
+    explainer: >-
+      Schmidt Sciences announced the AI Safety Science program in February 2025, selecting 27 projects with $10M in
+      total funding, an average of approximately $370K per project. The cohort is oriented toward foundational research
+      on trustworthy and safe AI.
+
+
+      Featured awardees include Yoshua Bengio, Zico Kolter, Florian Tramer (ETH Zurich), Karthik Narasimhan, Arvind
+      Narayanan, Aditi Raghunathan, and Anca Bajcsy, a roster that skews toward established alignment and ML-safety
+      faculty rather than early-career researchers.
+
+
+      Relative to AI2050, the AI Safety Science program funds projects rather than individuals and has a tighter
+      thematic frame around safety science specifically. Together the two programs put Schmidt Sciences among the
+      largest non-government safety funders in the cohort year.
     sources:
-      - title: schmidtsciences.org (audit-verified)
+      - title: Schmidt Sciences AI Safety Science program announcement
         url: https://www.schmidtsciences.org/new-10-million-ai-safety-science-program-launched-for-foundational-research/
-      - title: schmidtsciences.org (audit-verified)
+      - title: Schmidt Sciences Trustworthy AI / Safety Science
+        url: https://www.schmidtsciences.org/trustworthy-ai/
+      - title: Schmidt Sciences Safety Science awardees
         url: https://www.schmidtsciences.org/safetyscience/
   - title: AI Safety Fund Dec 2025 round
     kind: program
@@ -96,13 +188,32 @@ grants:
     recipient: 11 grantees including Apollo Research, Caltech BioSentinel, Institute for Decentralized AI, Faculty AI
     date: 2025-12
     amount_usd: 5000000
-    amount_label: '>$5M / 11 grantees'
+    amount_label: ">$5M / 11 grantees"
     layers:
       - safety-guardrails
       - agents
     region: Global
     url: https://www.frontiermodelforum.org/updates/announcement-of-new-ai-safety-fund-grantees/
-    description: Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated red-teaming.
+    description: >-
+      Industry-consortium safety fund. Focus on scheming detection, biosecurity, decentralized AI oversight, automated
+      red-teaming.
+    explainer: >-
+      The Frontier Model Forum's AI Safety Fund (AISF) announced its December 2025 round with 11 grantees receiving more
+      than $5M in total. AISF is the industry-consortium safety fund jointly underwritten by Frontier Model Forum
+      members, distinct from any single lab's internal grant program.
+
+
+      The cohort's thematic scope spans scheming detection, biosecurity, decentralized AI oversight, and automated
+      red-teaming. Named grantees include Apollo Research (black-box scheming monitors), the Caltech BioSentinel
+      project, the Institute for Decentralized AI, and Faculty AI.
+
+
+      Compared to single-funder safety RFPs of similar size, AISF's structure routes industry money through a neutral
+      consortium toward external researchers, which is a relevant precedent for sovereignty-minded readers tracking how
+      frontier-lab capital reaches the wider safety field.
+    sources:
+      - title: Frontier Model Forum AI Safety Fund grantees announcement
+        url: https://www.frontiermodelforum.org/updates/announcement-of-new-ai-safety-fund-grantees/
   - title: Democracy x AI Cohort 2026
     kind: program
     funder: mozilla
@@ -117,6 +228,23 @@ grants:
     region: Global
     url: https://www.mozillafoundation.org/en/what-we-do/grantmaking/incubator/democracy-ai-cohort/
     description: 10 teams at $50K each plus a $250K Sustain Track top-up. Focus on civic AI infrastructure.
+    explainer: >-
+      Mozilla's Democracy x AI Cohort 2026 funds 10 teams at $50K each for 12 months, with the initial project proposal
+      window opening February 12, 2026. A separate Sustain Track provides additional funding of $250,000 per project for
+      cohort members continuing past the initial phase.
+
+
+      The total initial-cohort commitment is $500K, with the Sustain Track top-up structure pushing the program well
+      past $1M when fully drawn. Focus areas center on civic AI infrastructure, including governance tooling, agentic
+      systems for public-interest work, and decentralization-relevant primitives.
+
+
+      Among 2026 cohort-style programs, Democracy x AI is one of the few with explicit governance and civic framing
+      rather than a generic open-source or safety frame, which makes it a useful reference for funders thinking about
+      AI's intersection with democratic institutions.
+    sources:
+      - title: Mozilla Foundation Democracy x AI Cohort
+        url: https://www.mozillafoundation.org/en/what-we-do/grantmaking/incubator/democracy-ai-cohort/
   - title: NGI Zero Commons Fund April 2026 round
     kind: program
     funder: nlnet
@@ -131,6 +259,28 @@ grants:
     region: EU
     url: https://nlnet.nl/news/2026/20260409-announce-commons-fund.html
     description: Bi-monthly Commons Fund call. Recent rounds skew protocols / open data / trusted open hardware.
+    explainer: >-
+      NLnet Foundation announced the April 2026 NGI Zero Commons Fund round on April 9, 2026, selecting 57 free and open
+      source projects with a total round value of approximately €1.4M (~$1.5M). The Commons Fund is one strand of
+      NLnet's NGI Zero program, which operates on a bi-monthly call cadence with grants typically in the €5K to €50K
+      range per project.
+
+
+      The ninth call's portfolio skews toward protocols and interoperability (messaging standards, federated
+      communication, remote desktop), trustworthy open hardware (PCB design tools, security modules, embedded systems),
+      and end-user community applications. The program is funded by the European Commission's Next Generation Internet
+      programme via DG CNECT (grant agreement No. 101135429) and by the Swiss State Secretariat for Education, Research
+      and Innovation.
+
+
+      NLnet's overall NGI Zero commitment for 2024 through 2027 is €21.6M across all open calls. The next deadline is
+      June 1, 2026. For a sovereignty-minded reader, NGI Zero is one of the few EU-scale public funders running a
+      sustained, small-grants pipeline across protocol-layer, hardware, and digital-commons work.
+    sources:
+      - title: NLnet NGI Zero Commons Fund April 2026 announcement
+        url: https://nlnet.nl/news/2026/20260409-announce-commons-fund.html
+      - title: NLnet Foundation
+        url: https://nlnet.nl/
   - title: Claude for Open Source program
     kind: program
     funder: anthropic
@@ -142,11 +292,27 @@ grants:
       - agents
     region: Global
     url: https://claude.com/contact-sales/claude-for-oss
-    description: 'Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026.'
+    description: "Eligibility: 5K+ GitHub stars or 1M+ NPM/month. Closes June 30, 2026."
+    explainer: >-
+      Anthropic launched the Claude for Open Source program in February 2026, offering free Claude Max access to up to
+      10,000 approved open source contributors. Applications close June 30, 2026 unless Anthropic raises the cap.
+
+
+      Eligibility for the Maintainer Track requires being a primary maintainer or core team member of a public
+      repository with 5,000 or more GitHub stars, or 1 million or more monthly NPM downloads. The benefit is compute
+      access rather than cash, distinguishing this from grant programs that disburse funding directly.
+
+
+      The structure mirrors a developer-relations move more than a traditional grant program: it lowers the marginal
+      cost of using Anthropic's tooling for the open source population most likely to integrate Claude into widely
+      deployed projects. For readers tracking how frontier labs interface with open source maintainers, the
+      10,000-recipient ceiling sets a useful scale reference.
     sources:
-      - title: aitoolsclub.com (audit-verified)
+      - title: Anthropic Claude for Open Source program terms
+        url: https://claude.com/contact-sales/claude-for-oss
+      - title: Anthropic Launches Claude for Open Source Program (AItoolsclub)
         url: https://aitoolsclub.com/anthropic-launches-claude-for-open-source-program-free-claude-max-for-6-months/
-      - title: abhs.in (audit-verified)
+      - title: "Anthropic Claude for Open Source: free Max 20x (abhs.in)"
         url: https://www.abhs.in/blog/anthropic-claude-for-open-source-free-max-20x-how-to-apply-2026
   - title: Anthropic Fellows May 2026 cohort
     kind: program
@@ -159,6 +325,20 @@ grants:
     region: Global
     url: https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/
     description: Compute-heavy fellowship program for alignment research.
+    explainer: >-
+      The Anthropic Fellows May 2026 cohort is a compute-heavy alignment research fellowship that pays a $3,850 weekly
+      stipend, provides roughly $15,000 per month in compute per fellow, and runs for four months. Fellows work on
+      safety problems under Anthropic mentorship, with the program positioned as an on-ramp for researchers building
+      toward full-time alignment work.
+
+
+      The structure favors empirical projects that need real model access, which is the main reason the compute
+      allocation is sized separately from the stipend. Past cohorts have produced published interpretability and evals
+      work, and the program is one of the few alignment-specific funding routes that bundles compute with researcher pay
+      rather than expecting a host institution to cover infrastructure.
+    sources:
+      - title: Anthropic Fellows Program 2026
+        url: https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/
   - title: OLMo 3 / Molmo 2 release line
     kind: project
     funder: ai2
@@ -170,7 +350,23 @@ grants:
       - data
     region: US
     url: https://allenai.org/blog
-    description: OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major fully-open model lineage.
+    description: >-
+      OLMo 3 family released November 2025; OLMo 3.1 December 2025; Molmo 2 video December 2025. The only major
+      fully-open model lineage.
+    explainer: >-
+      Ai2's OLMo and Molmo release line shipped three artifacts in late 2025: the OLMo 3 family in November 2025, OLMo
+      3.1 in December 2025, and Molmo 2 video in December 2025. The cadence reflects the lab's policy of releasing
+      weights, training data, training code, and intermediate checkpoints together rather than weights alone.
+
+
+      Among the major US labs publishing model weights in this period, the OLMo and Molmo lineage is the only one that
+      is consistently fully open across data, training recipe, and weights. Most peer releases are open-weights only,
+      which means independent researchers cannot reproduce the training run or audit the data mixture. Internal Ai2
+      funding covers the work, so the release line functions as a public good rather than a grant payable to an external
+      recipient.
+    sources:
+      - title: Allen Institute for AI blog
+        url: https://allenai.org/blog
   - title: Common Pile v0.1
     kind: project
     funder: ai2
@@ -181,12 +377,28 @@ grants:
       - data
     region: US
     url: https://www.eleuther.ai/research
-    description: License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides Dolma.
+    description: >-
+      License-clean training dataset; trained two reference models from it. The cleanest open-data exemplar besides
+      Dolma.
+    explainer: >-
+      EleutherAI released Common Pile v0.1 in June 2025, a training corpus assembled only from works whose licenses
+      permit redistribution and reuse. The team trained two reference models on the dataset, Comma v0.1-1T and Comma
+      v0.1-2T, to demonstrate that competitive open-weights models can be trained without scraped or contested data.
+
+
+      The project was a multi-institution collaboration. EleutherAI led the work in partnership with Poolside, Hugging
+      Face, and the US Library of Congress, with Ai2 listed among the partnering institutions providing compute and
+      collaboration. The release sits alongside Ai2's Dolma as one of the two largest license-clean pretraining corpora
+      available to outside teams, and is the cleanest open-data exemplar besides Dolma for groups that need to defend
+      their training data provenance.
     sources:
-      - title: blog.eleuther.ai (audit-verified)
+      - title: Common Pile v0.1 (EleutherAI blog)
         url: https://blog.eleuther.ai/common-pile/
-      - title: techcrunch.com (audit-verified)
-        url: https://techcrunch.com/2025/06/06/eleutherai-releases-massive-ai-training-dataset-of-licensed-and-open-domain-text/
+      - title: "TechCrunch: EleutherAI releases massive AI training dataset"
+        url: >-
+          https://techcrunch.com/2025/06/06/eleutherai-releases-massive-ai-training-dataset-of-licensed-and-open-domain-text/
+      - title: EleutherAI Research
+        url: https://www.eleuther.ai/research
   - title: OpenEuroLLM consortium kickoff
     kind: project
     funder: eu-horizon
@@ -198,16 +410,30 @@ grants:
       - weights
       - data
     region: EU
-    url: https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies
+    url: >-
+      https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies
     description: Open multilingual European LLM consortium funded under Horizon Europe.
+    explainer: >-
+      OpenEuroLLM is a multi-partner European consortium building an open multilingual large language model under
+      Horizon Europe funding, with an allocation of roughly €55M (about $60M). The launch press release lists 20
+      European research institutions, companies, and EuroHPC supercomputing centres as members, positioning the project
+      as the EU's coordinated answer to US and Chinese frontier model labs.
+
+
+      The consortium sits inside a broader €307M EU AI investment package and is one of the largest publicly funded
+      open-model efforts globally. Output is intended to cover all official EU languages, which is a deliberate contrast
+      to US frontier models whose multilingual coverage is uneven outside of English.
     sources:
-      - title: openeurollm.eu (audit-verified)
+      - title: EU invests over €307M in AI and related technologies
+        url: >-
+          https://digital-strategy.ec.europa.eu/en/news/eu-invests-over-eu307-million-artificial-intelligence-and-related-technologies
+      - title: OpenEuroLLM launch press release
         url: https://openeurollm.eu/launch-press-release
   - title: AISI Inspect framework
     kind: project
     funder: aisi-alignment-project
     recipient: Open release
-    date: '2025'
+    date: "2025"
     amount_label: Internal funding; open release
     layers:
       - safety-guardrails
@@ -215,7 +441,20 @@ grants:
     region: UK
     url: https://www.aisi.gov.uk/work
     description: Open-sourced evaluation harness from UK AISI; available for community use.
-  - title: 'Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance'
+    explainer: >-
+      The UK AI Security Institute open-sourced its Inspect evaluation framework in 2025, releasing the same harness
+      that AISI uses internally to run capability and safety evaluations on frontier models. Inspect provides a common
+      interface for writing evals, running them across models, and aggregating results.
+
+
+      Releasing the harness rather than only the eval results lets outside teams reproduce AISI's testing methodology
+      and run their own benchmarks against the same scaffold. It has become one of the more widely adopted open
+      evaluation frameworks for safety-relevant tasks, partly because it is maintained by a government lab with no
+      commercial incentive to favor a particular model family.
+    sources:
+      - title: UK AI Security Institute work
+        url: https://www.aisi.gov.uk/work
+  - title: "Sovereign Tech Fund: OpenSSH, curl, GNU coreutils maintenance"
     kind: program
     funder: sovereign-tech-fund
     recipient: Foundational open-source maintainers
@@ -227,11 +466,25 @@ grants:
       - governance
     region: EU
     url: https://www.sovereigntechfund.de/
-    description: Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these underlying tools.
+    description: >-
+      Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these
+      underlying tools.
+    explainer: >-
+      Germany's Sovereign Tech Fund disbursed more than €23M (about $24.9M) across 60 technologies over two years, with
+      the program funding maintenance of critical open-source dependencies rather than new feature work. OpenSSH and
+      curl were among the nine pilot projects funded in the first round, and the portfolio also includes GNU coreutils
+      via the Rust coreutils effort.
+
+
+      The fund is not an AI program, but its work cross-cuts AI infrastructure because most AI servers, training
+      clusters, and model-serving stacks depend on these underlying tools. A coreutils or OpenSSH security incident
+      would propagate through the entire AI runtime supply chain. The Sovereign Tech Fund is one of the few state actors
+      that funds this layer explicitly, on the theory that strategic digital infrastructure should not depend on
+      volunteer maintainers in their spare time.
     sources:
-      - title: phoronix.com (audit-verified)
+      - title: "Phoronix: STF Two Years $24.9M"
         url: https://www.phoronix.com/news/STF-Two-Years-24.9M-USD
-      - title: sovereign.tech (audit-verified)
+      - title: "Sovereign Tech Agency: Our First Year"
         url: https://www.sovereign.tech/news/our-first-year
   - title: MCP donation to Linux Foundation AAIF
     kind: project
@@ -243,12 +496,28 @@ grants:
       - protocols
     region: Global
     url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
-    description: Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and AGENTS.md (OpenAI). Industry-consortium governance model.
+    description: >-
+      Anthropic donated MCP stewardship to Linux Foundation's new Agentic AI Foundation, alongside goose (Block) and
+      AGENTS.md (OpenAI). Industry-consortium governance model.
+    explainer: >-
+      On December 9, 2025, Anthropic donated stewardship of the Model Context Protocol to the Linux Foundation's newly
+      formed Agentic AI Foundation. The donation moved MCP from single-vendor governance under Anthropic to a neutral
+      foundation structure, with the protocol's specification, reference implementations, and trademark transferring to
+      the foundation.
+
+
+      MCP was not donated alone. The Agentic AI Foundation also received goose from Block and AGENTS.md from OpenAI as
+      founding contributions, giving the new foundation three protocol and tooling projects from three different vendors
+      at launch. The arrangement follows the industry-consortium model used by the Cloud Native Computing Foundation and
+      other Linux Foundation projects, where competing vendors share governance of standards they all rely on.
+    sources:
+      - title: Linux Foundation announces Agentic AI Foundation
+        url: https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
   - title: Maple AI
     kind: project
     funder: hrf
     recipient: OpenSecret
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - runtime
@@ -256,15 +525,33 @@ grants:
       - agents
     region: US
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Open-source, end-to-end encrypted AI assistant built by OpenSecret using secure enclaves and confidential computing. Activists in authoritarian environments can use frontier LLMs without their queries being scanned, stored, or handed to governments. HRF support funds capability improvements and new features for activist research workflows.
+    description: >-
+      Open-source, end-to-end encrypted AI assistant built by OpenSecret using secure enclaves and confidential
+      computing. Activists in authoritarian environments can use frontier LLMs without their queries being scanned,
+      stored, or handed to governments. HRF support funds capability improvements and new features for activist research
+      workflows.
+    explainer: >-
+      HRF awarded Maple AI in the November 24, 2025 AI for Individual Rights program round, the foundation's first
+      dedicated AI grant cohort. Maple AI is an open-source, end-to-end encrypted assistant built by OpenSecret that
+      runs frontier model inference inside secure enclaves with confidential computing, so user queries are not scanned,
+      stored, or made accessible to the inference provider or the operating government.
+
+
+      The grant funds capability improvements and new features for activist research workflows. The target user is a
+      journalist or organizer in an authoritarian environment who needs frontier-quality LLM help without giving an
+      external provider an unencrypted log of every prompt. HRF's framing positions Maple AI alongside other
+      freedom-tech tools in its portfolio, with the secure-enclave architecture as the structural defense against
+      subpoena or coercion of the provider.
     sources:
-      - title: hrf.org (audit-verified)
+      - title: HRF announces AI for Individual Rights support
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+      - title: HRF AI for Individual Rights program
         url: https://hrf.org/program/ai-for-individual-rights/
   - title: Routstr
     kind: project
     funder: hrf
     recipient: Sovereign Engineering / Routstr team
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - protocols
@@ -272,15 +559,31 @@ grants:
       - runtime
     region: Global
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: LLM routing marketplace built on the Nostr decentralized communications protocol. Users connect pseudonymously to buy and sell access to each other's AI accounts in an uncensorable peer-to-peer marketplace, giving activists inference even when governments or corporate providers block them.
+    description: >-
+      LLM routing marketplace built on the Nostr decentralized communications protocol. Users connect pseudonymously to
+      buy and sell access to each other's AI accounts in an uncensorable peer-to-peer marketplace, giving activists
+      inference even when governments or corporate providers block them.
+    explainer: >-
+      HRF awarded Routstr in the November 24, 2025 AI for Individual Rights round. Routstr is an LLM routing marketplace
+      built on Nostr, the decentralized communications protocol, that lets users pseudonymously buy and sell access to
+      inference accounts in a peer-to-peer market rather than going through a centralized provider.
+
+
+      The project was built during a Sovereign Engineering cohort in Madeira (SEC-05) and is maintained by the Sovereign
+      Engineering and Routstr teams. The design intent is censorship resistance: when a national government or a
+      corporate provider blocks an activist's access to a model, Routstr allows continued inference by routing through
+      other participants who still have access. The marketplace structure prices that capacity rather than relying on
+      volunteer donation of accounts.
     sources:
-      - title: stacker.news (audit-verified)
+      - title: HRF announces AI for Individual Rights support
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
+      - title: "Stacker News: Routstr"
         url: https://stacker.news/items/473870
   - title: OpenCode
     kind: project
     funder: hrf
     recipient: OpenCode
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - agents
@@ -288,132 +591,329 @@ grants:
       - sovereignty-decentralization
     region: Global
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable for civil-society teams under authoritarian rule.
+    description: >-
+      Fully open-source agentic coding platform that runs entirely locally. Users can inspect every line of code, avoid
+      surveillance, and build software without routing sensitive work through corporate infrastructure, making it usable
+      for civil-society teams under authoritarian rule.
+    explainer: >-
+      HRF awarded OpenCode in the November 24, 2025 AI for Individual Rights round. OpenCode is a fully open-source
+      agentic coding platform that runs entirely locally, with all source code inspectable by the user and no required
+      dependency on a remote provider for the agent loop.
+
+
+      The grant funds work on the platform's use by civil-society teams under authoritarian rule, where routing
+      sensitive software work through corporate AI infrastructure is a surveillance risk. The local-first runtime is the
+      structural defense: code that never leaves the developer's machine cannot be subpoenaed from a vendor, and the
+      open codebase lets security teams audit what the agent actually does before deploying it on sensitive
+      repositories.
+    sources:
+      - title: HRF announces AI for Individual Rights support
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: PlebDevs AI Development Course
     kind: project
     funder: hrf
     recipient: PlebDevs
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - agents
       - governance
     region: Global
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Developer education platform focused on Bitcoin and open-source technology launching an AI development course for beginners building open-source AI tools in repressive environments.
+    description: >-
+      Developer education platform focused on Bitcoin and open-source technology launching an AI development course for
+      beginners building open-source AI tools in repressive environments.
+    explainer: >-
+      The Human Rights Foundation announced support for PlebDevs on November 24, 2025, as one of eight grantees in the
+      first round of its AI for Individual Rights program. PlebDevs is a developer education platform focused on Bitcoin
+      and open-source technology.
+
+
+      The HRF grant funds an AI development course aimed at beginners who want to build open-source AI tools, with the
+      program oriented toward learners working in repressive environments where commercial AI services are unavailable,
+      surveilled, or risky to depend on. The course sits alongside PlebDevs' existing Bitcoin and Nostr curriculum.
+
+
+      The first round announcement grouped PlebDevs with seven other grantees: Maple AI, Routstr, The Bridge Project,
+      OpenCode, Sovereign Engineering, CANVAS, and Citizen Power Initiatives for China. Individual grant amounts were
+      not disclosed.
+    sources:
+      - title: HRF announces support for projects advancing AI for individual rights
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: Sovereign Engineering Freedom Tech AI Cohorts
     kind: project
     funder: hrf
     recipient: Sovereign Engineering
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - agents
       - sovereignty-decentralization
     region: Global
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Brings builders together in a physical space to create freedom-enhancing tools on open networks like Bitcoin and Nostr. Over two cohorts, participants explore how AI can be integrated into censorship-resistant systems.
+    description: >-
+      Brings builders together in a physical space to create freedom-enhancing tools on open networks like Bitcoin and
+      Nostr. Over two cohorts, participants explore how AI can be integrated into censorship-resistant systems.
+    explainer: >-
+      The Human Rights Foundation announced funding for Sovereign Engineering on November 24, 2025, as part of the first
+      round of its AI for Individual Rights program. Sovereign Engineering runs in-person cohorts that bring builders
+      together in a physical space to create freedom-enhancing tools on open networks including Bitcoin and Nostr.
+
+
+      The HRF grant supports two cohorts that explore how AI can be integrated into censorship-resistant systems.
+      Routstr, a separate HRF grantee announced in the same round, was previously built during a Sovereign Engineering
+      cohort (SEC-05), illustrating the program's role as a pipeline for freedom-tech projects.
+
+
+      Sovereign Engineering was announced alongside seven other first-round grantees: Maple AI, Routstr, The Bridge
+      Project, PlebDevs, OpenCode, CANVAS, and Citizen Power Initiatives for China. Individual amounts were not
+      disclosed.
+    sources:
+      - title: HRF announces support for projects advancing AI for individual rights
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: Citizen Power Initiatives for China AI Research
     kind: project
     funder: hrf
     recipient: Citizen Power Initiatives for China
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - governance
       - evaluation
     region: Asia
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Research examining how the Chinese regime uses AI to bolster its digital dictatorship and exports these tools to other regimes, plus identifying open-source AI tools human rights defenders can use to resist digital repression.
+    description: >-
+      Research examining how the Chinese regime uses AI to bolster its digital dictatorship and exports these tools to
+      other regimes, plus identifying open-source AI tools human rights defenders can use to resist digital repression.
+    explainer: >-
+      The Human Rights Foundation funded Citizen Power Initiatives for China on November 24, 2025, as one of eight
+      grantees in the first round of its AI for Individual Rights program.
+
+
+      The grant supports two parallel research tracks. The first examines how the Chinese regime uses AI to reinforce
+      its domestic surveillance and digital-dictatorship apparatus, and how those tools are exported to other
+      authoritarian governments. The second identifies open-source AI tools that human rights defenders can adopt to
+      resist digital repression.
+
+
+      The cohort included Maple AI, Routstr, The Bridge Project, PlebDevs, OpenCode, Sovereign Engineering, and CANVAS.
+      Individual grant amounts were not disclosed.
+    sources:
+      - title: HRF announces support for projects advancing AI for individual rights
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: CANVAS Global Education for Nonviolent Engagement (GENE)
     kind: project
     funder: hrf
     recipient: CANVAS
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - agents
       - retrieval-memory
     region: EU
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: AI-powered tool trained on decades of frontline nonviolent organizing experience. Helps activists plan campaigns, coordinate action, and respond in moments of crisis with strategy guidance grounded in CANVAS's documented case archive.
+    description: >-
+      AI-powered tool trained on decades of frontline nonviolent organizing experience. Helps activists plan campaigns,
+      coordinate action, and respond in moments of crisis with strategy guidance grounded in CANVAS's documented case
+      archive.
+    explainer: >-
+      The Human Rights Foundation funded CANVAS Global Education for Nonviolent Engagement (GENE) on November 24, 2025,
+      in the first round of its AI for Individual Rights program. CANVAS, the Center for Applied Nonviolent Action and
+      Strategies, is the Belgrade-based organization that grew out of Serbia's Otpor movement.
+
+
+      GENE is an AI-powered tool trained on CANVAS's documented case archive of nonviolent organizing, drawing on
+      decades of frontline campaign experience. The tool is positioned to help activists plan campaigns, coordinate
+      action, and respond in moments of crisis, with strategy guidance grounded in CANVAS's primary-source archive
+      rather than generic large-model knowledge.
+
+
+      GENE joined seven other first-round grantees: Maple AI, Routstr, The Bridge Project, PlebDevs, OpenCode, Sovereign
+      Engineering, and Citizen Power Initiatives for China. Individual amounts were not disclosed.
+    sources:
+      - title: HRF announces support for projects advancing AI for individual rights
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: The Bridge Project
     kind: project
     funder: hrf
     recipient: The Bridge Project
-    date: '2025-11-24'
+    date: "2025-11-24"
     amount_label: Undisclosed
     layers:
       - agents
       - governance
     region: US
     url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
-    description: Provides hands-on consultation to activists in HRF's network, helping them refine prototypes into deployable applications. Acts as a bridge between human-rights defenders and the technical talent needed to launch tools in production.
+    description: >-
+      Provides hands-on consultation to activists in HRF's network, helping them refine prototypes into deployable
+      applications. Acts as a bridge between human-rights defenders and the technical talent needed to launch tools in
+      production.
+    explainer: >-
+      The Human Rights Foundation funded The Bridge Project on November 24, 2025, as one of eight grantees in the first
+      round of its AI for Individual Rights program. The Bridge Project provides hands-on consultation to activists in
+      HRF's network, helping them refine prototypes into deployable applications and acting as a bridge between
+      human-rights defenders and the technical talent needed to ship tools to production. Individual grant amounts in
+      the first round were not disclosed.
+    sources:
+      - title: HRF announces support for projects advancing AI for individual rights
+        url: https://hrf.org/latest/hrf-announces-support-for-projects-advancing-ai-for-individual-rights/
   - title: Stringer Safety
     kind: project
     funder: hrf
     recipient: Anjan Sundaram et al. (AI Hack for Freedom)
-    date: '2026-01-18'
+    date: "2026-01-18"
     amount_label: Hackathon prize
     layers:
       - agents
       - identity-trust
     region: Global
     url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
-    description: Safety app for journalists in high-risk environments. Reporters maintain a trusted contact network with shared location and status; a one-click SOS triggers response recommendations using the encrypted Maple AI assistant.
+    description: >-
+      Safety app for journalists in high-risk environments. Reporters maintain a trusted contact network with shared
+      location and status; a one-click SOS triggers response recommendations using the encrypted Maple AI assistant.
+    explainer: >-
+      Stringer Safety won a prize at the Human Rights Foundation's first AI Hack for Freedom hackathon, held in Austin,
+      Texas the weekend before HRF's January 21, 2026 announcement. The grant is dated January 18, 2026 in the project
+      record.
+
+
+      The application is a safety tool for journalists working in high-risk environments. Reporters maintain a trusted
+      contact network with shared location and status, and a one-click SOS triggers response recommendations generated
+      through the encrypted Maple AI assistant, itself a separate HRF grantee under the AI for Individual Rights
+      program.
+
+
+      The Stringer Safety team was captained by Anjan Sundaram. The hackathon produced eight unique tools across
+      competing teams.
+    sources:
+      - title: Announcing the AI Hack for Freedom hackathon winners
+        url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
   - title: Pathos
     kind: project
     funder: hrf
     recipient: Leopoldo López and team (AI Hack for Freedom)
-    date: '2026-01-18'
+    date: "2026-01-18"
     amount_label: Hackathon prize
     layers:
       - protocols
       - sovereignty-decentralization
     region: Global
     url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
-    description: Application running on the decentralized Nostr protocol so it cannot be shut down by governments. Built at HRF's first AI Hack for Freedom in Austin, January 2026.
+    description: >-
+      Application running on the decentralized Nostr protocol so it cannot be shut down by governments. Built at HRF's
+      first AI Hack for Freedom in Austin, January 2026.
+    explainer: >-
+      Pathos was built at the Human Rights Foundation's first AI Hack for Freedom hackathon in Austin in January 2026,
+      and won a prize announced on January 21, 2026. The grant date in the project record is January 18, 2026.
+
+
+      The application runs on the decentralized Nostr protocol, a substrate chosen so that the service cannot be shut
+      down by governments through pressure on a single hosting provider or domain registrar. Nostr's relay-based
+      architecture is the same one used by HRF grantee Sovereign Engineering for its broader freedom-tech work.
+
+
+      The Pathos team was captained by Leopoldo López, the Venezuelan opposition figure. The hackathon produced eight
+      unique tools across competing teams.
+    sources:
+      - title: Announcing the AI Hack for Freedom hackathon winners
+        url: https://hrf.org/latest/announcing-the-ai-hack-for-freedom-hackathon-winners/
   - title: Computational virtue ethics framework
     kind: project
     funder: cosmos-institute
     recipient: Rocco Hu
-    date: '2024-09-10'
+    date: "2024-09-10"
     amount_label: $1K-$10K range
     layers:
       - evaluation
       - governance
     region: UK
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
-    description: Oxford-trained philosopher-computer-scientist developing a computational theory of virtue ethics for AI alignment, building grounded approaches to AI value learning rooted in Aristotelian rather than utilitarian frames.
+    description: >-
+      Oxford-trained philosopher-computer-scientist developing a computational theory of virtue ethics for AI alignment,
+      building grounded approaches to AI value learning rooted in Aristotelian rather than utilitarian frames.
+    explainer: >-
+      Cosmos Institute granted Rocco Hu on September 10, 2024 as part of the inaugural Cosmos Ventures cohort, a set of
+      small grants designed to incubate prototypes at the intersection of philosophy and AI. The grant size sits in the
+      $1K to $10K range that defined the inaugural cohort.
+
+
+      Hu, an Oxford-trained philosopher and computer scientist, is developing a computational theory of virtue ethics
+      for AI alignment. The framing aims to ground AI value learning in an Aristotelian rather than utilitarian frame,
+      with the practical question being whether virtue-ethics primitives (habituation, phronesis, character traits) can
+      be operationalized inside model training and evaluation rather than treated only as philosophical commentary on
+      alignment.
+
+
+      The project is one of several Cosmos Ventures grants pairing classical philosophical traditions with computational
+      research methods.
+    sources:
+      - title: Announcing Cosmos Ventures
+        url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
   - title: Decentralized AI commons for live arts (The Sphere)
     kind: project
     funder: cosmos-institute
     recipient: Erik Bordeleau
-    date: '2024-09-10'
+    date: "2024-09-10"
     amount_label: $1K-$10K range
     layers:
       - sovereignty-decentralization
       - data
     region: EU
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
-    description: Researcher building The Sphere, an AI commons for preserving and remixing live performance art. Explores how decentralized governance and AI can sustain non-commercial creative work.
+    description: >-
+      Researcher building The Sphere, an AI commons for preserving and remixing live performance art. Explores how
+      decentralized governance and AI can sustain non-commercial creative work.
+    explainer: >-
+      Cosmos Institute granted Erik Bordeleau on September 10, 2024 as part of the inaugural Cosmos Ventures cohort. The
+      grant size sits in the $1K to $10K range that defined the cohort.
+
+
+      Bordeleau is building The Sphere, a decentralized AI commons oriented around preserving and remixing live
+      performance art. The work treats live arts as a category that is structurally disadvantaged under current AI
+      training and copyright regimes, since performances are often ephemeral, non-commercial, and held outside the
+      corpora that frontier models train on.
+
+
+      The Sphere explores how decentralized governance combined with AI tooling can sustain non-commercial creative work
+      over time, sitting at the intersection of the sovereignty-and-decentralization meta-layer and the data layer.
+    sources:
+      - title: Announcing Cosmos Ventures
+        url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
   - title: Bio-inspired AI swarm simulation platform
     kind: project
     funder: cosmos-institute
     recipient: Alfaxad Eyembe
-    date: '2024-09-10'
+    date: "2024-09-10"
     amount_label: $1K-$10K range
     layers:
       - agents
       - evaluation
     region: Global
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
-    description: Open simulation platform for studying multi-agent coordination patterns inspired by biological swarms, intended as a substrate for cooperative-AI experiments.
+    description: >-
+      Open simulation platform for studying multi-agent coordination patterns inspired by biological swarms, intended as
+      a substrate for cooperative-AI experiments.
+    explainer: >-
+      Cosmos Institute granted Alfaxad Eyembe on September 10, 2024 as part of the inaugural Cosmos Ventures cohort. The
+      grant size sits in the $1K to $10K range that defined the cohort.
+
+
+      Eyembe is creating ALFA, an open-source simulation platform for studying multi-agent coordination patterns
+      inspired by biological swarms. The platform is intended as a substrate for cooperative-AI experiments, where
+      researchers can probe how agent populations negotiate goals, share information, and resolve conflicts without a
+      central controller.
+
+
+      The project sits at the agents layer with evaluation as a secondary attribution, since swarm simulators function
+      both as research tools and as benchmark environments for multi-agent reasoning work.
+    sources:
+      - title: Announcing Cosmos Ventures
+        url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
   - title: AI-driven digital wargaming platform
     kind: project
     funder: cosmos-institute
     recipient: Jake Birdwell
-    date: '2024-09-10'
+    date: "2024-09-10"
     amount_label: $1K-$10K range
     layers:
       - agents
@@ -421,26 +921,59 @@ grants:
       - governance
     region: US
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
-    description: AI-driven wargaming platform for exploring policy and strategic decisions involving advanced AI, treating wargames as a deliberation tool for human decision-makers.
+    description: >-
+      AI-driven wargaming platform for exploring policy and strategic decisions involving advanced AI, treating wargames
+      as a deliberation tool for human decision-makers.
+    explainer: >-
+      Cosmos Institute granted Jake Birdwell on September 10, 2024 to build an AI-driven digital wargaming platform,
+      with funding in the $1K to $10K fast-grant range that Cosmos uses for its rolling Cosmos Ventures program.
+
+
+      The project frames wargames as a deliberation tool for human decision-makers rather than as a forecasting engine.
+      The intent is to give policy and strategy teams a structured environment for stress-testing decisions involving
+      advanced AI systems, including scenarios where AI agents are participants rather than just objects of policy.
+
+
+      The grant sits in Cosmos Institute's broader thesis of backing philosopher-builders working on AI,
+      decentralization, and individual autonomy, with a 90-day prototype window typical of the fast-grant track.
+    sources:
+      - title: Announcing Cosmos Ventures (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
   - title: Silicon Valley ideology seminar series
     kind: project
     funder: cosmos-institute
     recipient: Nadia Asparouhova and Tim Hwang
-    date: '2024-10-01'
+    date: "2024-10-01"
     amount_label: $1K-$10K range
     layers:
       - governance
     region: US
     url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
-    description: Pre-election seminar series convening researchers, journalists, and policymakers to dissect the political ideologies shaping AI development in Silicon Valley. Co-hosted at Sloan Foundation offices.
+    description: >-
+      Pre-election seminar series convening researchers, journalists, and policymakers to dissect the political
+      ideologies shaping AI development in Silicon Valley. Co-hosted at Sloan Foundation offices.
+    explainer: >-
+      Cosmos Institute granted Nadia Asparouhova and Tim Hwang on October 1, 2024 to convene a pre-election seminar
+      series on the political ideologies shaping AI development in Silicon Valley. The grant fell in the $1K to $10K
+      fast-grant range used for Cosmos Ventures projects.
+
+
+      The seminars were co-hosted at Sloan Foundation offices and brought together researchers, journalists, and
+      policymakers to examine how worldviews held by AI founders and investors translate into product, hiring, and
+      policy decisions. Asparouhova and Hwang have both written extensively on internet subcultures and tech politics,
+      which positioned the series as a working-group format rather than a conference.
+
+
+      Within Cosmos Institute's portfolio the grant is a governance-layer bet, sitting alongside its larger
+      truth-seeking and decentralization programs.
     sources:
-      - title: blog.cosmos-institute.org (audit-verified)
+      - title: Announcing Cosmos Ventures (Cosmos Institute blog)
         url: https://blog.cosmos-institute.org/p/announcing-cosmos-ventures
   - title: Metalens
     kind: project
     funder: cosmos-institute
     recipient: Johanna Einsiedler
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - evaluation
@@ -448,135 +981,365 @@ grants:
       - retrieval-memory
     region: EU
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: Open-source scientific research platform combining AI summarization with structured human checks, intended to help researchers see beyond hype and identify reliable claims in dense literature.
+    description: >-
+      Open-source scientific research platform combining AI summarization with structured human checks, intended to help
+      researchers see beyond hype and identify reliable claims in dense literature.
+    explainer: >-
+      Cosmos Institute granted Johanna Einsiedler on August 15, 2025 for Metalens, with funding in the $1K to $10K range
+      plus compute access. The award was part of the inaugural 27-winner AI x Truth-Seeking cohort run jointly by Cosmos
+      Institute and the Foundation for Individual Rights and Expression (FIRE) under a $1M grant program announced
+      earlier in 2025.
+
+
+      Metalens is an open-source scientific research platform that combines AI summarization with structured human
+      checks, aimed at helping researchers identify reliable claims in dense literature rather than relying on a single
+      model's synthesis. The tool sits at the intersection of evaluation, data curation, and retrieval-memory work.
+
+
+      The cohort's framing prioritizes builders working on tools that advance open inquiry over closed assistants, which
+      positions Metalens against the broader class of AI literature-review products that optimize for fluency rather
+      than verifiability.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Perplex
     kind: project
     funder: cosmos-institute
     recipient: Steven Molotnikov
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - evaluation
       - safety-guardrails
     region: US
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: Tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference models. Aims to give independent reviewers a way to audit proprietary deployments.
+    description: >-
+      Tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference models. Aims to
+      give independent reviewers a way to audit proprietary deployments.
+    explainer: >-
+      Cosmos Institute granted Steven Molotnikov on August 15, 2025 for Perplex, with funding in the $1K to $10K range
+      plus compute. The grant was part of the 27-winner inaugural AI x Truth-Seeking cohort funded jointly by Cosmos
+      Institute and FIRE under a $1M program.
+
+
+      Perplex builds tooling for surfacing hidden goals in closed AI systems by probing them with open-weight reference
+      models. The approach gives independent reviewers a method to audit proprietary deployments without insider access
+      to weights or training data, putting the project in the safety-guardrails and evaluation cross-section of the
+      stack.
+
+
+      The project fits the cohort's editorial direction toward truth-seeking infrastructure: tools that let third
+      parties verify what model providers claim, rather than tools that take vendor descriptions at face value.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Policy Explorer
     kind: project
     funder: cosmos-institute
     recipient: Caleb Maresca
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - agents
       - governance
     region: US
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: AI tool for analyzing the impacts and assumptions embedded in regulatory and policy proposals, geared toward helping civil-society analysts surface what a rule actually does.
+    description: >-
+      AI tool for analyzing the impacts and assumptions embedded in regulatory and policy proposals, geared toward
+      helping civil-society analysts surface what a rule actually does.
+    explainer: >-
+      Cosmos Institute granted Caleb Maresca on August 15, 2025 for Policy Explorer, with funding in the $1K to $10K
+      range plus compute access. The grant came through the inaugural AI x Truth-Seeking cohort of 27 winners funded
+      jointly by Cosmos Institute and FIRE under a $1M program.
+
+
+      Policy Explorer is an AI tool for analyzing the impacts and assumptions embedded in regulatory and policy
+      proposals. The product target is civil-society analysts who need to surface what a rule actually does, including
+      downstream effects that are not stated in the rule text.
+
+
+      Within the cohort the project sits in the agents and governance layers, in the same broad cluster as other
+      policy-adjacent grantees but distinguished by a focus on assumption-surfacing rather than drafting or
+      summarization.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Argument Debugger
     kind: project
     funder: cosmos-institute
     recipient: Nada Amin
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - evaluation
       - agents
     region: US
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: AI assistant that finds gaps in chains of reasoning and suggests repairs, framed as a tool for better arguments rather than persuasive ones. Built by a Harvard CS faculty member.
+    description: >-
+      AI assistant that finds gaps in chains of reasoning and suggests repairs, framed as a tool for better arguments
+      rather than persuasive ones. Built by a Harvard CS faculty member.
+    explainer: >-
+      Cosmos Institute granted Nada Amin on August 15, 2025 for Argument Debugger, with funding in the $1K to $10K range
+      plus compute. The award came through the inaugural AI x Truth-Seeking cohort of 27 winners co-funded by Cosmos
+      Institute and FIRE under a $1M program.
+
+
+      Amin is an assistant professor of computer science at Harvard, where her research includes programming languages
+      and metaprogramming. Argument Debugger is positioned as an AI assistant that finds gaps in chains of reasoning and
+      suggests repairs, framed explicitly as a tool for better arguments rather than more persuasive ones.
+
+
+      The distinction matters within the cohort: several other AI x Truth-Seeking grants build truth-seeking
+      infrastructure on top of LLMs, while Argument Debugger operates at the level of an individual argument's
+      structure, closer to a proof assistant than to a chatbot.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Remarker
     kind: project
     funder: cosmos-institute
     recipient: Jonas Kgomo
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - evaluation
       - retrieval-memory
     region: Global
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: Open-source Wikipedia-like reference for exploring truth-seeking behavior in LLMs. Curates examples and methods so other researchers can build on a shared corpus.
+    description: >-
+      Open-source Wikipedia-like reference for exploring truth-seeking behavior in LLMs. Curates examples and methods so
+      other researchers can build on a shared corpus.
+    explainer: >-
+      Cosmos Institute granted Jonas Kgomo on August 15, 2025 for Remarker, with funding in the $1K to $10K range plus
+      compute. The grant came through the inaugural AI x Truth-Seeking cohort of 27 winners co-funded by Cosmos
+      Institute and FIRE under a $1M program.
+
+
+      Remarker is an open-source Wikipedia-like reference for exploring truth-seeking behavior in large language models.
+      It curates examples and methods so other researchers can build on a shared corpus rather than reinventing test
+      sets per paper, putting the project in the evaluation and retrieval-memory layers.
+
+
+      Within the cohort Remarker is one of the more infrastructural projects, supplying a substrate that other
+      truth-seeking work can cite rather than producing a user-facing application.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Reward Hacking Benchmark
     kind: project
     funder: cosmos-institute
     recipient: Kunvar Thaman
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - evaluation
       - safety-guardrails
     region: Global
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: Open benchmark that systematically tests LLM agents for reward hacking and deceptive behavior, providing a public-good evaluation rather than relying on lab-internal red teams.
+    description: >-
+      Open benchmark that systematically tests LLM agents for reward hacking and deceptive behavior, providing a
+      public-good evaluation rather than relying on lab-internal red teams.
+    explainer: >-
+      Cosmos Institute granted Kunvar Thaman on August 15, 2025 for the Reward Hacking Benchmark, with funding in the
+      $1K to $10K range plus compute. The grant came through the inaugural AI x Truth-Seeking cohort of 27 winners
+      co-funded by Cosmos Institute and FIRE under a $1M program.
+
+
+      The benchmark systematically tests LLM agents for reward hacking and deceptive behavior, intended as a public-good
+      evaluation rather than as a lab-internal red-team exercise. Public benchmarks for this class of behavior are
+      scarce: most reported reward-hacking results come from frontier labs' own scaffolding, which limits independent
+      comparison across model providers.
+
+
+      The project sits in the evaluation and safety-guardrails layers and is one of the more model-facing items in the
+      cohort, sitting beside Perplex as another tool aimed at probing closed systems.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Socratic Mirror
     kind: project
     funder: cosmos-institute
     recipient: Zhongying Qiao
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - agents
       - evaluation
     region: Global
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: AI thought partner designed to interrogate the user rather than answer them, modelling Socratic questioning to push deeper thinking instead of optimizing for satisfaction.
+    description: >-
+      AI thought partner designed to interrogate the user rather than answer them, modelling Socratic questioning to
+      push deeper thinking instead of optimizing for satisfaction.
+    explainer: >-
+      Cosmos Institute granted Zhongying Qiao on August 15, 2025 for Socratic Mirror, with funding in the $1K to $10K
+      range plus compute. The grant came through the inaugural AI x Truth-Seeking cohort of 27 winners co-funded by
+      Cosmos Institute and FIRE under a $1M program.
+
+
+      Socratic Mirror is an AI thought partner designed to interrogate the user rather than answer them, modeling
+      Socratic questioning to push deeper thinking instead of optimizing for user satisfaction. The product framing
+      inverts the default assistant pattern, in which the system competes to give the most agreeable answer.
+
+
+      The project sits in the agents and evaluation cross-section of the stack. Within the AI x Truth-Seeking cohort it
+      pairs naturally with Socratica and Argument Debugger, all three of which treat the quality of the user's reasoning
+      as the unit of value.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Socratica
     kind: project
     funder: cosmos-institute
     recipient: Jasmine Cui
-    date: '2025-08-15'
+    date: "2025-08-15"
     amount_label: $1K-$10K plus compute
     layers:
       - agents
       - retrieval-memory
     region: US
     url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
-    description: AI librarian that conducts research and helps users formulate better questions, treating question-quality as a first-class output rather than a means to an answer.
+    description: >-
+      AI librarian that conducts research and helps users formulate better questions, treating question-quality as a
+      first-class output rather than a means to an answer.
+    explainer: >-
+      Cosmos Institute granted Jasmine Cui on August 15, 2025 for Socratica, with funding in the $1K to $10K range plus
+      compute. The grant came through the inaugural AI x Truth-Seeking cohort of 27 winners co-funded by Cosmos
+      Institute and FIRE under a $1M program.
+
+
+      Socratica is positioned as an AI librarian that conducts research and helps users formulate better questions,
+      treating question-quality as a first-class output rather than a means to an answer. The product sits in the agents
+      and retrieval-memory layers and operates closer to a coaching tool than to a search interface.
+
+
+      Within the cohort Socratica is one of three Socratic-method projects (alongside Socratic Mirror and Argument
+      Debugger) that bet on user-side reasoning improvements, a thematic cluster distinct from the model-probing tools
+      in the same cohort.
+    sources:
+      - title: Introducing the first cohort of AI x Truth-Seeking grantees (Cosmos Institute blog)
+        url: https://blog.cosmos-institute.org/p/introducing-the-first-cohort-of-ai
+      - title: FIRE and Cosmos Institute launch $1 million grant program
+        url: >-
+          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Praxis-based AI alignment values
     kind: project
     funder: cosmos-institute
     recipient: Peli Grietzer
-    date: '2024-12-17'
+    date: "2024-12-17"
     amount_label: $1K-$10K range
     layers:
       - evaluation
       - governance
     region: US
     url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
-    description: Harvard-trained researcher bridging philosophy, AI, and literary humanities. Defines praxis-based values inspired by virtue ethics to guide AI alignment beyond rule-based approaches.
+    description: >-
+      Harvard-trained researcher bridging philosophy, AI, and literary humanities. Defines praxis-based values inspired
+      by virtue ethics to guide AI alignment beyond rule-based approaches.
+    explainer: >-
+      Cosmos Institute selected Peli Grietzer for its second cohort, announced December 17, 2024, with the project
+      focused on praxis-based AI alignment values informed by virtue ethics.
+
+
+      The work proposes that alignment should be expressed through learned practices and dispositions rather than only
+      as explicit rule sets, treating model behavior as something cultivated over time. Grietzer's background bridges
+      philosophy of mind, machine learning, and literary humanities, and he holds a Harvard doctorate.
+
+
+      The grant sits in the Cosmos fast-grant range of $1K to $10K, consistent with the institute's themed-cohort
+      funding band described on its funder page. Cosmos positions the cohort as part of a broader push to back
+      philosopher-builders working at the intersection of AI and human flourishing.
+    sources:
+      - title: Announcing the second cohort of Cosmos
+        url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
   - title: Variable-binding interpretability infrastructure
     kind: project
     funder: cosmos-institute
     recipient: Raphaël Millière
-    date: '2024-12-17'
+    date: "2024-12-17"
     amount_label: $1K-$10K range
     layers:
       - evaluation
       - weights
     region: US
     url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
-    description: Macquarie University philosopher of mind developing open infrastructure for AI interpretability research, focused on how neural networks bind variables, a long-standing question in cognitive science.
+    description: >-
+      Macquarie University philosopher of mind developing open infrastructure for AI interpretability research, focused
+      on how neural networks bind variables, a long-standing question in cognitive science.
+    explainer: >-
+      Cosmos Institute funded Raphaël Millière in its second cohort, announced December 17, 2024, to develop open
+      interpretability infrastructure with a focus on variable binding in neural networks.
+
+
+      Variable binding refers to how a system represents and reuses discrete entities in symbolic operations, an open
+      question in cognitive science that interpretability research has tried to localize inside transformer activations.
+      Millière was an Assistant Professor in Philosophy of Artificial Intelligence at Macquarie University at the time
+      of the grant, working at the intersection of philosophy of mind and machine learning.
+
+
+      The grant size falls in the Cosmos Institute fast-grant range of $1K to $10K. The selection fits the institute's
+      stated emphasis on philosopher-builder prototypes that take a foundational question and convert it into a research
+      artifact in a 90-day window.
     sources:
-      - title: philpeople.org (audit-verified)
+      - title: Announcing the second cohort of Cosmos
+        url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
+      - title: Raphaël Millière PhilPeople profile
         url: https://philpeople.org/profiles/raphael-milliere-2
   - title: Public AI digital library
     kind: project
     funder: cosmos-institute
     recipient: Sam Klein (Public AI Network)
-    date: '2024-12-17'
+    date: "2024-12-17"
     amount_label: $1K-$10K range
     layers:
       - data
       - sovereignty-decentralization
     region: US
     url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
-    description: Cofounder of Public AI Network and longtime Wikipedian mapping how a public-good global digital library powered by generative AI could be built and governed.
+    description: >-
+      Cofounder of Public AI Network and longtime Wikipedian mapping how a public-good global digital library powered by
+      generative AI could be built and governed.
+    explainer: >-
+      Cosmos Institute selected Sam Klein, a cofounder of the Public AI Network and a longtime Wikipedian, for its
+      second cohort announced December 17, 2024.
+
+
+      Klein's project maps how a global digital library could be built and governed as a public good in the era of
+      generative models, drawing on Wikimedia experience with open knowledge infrastructure. The output is design and
+      governance scoping rather than a single software artifact.
+
+
+      The grant sits in the Cosmos fast-grant range of $1K to $10K. The funder positions the cohort around prototypes
+      and essays at the intersection of AI and human flourishing, with emphasis on decentralization and individual
+      autonomy.
+    sources:
+      - title: Announcing the second cohort of Cosmos
+        url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
   - title: Open agent economy infrastructure
     kind: project
     funder: cosmos-institute
     recipient: Seth Lazar
-    date: '2024-12-17'
+    date: "2024-12-17"
     amount_label: $1K-$10K range
     layers:
       - agents
@@ -584,12 +1347,29 @@ grants:
       - sovereignty-decentralization
     region: Global
     url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
-    description: Australian National University political philosopher developing technical and regulatory groundwork for an open agent economy that resists centralization by the largest agent platform companies.
+    description: >-
+      Australian National University political philosopher developing technical and regulatory groundwork for an open
+      agent economy that resists centralization by the largest agent platform companies.
+    explainer: >-
+      Cosmos Institute funded Seth Lazar in its second cohort, announced December 17, 2024, to develop the technological
+      and regulatory groundwork for an open agent economy.
+
+
+      Lazar is a political philosopher at the Australian National University whose recent work has examined the
+      political authority of AI systems. The grant supports scoping an alternative to a future in which large agent
+      platforms capture most user-to-agent and agent-to-agent interactions.
+
+
+      The grant falls within the Cosmos fast-grant range of $1K to $10K. It complements other awards in the cohort that
+      center decentralization, autonomy, and governance as cross-cutting design constraints for AI infrastructure.
+    sources:
+      - title: Announcing the second cohort of Cosmos
+        url: https://blog.cosmos-institute.org/p/announcing-the-second-cohort-of-cosmos
   - title: Institute for Decentralized AI launch
     kind: project
     funder: cosmos-institute
     recipient: Samuele Marro (Cosmos Incubation Fellow)
-    date: '2025-09-15'
+    date: "2025-09-15"
     amount_label: 5 fully funded research positions
     layers:
       - sovereignty-decentralization
@@ -597,12 +1377,29 @@ grants:
       - governance
     region: UK
     url: https://blog.cosmos-institute.org/p/new-decentralized-ai-project-and
-    description: New institute combining research and infrastructure to support AI that operates without centralized gatekeepers. Initial cohort of five fully funded positions split between Oxford and Stanford.
+    description: >-
+      New institute combining research and infrastructure to support AI that operates without centralized gatekeepers.
+      Initial cohort of five fully funded positions split between Oxford and Stanford.
+    explainer: >-
+      Cosmos Institute announced the Institute for Decentralized AI on September 15, 2025, with Samuele Marro as the
+      Cosmos Incubation Fellow leading the launch.
+
+
+      The institute combines research output with infrastructure work intended to support AI systems that operate
+      without centralized gatekeepers. Its initial cohort consists of five fully funded research positions split between
+      Oxford and Stanford.
+
+
+      The launch fits within Cosmos Institute's broader funding posture, which lists decentralization and individual
+      autonomy as core focus areas alongside its rolling fast-grant program and themed cohorts.
+    sources:
+      - title: New decentralized AI project and Institute launch
+        url: https://blog.cosmos-institute.org/p/new-decentralized-ai-project-and
   - title: Goose grant program launch
     kind: program
     funder: block-goose
     recipient: Multiple external builders
-    date: '2025-06-01'
+    date: "2025-06-01"
     amount_label: Up to $100K per grant
     layers:
       - agents
@@ -610,12 +1407,30 @@ grants:
       - protocols
     region: Global
     url: https://block.xyz/inside/introducing-the-goose-grant-program
-    description: Launch of grants for external developers building integrations, tooling, and infrastructure on Block's open-source goose agent platform. Goose runs locally, supports any model, and has shipped to thousands of developers via partners like Databricks.
+    description: >-
+      Launch of grants for external developers building integrations, tooling, and infrastructure on Block's open-source
+      goose agent platform. Goose runs locally, supports any model, and has shipped to thousands of developers via
+      partners like Databricks.
+    explainer: >-
+      Block launched a grant program in 2025 for external developers building integrations, tooling, and infrastructure
+      on goose, Block's open-source agentic AI platform. Individual grants are capped at $100K each.
+
+
+      Goose is designed to run locally and to allow any model of the developer's choice, with configurable tools.
+      According to Block's program announcement, the platform has reached thousands of community members and dozens of
+      code contributors, with adoption supported through partners including Databricks.
+
+
+      Block administers the program through its Open Source Program Office on a rolling basis, with awards directed at
+      projects that extend the platform rather than at goose's internal development.
+    sources:
+      - title: Introducing the goose grant program
+        url: https://block.xyz/inside/introducing-the-goose-grant-program
   - title: Orchard
     kind: project
     funder: opensats
     recipient: Orchard developers
-    date: '2025-06-01'
+    date: "2025-06-01"
     amount_label: Undisclosed
     layers:
       - runtime
@@ -623,12 +1438,29 @@ grants:
       - protocols
     region: Global
     url: https://opensats.org/blog/2025-year-in-review
-    description: Web application integrating an Ollama-powered local AI interface alongside Lightning Network Daemon, Taproot Assets, and Cashu. Demonstrates how local LLMs can be paired with sovereign-money rails.
+    description: >-
+      Web application integrating an Ollama-powered local AI interface alongside Lightning Network Daemon, Taproot
+      Assets, and Cashu. Demonstrates how local LLMs can be paired with sovereign-money rails.
+    explainer: >-
+      OpenSats funded Orchard in 2025, as recorded in the foundation's 2025 year-in-review post dated June 2025.
+
+
+      Orchard is a web application that pairs an Ollama-powered local AI interface with Lightning Network Daemon,
+      Taproot Assets, and Cashu integrations. The combination places a locally hosted language model alongside
+      Bitcoin-based payment rails on the same surface.
+
+
+      The grant fits OpenSats' stated practice of funding AI-adjacent work when the project is integrated with
+      sovereign-money protocols, and is named directly in the foundation's recap as one of its AI-adjacent 2025
+      disbursements.
+    sources:
+      - title: OpenSats 2025 year in review
+        url: https://opensats.org/blog/2025-year-in-review
   - title: Ente Photos
     kind: project
     funder: mozilla
     recipient: Ente
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -636,12 +1468,30 @@ grants:
       - runtime
     region: Asia
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Open-source on-device semantic search and image recognition for private photo storage. Mozilla Builders Accelerator cohort 1 (local AI theme); avoids cloud dependency for personal photo libraries.
+    description: >-
+      Open-source on-device semantic search and image recognition for private photo storage. Mozilla Builders
+      Accelerator cohort 1 (local AI theme); avoids cloud dependency for personal photo libraries.
+    explainer: >-
+      Mozilla selected Ente Photos for the first cohort of the Mozilla Builders Accelerator, announced September 23,
+      2024, with awards of up to $100K plus mentorship.
+
+
+      Ente Photos provides on-device semantic search and image recognition for private photo storage, keeping the
+      inference path inside the user's device rather than routing through cloud services. The project sits in the
+      local-AI theme that Mozilla used to scope the inaugural cohort.
+
+
+      Mozilla Builders requires participating projects to release their work under open-source licenses, which aligns
+      Ente Photos' end-to-end-encrypted photo product with the program's open-AI tooling brief.
+    sources:
+      - title: "14 AI projects to watch: Mozilla's first Builders Accelerator cohort"
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Transformer Lab
     kind: project
     funder: mozilla
     recipient: Transformer Lab
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -650,12 +1500,30 @@ grants:
       - runtime
     region: US
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Cross-platform desktop application for building, training, fine-tuning, evaluating, and exporting local LLMs on Windows, macOS, and Linux. Ships in Mozilla's first Builders Accelerator local-AI cohort.
+    description: >-
+      Cross-platform desktop application for building, training, fine-tuning, evaluating, and exporting local LLMs on
+      Windows, macOS, and Linux. Ships in Mozilla's first Builders Accelerator local-AI cohort.
+    explainer: >-
+      Mozilla selected Transformer Lab for the first Mozilla Builders Accelerator cohort, announced September 23, 2024,
+      with awards of up to $100K plus mentorship.
+
+
+      Transformer Lab is a cross-platform desktop application for building, training, fine-tuning, evaluating, and
+      exporting local large language models. It runs on Windows, macOS, and Linux, packaging the full local
+      model-development loop into a single tool.
+
+
+      The selection placed Transformer Lab in the Builders Accelerator local-AI cohort alongside Ente Photos, Sartify,
+      and other projects intended to keep model training and inference on user-controlled hardware.
+    sources:
+      - title: "14 AI projects to watch: Mozilla's first Builders Accelerator cohort"
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Sartify (Swahili LLM)
     kind: project
     funder: mozilla
     recipient: Sartify
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -664,12 +1532,30 @@ grants:
       - data
     region: Africa
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Foundation-model and tooling work for Swahili-speaking regions. Creates general and domain-specific AI capabilities for a language poorly served by major commercial models.
+    description: >-
+      Foundation-model and tooling work for Swahili-speaking regions. Creates general and domain-specific AI
+      capabilities for a language poorly served by major commercial models.
+    explainer: >-
+      Mozilla selected Sartify for the first Mozilla Builders Accelerator cohort, announced September 23, 2024, with
+      awards of up to $100K plus mentorship.
+
+
+      Sartify is a Swahili-language foundation-model and tooling effort that aims to provide general and domain-specific
+      AI capabilities for Swahili-speaking regions, languages that are poorly served by the dominant commercial models.
+
+
+      The grant sits in the local-AI theme of the inaugural Builders Accelerator. Mozilla's program rules require
+      recipients to open-source their deliverables, applying the same license posture to Sartify's Swahili work as to
+      the cohort's English-language local-AI tools.
+    sources:
+      - title: "14 AI projects to watch: Mozilla's first Builders Accelerator cohort"
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Ersilia Model Hub
     kind: project
     funder: mozilla
     recipient: Ersilia
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -677,12 +1563,30 @@ grants:
       - retrieval-memory
     region: Global
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Curated catalog of AI/ML drug-discovery models that operate locally. Targets researchers in low- and middle-income countries who cannot rely on US cloud platforms.
+    description: >-
+      Curated catalog of AI/ML drug-discovery models that operate locally. Targets researchers in low- and middle-income
+      countries who cannot rely on US cloud platforms.
+    explainer: >-
+      Ersilia Model Hub was selected for Mozilla's first Builders Accelerator cohort, announced September 23, 2024, with
+      funding of up to $100K. The cohort comprised 14 projects working on local, open AI tooling.
+
+
+      Ersilia operates a curated catalog of AI and ML models for drug discovery that run locally rather than on US cloud
+      platforms. The focus is critical diseases and researcher access in low- and middle-income countries, where cloud
+      dependency creates both cost and data-sovereignty barriers.
+
+
+      The project sits at the weights and retrieval-memory layers: it packages pretrained models in a form that can be
+      pulled, run, and reused offline by domain scientists who do not maintain ML infrastructure themselves.
+    sources:
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Foyle
     kind: project
     funder: mozilla
     recipient: Foyle
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -690,12 +1594,26 @@ grants:
       - runtime
     region: US
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: AI copilot for operations and automation work. Uses a notebook format to capture continuous human feedback so the assistant improves on the operator's actual workflows.
+    description: >-
+      AI copilot for operations and automation work. Uses a notebook format to capture continuous human feedback so the
+      assistant improves on the operator's actual workflows.
+    explainer: >-
+      Foyle was named to Mozilla's first Builders Accelerator cohort on September 23, 2024, receiving up to $100K. The
+      accelerator funded 14 projects building local-first open AI.
+
+
+      Foyle is positioned as an AI copilot for operations and automation work. The architecture uses a notebook
+      interface to capture continuous human feedback, with the goal of having the assistant adapt to an individual
+      operator's actual workflows rather than offering generic suggestions.
+    sources:
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Theia AI IDE
     kind: project
     funder: mozilla
     recipient: Eclipse Foundation / Theia
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -703,15 +1621,32 @@ grants:
       - runtime
     region: EU
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Extension of the Eclipse Theia editor giving developers a transparent, customizable AI experience with the freedom to choose and self-host language models.
+    description: >-
+      Extension of the Eclipse Theia editor giving developers a transparent, customizable AI experience with the freedom
+      to choose and self-host language models.
+    explainer: >-
+      The Eclipse Foundation's Theia AI IDE was selected for Mozilla's first Builders Accelerator cohort on September
+      23, 2024, with funding of up to $100K. The project is led by Jonas Helming.
+
+
+      Theia AI extends the existing Eclipse Theia editor to provide a suite of copilot features. The pitch is a
+      transparent, customizable developer AI experience that gives developers the freedom to choose and self-host their
+      own language models, rather than locking them to a single vendor's cloud service.
+
+
+      The project sits at the agents and runtime layers, addressing the question of whether AI-assisted coding can be
+      delivered in an open, vendor-neutral form competitive with proprietary IDE assistants.
     sources:
-      - title: builders.mozilla.org (audit-verified)
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+      - title: "Mozilla Builders: Theia AI IDE project page"
         url: https://builders.mozilla.org/the-ai-powered-theia-ide/
   - title: Latent Scope
     kind: project
     funder: mozilla
     recipient: Latent Scope
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -719,12 +1654,26 @@ grants:
       - evaluation
     region: US
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Local pipeline and visualization environment for embedding, clustering, and categorizing datasets with LLMs. Operates entirely on the user's machine.
+    description: >-
+      Local pipeline and visualization environment for embedding, clustering, and categorizing datasets with LLMs.
+      Operates entirely on the user's machine.
+    explainer: >-
+      Latent Scope was selected for Mozilla's first Builders Accelerator cohort on September 23, 2024, with funding of
+      up to $100K. The cohort funded 14 projects.
+
+
+      Latent Scope is a local pipeline and visualization environment for embedding, clustering, and categorizing
+      datasets with LLMs. The full workflow runs on the user's own machine, targeting researchers and analysts who want
+      to explore high-dimensional model outputs without sending data to a hosted service.
+    sources:
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
   - title: Nx (Elixir machine learning)
     kind: project
     funder: mozilla
     recipient: Nx project / DockYard
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -732,15 +1681,30 @@ grants:
       - runtime
     region: US
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Distributed machine-learning framework leveraging Elixir's concurrency and fault-tolerance properties as an alternative to Python-centric stacks.
+    description: >-
+      Distributed machine-learning framework leveraging Elixir's concurrency and fault-tolerance properties as an
+      alternative to Python-centric stacks.
+    explainer: >-
+      DockYard's Nx project was selected for Mozilla's first Builders Accelerator cohort on September 23, 2024, with
+      funding of up to $100K. Mozilla chose Nx from nearly 200 applications.
+
+
+      Nx is a distributed machine-learning framework built on Elixir, drawing on the language's concurrency and
+      fault-tolerance properties to offer an alternative to Python-centric ML stacks. The project sits at the training
+      and runtime layers, with the broader thesis that BEAM-VM languages can host serious numerical workloads when
+      paired with appropriate compiler backends.
     sources:
-      - title: dockyard.com (audit-verified)
-        url: https://dockyard.com/blog/2024/09/24/nx-selected-for-mozilla-inaugural-builders-accelerator-cohort-promoting-open-source-ai-solutions
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+      - title: "DockYard: Nx selected for Mozilla Builders Accelerator"
+        url: >-
+          https://dockyard.com/blog/2024/09/24/nx-selected-for-mozilla-inaugural-builders-accelerator-cohort-promoting-open-source-ai-solutions
   - title: Tölvera
     kind: project
     funder: mozilla
     recipient: Tölvera
-    date: '2024-09-23'
+    date: "2024-09-23"
     amount_usd: 100000
     amount_label: Up to $100K
     layers:
@@ -748,15 +1712,30 @@ grants:
       - runtime
     region: EU
     url: https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
-    description: Creative tool bridging art and science with self-organizing simulations that explore alternative models of intelligence. Produced by an artist-researcher in Iceland.
+    description: >-
+      Creative tool bridging art and science with self-organizing simulations that explore alternative models of
+      intelligence. Produced by an artist-researcher in Iceland.
+    explainer: >-
+      Tölvera was selected for Mozilla's first Builders Accelerator cohort on September 23, 2024, with funding of up to
+      $100K. The project comes out of the Intelligent Instruments Lab at the University of Iceland, where the name is an
+      Icelandic kenning the team chose to reflect that location.
+
+
+      Tölvera is a creative tool that bridges art and science through self-organizing simulations exploring alternative
+      models of intelligence. It is the cohort's clearest example of an artist-researcher project, sitting at the
+      evaluation and runtime layers as a vehicle for probing what counts as intelligent behavior outside the standard
+      LLM frame.
     sources:
-      - title: builders.mozilla.org (audit-verified)
+      - title: Mozilla Builders inaugural cohort announcement
+        url: >-
+          https://blog.mozilla.org/en/mozilla/14-ai-projects-to-watch-mozillas-first-builders-accelerator-cohort-kicks-off/
+      - title: "Mozilla Builders: Tölvera project page"
         url: https://builders.mozilla.org/project/tolvera/
   - title: Multistakeholder Engagement for Safe and Prosperous AI program
     kind: program
     funder: future-of-life-institute
     recipient: Multiple grantees (program-level)
-    date: '2025-06-01'
+    date: "2025-06-01"
     amount_usd: 5000000
     amount_label: $5M total, $100K-$500K per project
     layers:
@@ -764,12 +1743,31 @@ grants:
       - evaluation
     region: Global
     url: https://futureoflife.org/grant-program/multistakeholder-engagement-for-safe-and-prosperous-ai/
-    description: FLI grant program for projects that engage, educate, and activate stakeholder groups and the public on AI futures. Letters of intent due February 2025; decisions June 2025.
+    description: >-
+      FLI grant program for projects that engage, educate, and activate stakeholder groups and the public on AI futures.
+      Letters of intent due February 2025; decisions June 2025.
+    explainer: >-
+      The Future of Life Institute's Multistakeholder Engagement for Safe and Prosperous AI program totals $5M, with
+      per-project funding ranging from $100K to $500K. Letters of intent were due February 2025; funding decisions were
+      announced June 2025.
+
+
+      The program funds projects that engage, educate, and activate stakeholder groups and the wider public on AI
+      futures. The frame is governance-adjacent rather than technical: outputs are expected to shape how civil society,
+      policy actors, and non-expert publics participate in AI decisions, rather than direct work on models or
+      evaluations.
+
+
+      The grant sits at the governance and evaluation layers and is one of FLI's larger non-technical programs,
+      complementing its more research-coded grants on existential safety and benchmarking.
+    sources:
+      - title: FLI Multistakeholder Engagement for Safe and Prosperous AI
+        url: https://futureoflife.org/grant-program/multistakeholder-engagement-for-safe-and-prosperous-ai/
   - title: Problem-solving AI grants (16 awards)
     kind: program
     funder: future-of-life-institute
     recipient: 16 researchers across UN SDG and global governance tracks
-    date: '2024-12-01'
+    date: "2024-12-01"
     amount_usd: 240000
     amount_label: $15K each, $240K total
     layers:
@@ -777,59 +1775,132 @@ grants:
       - evaluation
     region: Global
     url: https://futureoflife.org/press-release/fli-announces-16-grants-for-problem-solving-ai/
-    description: Sixteen $15K grants for research on AI applied to UN SDG topics (maternal mortality, climate education, labor, poverty) and on global governance institution design (CERN for AI, Fair Trade AI, Global AGI agency).
+    description: >-
+      Sixteen $15K grants for research on AI applied to UN SDG topics (maternal mortality, climate education, labor,
+      poverty) and on global governance institution design (CERN for AI, Fair Trade AI, Global AGI agency).
+    explainer: >-
+      The Future of Life Institute announced 16 grants for problem-solving AI in December 2024, each at $15K, for a
+      total of $240K. Awards span two tracks.
+
+
+      The first track funds work applying AI to UN Sustainable Development Goal topics, including maternal mortality,
+      climate education, labor, and poverty. The second track funds governance-design research, with specific topics
+      including a CERN for AI, Fair Trade AI frameworks, and a Global AGI agency proposal.
+
+
+      The grants sit at the governance and evaluation layers and serve as a small-ticket discovery instrument: 16
+      short-cycle projects positioned to surface promising lines of inquiry that larger FLI programs could later scale.
+    sources:
+      - title: FLI announces 16 grants for problem-solving AI
+        url: https://futureoflife.org/press-release/fli-announces-16-grants-for-problem-solving-ai/
   - title: AI Safety Index Winter 2025
     kind: program
     funder: future-of-life-institute
     recipient: FLI internal team (third-party expert panel)
-    date: '2025-12-01'
+    date: "2025-12-01"
     amount_label: Internal program
     layers:
       - evaluation
       - safety-guardrails
     region: Global
     url: https://futureoflife.org/ai-safety-index-winter-2025/
-    description: Third installment of FLI's panel-graded AI Safety Index rating frontier labs on risk assessment, governance, current harms, safety frameworks, and existential safety strategy. Panel includes independent academics.
+    description: >-
+      Third installment of FLI's panel-graded AI Safety Index rating frontier labs on risk assessment, governance,
+      current harms, safety frameworks, and existential safety strategy. Panel includes independent academics.
+    explainer: >-
+      The Future of Life Institute published its Winter 2025 AI Safety Index in December 2025. It is the third
+      installment of the panel-graded index, following earlier editions in the same series.
+
+
+      The index rates frontier AI labs across five categories: risk assessment, governance, current harms, safety
+      frameworks, and existential safety strategy. Grading is performed by an independent panel that includes academic
+      researchers, with FLI's internal team running the methodology rather than scoring labs directly.
+
+
+      The output sits at the evaluation and safety-guardrails layers and functions as a recurring, reputationally
+      weighted scorecard on whether frontier labs are operationalizing their stated safety commitments.
+    sources:
+      - title: FLI AI Safety Index Winter 2025
+        url: https://futureoflife.org/ai-safety-index-winter-2025/
   - title: Scoping Developmental Interpretability (Timaeus first funding)
     kind: project
     funder: manifund
     recipient: Jesse Hoogland (Timaeus)
-    date: '2024-03-01'
+    date: "2024-03-01"
     amount_label: Undisclosed
     layers:
       - evaluation
       - weights
     region: Global
     url: https://manifund.substack.com/p/manifund-2025-regrants
-    description: First funding for the Timaeus team's developmental interpretability research program. Manifund regrant accelerated their research by months and seeded what is now an established alignment lab.
+    description: >-
+      First funding for the Timaeus team's developmental interpretability research program. Manifund regrant accelerated
+      their research by months and seeded what is now an established alignment lab.
+    explainer: >-
+      Manifund regranted Jesse Hoogland in March 2024 to scope a developmental interpretability research program. The
+      award was Timaeus's first funding, predating its later emergence as an established alignment lab.
+
+
+      The grant sits at the evaluation and weights layers, supporting empirical work on how internal model structure
+      develops during training. Per Manifund's own retrospective on its 2025 regrants, the early ticket accelerated the
+      team's research by months.
+    sources:
+      - title: Manifund 2025 regrants retrospective
+        url: https://manifund.substack.com/p/manifund-2025-regrants
   - title: China and AI deep coverage
     kind: project
     funder: manifund
     recipient: ChinaTalk (Jordan Schneider)
-    date: '2024-06-01'
+    date: "2024-06-01"
     amount_label: Undisclosed
     layers:
       - governance
     region: US
     url: https://manifund.substack.com/p/manifund-2025-regrants
-    description: Support for ChinaTalk's coverage of Chinese AI policy and the DeepSeek lab, ahead of the curve on what became major US policy debates.
+    description: >-
+      Support for ChinaTalk's coverage of Chinese AI policy and the DeepSeek lab, ahead of the curve on what became
+      major US policy debates.
+    explainer: >-
+      Manifund regranted ChinaTalk, the policy publication run by Jordan Schneider, in June 2024 to support deeper
+      coverage of Chinese AI policy and the DeepSeek lab. The amount was undisclosed in the Manifund regrants writeup.
+
+
+      The grant came roughly six months before DeepSeek-R1's release triggered the broader US debate about Chinese
+      open-weights frontier labs. Manifund's 2025 regrants retrospective cited ChinaTalk's coverage as ahead of the
+      curve on policy questions that later moved into mainstream US discussion.
+    sources:
+      - title: Manifund 2025 Regrants retrospective
+        url: https://manifund.substack.com/p/manifund-2025-regrants
   - title: Frontier AI benchmark pilot
     kind: project
     funder: manifund
     recipient: Epoch AI
-    date: '2024-09-01'
+    date: "2024-09-01"
     amount_usd: 200000
     amount_label: $200K
     layers:
       - evaluation
     region: Global
     url: https://manifund.substack.com/p/manifund-2025-regrants
-    description: Regrant from Leopold Aschenbrenner supporting Epoch AI's pilot of a new frontier AI benchmark, building on their earlier compute-trends and capability-tracking work.
+    description: >-
+      Regrant from Leopold Aschenbrenner supporting Epoch AI's pilot of a new frontier AI benchmark, building on their
+      earlier compute-trends and capability-tracking work.
+    explainer: >-
+      Manifund regranted Epoch AI $200,000 in September 2024 to pilot a new frontier AI benchmark. Epoch builds on a
+      body of prior work tracking compute trends and frontier model capabilities.
+
+
+      The regrant was made by Leopold Aschenbrenner, one of the regrantors operating under Manifund's distributed
+      regranting program. The pilot extends Epoch's evaluation work beyond capability tracking into structured benchmark
+      development.
+    sources:
+      - title: Manifund 2025 Regrants retrospective
+        url: https://manifund.substack.com/p/manifund-2025-regrants
   - title: SFF-2025 AI safety allocations
     kind: program
     funder: survival-and-flourishing-fund
     recipient: Multiple AI safety and governance organizations
-    date: '2025-12-01'
+    date: "2025-12-01"
     amount_usd: 29000000
     amount_label: ~$29M to AI
     layers:
@@ -838,15 +1909,30 @@ grants:
       - evaluation
     region: Global
     url: https://survivalandflourishing.fund/2025/recommendations
-    description: Approximately $29M of SFF's $34.9M 2025 round directed to AI safety and governance work, with smaller allocations to biosecurity, longevity, forecasting, math, and EA infrastructure.
+    description: >-
+      Approximately $29M of SFF's $34.9M 2025 round directed to AI safety and governance work, with smaller allocations
+      to biosecurity, longevity, forecasting, math, and EA infrastructure.
+    explainer: >-
+      The Survival and Flourishing Fund directed approximately $29 million of its $34.9 million 2025 round to AI safety
+      and governance organizations, per analysis published on the EA Forum. The recommendations were published in
+      December 2025.
+
+
+      The remainder of the round was distributed across biosecurity (approximately $2.5 million), longevity,
+      forecasting, mathematics, and effective altruism community infrastructure. SFF operates through an S-process
+      recommendation system run by funder Jaan Tallinn and a rotating set of recommenders, with grantees selected via
+      collaborative scoring rather than a central program officer.
     sources:
-      - title: forum.effectivealtruism.org (audit-verified)
-        url: https://forum.effectivealtruism.org/posts/vhw6R5P52qJr6opou/sff-2025-funding-by-cause-area-usd34-million-to-ai-86-bio-7
+      - title: SFF 2025 Recommendations
+        url: https://survivalandflourishing.fund/2025/recommendations
+      - title: "EA Forum: SFF-2025 Funding by Cause Area"
+        url: >-
+          https://forum.effectivealtruism.org/posts/vhw6R5P52qJr6opou/sff-2025-funding-by-cause-area-usd34-million-to-ai-86-bio-7
   - title: Hoffman-Yee 2025 continuation grants
     kind: program
     funder: stanford-hai
     recipient: Five Stanford research teams from 2024 cohort
-    date: '2025-04-01'
+    date: "2025-04-01"
     amount_usd: 10000000
     amount_label: Up to $2M each, $10M total
     layers:
@@ -855,24 +1941,56 @@ grants:
       - evaluation
     region: US
     url: https://hai.stanford.edu/news/stanford-research-teams-receive-new-hoffman-yee-grant-funding-for-2025
-    description: Five interdisciplinary Stanford teams from the 2024 Hoffman-Yee cohort received up to $2M each to continue their research over two more years. Notable recipient Brian Hie's group continues open biological foundation models with the Evo project.
+    description: >-
+      Five interdisciplinary Stanford teams from the 2024 Hoffman-Yee cohort received up to $2M each to continue their
+      research over two more years. Notable recipient Brian Hie's group continues open biological foundation models with
+      the Evo project.
+    explainer: >-
+      Stanford HAI's Hoffman-Yee program awarded continuation grants in April 2025 to five interdisciplinary teams from
+      its 2024 cohort. Each team received up to $2 million, totaling $10 million across the round, to extend their
+      research over two additional years.
+
+
+      Among the named recipients is Brian Hie's group at Stanford, which is using the funding to continue work on Evo,
+      an open biological foundation model. The program funds long-horizon Stanford research that crosses traditional AI
+      subfield boundaries.
+    sources:
+      - title: "Stanford HAI: Hoffman-Yee 2025 grant funding"
+        url: https://hai.stanford.edu/news/stanford-research-teams-receive-new-hoffman-yee-grant-funding-for-2025
   - title: Diverse Intelligences Hubs (4 universities)
     kind: program
     funder: templeton-world
     recipient: Princeton, Indiana, Macquarie, St Andrews
-    date: '2025-09-16'
+    date: "2025-09-16"
     amount_label: Multi-year hub grants
     layers:
       - evaluation
       - governance
     region: Global
     url: https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences
-    description: Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science. Each hub administers seed funding for early-career researchers and international collaborations.
-  - title: 'Inaugural Humanity AI grants ($18M total: $8M cohort + $10M open call)'
+    description: >-
+      Four global hubs funded to coordinate interdisciplinary research at the intersection of AI and cognitive science.
+      Each hub administers seed funding for early-career researchers and international collaborations.
+    explainer: >-
+      Templeton World Charity Foundation announced four Diverse Intelligences Hubs on September 16, 2025, sited at
+      Princeton, Indiana University, Macquarie University, and the University of St Andrews. The multi-year grants fund
+      interdisciplinary research at the intersection of AI and cognitive science.
+
+
+      Each hub administers seed funding for early-career researchers and supports international collaboration. The
+      Diverse Intelligences program is housed within Templeton World Charity's Discovery priority area, which targets
+      longer-horizon research at the boundaries of established disciplines.
+    sources:
+      - title: "Templeton World Charity: Diverse Intelligences"
+        url: https://www.templetonworldcharity.org/our-priorities/discovery/diverse-intelligences
+  - title: "Inaugural Humanity AI grants ($18M total: $8M cohort + $10M open call)"
     kind: program
     funder: humanity-ai
-    recipient: 9+ inaugural grantee organizations (AI Now Institute, Center for Democracy and Technology, Council on Foreign Relations LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, Student Defense, plus AI Civics)
-    date: '2026-05-12'
+    recipient: >-
+      9+ inaugural grantee organizations (AI Now Institute, Center for Democracy and Technology, Council on Foreign
+      Relations LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, Student Defense,
+      plus AI Civics)
+    date: "2026-05-12"
     amount_usd: 18000000
     amount_label: $18M total ($8M cohort grants + $3M AI Civics + $10M open call coming)
     layers:
@@ -881,12 +1999,36 @@ grants:
       - evaluation
     region: US
     url: https://humanityai.ai/humanity-ai-announces-more-than-18-million-in-new-grants-to-shape-ai-for-the-public-good/
-    description: First round of pooled grants from the Humanity AI coalition, covering democratic institutions, worker rights, journalism, and education. Named organizations awarded $500K each include AI Now Institute, Center for Democracy and Technology, CFR LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, and Student Defense. Includes $3M for a new AI Civics program led by Data & Society with Digital Public Library of America.
+    description: >-
+      First round of pooled grants from the Humanity AI coalition, covering democratic institutions, worker rights,
+      journalism, and education. Named organizations awarded $500K each include AI Now Institute, Center for Democracy
+      and Technology, CFR LEAD AI, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech, Pulitzer Center, and
+      Student Defense. Includes $3M for a new AI Civics program led by Data & Society with Digital Public Library of
+      America.
+    explainer: >-
+      The Humanity AI coalition announced its first round of pooled grants on May 12, 2026, totaling more than $18
+      million. The structure comprises $8 million in cohort grants to named organizations, $3 million for a new AI
+      Civics program, and $10 million committed to a forthcoming open call.
+
+
+      Named organizations receiving $500,000 each include AI Now Institute, Center for Democracy and Technology, the
+      Council on Foreign Relations LEAD AI initiative, DAIR Institute, Partnership on AI, TechEquity, Kinfolk Tech,
+      Pulitzer Center, and Student Defense. The $3 million AI Civics allocation supports a program led by Data & Society
+      in partnership with the Digital Public Library of America.
+
+
+      The coalition's stated themes for this inaugural round are safeguarding democratic institutions, protecting
+      workers' rights, strengthening journalism, and supporting education. Humanity AI is a pooled funder formed by a
+      group of foundations to coordinate civil-society-side grantmaking on AI.
+    sources:
+      - title: "Humanity AI: $18M in inaugural grants"
+        url: >-
+          https://humanityai.ai/humanity-ai-announces-more-than-18-million-in-new-grants-to-shape-ai-for-the-public-good/
   - title: FOCAL lab at Carnegie Mellon
     kind: project
     funder: cooperative-ai-foundation
     recipient: Vincent Conitzer (Carnegie Mellon FOCAL lab)
-    date: '2021-09-01'
+    date: "2021-09-01"
     amount_label: $500,000 (2021-2025)
     amount_usd: 500000
     layers:
@@ -894,27 +2036,53 @@ grants:
       - evaluation
     region: US
     url: https://www.cooperativeai.com/post/grant-summaries
-    description: Multi-year grant establishing the Foundations of Cooperative AI Lab (FOCAL) under Vincent Conitzer at Carnegie Mellon University. The lab develops decision and game theory for cooperation between advanced machine agents, with outputs including workshops, online seminar series, and visitor programs.
+    description: >-
+      Multi-year grant establishing the Foundations of Cooperative AI Lab (FOCAL) under Vincent Conitzer at Carnegie
+      Mellon University. The lab develops decision and game theory for cooperation between advanced machine agents, with
+      outputs including workshops, online seminar series, and visitor programs.
+    explainer: >-
+      The Cooperative AI Foundation granted Vincent Conitzer at Carnegie Mellon University $500,000 over the 2021 to
+      2025 period to establish the Foundations of Cooperative AI Lab, known as FOCAL. The lab develops decision and
+      game-theoretic foundations for cooperation between advanced AI agents.
+
+
+      FOCAL's outputs include workshops, an online seminar series, and a visitor program connecting researchers working
+      on multi-agent cooperation, mechanism design, and related game theory questions relevant to AI systems that
+      interact with one another.
+    sources:
+      - title: "Cooperative AI Foundation: Grant Summaries"
+        url: https://www.cooperativeai.com/post/grant-summaries
   - title: Coercion-capability measurement project
     kind: project
     funder: cooperative-ai-foundation
     recipient: CAIF 2025 grantee
-    date: '2025-04-01'
+    date: "2025-04-01"
     amount_label: Undisclosed
     layers:
       - evaluation
       - safety-guardrails
     region: UK
     url: https://www.cooperativeai.com/post/grant-summaries
-    description: Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with different levels of those capabilities.
+    description: >-
+      Develops practical methods to measure coercive capabilities of AI agents and to model the risks associated with
+      different levels of those capabilities.
+    explainer: >-
+      The Cooperative AI Foundation funded a project in April 2025 developing practical methods to measure coercive
+      capabilities in AI agents and to model the risks associated with different levels of those capabilities. The grant
+      addresses dual-use capabilities that underlie coercion in AI systems.
+
+
+      The work sits at the intersection of capability evaluation and safety, treating coercion as a measurable property
+      of agent behavior rather than a purely qualitative concern. The grant amount was not disclosed in the Cooperative
+      AI Foundation's public grant summaries.
     sources:
-      - title: cooperativeai.com (audit-verified)
+      - title: "Cooperative AI Foundation: Grant Summaries"
         url: https://www.cooperativeai.com/post/grant-summaries
   - title: Goodfire (Batch 4)
     kind: project
     funder: ai-grant
     recipient: Goodfire
-    date: '2025-03-01'
+    date: "2025-03-01"
     amount_usd: 250000
     amount_label: $250K SAFE plus credits
     layers:
@@ -922,12 +2090,25 @@ grants:
       - weights
     region: US
     url: https://aigrant.org/
-    description: Mechanistic interpretability tooling for production LLM deployments. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    description: >-
+      Mechanistic interpretability tooling for production LLM deployments. Selected for AI Grant Batch 4 with $250K SAFE
+      plus Microsoft Azure and partner credits.
+    explainer: >-
+      Goodfire was selected for AI Grant Batch 4, receiving a $250,000 SAFE plus Microsoft Azure and partner credits.
+      The company builds mechanistic interpretability tooling for production LLM deployments.
+
+
+      AI Grant is run by Nat Friedman and Daniel Gross as a distributed accelerator backing early-stage AI startups with
+      cash, compute, and partner credits. Batch 4 included Goodfire alongside Silurian, Inception Labs, Haize Labs, and
+      Artificial Analysis.
+    sources:
+      - title: AI Grant
+        url: https://aigrant.org/
   - title: Inception Labs (Batch 4)
     kind: project
     funder: ai-grant
     recipient: Inception Labs
-    date: '2025-03-01'
+    date: "2025-03-01"
     amount_usd: 250000
     amount_label: $250K SAFE plus credits
     layers:
@@ -935,15 +2116,27 @@ grants:
       - weights
     region: US
     url: https://aigrant.org/
-    description: Diffusion-based large language models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    description: >-
+      Diffusion-based large language models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and
+      partner credits.
+    explainer: >-
+      Inception Labs was selected for AI Grant Batch 4, receiving a $250,000 SAFE plus Microsoft Azure and partner
+      credits. The company works on diffusion-based large language models, a non-autoregressive approach distinct from
+      the dominant transformer-decoder paradigm at the frontier.
+
+
+      AI Grant Batch 4 was announced via the program's October 2024 cohort posts, with the broader batch including
+      Goodfire, Silurian, Haize Labs, and Artificial Analysis. The accelerator is run by Nat Friedman and Daniel Gross.
     sources:
-      - title: x.com (audit-verified)
+      - title: AI Grant
+        url: https://aigrant.org/
+      - title: AI Grant Batch 4 announcement
         url: https://x.com/aigrant/status/1840826250124017868
   - title: Haize Labs (Batch 4)
     kind: project
     funder: ai-grant
     recipient: Haize Labs
-    date: '2025-03-01'
+    date: "2025-03-01"
     amount_usd: 250000
     amount_label: $250K SAFE plus credits
     layers:
@@ -951,62 +2144,141 @@ grants:
       - safety-guardrails
     region: US
     url: https://aigrant.org/
-    description: Adversarial AI evaluation and red-teaming infrastructure. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    description: >-
+      Adversarial AI evaluation and red-teaming infrastructure. Selected for AI Grant Batch 4 with $250K SAFE plus
+      Microsoft Azure and partner credits.
+    explainer: >-
+      AI Grant Batch 4 (announced October 2024) selected Haize Labs for a $250,000 SAFE plus Microsoft Azure and partner
+      credits. AI Grant is the accelerator run by Nat Friedman and Daniel Gross.
+
+
+      Haize Labs builds adversarial AI evaluation and red-teaming infrastructure, the discipline of stress-testing
+      language models to surface jailbreaks, prompt injections, and other failure modes before deployment. The category
+      sits at the intersection of evaluation and safety guardrails.
+
+
+      The selection places Haize Labs alongside Batch 4 peers including Goodfire, Inception Labs, and Artificial
+      Analysis, all sharing the same $250K SAFE plus credits structure.
+    sources:
+      - title: AI Grant
+        url: https://aigrant.org/
+      - title: AI Grant Batch 4 announcement
+        url: https://x.com/aigrant/status/1840826270894211276
   - title: Artificial Analysis (Batch 4)
     kind: project
     funder: ai-grant
     recipient: Artificial Analysis
-    date: '2025-03-01'
+    date: "2025-03-01"
     amount_usd: 250000
     amount_label: $250K SAFE plus credits
     layers:
       - evaluation
     region: US
     url: https://aigrant.org/
-    description: Independent benchmarks and evaluations of frontier AI models. Selected for AI Grant Batch 4 with $250K SAFE plus Microsoft Azure and partner credits.
+    description: >-
+      Independent benchmarks and evaluations of frontier AI models. Selected for AI Grant Batch 4 with $250K SAFE plus
+      Microsoft Azure and partner credits.
+    explainer: >-
+      AI Grant Batch 4 (announced October 2024) selected Artificial Analysis for a $250,000 SAFE plus Microsoft Azure
+      and partner credits. The accelerator, run by Nat Friedman and Daniel Gross, structures every Batch 4 award
+      identically.
+
+
+      Artificial Analysis publishes independent benchmarks and evaluations of frontier AI models, covering throughput,
+      latency, quality scores, and pricing across providers. The work supplies a third-party reference layer for buyers
+      comparing closed and open model APIs.
+
+
+      The grant places Artificial Analysis at the evaluation meta-layer, alongside other Batch 4 selections including
+      Goodfire (interpretability tooling), Haize Labs (adversarial red-teaming), and Inception Labs (diffusion LLMs).
     sources:
-      - title: aigrant.com (audit-verified)
-        url: https://aigrant.com/
+      - title: AI Grant
+        url: https://aigrant.org/
+      - title: AI Grant Batch 4 announcement
+        url: https://x.com/aigrant/status/1840826270894211276
   - title: Open source math for the AIs
     kind: project
     funder: emergent-ventures
     recipient: Reyansh Sharma
-    date: '2025-09-01'
+    date: "2025-09-01"
     amount_label: $1K-$50K range
     layers:
       - data
       - training
     region: UK
     url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
-    description: Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort Emergent Ventures award.
+    description: >-
+      Building open-source mathematical training data and evaluation sets for use by language models. 46th cohort
+      Emergent Ventures award.
+    explainer: >-
+      The Mercatus Center's Emergent Ventures program selected Reyansh Sharma in its 46th cohort (September 2025) for
+      work on open-source mathematical training data and evaluation sets for language models. Emergent Ventures grants
+      typically fall in the $1K to $50K range and are awarded at Tyler Cowen's discretion through a single-page
+      application.
+
+
+      The project sits at the intersection of the data and training layers. Math-specific corpora and evaluation sets
+      remain a bottleneck for open models pursuing reasoning capability, and curated public datasets are an
+      under-supplied input relative to demand from open-weights model trainers.
+    sources:
+      - title: Emergent Ventures winners, 46th cohort
+        url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
   - title: Privacy-preserving ML on encrypted data
     kind: project
     funder: emergent-ventures
     recipient: Jessie Chen
-    date: '2025-09-01'
+    date: "2025-09-01"
     amount_label: $1K-$50K range
     layers:
       - identity-trust
       - training
     region: Asia
     url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
-    description: Privacy-preserving machine-learning models that operate directly on encrypted data without exposing the underlying inputs. 46th cohort Emergent Ventures award.
+    description: >-
+      Privacy-preserving machine-learning models that operate directly on encrypted data without exposing the underlying
+      inputs. 46th cohort Emergent Ventures award.
+    explainer: >-
+      The Mercatus Center's Emergent Ventures program selected Jessie Chen in its 46th cohort (September 2025) for work
+      on privacy-preserving machine-learning models that operate directly on encrypted data, without exposing the
+      underlying inputs. Emergent Ventures grants typically fall in the $1K to $50K range, awarded at Tyler Cowen's
+      discretion through a single-page application.
+
+
+      The technique sits in the identity-trust meta-layer and overlaps with confidential computing, homomorphic
+      encryption, and secure multiparty computation. The premise is that training and inference can be performed on data
+      whose plaintext is never visible to the compute provider, a posture relevant to healthcare, finance, and any
+      setting where regulatory or contractual constraints prevent raw data from leaving its origin.
+    sources:
+      - title: Emergent Ventures winners, 46th cohort
+        url: https://marginalrevolution.com/marginalrevolution/2025/09/emergent-ventures-winners-46th-cohort.html
   - title: Data for the AIs
     kind: project
     funder: emergent-ventures
     recipient: Laura Ryan
-    date: '2025-12-01'
+    date: "2025-12-01"
     amount_label: $1K-$50K range
     layers:
       - data
     region: UK
     url: https://marginalrevolution.com/marginalrevolution/2025/12/emergent-ventures-winners-50th-cohort.html
     description: Building open data resources for AI training. 50th cohort Emergent Ventures award.
+    explainer: >-
+      The Mercatus Center's Emergent Ventures program selected Laura Ryan in its 50th cohort (December 2025) for work on
+      open data resources for AI training. Emergent Ventures grants typically fall in the $1K to $50K range, awarded at
+      Tyler Cowen's discretion through a single-page application.
+
+
+      The project sits at the data layer, where the public-goods case for openly licensed, well-curated training corpora
+      is well established but the supply remains thin relative to closed-lab internal datasets. Emergent Ventures has
+      funded several adjacent open-data and math-corpora efforts across recent cohorts.
+    sources:
+      - title: Emergent Ventures winners, 50th cohort
+        url: https://marginalrevolution.com/marginalrevolution/2025/12/emergent-ventures-winners-50th-cohort.html
   - title: Astera Residency Program
     kind: program
     funder: astera-institute
     recipient: Multiple residents
-    date: '2025-01-01'
+    date: "2025-01-01"
     amount_label: $125K-$250K salary plus up to $1.5M project budget
     layers:
       - data
@@ -1014,19 +2286,36 @@ grants:
       - weights
     region: US
     url: https://astera.org/foundation/
-    description: One-year fully-funded residency for scientists and engineers building open-science public goods, including AI for biology and other research domains. Residents receive Voltage Park H100 compute access and must publish all code, data, and outputs openly.
+    description: >-
+      One-year fully-funded residency for scientists and engineers building open-science public goods, including AI for
+      biology and other research domains. Residents receive Voltage Park H100 compute access and must publish all code,
+      data, and outputs openly.
+    explainer: >-
+      The Astera Institute runs a one-year fully-funded residency for scientists and engineers building open-science
+      public goods. Residents receive a salary of $125,000 to $250,000 (commensurate with experience) and a project
+      budget of up to $1.5 million.
+
+
+      Residents have access to substantial compute via Voltage Park, a 24,000-H100 cluster, which enables AI-for-science
+      work at frontier scale alongside more traditional research domains. The residency framing covers AI for biology
+      and other open-science research targets.
+
+
+      Astera's Open Science Policy explicitly requires that all underlying outputs, including code, data, and
+      presentations, be openly published. The combination of frontier-scale compute access, multi-year individual
+      budgets, and a binding open-publication requirement is uncommon among AI-adjacent residency programs.
     sources:
-      - title: astera.org (audit-verified)
+      - title: Astera Residency
         url: https://astera.org/residency/
-      - title: astera.org (audit-verified)
+      - title: Astera first residency cohort
         url: https://astera.org/first-residency-cohort/
-      - title: astera.org (audit-verified)
+      - title: Astera Open Science Policy
         url: https://astera.org/open-science-policy/
   - title: Recall (AI agent reputation)
     kind: project
     funder: filecoin-foundation
     recipient: Recall
-    date: '2025-04-01'
+    date: "2025-04-01"
     amount_label: Undisclosed
     layers:
       - data
@@ -1034,37 +2323,89 @@ grants:
       - identity-trust
     region: Global
     url: https://fil.org/blog/filecoin-foundation-quarterly-update-april-2025
-    description: Reputation system for AI agents that ensures they operate on high-integrity, verifiable data. Integrates Filecoin decentralized storage as the substrate for agent state and provenance.
+    description: >-
+      Reputation system for AI agents that ensures they operate on high-integrity, verifiable data. Integrates Filecoin
+      decentralized storage as the substrate for agent state and provenance.
+    explainer: >-
+      Recall is a reputation system for AI agents, with the goal of ensuring agents operate on high-integrity,
+      verifiable data and that their actions and state carry provenance. The Filecoin Foundation profiled Recall in its
+      April 2025 quarterly update.
+
+
+      Recall is built as an Interplanetary Consensus (IPC) subnet and integrates Filecoin decentralized storage as the
+      substrate for agent state and provenance. The architecture places agent memory and audit trails on a verifiable
+      storage layer rather than in opaque centralized databases.
+
+
+      The project spans the data, agents, and identity-trust layers: it treats verifiable agent behavior as a function
+      of where the underlying state is stored and who can attest to it.
     sources:
-      - title: fil.org (audit-verified)
+      - title: Filecoin Foundation ecosystem entry for Recall
         url: https://fil.org/ecosystem-explorer/recall
+      - title: Filecoin Foundation quarterly update, April 2025
+        url: https://fil.org/blog/filecoin-foundation-quarterly-update-april-2025
   - title: BridgingBot
     kind: project
     funder: plurality-institute
     recipient: Plurality Institute (with Harvard, UC Berkeley, Jigsaw, Google.org)
-    date: '2025-02-01'
+    date: "2025-02-01"
     amount_label: Undisclosed
     layers:
       - agents
       - governance
     region: US
     url: https://www.plurality.institute/research
-    description: LLM-powered social-media moderator designed to foster constructive online dialogue. Includes a randomized controlled trial and full open-sourcing of code and methods.
+    description: >-
+      LLM-powered social-media moderator designed to foster constructive online dialogue. Includes a randomized
+      controlled trial and full open-sourcing of code and methods.
+    explainer: >-
+      BridgingBot is an LLM-powered social-media moderator designed to foster constructive online dialogue. The
+      Plurality Institute supported the project in February 2025, with Harvard, UC Berkeley, Jigsaw, and Google.org as
+      collaborators.
+
+
+      The bot steps into a thread to model the skills of a human mediator, paraphrasing positions and surfacing common
+      ground rather than acting as a content-filter classifier. The work includes a randomized controlled trial of the
+      bot in deployment, plus full open-sourcing of code and methods.
+
+
+      The combination of an RCT for an LLM-driven civic-tech intervention and a commitment to open code and methodology
+      is uncommon for moderation tooling, where most production systems are proprietary and unaudited.
     sources:
-      - title: techandsocialcohesion.substack.com (audit-verified)
+      - title: Plurality Institute research
+        url: https://www.plurality.institute/research
+      - title: "Tech and Social Cohesion: From Battleground to Common Ground"
         url: https://techandsocialcohesion.substack.com/p/from-battleground-to-common-ground
   - title: LLM Map of deliberative AI tools
     kind: project
     funder: plurality-institute
     recipient: Plurality Institute community
-    date: '2025-02-01'
+    date: "2025-02-01"
     amount_label: Internal program
     layers:
       - evaluation
       - governance
     region: Global
     url: https://www.plurality.institute/research
-    description: Collaboratively built landscape catalog of 70+ tools using LLMs to strengthen public discourse. Launched at the institute's February 2025 LLM Workshop and organized along functional dimensions.
+    description: >-
+      Collaboratively built landscape catalog of 70+ tools using LLMs to strengthen public discourse. Launched at the
+      institute's February 2025 LLM Workshop and organized along functional dimensions.
+    explainer: >-
+      The Plurality Institute's LLM Map is a collaboratively built catalog of current and emerging tools that use
+      language models to strengthen public discourse. The map was launched at the institute's February 2025 LLM
+      Workshop.
+
+
+      The catalog highlights more than 70 tools, organized along functional dimensions that span deliberation support,
+      moderation, summarization of public input, and adjacent civic-tech use cases. It serves both as a coverage
+      artifact for the field and as a discovery surface for funders and researchers entering the space.
+
+
+      The map sits at the evaluation and governance meta-layers: it is less a product than a survey of where LLM-driven
+      deliberation tooling currently exists, what gaps remain, and which efforts overlap.
     sources:
-      - title: plurality.institute (audit-verified)
-        url: https://www.plurality.institute/blog-posts/exploring-opportunities-for-large-language-models-in-public-discourse
+      - title: "Plurality Institute: Exploring opportunities for LLMs in public discourse"
+        url: >-
+          https://www.plurality.institute/blog-posts/exploring-opportunities-for-large-language-models-in-public-discourse
+      - title: Plurality Institute research
+        url: https://www.plurality.institute/research
