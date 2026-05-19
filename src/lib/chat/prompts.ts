@@ -110,6 +110,14 @@ export function buildContextBlock(ctx: PageContext): string {
       lines.push(
         `They are looking at the funder profile for '${ctx.entity.slug}'.`,
       );
+    } else if (ctx.entity.kind === "project") {
+      lines.push(
+        `They are looking at the project page for '${ctx.entity.slug}'. If they ask "this project" or similar, default to that. Use read_project to ground references.`,
+      );
+    } else if (ctx.entity.kind === "glossary") {
+      lines.push(
+        `They are looking at the glossary entry for '${ctx.entity.slug}'. If they ask "this term" or similar, default to that. Use read_glossary to ground references.`,
+      );
     } else if (ctx.entity.kind === "news") {
       lines.push(
         `They are reading the news issue dated ${ctx.entity.date}.`,

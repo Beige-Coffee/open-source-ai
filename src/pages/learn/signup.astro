@@ -1,0 +1,113 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const { user } = Astro.locals;
+
+if (user) {
+  return Astro.redirect("/learn");
+}
+
+let errorMessage: string | null = null;
+let infoMessage: string | null = null;
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const email = String(form.get("email") ?? "").trim();
+  const password = String(form.get("password") ?? "");
+  if (!email || !password) {
+    errorMessage = "Email and password are both required.";
+  } else if (password.length < 8) {
+    errorMessage = "Password must be at least 8 characters.";
+  } else {
+    const { data, error } = await Astro.locals.supabase.auth.signUp({ email, password });
+    if (error) {
+      errorMessage = error.message;
+    } else if (data.session) {
+      // Email confirmation disabled: user is already signed in. Send
+      // them to /learn with a sentinel so the client-side restore
+      // promotes their anonymous localStorage writings.
+      return Astro.redirect("/learn?restore=anon");
+    } else {
+      infoMessage =
+        "Account created. Check your email for a confirmation link, then log in.";
+    }
+  }
+}
+---
+
+<BaseLayout title="Sign up for /learn" description="Create an account to save your progress through the open-source AI stack course.">
+  <section class="max-w-md mx-auto px-6 pt-16 pb-12">
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      Course
+    </p>
+    <h1 class="font-serif text-3xl text-[var(--color-text)] mb-2">
+      Sign up
+    </h1>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6 leading-relaxed">
+      Save your progress, sync across devices, and download your
+      Personal Notes when you finish. Or
+      <a href="/learn" class="text-[var(--color-text)] hover:no-underline">browse without an account</a>.
+    </p>
+
+    <form method="POST" class="space-y-4">
+      {
+        errorMessage && (
+          <p class="text-sm text-red-700 border border-red-200 bg-red-50 px-3 py-2 rounded">
+            {errorMessage}
+          </p>
+        )
+      }
+      {
+        infoMessage && (
+          <p class="text-sm text-[var(--color-text)] border border-[var(--color-border-strong)] bg-[var(--color-surface-warm)] px-3 py-2 rounded">
+            {infoMessage}
+          </p>
+        )
+      }
+      <label class="block">
+        <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">
+          Email
+        </span>
+        <input
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+        />
+      </label>
+      <label class="block">
+        <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">
+          Password (8 chars or more)
+        </span>
+        <input
+          type="password"
+          name="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+          class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+        />
+      </label>
+      <button
+        type="submit"
+        class="w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+      >
+        Create account
+      </button>
+    </form>
+
+    <p class="text-sm text-[var(--color-text-muted)] mt-6 text-center">
+      Already have an account? <a href="/learn/login" class="text-[var(--color-text)]">Log in</a>.
+    </p>
+
+    <p class="text-xs text-[var(--color-text-subtle)] mt-8 text-center leading-relaxed">
+      Your email and password are stored at Supabase. The course saves
+      your module progress and the text you write during the course
+      (your synthesis paragraphs, your "why open source matters" answers).
+      Nothing else. See <a href="/privacy" class="text-[var(--color-text-muted)]">/privacy</a> for specifics.
+    </p>
+  </section>
+</BaseLayout>

@@ -462,47 +462,42 @@ given design iteration, especially on curriculum content.
   Mitigated by querying live for projects / glossary / predictions;
   static Read passages would drift and need periodic refresh.
 
-## Open questions before build
+## Open questions: answers (locked May 2026)
 
-These need answers before I can start writing code:
-
-1. **Supabase project**: do you already have a Supabase account / a
-   project provisioned for this site? If new: any preferences on
-   region (US East / US West / EU)? Project name?
-2. **OAuth providers**: support email/password only, or add Google
-   and/or GitHub OAuth at launch?
-3. **Vercel deploy**: is the existing Vercel project configured for
-   static deploys only, or does it support functions? Any preference
-   on adapter (`@astrojs/vercel/static` → `@astrojs/vercel/serverless`)?
-4. **Curriculum authoring review**: will you review every module's
-   Read passage + Probe prompts + Compare axes + Why-Open prompt
-   before they ship, or do I draft all 15 and you do one editorial
-   pass at the end?
-5. **PDF export**: client-side `window.print()` to PDF (simpler, no
-   new dep) or server-side rendering (better fidelity, adds puppeteer
-   or react-pdf)?
-6. **Privacy policy**: plain-English doc I draft, or do you want
-   legal-counsel input first? Audience-of-two suggests the former.
-7. **Display name**: should the user enter a display name at signup,
-   or is it just inferred from email?
-8. **Read-phase passages**: do you want me to draft new passages
-   specifically for the course, or curate excerpts from the existing
-   `layer.mdx` body plus selected glossary entries? The latter
-   reuses sourced material; the former gives the course its own
-   voice but doubles the maintenance burden.
-9. **What happens to anonymous users' answers**: do we offer "save
-   what you've written so far by signing up now" at the end of a
-   module, or accept that anonymous users lose their writings on tab
-   close?
-10. **Course panel UI**: same Floating UI + popover patterns as the
-    existing ChatBubble, or a fixed sidebar layout (panel always
-    visible on /learn pages)?
-11. **Course system prompt for the existing chat agent**: any
-    instruction the existing ChatBubble's prompt should pick up so
-    that if a user lands on /stack/<layer> after taking the course
-    module for that layer, the agent can reference what the user
-    wrote in their Personal Notes? (probably no for v1; flagged for
-    consideration.)
+1. **Supabase project**: Austin has an existing project; will provide
+   the project URL + anon key for the local `.env` and Vercel env
+   vars. Service-role key stays Vercel-only.
+2. **OAuth providers**: Email/password only at launch. No OAuth
+   provider config needed. Lower setup, higher signup friction;
+   acceptable for audience-of-two.
+3. **Vercel deploy**: Currently static-only. Will swap the adapter
+   from `@astrojs/vercel/static` (or no adapter) to `@astrojs/vercel`
+   hybrid mode. Static pages stay static; `/learn/*` becomes SSR.
+4. **Curriculum authoring**: I draft all 15 modules end-to-end (fast
+   + deep variants) without intermediate review. Austin does one
+   editorial pass at the end. Saves coordination overhead; trusts
+   the writer.
+5. **PDF export**: Server-side via `@react-pdf/renderer`. Better
+   fidelity than `window.print()`; adds a dependency but cleaner
+   output for what is meant to be a portfolio-quality take-home.
+6. **Privacy policy**: Plain-English doc, ~400 words, drafted by me.
+   No attorney review. Honest description of what's collected, where
+   stored, who has access, export + deletion paths.
+7. **Display name**: Optional at signup; user can set/edit on
+   `/learn/profile`. Defaults to email local-part.
+8. **Read-phase passages**: Curated from existing `layer.mdx` +
+   selected glossary entries. Inherits the reference site's voice
+   and audited sources; reduces maintenance.
+9. **Anonymous writings**: Auto-stashed in localStorage in real time.
+   Signup flow reads localStorage and writes the stashed writings
+   into Supabase under the new account on success. Tab close before
+   signup still loses them.
+10. **Course panel UI**: Fixed sidebar layout. `/learn/<module>`
+    pages render as ~60% content + ~40% course chat panel; panel
+    always visible on module pages. Matches modern courseware UX.
+11. **Existing chat agent cross-talk**: Skip for v1. The Personal
+    Notes are course-internal; the floating ChatBubble on
+    `/stack/<layer>` doesn't yet reference them.
 
 ## Co-evolution
 

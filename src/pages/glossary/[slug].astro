@@ -2,9 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
 import { loadLayers } from "../../lib/layers";
-import { readFileSync, readdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 
 export async function getStaticPaths() {
   const entries = await getCollection("glossary");
@@ -25,10 +22,9 @@ const secondaries = (entry.data.secondary_layers ?? []).map(
   (s) => layerBySlug[s],
 ).filter(Boolean);
 
-// Backlinks: scan layer MDX + other glossary entries for <G term="slug">
-// wraps. Build-time only; static page bakes the result.
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = resolve(__dirname, "../../..");
+// Backlinks: scan layer + glossary content collections for <G term="slug">
+// wraps. Use content collection bodies rather than raw fs so this works
+// in both static and SSR builds.
 const slug = entry.id;
 const tagRe = new RegExp(
   `<G\\s+term=["']${slug.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}["']`,
@@ -42,12 +38,10 @@ interface Backlink {
 }
 const backlinks: Backlink[] = [];
 
-const layersDir = resolve(PROJECT_ROOT, "src/content/layers");
-for (const name of readdirSync(layersDir)) {
-  if (!name.endsWith(".mdx")) continue;
-  const body = readFileSync(resolve(layersDir, name), "utf8");
-  if (tagRe.test(body)) {
-    const layerSlug = name.replace(/\.mdx$/, "");
+const layerEntries = await getCollection("layers");
+for (const l of layerEntries) {
+  if (tagRe.test(l.body ?? "")) {
+    const layerSlug = l.id;
     const layer = layerBySlug[layerSlug];
     if (layer) {
       backlinks.push({
@@ -60,23 +54,16 @@ for (const name of readdirSync(layersDir)) {
   }
 }
 
-const glossDir = resolve(PROJECT_ROOT, "src/content/glossary");
 const allEntries = await getCollection("glossary");
-for (const name of readdirSync(glossDir)) {
-  if (!name.endsWith(".mdx")) continue;
-  const otherSlug = name.replace(/\.mdx$/, "");
-  if (otherSlug === slug) continue;
-  const body = readFileSync(resolve(glossDir, name), "utf8");
-  if (tagRe.test(body)) {
-    const other = allEntries.find((e) => e.id === otherSlug);
-    if (other) {
-      backlinks.push({
-        kind: "glossary",
-        slug: otherSlug,
-        title: other.data.term,
-        href: `/glossary/${otherSlug}`,
-      });
-    }
+for (const other of allEntries) {
+  if (other.id === slug) continue;
+  if (tagRe.test(other.body ?? "")) {
+    backlinks.push({
+      kind: "glossary",
+      slug: other.id,
+      title: other.data.term,
+      href: `/glossary/${other.id}`,
+    });
   }
 }
 

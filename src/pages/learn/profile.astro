@@ -1,0 +1,314 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { MODULES, phaseLabel, PHASE_ORDER, type ProgressPhase } from "../../lib/course/modules";
+
+const { user, supabase } = Astro.locals;
+if (!user || !supabase) {
+  return Astro.redirect("/learn/login");
+}
+
+// Load profile row + all module_progress rows for this user. Both
+// queries depend on the grants migration (00020) having been applied;
+// if it has not been applied, both return rows-with-error and we fall
+// through to defaults (display name = email local-part, no progress).
+const [{ data: profile }, { data: progressRows }, { data: synthRows }, { data: whyOpenRows }] =
+  await Promise.all([
+    supabase
+      .from("profiles")
+      .select("display_name, pass_choice, completed_at, created_at")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("module_progress")
+      .select("module_slug, phase, jumped, phase_started_at, phase_completed_at")
+      .eq("user_id", user.id),
+    supabase
+      .from("synthesize_notes")
+      .select("module_slug")
+      .eq("user_id", user.id),
+    supabase
+      .from("why_open_notes")
+      .select("module_slug")
+      .eq("user_id", user.id),
+  ]);
+
+const displayName =
+  profile?.display_name ?? (user.email ?? "").split("@")[0] ?? "";
+const passChoice = (profile?.pass_choice ?? "fast") as "fast" | "deep";
+const completedAt = profile?.completed_at ?? null;
+
+const progressBySlug = new Map(
+  (progressRows ?? []).map((r) => [r.module_slug, r]),
+);
+const hasSynthBySlug = new Set((synthRows ?? []).map((r) => r.module_slug));
+const hasWhyOpenBySlug = new Set((whyOpenRows ?? []).map((r) => r.module_slug));
+
+// Highest in-sequence completed module: the largest order number whose
+// phase is "complete" AND for which every prior module is also complete.
+// This drives the "next up" recommendation.
+const completionSet = new Set<string>(
+  [...progressBySlug.entries()]
+    .filter(([, r]) => r.phase === "complete" && !r.jumped)
+    .map(([slug]) => slug),
+);
+let nextInSequence: (typeof MODULES)[number] | null = null;
+for (const m of MODULES) {
+  if (!completionSet.has(m.slug)) {
+    nextInSequence = m;
+    break;
+  }
+}
+
+const totalComplete = [...progressBySlug.values()].filter(
+  (r) => r.phase === "complete",
+).length;
+---
+
+<BaseLayout
+  title="Profile · Learn"
+  description="Your course progress, settings, and account."
+>
+  <article class="max-w-3xl mx-auto px-6 pt-12 pb-16">
+    <a
+      href="/learn"
+      class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-3"
+    >
+      ← All modules
+    </a>
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      Profile
+    </p>
+    <h1 class="font-serif text-3xl md:text-4xl text-[var(--color-text)] mb-2 leading-tight">
+      {displayName}
+    </h1>
+    <p class="text-sm text-[var(--color-text-muted)] mb-2">
+      {user.email}
+    </p>
+    <p class="text-xs text-[var(--color-text-subtle)] mb-10">
+      {totalComplete} of {MODULES.length} modules complete
+      {completedAt ? ` · finished ${new Date(completedAt).toISOString().slice(0, 10)}` : ""}
+    </p>
+
+    <!-- Personal Notes link (always visible; the notes page itself
+         degrades gracefully when the user hasn't written anything yet) -->
+    <section class="mb-10 p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] flex items-baseline justify-between gap-4 flex-wrap">
+      <div>
+        <p class="font-serif text-base text-[var(--color-text)] mb-1">
+          My Open-Source AI Stack Notes
+        </p>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+          Your accumulated writings, downloadable as Markdown or PDF.
+        </p>
+      </div>
+      <a
+        href="/learn/profile/notes"
+        class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
+      >
+        View notes →
+      </a>
+    </section>
+
+    <!-- Progress table -->
+    <section class="mb-12">
+      <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
+        Progress
+      </h2>
+      {nextInSequence && (
+        <p class="text-sm text-[var(--color-text-muted)] mb-4 leading-relaxed">
+          Next up in sequence:
+          <a
+            href={`/learn/${nextInSequence.slug}`}
+            class="text-[var(--color-text)] hover:no-underline"
+          >
+            {nextInSequence.title}
+          </a>
+          .
+        </p>
+      )}
+      <ol class="space-y-1">
+        {
+          MODULES.map((m) => {
+            const row = progressBySlug.get(m.slug);
+            const phase = (row?.phase ?? null) as ProgressPhase | null;
+            const isComplete = phase === "complete";
+            const jumped = row?.jumped ?? false;
+            const phaseIndex =
+              phase ? PHASE_ORDER.indexOf(phase) : -1;
+            const hasSynth = hasSynthBySlug.has(m.slug);
+            const hasWhyOpen = hasWhyOpenBySlug.has(m.slug);
+            return (
+              <li>
+                <a
+                  href={`/learn/${m.slug}`}
+                  class="flex items-baseline gap-3 px-3 py-2 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+                >
+                  <span class="font-mono text-xs text-[var(--color-text-subtle)] w-7">
+                    {String(m.order).padStart(2, "0")}
+                  </span>
+                  <span class="flex-1 font-serif text-sm text-[var(--color-text)]">
+                    {m.title}
+                  </span>
+                  {hasSynth && (
+                    <span
+                      title="Synthesize note written"
+                      class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-subtle)]"
+                    >
+                      S
+                    </span>
+                  )}
+                  {hasWhyOpen && (
+                    <span
+                      title="Why-open note written"
+                      class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-subtle)]"
+                    >
+                      W
+                    </span>
+                  )}
+                  {jumped && (
+                    <span class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border border-[var(--color-border)] italic text-[var(--color-text-subtle)]">
+                      jumped
+                    </span>
+                  )}
+                  <span
+                    class={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded ${
+                      isComplete
+                        ? "bg-[var(--color-accent-strong)] text-white"
+                        : phaseIndex > 0
+                          ? "text-[var(--color-text)]"
+                          : "text-[var(--color-text-subtle)]"
+                    }`}
+                  >
+                    {phase ? phaseLabel(phase) : "not started"}
+                  </span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </section>
+
+    <!-- Settings -->
+    <section class="mb-12">
+      <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
+        Settings
+      </h2>
+      <form
+        method="POST"
+        action="/api/account/profile"
+        class="space-y-5 p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]"
+      >
+        <label class="block">
+          <span class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] block mb-1">
+            Display name
+          </span>
+          <input
+            type="text"
+            name="display_name"
+            value={displayName}
+            class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+          />
+          <span class="block text-xs text-[var(--color-text-subtle)] mt-1">
+            Shown on your Personal Notes title page. Defaults to the
+            local part of your email.
+          </span>
+        </label>
+        <fieldset>
+          <legend class="text-xs font-mono uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+            Depth
+          </legend>
+          <div class="flex gap-4 text-sm">
+            <label class="flex items-baseline gap-2">
+              <input
+                type="radio"
+                name="pass_choice"
+                value="fast"
+                checked={passChoice === "fast"}
+              />
+              <span>
+                <span class="text-[var(--color-text)]">Fast pass</span>
+                <span class="block text-xs text-[var(--color-text-subtle)] leading-relaxed">
+                  Shape of the stack in a day or two.
+                </span>
+              </span>
+            </label>
+            <label class="flex items-baseline gap-2">
+              <input
+                type="radio"
+                name="pass_choice"
+                value="deep"
+                checked={passChoice === "deep"}
+              />
+              <span>
+                <span class="text-[var(--color-text)]">Deep pass</span>
+                <span class="block text-xs text-[var(--color-text-subtle)] leading-relaxed">
+                  Grounded in primary sources, ~a week.
+                </span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+        <button
+          type="submit"
+          class="px-3 py-1.5 text-sm rounded-md bg-[var(--color-accent-strong)] text-white hover:bg-[var(--color-accent)] cursor-pointer"
+        >
+          Save changes
+        </button>
+      </form>
+    </section>
+
+    <!-- Account actions -->
+    <section class="mb-12">
+      <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
+        Account
+      </h2>
+      <div class="space-y-4 p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
+        <div class="flex items-baseline justify-between gap-4 flex-wrap">
+          <p class="text-sm text-[var(--color-text-muted)]">
+            Log out of this device.
+          </p>
+          <form method="POST" action="/api/auth/logout" style="margin: 0">
+            <button
+              type="submit"
+              class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+            >
+              Log out
+            </button>
+          </form>
+        </div>
+        <details class="pt-4 border-t border-[var(--color-border)]">
+          <summary class="text-sm text-[var(--color-text-muted)] cursor-pointer">
+            Delete my account
+          </summary>
+          <form
+            method="POST"
+            action="/api/account/delete"
+            class="mt-4 space-y-3"
+          >
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+              Deletes your auth row and cascades to your profile,
+              progress, chat turns, synthesize notes, and why-open notes.
+              No recovery. Type your email below to confirm.
+            </p>
+            <input
+              type="text"
+              name="confirm"
+              required
+              autocomplete="off"
+              placeholder={user.email ?? "your-email@example.com"}
+              class="w-full px-3 py-2 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-[var(--color-text)] text-sm"
+            />
+            <button
+              type="submit"
+              class="text-sm px-3 py-1.5 rounded-md border border-red-300 text-red-700 hover:bg-red-50 cursor-pointer"
+            >
+              Permanently delete account
+            </button>
+          </form>
+        </details>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

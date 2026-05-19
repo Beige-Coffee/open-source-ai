@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Privacy"
+  description="What data the open-source-ai.tech site collects, where it's stored, and how to delete it."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-12 prose">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Privacy
+    </p>
+    <h1>What this site does with your data</h1>
+
+    <p>
+      Plain-English summary of every place this site collects data,
+      where it lives, and how to delete it. Last updated 2026-05-18.
+    </p>
+
+    <h2>Reference site (everything outside <code>/learn</code>)</h2>
+    <p>
+      Reading the stack pages, the glossary, grants, news, predictions,
+      or about page: no data collected. No analytics, no cookies, no
+      session tracking, no IP logging beyond what the hosting provider
+      (Vercel) does for delivery.
+    </p>
+
+    <h2>In-site chat agent</h2>
+    <p>
+      The chat bubble bottom-right is pure BYOK (bring your own key).
+      Your API key (Anthropic or OpenRouter) is stored in your
+      browser's localStorage. Chat threads are stored in localStorage.
+      Nothing leaves your browser except direct API calls from your
+      browser to the provider you chose; we do not proxy those calls
+      and never see them.
+    </p>
+
+    <h2>Course at <code>/learn</code></h2>
+    <p>
+      The course collects the data needed to track your progress and
+      build your Personal Notes document. Specifically:
+    </p>
+    <ul>
+      <li>
+        <strong>Email address</strong> and <strong>password</strong>:
+        held by Supabase to authenticate you across devices. Your
+        password is hashed; we cannot read it.
+      </li>
+      <li>
+        <strong>Display name</strong> (optional): if you set one, used
+        on your Personal Notes export. Default is the local part of
+        your email.
+      </li>
+      <li>
+        <strong>Module progress</strong>: which modules you've
+        started, which phase you're in, completion timestamps.
+      </li>
+      <li>
+        <strong>Your writings</strong>: the synthesis paragraphs and
+        "why open source matters" answers you write during the
+        course. These are your work, attributed to you, and saved so
+        you can export them as your Personal Notes at the end.
+      </li>
+      <li>
+        <strong>Course chat turns</strong>: the dialogue with the
+        course agent during the Probe and Compare phases. Stored so
+        you can resume mid-session and so the agent has context for
+        follow-up questions in the same module.
+      </li>
+    </ul>
+
+    <p>
+      All course data is stored in a Supabase Postgres database under
+      this site's project. Row-level security ensures only you can
+      read or modify your own rows. No third parties have access; no
+      analytics, no advertising, no profile sales.
+    </p>
+
+    <h2>Anonymous course use</h2>
+    <p>
+      You can use the course without signing up. In that mode, your
+      writings live in your browser's localStorage. Closing the tab
+      typically loses them. If you sign up later, the signup flow
+      reads your localStorage and writes your stashed writings into
+      your new account, so nothing is lost in transition.
+    </p>
+
+    <h2>Exporting and deleting your data</h2>
+    <p>
+      Visit <a href="/learn/profile"><code>/learn/profile</code></a> to
+      export your Personal Notes as Markdown or PDF, or to delete
+      your account. Deleting your account cascades to all your
+      progress, writings, and chat turns. The deletion is immediate.
+    </p>
+
+    <h2>Cookies</h2>
+    <p>
+      The reference site sets no cookies. The course uses a Supabase
+      auth session cookie (when you're logged in) plus a CSRF cookie
+      for form submissions. Both are HttpOnly and SameSite=Lax.
+    </p>
+
+    <h2>What this site does not do</h2>
+    <p>
+      No advertising, no tracking pixels, no third-party analytics,
+      no data sales, no profile-building beyond what the course needs
+      to render your own progress to you.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      For privacy questions, file a GitHub issue at
+      <a href="https://github.com/Beige-Coffee/open-source-ai/issues">
+        github.com/Beige-Coffee/open-source-ai</a>.
+    </p>
+  </section>
+</BaseLayout>

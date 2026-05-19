@@ -23,6 +23,42 @@ import G from "../components/G.astro";
       once a day at 08:00 Pacific.
     </p>
 
+    <h2>Data posture (per feature)</h2>
+    <p>
+      The site historically described itself as "pure BYOK, no PII, no
+      server." That language is retired. The self-paced course at
+      <a href="/learn">/learn</a> needs a logged-in profile to track
+      progress and produce the take-home Personal Notes; the rest of
+      the site remains server-less in the relevant sense. Per feature:
+    </p>
+    <ul>
+      <li>
+        <strong>Reference site</strong> (the stack pages, grants, news,
+        predictions, glossary): static HTML. No server-side state, no
+        cookies needed to read.
+      </li>
+      <li>
+        <strong>In-site chat agent</strong> (the floating bubble): pure
+        BYOK. The API key you paste on <a href="/settings">/settings</a>
+        stays in your browser localStorage. No proxy, no shared key.
+      </li>
+      <li>
+        <strong>Daily news routine</strong>: a scheduled agent updates
+        the news MDX files; no user data involved.
+      </li>
+      <li>
+        <strong>Course at <code>/learn</code></strong>: email-and-password
+        profile at Supabase. Saves your progress, the synthesis
+        paragraphs you write, and the chat dialogues with the course
+        agent. Self-service delete on <a href="/learn/profile">/learn/profile</a>.
+      </li>
+    </ul>
+    <p>
+      Specifics are documented at <a href="/privacy">/privacy</a>:
+      what's collected, where it lives, who has access, and how to
+      export or delete.
+    </p>
+
     <h2>The agent and what it does</h2>
     <p>
       A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:

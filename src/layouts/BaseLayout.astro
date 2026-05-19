@@ -18,6 +18,10 @@ const fullTitle =
 const desc =
   description ||
   "A living map of the open-source AI stack: silicon, compute, data, training, weights, runtime, retrieval, agents, protocols. Updated daily.";
+
+// COURSE.md decision #12: the floating ChatBubble does not appear on
+// /learn routes; those pages use the dedicated CoursePanel instead.
+const isCourseRoute = Astro.url.pathname.startsWith("/learn");
 ---
 
 <!doctype html>
@@ -59,7 +63,7 @@ const desc =
       <slot />
     </main>
     <Footer />
-    <ChatBubble client:only="react" />
+    {!isCourseRoute && <ChatBubble client:only="react" />}
     <script>
       import "../lib/glossary-runtime";
     </script>

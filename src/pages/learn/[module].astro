@@ -1,0 +1,410 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import CoursePanel from "../../components/CoursePanel.tsx";
+import ModuleSidebar from "../../components/ModuleSidebar.astro";
+import {
+  MODULES,
+  MODULE_BY_SLUG,
+  nextModule,
+  prevModule,
+  PHASE_ORDER,
+  phaseLabel,
+  type ProgressPhase,
+} from "../../lib/course/modules";
+import { loadPredictionsForLayer } from "../../lib/predictions";
+import { loadFunders } from "../../lib/grants";
+import { loadReadingsForLayer } from "../../lib/reading-lists";
+
+const { module: moduleSlug } = Astro.params;
+if (!moduleSlug || !MODULE_BY_SLUG[moduleSlug]) {
+  return Astro.redirect("/learn");
+}
+
+const courseModule = MODULE_BY_SLUG[moduleSlug];
+const { user, supabase } = Astro.locals;
+
+// Load the corresponding layer entry for the Read passage.
+const layerEntries = await getCollection("layers");
+const primaryLayerSlug = courseModule.layer_slugs[0];
+const layerEntry = layerEntries.find((l) => l.id === primaryLayerSlug);
+const LayerContent = layerEntry ? (await render(layerEntry)).Content : null;
+
+// Load glossary entries primarily-attached to this layer for the Read passage.
+const glossaryEntries = await getCollection("glossary");
+const relatedGlossary = glossaryEntries
+  .filter(
+    (g) =>
+      g.data.primary_layer === primaryLayerSlug ||
+      (g.data.secondary_layers ?? []).includes(primaryLayerSlug),
+  )
+  .filter((g) => g.data.primary_layer === primaryLayerSlug)
+  .slice(0, 5);
+
+// Cross-reference sidebar data (per locked design decision #10).
+const sidebarPredictions = loadPredictionsForLayer(primaryLayerSlug);
+const sidebarFunders = loadFunders()
+  .filter((f) => f.focus_layers.includes(primaryLayerSlug))
+  .slice(0, 5);
+const sidebarReadings = loadReadingsForLayer(primaryLayerSlug);
+
+// Recent news days that mentioned this layer (via layer_buckets). Most
+// recent first; cap to 5.
+const newsEntries = await getCollection("news");
+const sidebarNews = newsEntries
+  .filter((n) => (n.data.layer_buckets ?? {})[primaryLayerSlug] > 0)
+  .map((n) => ({
+    date: n.data.date.toISOString().slice(0, 10),
+    count: n.data.layer_buckets[primaryLayerSlug],
+  }))
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .slice(0, 5);
+
+// Look up the user's current progress for this module (if logged in).
+let currentPhase: ProgressPhase = "read";
+let jumped = false;
+let passChoice: "fast" | "deep" = "fast";
+type PriorWriting = {
+  module_slug: string;
+  module_title: string;
+  module_order: number;
+  synthesize?: string;
+  why_open?: string;
+};
+let priorWritings: PriorWriting[] = [];
+if (user && supabase) {
+  const { data } = await supabase
+    .from("module_progress")
+    .select("phase, jumped")
+    .eq("user_id", user.id)
+    .eq("module_slug", moduleSlug)
+    .maybeSingle();
+  if (data) {
+    currentPhase = data.phase as ProgressPhase;
+    jumped = data.jumped;
+  }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("pass_choice")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (profile?.pass_choice) {
+    passChoice = profile.pass_choice as "fast" | "deep";
+  }
+
+  // Load the learner's earlier Synthesize + Why-Open writings (modules
+  // with order < this one) so the agent can reference them. Critical
+  // for the Sovereignty capstone (#15); for earlier modules it's a
+  // light cross-module continuity signal.
+  const earlierModules = MODULES.filter((m) => m.order < courseModule.order);
+  if (earlierModules.length > 0) {
+    const earlierSlugs = earlierModules.map((m) => m.slug);
+    const [{ data: synthRows }, { data: whyOpenRows }] = await Promise.all([
+      supabase
+        .from("synthesize_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+      supabase
+        .from("why_open_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+    ]);
+    const synthBySlug = new Map((synthRows ?? []).map((r) => [r.module_slug, r.body]));
+    const whyOpenBySlug = new Map(
+      (whyOpenRows ?? []).map((r) => [r.module_slug, r.body]),
+    );
+    priorWritings = earlierModules
+      .filter((m) => synthBySlug.has(m.slug) || whyOpenBySlug.has(m.slug))
+      .map((m) => ({
+        module_slug: m.slug,
+        module_title: m.title,
+        module_order: m.order,
+        synthesize: synthBySlug.get(m.slug),
+        why_open: whyOpenBySlug.get(m.slug),
+      }));
+  }
+}
+
+const next = nextModule(moduleSlug);
+const prev = prevModule(moduleSlug);
+---
+
+<BaseLayout
+  title={`${courseModule.title} · Learn`}
+  description={`Course module on ${courseModule.title}: ${courseModule.one_liner}`}
+>
+  <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+    <!-- Module header -->
+    <header class="mb-6">
+      <a
+        href="/learn"
+        class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-3"
+      >
+        ← All modules
+      </a>
+      <div class="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+        <h1 class="font-serif text-3xl md:text-4xl text-[var(--color-text)]">
+          <span class="font-mono text-base text-[var(--color-text-subtle)] mr-3">
+            {String(courseModule.order).padStart(2, "0")}
+          </span>
+          {courseModule.title}
+        </h1>
+        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] px-2 py-1 rounded border border-[var(--color-border)]">
+          {courseModule.type}
+        </span>
+      </div>
+      <p class="text-base text-[var(--color-text-muted)] max-w-prose leading-relaxed">
+        {courseModule.one_liner}
+      </p>
+    </header>
+
+    <!-- Phase indicator ribbon -->
+    <nav
+      aria-label="Module phases"
+      class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
+    >
+      {
+        PHASE_ORDER.filter((p) => p !== "complete").map((phase) => {
+          const isCurrent = phase === currentPhase;
+          const isDone =
+            PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);
+          return (
+            <span
+              class={`font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded ${
+                isCurrent
+                  ? "bg-[var(--color-accent-strong)] text-white"
+                  : isDone
+                    ? "text-[var(--color-text)]"
+                    : "text-[var(--color-text-subtle)]"
+              }`}
+            >
+              {phaseLabel(phase)}
+            </span>
+          );
+        })
+      }
+      {
+        jumped && (
+          <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded text-[var(--color-text-subtle)] italic ml-auto">
+            jumped to
+          </span>
+        )
+      }
+    </nav>
+
+    <!-- 60/40 split: content + course panel -->
+    <div class="grid gap-6 md:grid-cols-[3fr_2fr]">
+      <!-- Left: phase-specific content (currently just Read; later phases swap in) -->
+      <div class="prose-course min-h-[60vh]">
+        {
+          currentPhase === "read" && layerEntry && LayerContent && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Read
+              </h2>
+              <LayerContent />
+
+              {relatedGlossary.length > 0 && (
+                <section class="mt-8 pt-6 border-t border-[var(--color-border)]">
+                  <h3 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                    Key terms for this layer
+                  </h3>
+                  <ul class="grid grid-cols-1 gap-3">
+                    {relatedGlossary.map((g) => (
+                      <li class="p-3 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
+                        <div class="flex items-baseline justify-between gap-3 mb-1">
+                          <span class="font-serif text-sm text-[var(--color-text)]">
+                            {g.data.term}
+                          </span>
+                          <a
+                            href={`/glossary/${g.id}`}
+                            class="font-mono text-[10px] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
+                          >
+                            full entry →
+                          </a>
+                        </div>
+                        <p class="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                          {g.data.summary}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              <form
+                method="POST"
+                action={`/api/course/advance?module=${moduleSlug}`}
+                class="mt-8"
+              >
+                <button
+                  type="submit"
+                  class="px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+                >
+                  I've read it · move to Probe →
+                </button>
+              </form>
+            </Fragment>
+          )
+        }
+
+        {
+          currentPhase === "probe" && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Probe
+              </h2>
+              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-6">
+                Work through the agent's questions in the panel on the right.
+                When the agent indicates you've answered enough, the
+                "Continue to Compare" button below activates.
+              </p>
+              <p class="text-sm text-[var(--color-text-subtle)] italic">
+                (Probe-phase wiring: in progress; the agent panel is being built.)
+              </p>
+            </Fragment>
+          )
+        }
+
+        {
+          currentPhase === "compare" && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Compare
+              </h2>
+              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                {courseModule.compare_axis_label}
+              </p>
+              <p class="text-sm text-[var(--color-text-subtle)] italic">
+                (Compare-phase wiring: in progress; the comparison surface is being built.)
+              </p>
+            </Fragment>
+          )
+        }
+
+        {
+          currentPhase === "why_open" && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Why open source matters here
+              </h2>
+              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                Why does open source specifically matter at this layer?
+                Not as an abstract value; as a concrete mechanism. Who does
+                it protect, against what, in what scenario? Write your
+                answer in the panel.
+              </p>
+              <p class="text-sm text-[var(--color-text-subtle)] italic">
+                (Why-open phase wiring: in progress.)
+              </p>
+            </Fragment>
+          )
+        }
+
+        {
+          currentPhase === "synthesize" && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Synthesize
+              </h2>
+              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                Write your own summary of this layer in your own words. This
+                becomes part of your Personal Notes document at the end of
+                the course.
+              </p>
+              <p class="text-sm text-[var(--color-text-subtle)] italic">
+                (Synthesize-phase wiring: in progress.)
+              </p>
+            </Fragment>
+          )
+        }
+
+        {
+          currentPhase === "complete" && (
+            <Fragment>
+              <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+                Module complete
+              </h2>
+              <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-6">
+                You've completed this module. Move on to the next, or
+                revisit any phase from the ribbon above.
+              </p>
+              {next && (
+                <a
+                  href={`/learn/${next.slug}`}
+                  class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                >
+                  Next: {next.title} →
+                </a>
+              )}
+            </Fragment>
+          )
+        }
+      </div>
+
+      <!-- Right: course panel (React island; phase-aware) -->
+      <aside class="md:sticky md:top-20 md:self-start">
+        <div
+          class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[60vh] flex flex-col overflow-hidden"
+        >
+          <CoursePanel
+            client:load
+            moduleSlug={moduleSlug}
+            initialPhase={currentPhase}
+            userId={user?.id ?? null}
+            passChoice={passChoice}
+            priorWritings={priorWritings}
+          />
+        </div>
+        <div class="mt-6">
+          <ModuleSidebar
+            predictions={sidebarPredictions}
+            funders={sidebarFunders}
+            news={sidebarNews}
+            readings={sidebarReadings}
+            layerSlug={primaryLayerSlug}
+          />
+        </div>
+      </aside>
+    </div>
+
+    <!-- Module footer: prev / next nav -->
+    <nav
+      aria-label="Module navigation"
+      class="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center justify-between gap-3"
+    >
+      {
+        prev ? (
+          <a
+            href={`/learn/${prev.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            ← {prev.title}
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (first module)
+          </span>
+        )
+      }
+      {
+        next ? (
+          <a
+            href={`/learn/${next.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            {next.title} →
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (capstone)
+          </span>
+        )
+      }
+    </nav>
+  </div>
+</BaseLayout>

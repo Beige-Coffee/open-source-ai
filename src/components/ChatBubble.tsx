@@ -15,7 +15,7 @@ import remarkGfm from "remark-gfm";
 import { useSettings, useThreads, type Thread } from "../lib/chat/store";
 import { makeClient } from "../lib/chat/anthropic";
 import { TOOLS, ToolBudget, executeTool } from "../lib/chat/tools";
-import { pickPrompt, buildContextBlock } from "../lib/chat/prompts";
+import { ANSWER_SYSTEM_PROMPT, buildContextBlock } from "../lib/chat/prompts";
 import { streamText, describeError } from "../lib/chat/stream";
 import {
   chunkText,
@@ -23,7 +23,8 @@ import {
   citationLabel,
   type ParsedCitation,
 } from "../lib/chat/citations";
-import type { ChatMessage, Mode, PageContext, ToolEventLog } from "../lib/chat/types";
+import { suggestionsForContext, GENERIC_SUGGESTIONS } from "../lib/chat/suggestions";
+import type { ChatMessage, PageContext, ToolEventLog } from "../lib/chat/types";
 
 // ----------------------------------------------------------------------
 // Page context derivation (still useful: agent system prompt sees the
@@ -40,14 +41,14 @@ function derivePageContext(): PageContext {
     entity = { kind: "layer", slug: r[1] };
   } else if ((r = m(/^\/grants\/funder\/([^/]+)\/?$/))) {
     entity = { kind: "funder", slug: r[1] };
+  } else if ((r = m(/^\/projects\/([^/]+)\/?$/))) {
+    entity = { kind: "project", slug: r[1] };
+  } else if ((r = m(/^\/glossary\/([^/]+)\/?$/))) {
+    entity = { kind: "glossary", slug: r[1] };
   } else if ((r = m(/^\/news\/([^/]+)\/?$/))) {
     entity = { kind: "news", date: r[1] };
   }
   return { pathname, entity };
-}
-
-function defaultModeFor(_ctx: PageContext): Mode {
-  return "answer";
 }
 
 // ----------------------------------------------------------------------
@@ -165,27 +166,6 @@ function ToolTrace({ events }: { events: ToolEventLog[] }) {
 // Constants
 // ----------------------------------------------------------------------
 
-const SUGGESTIONS_BY_MODE: Record<Mode, string[]> = {
-  answer: [
-    "Which funders cross over from Bitcoin OSS to AI?",
-    "Show me grants under $100K at the identity-trust layer",
-    "What's vLLM and why does it matter for local AI?",
-    "Recent news at the runtime layer?",
-  ],
-  socratic: [
-    "Help me understand why memory bandwidth is the local-AI constraint",
-    "Walk me through what OSAID v2.0 is fighting about",
-    "Why do closed agents defeat open weights?",
-    "What's the load-bearing claim for sovereign training?",
-  ],
-};
-
-const MODE_TOOLTIPS: Record<Mode | "auto", string> = {
-  answer: "Direct factual answers, cites sources inline. The default.",
-  socratic: "Asks one question at a time, pushes you to think instead of answering.",
-  auto: "Use the per-page default (currently Answer everywhere).",
-};
-
 function autoTitleFrom(prompt: string): string {
   // Shorten to a reasonable title; cut at sentence end or 60 chars.
   const cleaned = prompt.replace(/\s+/g, " ").trim();
@@ -231,10 +211,8 @@ export default function ChatBubble() {
   const activeThreadId = useThreads((s) => s.activeThreadId);
   const open = useThreads((s) => s.open);
   const showThreadList = useThreads((s) => s.showThreadList);
-  const preferredMode = useThreads((s) => s.preferredMode);
   const setOpen = useThreads((s) => s.setOpen);
   const setShowThreadList = useThreads((s) => s.setShowThreadList);
-  const setPreferredMode = useThreads((s) => s.setPreferredMode);
   const createThread = useThreads((s) => s.createThread);
   const setActiveThread = useThreads((s) => s.setActiveThread);
   const renameThread = useThreads((s) => s.renameThread);
@@ -249,7 +227,21 @@ export default function ChatBubble() {
     () => threads.find((t) => t.id === activeThreadId) ?? null,
     [threads, activeThreadId],
   );
-  const mode: Mode = preferredMode ?? defaultModeFor(pageCtx);
+
+  // Page-context-aware starter prompts. Resolved async because the
+  // suggestion templates look up the entity's display name from
+  // /data/*.json. Initial GENERIC_SUGGESTIONS render synchronously
+  // so the empty state never shows a blank list.
+  const [suggestions, setSuggestions] = useState<string[]>(GENERIC_SUGGESTIONS);
+  useEffect(() => {
+    let cancelled = false;
+    suggestionsForContext(pageCtx).then((next) => {
+      if (!cancelled) setSuggestions(next);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pageCtx.pathname, pageCtx.entity?.kind, (pageCtx.entity as { slug?: string })?.slug]);
 
   // ------------------------------------------------------------------
   // Mount + page-context tracking
@@ -397,7 +389,7 @@ export default function ChatBubble() {
 
     try {
       const client = makeClient(provider, key);
-      const system = pickPrompt(mode) + "\n\n" + buildContextBlock(pageCtx);
+      const system = ANSWER_SYSTEM_PROMPT + "\n\n" + buildContextBlock(pageCtx);
       const allMsgs = [
         ...(useThreads.getState().threads.find((x) => x.id === threadId)?.messages ?? []),
       ];
@@ -579,47 +571,9 @@ export default function ChatBubble() {
           </div>
         </header>
 
-        {/* Mode toggle row */}
-        <div className="flex items-center justify-between px-3 py-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
-          <div className="flex items-center gap-0.5 text-xs">
-            <button
-              type="button"
-              onClick={() => setPreferredMode("answer")}
-              title={MODE_TOOLTIPS.answer}
-              className={`px-2 py-1 rounded text-xs ${
-                preferredMode === "answer"
-                  ? "bg-[var(--color-surface)] text-[var(--color-text)] font-medium shadow-sm"
-                  : "text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Answer
-            </button>
-            <button
-              type="button"
-              onClick={() => setPreferredMode("socratic")}
-              title={MODE_TOOLTIPS.socratic}
-              className={`px-2 py-1 rounded text-xs ${
-                preferredMode === "socratic"
-                  ? "bg-[var(--color-surface)] text-[var(--color-text)] font-medium shadow-sm"
-                  : "text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Socratic
-            </button>
-            <button
-              type="button"
-              onClick={() => setPreferredMode(null)}
-              title={MODE_TOOLTIPS.auto}
-              className={`px-2 py-1 rounded text-xs ${
-                preferredMode === null
-                  ? "bg-[var(--color-surface)] text-[var(--color-text)] font-medium shadow-sm"
-                  : "text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Auto
-            </button>
-          </div>
-          {activeThread && messages.length > 0 && (
+        {/* Thread-action row (kept for the per-thread Clear button). */}
+        {activeThread && messages.length > 0 && (
+          <div className="flex items-center justify-end px-3 py-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
             <button
               type="button"
               onClick={() => {
@@ -631,8 +585,8 @@ export default function ChatBubble() {
             >
               Clear
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="flex-1 flex min-h-0">
           {/* Thread sidebar (left, collapsible) */}
@@ -714,19 +668,17 @@ export default function ChatBubble() {
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
               {messages.length === 0 ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-[var(--color-text-muted)]">
-                    {!hasKey()
-                      ? "No API key yet. "
-                      : `Mode: ${mode}. Try one of these or ask anything.`}
-                    {!hasKey() && (
+                  {!hasKey() ? (
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      No API key yet.{" "}
                       <a href="/settings" className="text-[var(--color-accent)] hover:underline">
                         Add one on Settings
                       </a>
-                    )}
-                  </p>
-                  {hasKey() && (
+                      .
+                    </p>
+                  ) : (
                     <ul className="space-y-1.5">
-                      {SUGGESTIONS_BY_MODE[mode].map((s) => (
+                      {suggestions.map((s) => (
                         <li key={s}>
                           <button
                             type="button"

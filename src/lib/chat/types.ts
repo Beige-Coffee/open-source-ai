@@ -2,15 +2,25 @@
  * Shared types for the in-site chat agent.
  */
 
+/**
+ * Legacy mode union, kept for back-compat with persisted store state
+ * and for the course agent (which still uses Socratic-style prompts
+ * via src/lib/course/prompts.ts). The floating ChatBubble no longer
+ * exposes a mode toggle; it always operates in "answer" mode.
+ */
 export type Mode = "answer" | "socratic";
 
 export interface PageContext {
   pathname: string;
   // Specific entity if the page is about one. Set by the chat bubble
-  // based on URL pattern matching.
+  // based on URL pattern matching. Suggestions templates branch on
+  // entity.kind; the agent's system-prompt context block also reads
+  // it so it knows what "this layer" / "this project" refers to.
   entity?:
     | { kind: "layer"; slug: string }
     | { kind: "funder"; slug: string }
+    | { kind: "project"; slug: string }
+    | { kind: "glossary"; slug: string }
     | { kind: "news"; date: string };
 }
 

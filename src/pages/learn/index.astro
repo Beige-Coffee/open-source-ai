@@ -1,0 +1,203 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { loadLayers } from "../../lib/layers";
+
+const { user } = Astro.locals;
+
+const layers = loadLayers();
+const allLayers = [...layers.core, ...layers.meta];
+const layerBySlug = Object.fromEntries(allLayers.map((l) => [l.slug, l]));
+
+// Course module list. Currently the 15 modules are defined inline here;
+// once the course_modules content collection is wired, this loads from
+// MDX. (Each module corresponds to one or more existing layer slugs.)
+interface Module {
+  order: number;
+  slug: string;
+  title: string;
+  layer_slugs: string[];
+  type: "core" | "meta" | "capstone";
+  one_liner: string;
+}
+
+const MODULES: Module[] = [
+  { order: 1, slug: "infrastructure", layer_slugs: ["infrastructure"], type: "core", title: "Infrastructure", one_liner: "Data centers, power, cooling, and the grid that runs the rest of the stack." },
+  { order: 2, slug: "silicon", layer_slugs: ["silicon"], type: "core", title: "Silicon", one_liner: "Chips and ISAs that execute the math." },
+  { order: 3, slug: "compute", layer_slugs: ["compute"], type: "core", title: "Compute", one_liner: "Where silicon physically runs and gets accessed." },
+  { order: 4, slug: "data", layer_slugs: ["data"], type: "core", title: "Data", one_liner: "Training corpora, open and closed." },
+  { order: 5, slug: "training", layer_slugs: ["training"], type: "core", title: "Training", one_liner: "Tools to pretrain and fine-tune." },
+  { order: 6, slug: "weights", layer_slugs: ["weights"], type: "core", title: "Weights", one_liner: "Model artifacts and their license tiers." },
+  { order: 7, slug: "evaluation", layer_slugs: ["evaluation"], type: "meta", title: "Evaluation", one_liner: "Benchmarks, harnesses, leaderboards." },
+  { order: 8, slug: "governance", layer_slugs: ["governance"], type: "meta", title: "Governance", one_liner: "Licensing, definitions, foundations, OSAID." },
+  { order: 9, slug: "runtime", layer_slugs: ["runtime"], type: "core", title: "Runtime", one_liner: "Inference engines that serve tokens from weights." },
+  { order: 10, slug: "identity-trust", layer_slugs: ["identity-trust"], type: "meta", title: "Identity and Trust", one_liner: "TEEs, confidential computing, verifiable inference." },
+  { order: 11, slug: "retrieval-memory", layer_slugs: ["retrieval-memory"], type: "core", title: "Retrieval and Memory", one_liner: "Vector databases, embeddings, agent memory, RAG." },
+  { order: 12, slug: "agents", layer_slugs: ["agents"], type: "core", title: "Agents", one_liner: "Frameworks and agent products." },
+  { order: 13, slug: "safety-guardrails", layer_slugs: ["safety-guardrails"], type: "meta", title: "Safety and Guardrails", one_liner: "Llama Guard, NeMo Guardrails, sandbox-escape evals." },
+  { order: 14, slug: "protocols", layer_slugs: ["protocols"], type: "core", title: "Protocols", one_liner: "MCP, A2A, agentic payments, the integration wire." },
+  { order: 15, slug: "sovereignty-decentralization", layer_slugs: ["sovereignty-decentralization"], type: "capstone", title: "Sovereignty and Decentralization (Capstone)", one_liner: "The synthesis: assemble your own theory of why open AI matters." },
+];
+---
+
+<BaseLayout
+  title="Learn"
+  description="Self-paced Socratic course on the open-source AI stack: a guided path from infrastructure up to protocols, building your own theory of why openness matters at each layer."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-6">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Learn
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      Walk the open-source AI stack
+    </h1>
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      A self-paced, Socratic course in 15 modules. The course walks
+      from infrastructure (where AI physically runs) up to protocols
+      (how agents and services talk to each other), with the meta-
+      layers (evaluation, governance, safety, sovereignty) woven in
+      where they become load-bearing. Each module ends with you
+      writing your own summary in your own words; the course produces
+      your personal map of the stack as a downloadable doc.
+    </p>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mt-4">
+      Two depths. The fast pass takes a day or two and gives you the
+      shape. The deep pass takes about a week and grounds every claim
+      in primary sources.
+    </p>
+  </section>
+
+  {
+    !user && (
+      <section class="max-w-3xl mx-auto px-6 mb-8">
+        <div class="p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface-warm)] flex items-baseline justify-between gap-4 flex-wrap">
+          <p class="text-sm text-[var(--color-text-muted)]">
+            Anyone can read and walk through any module without an account.{" "}
+            <strong class="text-[var(--color-text)]">Sign up</strong> to save your
+            progress, sync across devices, and download your Personal Notes at
+            the end.
+          </p>
+          <div class="flex gap-2">
+            <a
+              href="/learn/login"
+              class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+            >
+              Log in
+            </a>
+            <a
+              href="/learn/signup"
+              class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
+            >
+              Sign up
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    user && (
+      <section class="max-w-3xl mx-auto px-6 mb-8">
+        <div class="p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] flex items-baseline justify-between gap-4 flex-wrap">
+          <p class="text-sm text-[var(--color-text-muted)]">
+            Logged in as <strong class="text-[var(--color-text)]">{user.email}</strong>.
+          </p>
+          <div class="flex gap-2">
+            <a
+              href="/learn/profile"
+              class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+            >
+              Profile and notes
+            </a>
+            <form method="POST" action="/api/auth/logout" style="margin: 0">
+              <button
+                type="submit"
+                class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer bg-transparent border-0"
+              >
+                Log out
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    user && (
+      <script>
+        {`
+          // Anonymous-writings restore: if we got here with ?restore=anon
+          // and there are stashed entries in localStorage, promote them
+          // to the user's Supabase rows via /api/course/restore-anon,
+          // then clear localStorage and strip the query param.
+          (async () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("restore") !== "anon") return;
+            const KEY = "oas-course-v1";
+            let raw = null;
+            try { raw = window.localStorage.getItem(KEY); } catch { /* ignore */ }
+            const clean = () => {
+              params.delete("restore");
+              const qs = params.toString();
+              window.history.replaceState({}, "", "/learn" + (qs ? "?" + qs : ""));
+            };
+            if (!raw) { clean(); return; }
+            try {
+              const res = await fetch("/api/course/restore-anon", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: raw,
+              });
+              if (res.ok) {
+                try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
+              }
+            } catch { /* ignore network errors; user can retry by signing in again */ }
+            clean();
+          })();
+        `}
+      </script>
+    )
+  }
+  <section class="max-w-3xl mx-auto px-6 mb-16">
+    <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
+      The 15 modules
+    </h2>
+    <ol class="space-y-3">
+      {
+        MODULES.map((m) => (
+          <li>
+            <a
+              href={`/learn/${m.slug}`}
+              class="block p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+            >
+              <div class="flex items-baseline justify-between gap-3 mb-1">
+                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
+                  {String(m.order).padStart(2, "0")}
+                </span>
+                <span class="flex-1 font-serif text-base text-[var(--color-text)]">
+                  {m.title}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  {m.type}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed pl-9">
+                {m.one_liner}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</BaseLayout>

@@ -1,5 +1,7 @@
 # build output
 dist/
+# Vercel adapter build output (regenerated on every astro build)
+.vercel/
 # generated types
 .astro/
 # generated data for the chat agent (built from data/*.yaml + src/content/**)
