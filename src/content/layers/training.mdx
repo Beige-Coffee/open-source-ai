@@ -115,28 +115,36 @@ The third cluster. Smaller and slower than centralized frontier
 training, but shipping working models that prove the basic
 viability.
 
-- **Prime Intellect** ran INTELLECT-1 (10B, late 2024) and
-  INTELLECT-2 (32B, May 2025) as fully-distributed training runs
-  across volunteer compute, using the OpenDiLoCo algorithm to
-  cut cross-node bandwidth requirements
-  ([INTELLECT-2 technical report](https://www.primeintellect.ai/blog/intellect-2)).
+- **Prime Intellect** ran INTELLECT-1 (10B, November 2024) and
+  INTELLECT-2 (32B, May 11 2025) as fully-distributed training
+  runs across volunteer compute, using the OpenDiLoCo algorithm
+  to cut cross-node bandwidth requirements
+  ([INTELLECT-2 release](https://www.primeintellect.ai/blog/intellect-2-release)).
+  INTELLECT-3 (106B MoE with 12B activated, 131K context) shipped
+  May 28 2025
+  ([INTELLECT-3 page](https://app.primeintellect.ai/intelligence/intellect-3)).
 - **Nous DisTrO** is a training framework that compresses the
   cross-node gradient updates aggressively (orders of magnitude),
   letting a training run survive on commodity internet
   bandwidth instead of InfiniBand
   ([DisTrO project](https://github.com/NousResearch/DisTrO)).
-- **Templar** and **Pluralis** are research-stage projects in the
-  same family, with different trade-offs on the
+- **Templar** (Bittensor Subnet 3) is the live
+  permissionless-and-incentivized decentralized-training
+  network. In March 2026 it completed Covenant-72B (72B
+  parameters, ~1.1T tokens, MMLU 67.1), the largest
+  decentralized-LLM pretraining run to that point
+  ([Templar / Subnet 3](https://bittensor123.com/subnets/sn3/)).
+- **Pluralis** is the related research-stage project on the
   bandwidth-vs-accuracy axis.
 
 The technical bet is that the bandwidth-efficient communication
-algorithms (DiLoCo / OpenDiLoCo / DisTrO) eventually compress
-the communication cost enough that geographically-distributed
+algorithms (DiLoCo / OpenDiLoCo / DisTrO) compress the
+communication cost enough that geographically-distributed
 training matches centralized training for the same compute
-budget. As of 2026, the gap has closed enough that 30B-scale
-training is viable; the question is whether it scales to 100B+
-without re-acquiring the bandwidth hunger that makes
-centralized clusters necessary.
+budget. As of 2026, the gap has closed enough that 30B-100B
+scale training is viable on commodity internet links
+(INTELLECT-3 at 106B, Templar's Covenant at 72B). The open
+question is whether the curve continues to frontier scale.
 
 ## What's open and what isn't
 
