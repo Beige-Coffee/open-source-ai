@@ -10,14 +10,25 @@ export interface ProviderModel {
 
 /**
  * Rich detail used by the OpenRouter model picker on /settings.
- * Pricing and context windows are kept in sync with the openrouter.ai
- * model pages; numbers below verified 2026-05-19.
+ * Pricing and context windows verified against openrouter.ai 2026-05-19.
  *
- * Lineup refresh 2026-05-19: replaced Gemini 2.5 Pro -> 3.1 Pro,
- * GPT-5 -> GPT-5.5, Qwen3 235B -> Kimi K2.6; added DeepSeek V4 Pro
- * (default) and GLM-5.1. Descriptions are intentionally minimal until
- * we have empirical results from the bench harness; capabilities are
- * uniform 3/3/3 placeholders, NOT measured ratings.
+ * Capability ratings (0-5) below are mapped from public benchmarks
+ * relevant to this site's task profile (tool-using chat agent that
+ * emits strict citation markers across 14 tools). Source benchmarks:
+ *   - Tools:    BFCL (Berkeley Function Calling Leaderboard, gorilla.cs.berkeley.edu),
+ *               TAU3-Bench (sierra.ai), MCPMark
+ *   - Reason:   Artificial Analysis Intelligence Index (artificialanalysis.ai),
+ *               GPQA Diamond
+ *   - Instruct: IFEval and the closed-model family's published track
+ *               record on strict-format adherence. Open-weights models
+ *               generally trail the Anthropic/OpenAI/Google frontier
+ *               here, which is why the open tier is rated 3 even when
+ *               their tools/reason scores are 4.
+ *
+ * These are MAPPED-FROM-PUBLIC-BENCHMARK ratings, not measurements
+ * of this specific agent's behavior under this specific system prompt.
+ * The bench harness at scripts/bench-models.mjs is the path to actual
+ * site-specific measurements when we run it.
  */
 export interface ModelDetails {
   id: string;
@@ -71,10 +82,10 @@ export const ANTHROPIC_MODELS: ProviderModel[] = [
   },
 ];
 
-// OpenRouter: 8-model lineup, refreshed 2026-05-19. Descriptions
-// kept intentionally minimal (no editorial claims about quality,
-// discipline, or instruct-following) pending empirical results from
-// the bench harness. Capability dots are uniform 3/3/3 placeholders.
+// OpenRouter: 8-model lineup, refreshed 2026-05-19. Descriptions cite
+// the most-relevant public benchmark per model. Capability ratings
+// mapped from BFCL / TAU3-Bench / Artificial Analysis Intelligence
+// Index / GPQA Diamond / IFEval; see file header.
 export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
   {
     id: "deepseek/deepseek-v4-pro",
@@ -84,9 +95,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 0.87,
     contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    capabilities: { tools: 4, reasoning: 4, instruct: 3 },
     description:
-      "Open-weights MoE, 1.6T total / 49B active parameters. Launch-promo pricing through 2026-05-31; rises to $1.74/$3.48 after.",
+      "Open-weights MoE, 1.6T total / 49B active parameters. AA Intelligence Index 52; SWE-Bench Pro 67.9%. Launch promo pricing through 2026-05-31; rises to $1.74/$3.48 after.",
     recommendedFor: "Default",
   },
   {
@@ -97,8 +108,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 15.0,
     contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
-    description: "Anthropic mid-tier.",
+    capabilities: { tools: 5, reasoning: 4, instruct: 5 },
+    description:
+      "Anthropic mid-tier. ARC-AGI-2 Verified 58.3%. Strong on MCP-Atlas tool-use benchmark.",
   },
   {
     id: "anthropic/claude-opus-4.7",
@@ -108,9 +120,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 25.0,
     contextLabel: "1M",
     speedLabel: "Moderate",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    capabilities: { tools: 5, reasoning: 5, instruct: 5 },
     description:
-      "Anthropic flagship. New tokenizer uses ~35% more tokens than 4.6 for the same English text, so effective cost is higher than the headline rate.",
+      "Anthropic flagship. SWE-Bench Pro 64.3%, GPQA Diamond 94.2%, AA Intelligence Index 57. New tokenizer uses ~35% more tokens for English text than 4.6, so effective cost is higher than headline.",
   },
   {
     id: "anthropic/claude-haiku-4.5",
@@ -120,8 +132,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 5.0,
     contextLabel: "200K",
     speedLabel: "Very Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
-    description: "Anthropic cheap tier.",
+    capabilities: { tools: 4, reasoning: 3, instruct: 4 },
+    description:
+      "Anthropic cheap tier. Fastest Anthropic option, 200K context.",
   },
   {
     id: "google/gemini-3.1-pro-preview",
@@ -131,8 +144,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 12.0,
     contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
-    description: "Google flagship with configurable thinking levels.",
+    capabilities: { tools: 4, reasoning: 5, instruct: 4 },
+    description:
+      "Google flagship. GPQA Diamond 94.3% (highest of any model). Configurable thinking levels.",
   },
   {
     id: "openai/gpt-5.5",
@@ -142,9 +156,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 30.0,
     contextLabel: "1M",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    capabilities: { tools: 5, reasoning: 5, instruct: 4 },
     description:
-      "OpenAI flagship, released April 23, 2026. Input above 272K tokens doubles in price.",
+      "OpenAI flagship, released April 23, 2026. AA Intelligence Index 60 (top of all models), Terminal-Bench 2.0 82.7%. Input above 272K tokens doubles in price.",
   },
   {
     id: "moonshotai/kimi-k2.6",
@@ -154,9 +168,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 3.49,
     contextLabel: "256K",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
+    capabilities: { tools: 4, reasoning: 4, instruct: 3 },
     description:
-      "Open-weights MoE, 1T total / 32B active parameters. Modified-MIT license.",
+      "Open-weights MoE, 1T total / 32B active parameters. Terminal-Bench 2.0 86.0% (leads open weights). AA Intelligence Index 54. Modified-MIT license.",
   },
   {
     id: "z-ai/glm-5.1",
@@ -166,8 +180,9 @@ export const OPENROUTER_MODEL_DETAILS: ModelDetails[] = [
     outputPerM: 3.08,
     contextLabel: "200K",
     speedLabel: "Fast",
-    capabilities: { tools: 3, reasoning: 3, instruct: 3 },
-    description: "MIT-licensed open weights.",
+    capabilities: { tools: 4, reasoning: 3, instruct: 3 },
+    description:
+      "MIT-licensed open weights. TAU3-Bench 70.6% (third overall on agentic tool use). AA Intelligence Index 51.",
   },
 ];
 

@@ -13,12 +13,17 @@ import {
 function CapabilityBar({
   label,
   score,
+  tooltip,
 }: {
   label: string;
   score: number;
+  tooltip: string;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+    <span
+      className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] cursor-help"
+      title={tooltip}
+    >
       <span>{label}</span>
       <span className="text-[var(--color-text)]">
         {Array.from({ length: 5 }).map((_, i) => (
@@ -93,9 +98,21 @@ function ModelCard({
         <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">
           ${model.inputPerM} in &middot; ${model.outputPerM} out /M
         </span>
-        <CapabilityBar label="Tools" score={model.capabilities.tools} />
-        <CapabilityBar label="Reason" score={model.capabilities.reasoning} />
-        <CapabilityBar label="Instruct" score={model.capabilities.instruct} />
+        <CapabilityBar
+          label="Tools"
+          score={model.capabilities.tools}
+          tooltip="Tool-calling reliability. Mapped from BFCL (function-calling correctness), TAU3-Bench (policy-adherent agentic tool use), and MCPMark. Important here because each turn calls 1-5 tools to read the wiki."
+        />
+        <CapabilityBar
+          label="Reason"
+          score={model.capabilities.reasoning}
+          tooltip="Multi-hop reasoning depth. Mapped from Artificial Analysis Intelligence Index (composite of ~10 tasks) and GPQA Diamond (scientific reasoning). Important here for cross-layer synthesis questions."
+        />
+        <CapabilityBar
+          label="Instruct"
+          score={model.capabilities.instruct}
+          tooltip="Adherence to instructions and output format. Mapped from IFEval and Anthropic's published track record on strict-format tasks. Important here for the strict (Layer: slug) / (Project: slug) citation markers the agent must emit."
+        />
       </div>
 
       <p className="text-sm text-[var(--color-text-muted)] leading-snug">
