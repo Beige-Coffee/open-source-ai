@@ -66,29 +66,33 @@ export type Database = {
         Row: {
           user_id: string;
           module_slug: string;
-          body: string;
+          body: string | null;
+          body_enc: EncBlobJson | null;
           updated_at: string;
         };
         Insert: {
           user_id: string;
           module_slug: string;
-          body: string;
+          body?: string | null;
+          body_enc?: EncBlobJson | null;
         };
-        Update: Partial<{ body: string }>;
+        Update: Partial<{ body: string | null; body_enc: EncBlobJson | null }>;
       };
       why_open_notes: {
         Row: {
           user_id: string;
           module_slug: string;
-          body: string;
+          body: string | null;
+          body_enc: EncBlobJson | null;
           updated_at: string;
         };
         Insert: {
           user_id: string;
           module_slug: string;
-          body: string;
+          body?: string | null;
+          body_enc?: EncBlobJson | null;
         };
-        Update: Partial<{ body: string }>;
+        Update: Partial<{ body: string | null; body_enc: EncBlobJson | null }>;
       };
       chat_turns: {
         Row: {
@@ -97,7 +101,8 @@ export type Database = {
           module_slug: string;
           phase: "probe" | "compare" | "why_open" | "synthesize";
           role: "user" | "assistant" | "tool";
-          content: string;
+          content: string | null;
+          content_enc: EncBlobJson | null;
           turn_index: number;
           created_at: string;
         };
@@ -106,14 +111,48 @@ export type Database = {
           module_slug: string;
           phase: "probe" | "compare" | "why_open" | "synthesize";
           role: "user" | "assistant" | "tool";
-          content: string;
+          content?: string | null;
+          content_enc?: EncBlobJson | null;
           turn_index: number;
         };
         Update: never;
       };
+      user_keys: {
+        Row: {
+          user_id: string;
+          wrapped_dk: string; // bytea returned as hex string by supabase-js
+          wrap_nonce: string;
+          kdf_salt: string;
+          kdf_iterations: number;
+          kdf_alg: "pbkdf2-sha256";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          wrapped_dk: string;
+          wrap_nonce: string;
+          kdf_salt: string;
+          kdf_iterations?: number;
+          kdf_alg?: "pbkdf2-sha256";
+        };
+        Update: Partial<{
+          wrapped_dk: string;
+          wrap_nonce: string;
+          kdf_salt: string;
+          kdf_iterations: number;
+        }>;
+      };
     };
   };
 };
+
+/** Wire envelope for E2EE blobs stored in jsonb columns. See src/lib/crypto/e2ee.ts. */
+export interface EncBlobJson {
+  v: number;
+  n: string;
+  c: string;
+}
 
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;

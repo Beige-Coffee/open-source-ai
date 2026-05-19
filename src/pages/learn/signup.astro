@@ -145,4 +145,66 @@ if (Astro.request.method === "POST") {
       Nothing else. See <a href="/privacy" class="text-[var(--color-text-muted)]">/privacy</a> for specifics.
     </p>
   </section>
+
+  <script>
+    // Client-side signup + E2EE key initialization. Intercepts the
+    // form submit so the password stays in browser scope long enough
+    // to generate and wrap the data key. SSR POST handler stays as a
+    // no-JS fallback; that path creates the account but skips E2EE
+    // init, which the next JS-enabled login will pick up.
+    import { browserSupabase } from "../../lib/course/supabase";
+    import { initKeys } from "../../lib/course/keys";
+
+    const form = document.getElementById("signup-form") as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        const supabase = browserSupabase();
+        if (!supabase) return;
+        e.preventDefault();
+        const data = new FormData(form);
+        const identifier = String(data.get("username") ?? "").trim();
+        const password = String(data.get("password") ?? "");
+        if (!identifier || !password) return;
+        if (password.length < 8) return;
+        const email = identifier.includes("@")
+          ? identifier
+          : `${identifier.toLowerCase().replace(/[^a-z0-9._-]/g, "")}@oas.local`;
+        const showError = (msg: string) => {
+          const existing = form.querySelector("[data-signup-error]") as HTMLParagraphElement | null;
+          if (existing) {
+            existing.textContent = msg;
+            return;
+          }
+          const p = document.createElement("p");
+          p.className = "text-sm text-red-700 border border-red-200 bg-red-50 px-3 py-2 rounded";
+          p.dataset.signupError = "1";
+          p.textContent = msg;
+          form.insertBefore(p, form.firstChild);
+        };
+        const { data: authData, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          showError(error.message);
+          return;
+        }
+        if (!authData.session) {
+          // Email confirmation flow: account exists but session isn't
+          // live yet. Keys will be initialized on first confirmed login.
+          showError("Account created. Check your email for a confirmation link, then log in.");
+          return;
+        }
+        try {
+          await initKeys(supabase, password);
+        } catch (err) {
+          await supabase.auth.signOut();
+          showError(
+            err instanceof Error
+              ? `Could not initialize encryption: ${err.message}`
+              : "Could not initialize encryption.",
+          );
+          return;
+        }
+        window.location.href = "/learn?restore=anon";
+      });
+    }
+  </script>
 </BaseLayout>

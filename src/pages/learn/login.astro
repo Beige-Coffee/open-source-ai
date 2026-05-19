@@ -127,4 +127,64 @@ if (Astro.request.method === "POST") {
       No account yet? <a href="/learn/signup" class="text-[var(--color-text)]">Sign up</a>.
     </p>
   </section>
+
+  <script>
+    // Client-side auth + E2EE key unlock. Intercepts the form submit so
+    // the password stays in browser scope long enough to derive the KEK
+    // and unwrap the data key. If JS is off, the form falls back to the
+    // Astro server-side POST handler, which still logs the user in but
+    // skips the E2EE unlock (their encrypted rows will appear empty
+    // until the next JS-enabled login).
+    import { browserSupabase } from "../../lib/course/supabase";
+    import { unlockOrInit } from "../../lib/course/keys";
+
+    const form = document.getElementById("login-form") as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        const supabase = browserSupabase();
+        if (!supabase) return; // not configured; let SSR handle it
+        e.preventDefault();
+        const data = new FormData(form);
+        const identifier = String(data.get("username") ?? "").trim();
+        const password = String(data.get("password") ?? "");
+        if (!identifier || !password) return;
+        const email = identifier.includes("@")
+          ? identifier
+          : `${identifier.toLowerCase().replace(/[^a-z0-9._-]/g, "")}@oas.local`;
+        // Surface errors inline if there's already an error <p>, otherwise
+        // create one. Keep markup minimal to match SSR output.
+        const showError = (msg: string) => {
+          const existing = form.querySelector("[data-login-error]") as HTMLParagraphElement | null;
+          if (existing) {
+            existing.textContent = msg;
+            return;
+          }
+          const p = document.createElement("p");
+          p.className = "text-sm text-red-700 border border-red-200 bg-red-50 px-3 py-2 rounded";
+          p.dataset.loginError = "1";
+          p.textContent = msg;
+          form.insertBefore(p, form.firstChild);
+        };
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          showError(error.message);
+          return;
+        }
+        try {
+          await unlockOrInit(supabase, password);
+        } catch (err) {
+          // Wrong password unwraps fail here. Sign back out so the user
+          // can retry; otherwise they'd be authed-but-locked.
+          await supabase.auth.signOut();
+          showError(
+            err instanceof Error && err.message.toLowerCase().includes("invalid")
+              ? "Wrong password."
+              : "Could not unlock your encrypted data. Please try again.",
+          );
+          return;
+        }
+        window.location.href = "/learn?restore=anon";
+      });
+    }
+  </script>
 </BaseLayout>
