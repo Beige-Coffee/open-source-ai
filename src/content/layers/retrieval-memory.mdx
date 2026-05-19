@@ -7,25 +7,203 @@ order: 7
 lock_in_vector: retrieval
 sovereignty_relevance: 3
 related_layers: [weights, agents]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "Three things live at this layer: vector databases like Qdrant and pgvector, embedding models like BGE and jina-embeddings, and agent-memory frameworks like Letta, mem0, and Zep."
-  - "The open side is well-covered at every sub-layer, with Pinecone as the closed counterpart and pgvector as the boring-tech default for most teams."
-  - "Vectors plus metadata is a portable format, so the database itself is not the real lock-in story."
-  - "The interesting lock-in is one layer up: an agent whose memory lives server-side at someone else's cloud is not portable regardless of vector format."
-  - "Accumulated context, not the underlying store, is what binds users to a particular provider."
+  - "Three things share this layer. Vector databases (Qdrant, Weaviate, Chroma, Milvus, LanceDB, pgvector) store and search embeddings. Embedding models (sentence-transformers, BGE, jina-embeddings, Voyage) produce the vectors. Agent-memory frameworks (Letta, mem0, Zep) sit on top and manage retrieval policy."
+  - "The open side is well-covered at every sub-layer. pgvector is the boring-tech default for most teams; Pinecone is the closed managed counterpart. Specialized vector stores compete on filter-then-search performance and on multi-modal embeddings, not on basic vector search."
+  - "Vectors plus metadata is a portable format. Moving from one store to another is mechanically straightforward (re-embed and re-index), so the database itself is not the real lock-in story."
+  - "The interesting lock-in lives one layer up at the accumulated agent context. An agent whose memory is hosted at someone else's cloud is not portable regardless of vector format. Memory frameworks like Letta exist specifically to give the user a portable memory layer they own."
+  - "RAG (retrieval-augmented generation) is the standard pattern that uses this layer: at query time, retrieve relevant chunks from a vector store and inject them into the model's context. Variations (graph-RAG, agentic RAG, query rewriting) refine the policy."
 ---
 
 import G from "../../components/G.astro";
 
-The infrastructure that lets a model recall, search, and remember beyond
-its <G term="context-window">context window</G>. Three things live here: vector databases (Qdrant,
-Weaviate, Chroma, Milvus, LanceDB, pgvector), <G term="embedding">embedding</G> models
-(sentence-transformers, BGE, jina-embeddings), and agent-memory
-frameworks (Letta, mem0, Zep). The open side is robust at every
-sub-layer; Pinecone is the closed counterpart and pgvector is the
-boring-tech path for most teams. The interesting story at this layer is
-not the database itself (vectors plus metadata is a portable format) but
-the accumulated-context lock-in one layer up: an agent whose memory
-lives server-side at someone else's cloud is not portable, no matter
-how open the underlying vector format is.
+## Overview
+
+The infrastructure that lets a model recall, search, and
+remember beyond its <G term="context-window">context window</G>. The math is the same as
+ten years of information-retrieval research; what's new is that
+the relevance ranker is a transformer and the retrieval target
+is a high-dimensional embedding space.
+
+Five things to keep in mind as you read:
+
+- **Three layers stack here.** Vector databases (the store),
+  embedding models (the encoder), and agent-memory frameworks
+  (the retrieval policy).
+- **Open coverage is good across all three.** Pinecone is the
+  closed managed default; nothing on the open side is missing.
+- **pgvector is the boring-tech default for most teams.**
+  Postgres extension, no new database to operate, fine for
+  most workloads.
+- **Vectors-plus-metadata is portable.** The database itself is
+  not the lock-in story; you can re-embed and re-index.
+- **The real lock-in is one layer up.** Hosted agent memory at
+  someone else's cloud isn't portable even when the vector
+  format is.
+
+The rest of this page walks the three sub-layers and then
+arrives at the lock-in question.
+
+## Vector databases
+
+What stores the embeddings and answers nearest-neighbor queries.
+
+The open landscape:
+
+- **Qdrant** — Rust-written, strong filtering performance,
+  permissively-licensed. The most-recommended dedicated vector
+  database for teams that don't want Postgres
+  ([Qdrant project](https://qdrant.tech/)).
+- **Weaviate** — Go-written, supports multiple embedding
+  providers behind one API, has multi-modal extensions
+  ([Weaviate documentation](https://weaviate.io/developers/weaviate)).
+- **Chroma** — Python-first, designed for prototype-then-grow
+  workflows, easy local dev story
+  ([Chroma documentation](https://docs.trychroma.com/)).
+- **Milvus** — built for very large-scale deployments, the
+  reference for billion-vector workloads, originated at Zilliz
+  ([Milvus documentation](https://milvus.io/docs)).
+- **LanceDB** — embedded vector store on the Lance columnar
+  format, popular for ML data engineering workflows
+  ([LanceDB documentation](https://lancedb.github.io/lancedb/)).
+- **pgvector** — Postgres extension, no new operational
+  surface, the boring-tech path. Most production deployments
+  that don't have a specific reason to pick something else end
+  up here ([pgvector repository](https://github.com/pgvector/pgvector)).
+
+The closed counterpart is **Pinecone**, the managed
+vector-database service. Pinecone's pitch is operational
+simplicity; the trade is vendor lock-in and per-query pricing.
+
+## Embedding models
+
+What encodes text (or images, or audio) into the vectors the
+store searches.
+
+The dominant open lines as of 2026:
+
+- **sentence-transformers** — the foundational library and a
+  family of models (all-MiniLM, all-mpnet) that anchored open
+  embeddings from 2020 onward
+  ([sentence-transformers documentation](https://www.sbert.net/))
+- **BGE** (BAAI General Embedding, the Beijing Academy of AI) —
+  bge-large-en, bge-m3, bge-reranker. Apache 2.0, near top of
+  the MTEB leaderboard for English and multilingual workloads
+  ([BGE model card](https://huggingface.co/BAAI/bge-large-en-v1.5))
+- **Jina Embeddings** — jina-embeddings-v3, multilingual, strong
+  long-context performance, Apache 2.0
+  ([Jina embeddings](https://jina.ai/embeddings/))
+- **Nomic Embed** — open Mistral-derived embeddings, Apache 2.0
+  ([Nomic Embed announcement](https://www.nomic.ai/blog/posts/nomic-embed-text-v1))
+
+The closed leaders are OpenAI's text-embedding-3-large, Cohere's
+embed-v4, and Voyage AI's voyage-3. The closed leaders win on
+top-end accuracy for some benchmarks but the gap to BGE / Jina /
+Nomic is small enough that the open side is the right default
+for most teams.
+
+A reranker is the second-stage refinement: the vector search
+returns top-k candidates, then a more-expensive cross-encoder
+re-scores them. **BGE-reranker**, **Cohere Rerank** (closed),
+and HuggingFace's Ettin Reranker family are the references.
+
+## Agent memory frameworks
+
+The retrieval policy on top of the store. Decides what to embed,
+when to retrieve, how to summarize, and how to forget.
+
+The shapes:
+
+- **Letta** (formerly MemGPT) — operating-system-inspired memory
+  hierarchy with a working set + paged long-term store; open
+  source ([Letta project](https://www.letta.com/))
+- **mem0** — opinionated agent-memory API, focuses on extracting
+  and storing user facts across sessions; open core with hosted
+  variant ([mem0 documentation](https://docs.mem0.ai/))
+- **Zep** — temporal knowledge-graph memory for agents,
+  particularly strong for conversational AI; open core
+  ([Zep project](https://www.getzep.com/))
+
+These exist because retrieval policy is hard. Naive
+"embed everything, retrieve top-5 every turn" wastes context and
+loses temporal structure. A real memory layer needs to decide
+what's worth remembering (user preferences, key facts), what's
+fine to summarize (old conversation context), and what's safe
+to drop entirely.
+
+## RAG, the standard pattern
+
+Retrieval-augmented generation is the canonical pattern that
+uses this layer.
+
+At query time: take the user's question, embed it, search the
+vector store for the top-k most-similar chunks, paste those
+chunks into the model's context, and answer from them. The
+foundational paper is Lewis et al., 2020
+([RAG paper, arXiv 2005.11401](https://arxiv.org/abs/2005.11401));
+the original RAG architecture has spawned a long line of
+refinements.
+
+The 2026 refinements worth knowing:
+
+- **Graph-RAG**: retrieve from a structured graph of entities
+  and relationships rather than from chunks. Microsoft GraphRAG
+  is the reference
+  ([GraphRAG paper](https://arxiv.org/abs/2404.16130)).
+- **Agentic RAG**: the model decides when and what to retrieve
+  rather than retrieving on every query. Composes naturally
+  with the agent layer.
+- **Query rewriting**: rewrite the user's literal question into
+  better search queries before embedding. Improves recall
+  meaningfully on real conversational input.
+- **Long-context as RAG alternative**: at 1M+ token context
+  windows, the question becomes "RAG or just paste it all in?"
+  with the answer depending on how often the same context gets
+  reused.
+
+## What's open and what isn't
+
+Mostly open at every sub-layer.
+
+- **Open vector stores**: Qdrant, Weaviate, Chroma, Milvus,
+  LanceDB, pgvector. Pinecone is the closed managed counterpart.
+- **Open embedding models**: BGE, Jina, Nomic, the
+  sentence-transformers family. OpenAI / Cohere / Voyage are
+  closed and competitive at the top end.
+- **Open memory frameworks**: Letta, mem0, Zep. No major closed
+  competitor; the major labs build memory internally.
+- **Open RAG frameworks**: LangChain, LlamaIndex, Haystack on
+  top of the above. Plus the structured-RAG implementations
+  (GraphRAG, Microsoft's GraphRAG repository).
+
+The reverse-lock-in risk lives elsewhere on the stack. A team
+using Pinecone can leave Pinecone (re-embed and re-index in
+Qdrant); a team whose agent memory is hosted at OpenAI's
+Assistants API or Anthropic's MCP-server hosted memory cannot
+trivially leave, because the accumulated context lives on
+someone else's storage. The vector layer is mostly
+commoditized; the lock-in moves up to the agent layer.
+
+## The editorial tension
+
+The interesting tension here is not open vs closed at the
+storage layer (open wins by default) but where the lock-in
+actually lives.
+
+The naive sovereignty take is "use open vector databases and
+embeddings". That's correct as far as it goes; it's also not
+load-bearing, because no major team is going to be unable to
+swap vector stores in 2030 even if they picked Pinecone in
+2025. The expensive lock-in is the accumulated agent context
+itself: the conversation history, the user-fact memory, the
+project-specific retrieval index. Once those live in a hosted
+agent platform, leaving requires reconstructing them, and
+reconstruction loses fidelity.
+
+The teams thinking seriously about sovereignty at this layer
+are the ones picking an open memory framework (Letta) and a
+self-hosted store (Qdrant or pgvector) precisely so that the
+accumulated context stays on their hardware. That's the
+sovereignty bet worth making here; the choice between Qdrant
+and Pinecone is a much smaller one.

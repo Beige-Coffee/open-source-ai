@@ -7,24 +7,182 @@ order: 9
 lock_in_vector: protocols
 sovereignty_relevance: 5
 related_layers: [agents, governance]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "The big three protocols in 2026 are MCP (model-to-tool), A2A (agent-to-agent), and AAIF (agent identification)."
-  - "Agentic payment rails include L402 on Bitcoin Lightning, x402 for stablecoins, and the in-development MCP commerce extensions."
-  - "Whoever owns the protocol owns the integration layer, the way HTTP, SMTP, and BGP shaped earlier internet eras."
-  - "Protocol specs are notionally open, but governance shapes (foundation neutrality, multi-vendor consortium, seeded-by-one-lab) decide how durably open they remain."
-  - "Protocols matter for sovereignty disproportionately to their visibility, since they sit beneath the agents users interact with."
+  - "The big three protocols in 2026 are MCP (Model Context Protocol, agent-to-tool, Anthropic-initiated, now Linux Foundation), A2A (Agent2Agent, agent-to-agent, Google-launched, now Linux Foundation), and AAIF (Agent Identification Framework, also under Linux Foundation)."
+  - "Agentic payment rails include L402 (Bitcoin Lightning, Lightning Labs / Fewsats), x402 (HTTP 402 with stablecoin settlement on Base, Coinbase-initiated), and the in-development MCP commerce extensions."
+  - "Whoever owns the protocol owns the integration layer, the way HTTP, SMTP, and BGP shaped earlier internet eras. Protocols persist longer than the products built on them."
+  - "Protocol specs are notionally open, but governance shape (foundation neutrality, multi-vendor consortium, seeded-by-one-lab) decides how durably open they remain. MCP moving from 'Anthropic spec' to 'Linux Foundation steward' in late 2025 is the model case."
+  - "Protocols matter for sovereignty disproportionately to their visibility, because they sit beneath the agents users interact with. A vendor-controlled protocol is a vendor moat regardless of how open the agents and models on top of it are."
 ---
 
 import G from "../../components/G.astro";
 
-The wire protocols agents, tools, and models use to talk to each other.
-The big three in 2026: <G term="mcp">MCP</G> (<G term="mcp">Model Context Protocol</G>, model-to-tool), <G term="a2a">A2A</G>
-(agent-to-agent), and AAIF (agent identification). Plus the <G term="agentic">agentic</G>
-payments rails: <G term="l402">L402</G> (Bitcoin Lightning), <G term="x402">x402</G> (stablecoin), and the
-in-development <G term="mcp">MCP</G> commerce extensions. Protocols matter for sovereignty
-disproportionately to their visibility: whoever owns the protocol owns
-the integration ecosystem, the way HTTP, SMTP, and BGP did before them.
-The specs are notionally open, but governance shapes (foundation
-neutrality, multi-vendor consortium vs. seeded-by-one-lab) determine
-how durably open they remain.
+## Overview
+
+The wire protocols agents, tools, and models use to talk to
+each other. The internet's TCP/IP, HTTP, SMTP, and BGP shaped
+which businesses became possible in earlier eras; the AI
+equivalents are being negotiated now, and the outcome decides
+which integration patterns dominate the agent era.
+
+Five things to keep in mind as you read:
+
+- **Three protocols matter most.** <G term="mcp">MCP</G> (agent-to-tool), <G term="a2a">A2A</G>
+  (agent-to-agent), AAIF (agent identification).
+- **Payment rails are a parallel category.** L402, x402, plus
+  the in-development MCP commerce extensions.
+- **Protocols outlive products.** HTTP outlasted Netscape; MCP
+  will outlast Claude. That's why the governance shape matters.
+- **The governance shape decides durability.** A spec at the
+  Linux Foundation with a multi-vendor steering committee is a
+  different artifact than a spec under one lab's control.
+- **Sovereignty risk concentrates here.** A vendor-controlled
+  protocol is a vendor moat regardless of how open agents and
+  models above it are.
+
+The rest of this page walks the protocol families and then the
+governance question.
+
+## MCP: agent-to-tool
+
+The Model Context Protocol is the most-deployed agent protocol
+of 2025-2026. Announced by Anthropic in November 2024
+([MCP launch announcement](https://www.anthropic.com/news/model-context-protocol)),
+the spec defines how a host application (an IDE, a chat
+client, an agent) connects a model to tools and data sources
+through "MCP servers" running locally or remotely.
+
+The technical contribution is a JSON-RPC-based standard for
+exposing three things to a model: tools (functions the model
+can call), resources (data the model can read), and prompts
+(parameterized templates the host can offer to the user). The
+human contribution is that it's the first such spec broad
+enough that most agent vendors agreed to implement it.
+
+In late 2025, Anthropic transferred MCP stewardship to the
+Linux Foundation, joining A2A under the same foundation
+([Linux Foundation MCP announcement](https://www.linuxfoundation.org/press/linux-foundation-takes-over-stewardship-of-model-context-protocol)).
+The migration from "lab-controlled spec" to "foundation-steward
+spec with multi-vendor governance" is the model case for how
+protocol governance should work at this layer.
+
+The MCP server ecosystem grew faster than any prior agent
+protocol's. By 2026 there are MCP servers for every major SaaS
+(Slack, Notion, Linear, GitHub, Sentry), every major database,
+and every major cloud platform. The integration win is real and
+the win flows to whoever ships the canonical MCP server for
+their product.
+
+## A2A: agent-to-agent
+
+A different problem than MCP. Where MCP lets a host connect a
+model to tools, A2A lets agents themselves communicate, advertising
+capabilities and exchanging task state across vendor and
+runtime boundaries. Google launched A2A in April 2025 with a
+multi-vendor partner set
+([Google A2A announcement](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)),
+and the Linux Foundation took stewardship later that year.
+
+The spec defines agent cards (discoverable capability
+manifests), task envelopes (the unit of work an agent can hand
+to another agent), and a streaming JSON-RPC transport. The
+unit of interaction is agent-to-agent, not model-to-tool;
+that's the line of separation against MCP.
+
+Whether A2A and MCP merge, layer, or compete is still an open
+question through 2026. The current trajectory is that they
+layer: MCP handles the inside-the-agent tool calls; A2A
+handles the across-agents handoffs.
+
+## AAIF: agent identification
+
+The third spec in the Linux Foundation cluster. AAIF (Agent
+Identification Framework) addresses a different gap: when
+agents send requests across the internet, the receiving system
+needs to know who the agent is, who's accountable for it, and
+what its capabilities are. AAIF is the agent equivalent of TLS
+client certificates plus a capability description.
+
+Less mature than MCP or A2A as of 2026; more important as
+agent traffic grows beyond single-vendor deployments. The
+question AAIF answers is essentially "is this request coming
+from a Claude agent acting on behalf of user X, or is it a
+scraper claiming to be that?".
+
+## Agentic payment rails
+
+A parallel category. When agents pay other agents (for API
+access, for data, for compute), the settlement rail matters.
+
+- **L402** (Lightning Labs / Fewsats) — HTTP 402 paired with a
+  Lightning Network invoice. An agent receives a 402 with a
+  Lightning payment request, pays it, retries with a macaroon
+  token in the Authorization header. Bitcoin-native, instant
+  settlement, no account required
+  ([L402 specification](https://docs.lightning.engineering/the-lightning-network/l402)).
+- **x402** (Coinbase, May 2025) — same 402-based shape but
+  with stablecoin settlement on Base (USDC). Easier on-ramp for
+  agents that already hold stablecoins, less censorship-resistant
+  than L402 ([x402 specification](https://www.x402.org/)).
+- **MCP commerce extensions** — in development through 2026,
+  the proposal layers payment semantics directly onto MCP so
+  any tool exposed via MCP can be priced and paid for through
+  the same protocol used to call it.
+
+These rails matter because the agent era plausibly creates a
+machine-to-machine economy where the median transaction is too
+small for a card payment (well below the card-network
+viability threshold) and too frequent for human approval. The
+settlement rail that wins becomes the substrate for that
+economy.
+
+## What's open and what isn't
+
+The protocol specs themselves are notionally open. The
+governance shape decides how durably so.
+
+- **Linux Foundation stewardship** (MCP, A2A, AAIF): the strong
+  case. Multi-vendor governance, BSD-licensed spec, no single
+  party can change the protocol against community consensus.
+- **Single-lab control** (MCP before late 2025, the in-progress
+  payment extensions): the spec is published, but the lab
+  controls the roadmap. Vulnerable to the lab using the spec
+  to favor its own implementation.
+- **De facto proprietary** (Anthropic's tool-use API, OpenAI's
+  function-calling API, before MCP): the spec is the
+  vendor's API, with no separate governance layer.
+- **Genuinely open infrastructure** (L402 on Bitcoin Lightning):
+  permissionless, no single entity can change the rules.
+
+The pattern across other internet protocol generations is that
+the ones that survived multi-decade scaling were the ones with
+neutral governance early. TCP/IP went through IETF; HTTP went
+through W3C and then WHATWG. The AI-protocol equivalents are
+the foundation-stewarded ones.
+
+## The editorial tension
+
+Protocols matter for sovereignty disproportionately to their
+visibility. A user never sees MCP; an agent never advertises
+A2A in its UI. But the integration patterns these protocols
+encode determine which businesses can exist downstream.
+
+The optimistic read is that the major agent protocols are
+landing at the Linux Foundation early, with multi-vendor
+governance, and that the pattern is durable. The cautionary
+read is that the protocol's text is open but the canonical
+implementation is one lab's product, and the gap between "spec
+is open" and "implementation is what everyone actually uses"
+is wide enough that a lab can effectively control the
+direction even after governance transfer.
+
+The agentic-payments side is the more open question. Whether
+the dominant rail ends up Bitcoin-based (L402), stablecoin
+on a particular chain (x402 on Base), or vendor-mediated
+(Stripe-style agent payments, or Anthropic / Google / OpenAI
+running their own settlement) is a strategic-stack
+contest, not just a technical one. The choice between
+permissionless settlement and platform-mediated settlement is
+the same Bitcoin-vs-PayPal fight from the previous decade,
+now extended to machine actors.

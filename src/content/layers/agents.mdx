@@ -7,25 +7,169 @@ order: 8
 lock_in_vector: agents
 sovereignty_relevance: 5
 related_layers: [weights, runtime, retrieval-memory, protocols]
-updated: 2026-05-13
+updated: 2026-05-19
 probe_primer:
-  - "An agent is a program that uses an LLM to decide which tools to call, in what sequence, until a goal is reached."
-  - "Open agent frameworks include LangChain, LlamaIndex, AutoGen, and CrewAI; open end-user products include Goose, OpenHands, Aider, Cline, and Continue."
-  - "Closed end-user products like Claude Code, Cursor, and Devin compete directly with the open agent products."
-  - "Whoever owns the agent owns the workflow integration, the accumulated-context memory, and the ability to swap the underlying model."
-  - "Closed agents defeat open weights at the user-experience layer, even when every layer underneath them is open."
+  - "An agent is a program that uses an LLM to decide which tools to call, in what sequence, until a goal is reached. The model provides the reasoning; the agent provides the loop, the tool registry, and the state."
+  - "The layer splits two ways. Agent frameworks (LangChain, LlamaIndex, AutoGen, CrewAI, Mastra) are libraries developers build agents with. End-user agent products (Goose, OpenHands, Aider, Cline, Continue on the open side; Claude Code, Cursor, Devin on the closed side) are completed agents users can install and run."
+  - "The closed end-user products dominate developer mindshare in 2026 (Claude Code, Cursor) but the open products (Goose, Aider, OpenHands) are at near-parity for the well-defined coding-agent task."
+  - "Whoever owns the agent owns the workflow integration, the accumulated-context memory, and the ability to swap the underlying model. The agent is the layer that sees the user, so the lock-in here is tighter than at any layer below."
+  - "Closed agents defeat open weights at the user-experience layer, even when every layer underneath them is open. A team using Cursor with a Claude model is not running open AI in any meaningful sense; a team using Goose with DeepSeek-V3 weights and a self-hosted vLLM is."
 ---
 
 import G from "../../components/G.astro";
 
-The orchestration layer that turns a model into an actor. An agent is a
-program that uses an LLM to decide which tools to call, in what
-sequence, until a goal is reached. The layer splits into agent
-frameworks (<G term="langchain">LangChain</G>, <G term="llama-index">LlamaIndex</G>, <G term="autogen">AutoGen</G>, CrewAI) and end-user agent
-products (<G term="goose">Goose</G>, OpenHands, Aider, Cline, Continue on the open side;
-Claude Code, Cursor, Devin on the closed side). This is the most
-contested layer for sovereignty because it is closest to the user:
-whoever owns the agent owns the workflow integration, the
-accumulated-context memory, and the ability to swap the underlying
-model. Closed agents defeat <G term="open-weights">open weights</G> at the user-experience layer,
-even when everything below them is open.
+## Overview
+
+The orchestration layer that turns a model into an actor. An
+agent is a program that uses an LLM to decide which tools to
+call, in what sequence, until a goal is reached. The model
+provides the reasoning; the agent provides the loop, the tool
+registry, the memory, and the policy for when to stop.
+
+Five things to keep in mind as you read:
+
+- **Agent = LLM + loop + tools + memory.** Without the loop,
+  it's just a chat completion. Without the tools, it can't act
+  on the world.
+- **Two distinct shapes share the layer.** Frameworks
+  (libraries) and products (completed agents users install).
+- **Open frameworks are mature.** <G term="langchain">LangChain</G>, <G term="llama-index">LlamaIndex</G>,
+  <G term="autogen">AutoGen</G>, CrewAI, Mastra. Every framework you've heard of is
+  open source.
+- **Closed end-user products dominate mindshare.** Claude Code,
+  Cursor, Devin. Open competitors exist (<G term="goose">Goose</G>, OpenHands,
+  Aider) and are technically credible.
+- **This is the layer the user sees.** Lock-in is tighter here
+  than below because the agent owns the workflow.
+
+The rest of this page walks the frameworks, then the products,
+then arrives at the sovereignty question that follows the
+user-experience layer.
+
+## Agent frameworks
+
+The libraries developers build agents with.
+
+- **LangChain** — the foundational framework. Tool integrations,
+  agent loops, chains, prompt templates. Has a reputation for
+  abstraction sprawl; the underlying primitives are sound and
+  the LangGraph spinoff cleaned up the agent-loop part
+  ([LangChain documentation](https://python.langchain.com/),
+  [LangGraph](https://github.com/langchain-ai/langgraph)).
+- **LlamaIndex** — originally a RAG framework, now a full agent
+  framework with strong document-and-retrieval focus
+  ([LlamaIndex documentation](https://docs.llamaindex.ai/)).
+- **AutoGen** (Microsoft Research) — multi-agent framework with
+  a focus on agent-to-agent conversations and role-playing
+  patterns ([AutoGen repository](https://github.com/microsoft/autogen)).
+- **CrewAI** — opinionated multi-agent framework, role-based,
+  built around a "crew" of specialized agents
+  ([CrewAI documentation](https://docs.crewai.com/)).
+- **Mastra** — TypeScript-native agent framework, Vercel-adjacent
+  ecosystem, popular for web-app integrations
+  ([Mastra documentation](https://mastra.ai/docs)).
+
+The framework choice matters less than is sometimes claimed. The
+agent loop itself is ~20 lines of code; what the frameworks
+provide is the tool integrations, the persistence wiring, the
+streaming UI, and the production-grade tracing. For a small
+team, picking any of them and standardizing is more important
+than picking the "best".
+
+## End-user agent products
+
+Completed agents the user installs and runs. This is where the
+sovereignty fight actually happens.
+
+**Open coding agents.**
+
+- **Goose** (Block) — open-source AI agent for software
+  engineering, MCP-native, extensible via "recipes". Apache 2.0
+  ([Goose project](https://block.github.io/goose/)).
+- **OpenHands** (formerly OpenDevin) — open autonomous software
+  engineering agent, runs in a sandboxed container, capable of
+  multi-step coding tasks
+  ([OpenHands repository](https://github.com/All-Hands-AI/OpenHands)).
+- **Aider** — terminal-first pair-programming agent, smallest
+  surface area, runs against any model via an API key
+  ([Aider documentation](https://aider.chat/)).
+- **Cline** — VS Code extension, open source, capable of full
+  agentic workflows inside the editor
+  ([Cline repository](https://github.com/cline/cline)).
+- **Continue** — VS Code / JetBrains agent extension, open core
+  with team-tier hosted features
+  ([Continue project](https://www.continue.dev/)).
+
+**Closed coding agents.**
+
+- **Claude Code** (Anthropic) — terminal-first agent built on
+  Claude, the most-deployed closed coding agent of 2025-2026.
+- **Cursor** (Anysphere) — VS Code fork with deeply-integrated
+  AI features. The mindshare leader for developer-facing AI
+  tooling.
+- **Devin** (Cognition Labs) — autonomous software engineer
+  positioned as a remote-worker replacement; closed.
+- **GitHub Copilot** — the longest-running closed agent in the
+  category, now agent-capable beyond completion.
+
+The open coding agents are competitive on the well-defined
+task ("edit this codebase to do X"). They fall behind on the
+integrated-IDE experience and on the model that powers them
+(the closed agents bundle premier closed models by default).
+
+## What's open and what isn't
+
+Layered.
+
+- **Open frameworks**: every framework worth naming is open
+  source. The framework layer is solved.
+- **Open products**: Goose, OpenHands, Aider, Cline, Continue,
+  plus a long tail. Cover most use cases.
+- **Closed products**: Claude Code, Cursor, Devin, Copilot.
+  Dominate developer mindshare.
+- **The model the agent runs against**: orthogonal. An open
+  agent can use a closed model; a closed agent can sometimes
+  use open weights. The combination determines the sovereignty
+  posture.
+
+Four meaningful combinations:
+
+| Agent | Model | Sovereignty |
+|---|---|---|
+| Closed (Cursor) | Closed (Claude) | None |
+| Closed (Cursor) | Open (DeepSeek via API) | Partial |
+| Open (Goose) | Closed (Claude via API) | Partial |
+| Open (Goose) | Open (self-hosted DeepSeek) | Full |
+
+Most developers in 2026 sit in the first row. The fourth row is
+viable; the trade-off is the closed-model performance edge,
+which is real but narrowing.
+
+## The editorial tension
+
+The agent is the layer that sees the user. Everything below it
+(silicon, compute, weights, runtime, retrieval) shows up to the
+user through the agent's UI. A team using Cursor with Claude is
+running closed AI even when every layer underneath could be
+open; a team using Goose with self-hosted DeepSeek is running
+open AI even when the broader market is dominated by closed
+products.
+
+That asymmetry is why the sovereignty argument concentrates at
+this layer. The agent owns the workflow, the accumulated
+project context, the integration surface (filesystem, browser,
+shell access), and the model-selection policy. Changing
+underlying models is mechanically easy; changing agents
+requires rebuilding the workflow.
+
+The strategic question for an open-AI advocate is whether the
+open agents close enough of the experience gap to displace the
+closed defaults at scale, or whether the closed products keep
+the developer mindshare and the open agents stay as the
+sovereignty option for users who specifically want it. The
+2026 trajectory is the second one: Cursor and Claude Code are
+gaining share, the open agents are improving but not catching
+up on integration polish, and the "I use Goose because I want
+the open path" user is a small fraction of the developer
+audience. Whether that fraction grows enough to matter is the
+open question through 2027.
