@@ -2,11 +2,23 @@
 export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
 import { loadLayers } from "../../lib/layers";
-import { displayIdentity } from "../../lib/course/identity";
 
-const { user } = Astro.locals;
+const { user, supabase } = Astro.locals;
+
+// If logged in, prefill the depth picker with their saved choice so the
+// inline form on /learn matches what they'd see at /learn/profile.
+let currentPassChoice: "fast" | "deep" = "fast";
+if (user && supabase) {
+  const { data } = await supabase
+    .from("profiles")
+    .select("pass_choice")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (data?.pass_choice === "fast" || data?.pass_choice === "deep") {
+    currentPassChoice = data.pass_choice;
+  }
+}
 
 const layers = loadLayers();
 const allLayers = [...layers.core, ...layers.meta];
@@ -47,91 +59,16 @@ const MODULES: Module[] = [
   title="Learn"
   description="Self-paced Socratic course on the open-source AI stack: a guided path from infrastructure up to protocols, building your own theory of why openness matters at each layer."
 >
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-6">
-    <p
-      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
-    >
-      Learn
-    </p>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
     <h1
-      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
     >
       Walk the open-source AI stack
     </h1>
-    <p
-      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
-    >
-      A self-paced, Socratic course in 15 modules. The course walks
-      from infrastructure (where AI physically runs) up to protocols
-      (how agents and services talk to each other), with the meta-
-      layers (evaluation, governance, safety, sovereignty) woven in
-      where they start to shape the stack. Each module ends with you
-      writing your own summary in your own words; the course produces
-      your personal map of the stack as a downloadable doc.
-    </p>
-    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mt-4">
-      Two depths. The fast pass takes a day or two and gives you the
-      shape. The deep pass takes about a week and grounds every claim
-      in primary sources.
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+      15 self-paced Socratic modules, bottom-up from infrastructure to protocols. Each module ends with you writing your own summary; the course produces your personal map as a downloadable doc.
     </p>
   </section>
-
-  {
-    !user && (
-      <section class="max-w-3xl mx-auto px-6 mb-8">
-        <div class="p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface-warm)] flex items-baseline justify-between gap-4 flex-wrap">
-          <p class="text-sm text-[var(--color-text-muted)]">
-            Anyone can read and walk through any module without an account.{" "}
-            <strong class="text-[var(--color-text)]">Sign up</strong> to save your
-            progress, sync across devices, and download your Personal Notes at
-            the end.
-          </p>
-          <div class="flex gap-2">
-            <a
-              href="/learn/login"
-              class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
-            >
-              Log in
-            </a>
-            <a
-              href="/learn/signup"
-              class="text-sm px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
-            >
-              Sign up
-            </a>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  {
-    user && (
-      <section class="max-w-3xl mx-auto px-6 mb-8">
-        <div class="p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] flex items-baseline justify-between gap-4 flex-wrap">
-          <p class="text-sm text-[var(--color-text-muted)]">
-            Logged in as <strong class="text-[var(--color-text)]">{displayIdentity(user.email)}</strong>.
-          </p>
-          <div class="flex gap-2">
-            <a
-              href="/learn/profile"
-              class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
-            >
-              Profile and notes
-            </a>
-            <form method="POST" action="/api/auth/logout" style="margin: 0">
-              <button
-                type="submit"
-                class="text-sm px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer bg-transparent border-0"
-              >
-                Log out
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-    )
-  }
 
   {
     user && (
@@ -208,50 +145,78 @@ const MODULES: Module[] = [
       </script>
     )
   }
-  <section class="max-w-3xl mx-auto px-6 mb-6">
-    <a
-      href="/learn/start"
-      class="block p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline transition-colors"
+  <section class="max-w-3xl mx-auto px-6 mt-8 mb-10">
+    <form
+      method="POST"
+      action={`/api/course/start?next=/learn/${MODULES[0].slug}`}
+      class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]"
     >
-      <div class="flex items-baseline justify-between gap-3 flex-wrap">
+      <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
         <span class="font-serif text-xl text-[var(--color-text)]">
           Start the course
         </span>
-        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Pick fast or deep · ~5 min orientation →
-        </span>
+        <a
+          href="/learn/start"
+          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
+        >
+          How does this work? →
+        </a>
       </div>
-      <p class="text-sm text-[var(--color-text-muted)] mt-1 leading-relaxed">
-        Read how the course works, pick a depth, then begin module 01.
-      </p>
-    </a>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 mb-4 text-sm">
+        <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+          <input
+            type="radio"
+            name="pass_choice"
+            value="fast"
+            checked={currentPassChoice === "fast"}
+            class="accent-[var(--color-accent)]"
+          />
+          <span>
+            <span class="text-[var(--color-text)] font-medium">Fast pass</span>
+            <span class="text-[var(--color-text-subtle)]"> · a day or two, paragraph per layer</span>
+          </span>
+        </label>
+        <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+          <input
+            type="radio"
+            name="pass_choice"
+            value="deep"
+            checked={currentPassChoice === "deep"}
+            class="accent-[var(--color-accent)]"
+          />
+          <span>
+            <span class="text-[var(--color-text)] font-medium">Deep pass</span>
+            <span class="text-[var(--color-text-subtle)]"> · about a week, multi-paragraph with sources</span>
+          </span>
+        </label>
+      </div>
+      <button
+        type="submit"
+        class="w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+      >
+        Begin module 01 · {MODULES[0].title} →
+      </button>
+    </form>
   </section>
 
   <section class="max-w-3xl mx-auto px-6 mb-16">
     <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
       The 15 modules
     </h2>
-    <ol class="space-y-3">
+    <ol class="border-t border-[var(--color-border)]">
       <li>
         <a
           href="/learn/start"
-          class="block p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+          title="What the 15 modules cover, how each module's phases work, and the depth picker."
+          class="flex items-baseline gap-3 py-2 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
         >
-          <div class="flex items-baseline justify-between gap-3 mb-1">
-            <span class="font-mono text-xs text-[var(--color-text-subtle)]">
-              00
-            </span>
-            <span class="flex-1 font-serif text-base text-[var(--color-text)]">
-              How this course works
-            </span>
-            <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-              orientation
-            </span>
-          </div>
-          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed pl-9">
-            What the 15 modules cover, how each module's phases work,
-            and the depth picker (fast vs deep).
-          </p>
+          <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6">00</span>
+          <span class="flex-1 font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
+            How this course works
+          </span>
+          <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+            orientation
+          </span>
         </a>
       </li>
       {
@@ -259,26 +224,25 @@ const MODULES: Module[] = [
           <li>
             <a
               href={`/learn/${m.slug}`}
-              class="block p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] no-underline"
+              title={m.one_liner}
+              class="flex items-baseline gap-3 py-2 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
             >
-              <div class="flex items-baseline justify-between gap-3 mb-1">
-                <span class="font-mono text-xs text-[var(--color-text-subtle)]">
-                  {String(m.order).padStart(2, "0")}
-                </span>
-                <span class="flex-1 font-serif text-base text-[var(--color-text)]">
-                  {m.title}
-                </span>
-                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-                  {m.type}
-                </span>
-              </div>
-              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed pl-9">
-                {m.one_liner}
-              </p>
+              <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6">
+                {String(m.order).padStart(2, "0")}
+              </span>
+              <span class="flex-1 font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
+                {m.title}
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                {m.type}
+              </span>
             </a>
           </li>
         ))
       }
     </ol>
+    <p class="text-xs text-[var(--color-text-subtle)] italic mt-3">
+      Hover any module for a one-line description.
+    </p>
   </section>
 </BaseLayout>

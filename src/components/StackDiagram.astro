@@ -37,11 +37,11 @@ function bgForIndex(index: number): string {
         >
           {
             coreStackedTopDown.map((layer, i) => {
-              const isFirst = i === 0;
               const isLast = i === total - 1;
               return (
                 <a
                   href={`/stack/${layer.slug}`}
+                  title={layer.short_description}
                   class={`block group transition-colors no-underline hover:no-underline border-b border-[var(--color-border-strong)] hover:bg-[var(--color-accent-soft)] ${isLast ? "border-b-2" : ""}`}
                   style={`background: ${bgForIndex(i)};`}
                 >
@@ -52,7 +52,7 @@ function bgForIndex(index: number): string {
                     <span class="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] flex-shrink-0">
                       {layer.title}
                     </span>
-                    <span class="text-xs text-[var(--color-text-subtle)] hidden sm:inline truncate flex-1 text-right">
+                    <span class="text-xs text-[var(--color-text-subtle)] opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline truncate flex-1 text-right">
                       {layer.short_description}
                     </span>
                   </div>
@@ -79,44 +79,17 @@ function bgForIndex(index: number): string {
           meta.map((layer) => (
             <a
               href={`/stack/${layer.slug}`}
+              title={layer.short_description}
               class="block group border border-[var(--color-border)] bg-[var(--color-tier-meta-soft)] hover:border-[var(--color-tier-meta)] transition-colors rounded-md px-3 py-2 no-underline hover:no-underline"
             >
-              <div class="flex flex-col gap-0.5">
-                <span class="font-medium text-sm text-[var(--color-text)] group-hover:text-[var(--color-tier-meta)]">
-                  {layer.title}
-                </span>
-                <span class="text-xs text-[var(--color-text-subtle)] leading-snug">
-                  {layer.short_description}
-                </span>
-              </div>
+              <span class="font-medium text-sm text-[var(--color-text)] group-hover:text-[var(--color-tier-meta)]">
+                {layer.title}
+              </span>
             </a>
           ))
         }
-        <p
-          class="text-xs text-[var(--color-text-subtle)] italic mt-3 leading-snug"
-        >
-          Meta-layers observe or constrain every core layer; they do not sit
-          between two layers in the pipeline.
-        </p>
       </aside>
     </div>
 
-    <div
-      class="mt-6 pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center gap-6 text-xs text-[var(--color-text-subtle)] font-mono"
-    >
-      <span class="flex items-center gap-2">
-        <span
-          class="inline-block w-3 h-3 rounded border border-[var(--color-border-strong)]"
-          style="background: hsl(0, 0%, 90%);"
-        ></span>
-        core layer (stacked: surface above, foundation below)
-      </span>
-      <span class="flex items-center gap-2">
-        <span
-          class="inline-block w-3 h-3 rounded border border-[var(--color-border)] bg-[var(--color-tier-meta-soft)]"
-        ></span>
-        cross-cutting meta-layer
-      </span>
-    </div>
   </div>
 </section>
