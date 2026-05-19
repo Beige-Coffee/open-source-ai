@@ -334,9 +334,16 @@ export default function CoursePanel({
     async (text: string) => {
       if (!hasKey || streaming) return;
       setError(null);
-      await recordTurn("user", text);
+      // Clear the input synchronously, before recordTurn yields on
+      // its supabase encrypt + insert. setTurns inside recordTurn
+      // runs synchronously too, so React batches both updates into a
+      // single render: the textarea empties at the exact moment the
+      // message appears in the transcript above. Without this, the
+      // textarea visibly carried the just-sent text for the 1-2 sec
+      // it took the persistence round-trip to finish.
       setInput("");
       setStreaming(true);
+      await recordTurn("user", text);
       setStreamingText("");
       abortRef.current = new AbortController();
 
