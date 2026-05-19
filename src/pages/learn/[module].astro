@@ -297,10 +297,18 @@ const prev = prevModule(moduleSlug);
         }
       </div>
 
-      <!-- Right: course panel (React island; phase-aware) -->
-      <aside class="md:sticky md:top-20 md:self-start">
+      <!-- Right: course panel (React island; phase-aware).
+           On desktop the chat container is sticky at top:20 AND
+           height-capped to (viewport - 6rem). That makes the inner
+           overflow-y-auto on CoursePanel's message list actually
+           scroll (a constrained-height flex parent is the precondition),
+           so adding new messages keeps the page itself the same size
+           instead of growing it downward.
+           The ModuleSidebar lives below the chat and flows naturally;
+           on long Read content the user scrolls the page to reach it. -->
+      <aside class="md:self-start">
         <div
-          class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[60vh] flex flex-col overflow-hidden"
+          class="md:sticky md:top-20 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[60vh] md:h-[calc(100vh-6rem)] flex flex-col overflow-hidden"
         >
           <CoursePanel
             client:load
