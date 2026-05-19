@@ -15,6 +15,7 @@
     "build-data": "node scripts/build-data.mjs",
     "lint": "node scripts/lint-citations.mjs && node scripts/lint-glossary.mjs",
     "lint:glossary": "node scripts/lint-glossary.mjs",
+    "test": "node --import tsx --test 'test/**/*.test.ts'",
     "audit:layer1": "bash audit/check.sh",
     "audit:links": "INCLUDE_LINKS=1 node audit/verify/verify_links.mjs",
     "audit:schemas": "node audit/verify/verify_schemas.mjs",
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.22.3"
   }
 }
