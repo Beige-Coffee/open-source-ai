@@ -112,8 +112,8 @@ readings:
       - data
     description: Foundational paper for open pretraining data. The lineage of every modern open dataset traces here.
   - title: 'Common Pile v0.1: An 8TB Dataset of Public Domain and Openly Licensed Text'
-    source: EleutherAI + 30 partners
-    url: https://huggingface.co/blog/stas/common-pile-v01
+    source: EleutherAI + partner institutions
+    url: https://huggingface.co/blog/stellaathena/common-pile
     type: post
     year: 2025
     layers:
@@ -622,7 +622,7 @@ readings:
     description: First decentralized training run of a 10B+ model across continents. Read for the operations details, not the marketing.
   - title: 'Templar: 72B Distributed Pretrain from Scratch on Bittensor'
     source: Templar / Bittensor research
-    url: https://templar.ai/
+    url: https://www.tplr.ai/
     type: post
     year: 2025
     layers:

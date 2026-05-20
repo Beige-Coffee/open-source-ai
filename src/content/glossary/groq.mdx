@@ -14,8 +14,9 @@ import G from "../../components/G.astro";
 
 <G term="inference">Inference</G>-only AI silicon. The Groq LPU (Language Processing Unit) is
 a deterministic-scheduling chip optimized for the autoregressive
-decode path: tens of megabytes of SRAM, no DRAM caching, a compiler-
-scheduled execution model that eliminates runtime variability. The
+decode path: roughly 230 MB of on-die SRAM per chip with no external
+DRAM, a compiler-scheduled execution model that eliminates runtime
+variability. The
 result on hosted <G term="inference">inference</G> is consistent thousand-tokens-per-second
 generation on 70B-class models.
 

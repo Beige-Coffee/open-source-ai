@@ -22,11 +22,11 @@ modern Android with NPU acceleration; and PC builds with consumer
 GPUs running <G term="ollama">Ollama</G> or <G term="lm-studio">LM Studio</G>.
 
 The model-size envelope has expanded faster than hardware. A
-high-end Mac Studio can run <G term="llama">Llama</G>-3-70B in <G term="fp8">FP8</G> at 15 to 25 tokens per
-second; a base M-series MacBook can run 8B models in real time; a
-Pixel phone can run 1B to 3B models for on-device assistants. The
-quality of those small models has grown to match GPT-3.5 levels and
-beyond.
+high-end Mac Studio can run <G term="llama">Llama</G>-3-70B at Q4 quantization at roughly
+8 to 14 tokens per second; a base M-series MacBook can run 8B models
+in real time; a Pixel phone can run 1B to 3B models for on-device
+assistants. The quality of those small models has grown to match
+GPT-3.5 levels and beyond.
 
 The remaining bottlenecks. Long context is expensive on local memory.
 Multi-turn agent loops with tools (the on-device equivalent of

@@ -236,7 +236,7 @@ grants:
     description: Annual AI2050 fellowships program.
     explainer: >-
       AI2050 is a Schmidt Sciences fellowship initiative co-chaired by Eric Schmidt and James Manyika. The 2025 cohort,
-      announced December 2025, named 21 Early Career Fellows and 7 Senior Fellows, totaling $18M in three-year awards.
+      announced November 5, 2025, named 21 Early Career Fellows and 7 Senior Fellows, totaling $18M in three-year awards.
       With this cohort, AI2050 reaches 99 fellows across 8 countries and 42 institutions across its four announced
       cycles.
 
@@ -765,7 +765,7 @@ grants:
     description: Open-sourced evaluation harness from UK AISI; available for community use.
     explainer: >-
       Inspect is a Python framework for large language model evaluations developed by the UK AI Security Institute and
-      Meridian Labs, open-sourced in May 2024 under MIT license. The codebase (UKGovernmentBEIS/inspect_ai) is roughly
+      Meridian Labs, open-sourced in April 2024 under MIT license. The codebase (UKGovernmentBEIS/inspect_ai) is roughly
       99.8% Python with a TypeScript and React web UI for viewing eval results. Built-in facilities cover prompt
       engineering, tool use, multi-turn dialog, model-graded evaluation, and third-party Python plugin extension.
 
@@ -810,7 +810,7 @@ grants:
       - runtime
       - governance
     region: EU
-    url: https://www.sovereigntechfund.de/
+    url: https://www.sovereign.tech/
     description: >-
       Funds critical infrastructure dependencies. Cross-cuts into AI runtime because many AI servers depend on these
       underlying tools.
@@ -1675,7 +1675,7 @@ grants:
         url: https://researchprofiles.ku.dk/en/persons/johanna-einsiedler/
       - title: FIRE and Cosmos Institute launch $1 million grant program
         url: >-
-          https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
+          https://www.fire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
   - title: Perplex
     kind: project
     funder: cosmos-institute

@@ -20,11 +20,13 @@ themselves communicate, advertising capabilities and exchanging task
 state across vendor and runtime boundaries. The unit of interaction is
 agent-to-agent, not model-to-tool.
 
-Google released the initial spec in April 2025 with a set of partner
-companies. By late 2025 the Linux Foundation took stewardship and the
-spec converged with parts of <G term="mcp">MCP</G> for the tool-invocation layer.
+Google released the initial spec in April 2025 with over 50 partner
+companies. In June 2025 Google donated A2A to the Linux Foundation,
+which now stewards the project with AWS, Cisco, Microsoft, Salesforce,
+SAP, and ServiceNow as founding partners.
 
 Whether A2A and MCP merge, layer, or compete is an open question
-through 2026. MCP plus A2A both reflect a recognition that the agent
-era needs interop layers it did not need when models were single-turn
-text APIs.
+through 2026. In practice the two coexist: agents use <G term="mcp">MCP</G> to access
+tools and A2A to coordinate with other agents. MCP plus A2A both
+reflect a recognition that the agent era needs interop layers it did
+not need when models were single-turn text APIs.

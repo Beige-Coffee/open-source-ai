@@ -22,10 +22,10 @@ keep secrets out of the operator's reach end-to-end.
 For AI, confidential computing matters because hosted <G term="inference">inference</G> is
 otherwise a trust nightmare: prompts and outputs pass through provider
 infrastructure that could log, train on, or leak them. Apple Private
-Cloud Compute, Anthropic Confidential <G term="inference">Inference</G>, the AWS Nitro
-enclaves used by Apple, and projects like Maple AI all build on
-confidential-compute primitives to give users cryptographic instead
-of contractual privacy.
+Cloud Compute (custom Apple-silicon servers), AWS Nitro Enclaves,
+Anthropic Confidential <G term="inference">Inference</G>, and projects like Maple AI all
+build on confidential-compute primitives to give users cryptographic
+instead of contractual privacy.
 
 The remaining gaps are <G term="gpu">GPU</G> coverage (only NVIDIA Hopper and Blackwell
 support confidential modes; AMD and Intel GPUs lag), performance

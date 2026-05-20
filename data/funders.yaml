@@ -175,7 +175,7 @@ funders:
     funding_range: €17M budget 2025; €23M+ ($24.9M) deployed across 60 technologies in two years.
     cadence: Rolling applications; budget renewed annually.
     process: Direct funding to maintainers of critical open-source infrastructure.
-    url: https://www.sovereigntechfund.de/
+    url: https://www.sovereign.tech/
     focus_layers:
       - runtime
       - governance
@@ -278,7 +278,7 @@ funders:
     funding_range: Member-dues funded; in-kind contributions from members (compute, engineering) rather than cash grants to outside teams.
     cadence: Member contribution model.
     process: Membership-based, not external grant program.
-    url: https://aaif.linuxfoundation.org/
+    url: https://aaif.io/
     focus_layers:
       - agents
       - protocols
@@ -343,7 +343,7 @@ funders:
     notable_recent: $1M Truth-seeking AI round in partnership with FIRE in 2025 (27 inaugural + 24 second-cohort winners); Institute for Decentralized AI launched September 2025; rolling fast grants and themed cohorts year-round.
     sources:
       - title: thefire.org (audit-verified)
-        url: https://www.thefire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
+        url: https://www.fire.org/news/fire-and-cosmos-institute-launch-1-million-grant-program-ai-advances-truth-seeking
       - title: blog.cosmos-institute.org (audit-verified)
         url: https://blog.cosmos-institute.org/p/ai-x-truth-seeking-grant-winners
       - title: blog.cosmos-institute.org (audit-verified)
@@ -490,7 +490,7 @@ funders:
     region: UK
     type: foundation
     mission: Funds research that improves AI agents' capacity for cooperation with each other and with humans, including measurement of cooperation-relevant capabilities and propensities.
-    funding_range: Up to ~£200K per grant
+    funding_range: £10K to £385K per grant (median ~£150K); £100K early-career track
     cadence: Annual Research Grants RFP plus PhD Fellowship
     process: Public RFP; peer review; updated 2025 process to focus on two named priority areas.
     url: https://www.cooperativeai.com/grants/2025
@@ -519,7 +519,7 @@ funders:
       - compute
       - safety-guardrails
       - evaluation
-    notable_recent: 200+ external researchers across ~20 labs supported on the cluster; 6x growth in 18 months.
+    notable_recent: 150+ active AI safety researchers on the 80x A100 cluster (~100 AI safety research papers produced). External applications currently paused.
   - slug: astera-institute
     name: Astera Institute
     region: US
@@ -534,7 +534,7 @@ funders:
       - training
       - weights
       - evaluation
-    notable_recent: Spun out Radial AI Science in March 2026 with $500M to modernize the scientific process for the AI era; Voltage Park H100 compute access provided to residents.
+    notable_recent: Operates Radial life sciences division alongside the residency program; Voltage Park H100 compute access provided to residents.
     sources:
       - title: grantedai.com (audit-verified)
         url: https://grantedai.com/grants/astera-residency-program-astera-institute-fd4953b3
@@ -572,7 +572,7 @@ funders:
       - weights
       - agents
       - runtime
-    notable_recent: Batch 4 (2025) included Goodfire, Silurian, Inception Labs, Haize Labs, Artificial Analysis, others.
+    notable_recent: Batch 4 (announced October 2024) included Goodfire, Silurian, Inception Labs, Haize Labs, Artificial Analysis, plus Granola, Pulse AI, Hamming, Agency, Pursuit, Graylark, Sync, Rowan, Vapi, Juicebox, Supertrace AI, InspectMind AI.
     sources:
       - title: techcrunch.com (audit-verified)
         url: https://techcrunch.com/2017/07/25/ai-grant-aims-to-fund-the-unfundable-to-advance-ai-and-solve-hard-problems/
@@ -699,14 +699,14 @@ funders:
     region: US
     type: foundation
     mission: Harvard's interdisciplinary internet and society center awarding fellowships to scholars, technologists, and policymakers researching AI governance, open-source AI, and digital rights.
-    funding_range: Up to $75K annual stipend
-    cadence: Annual fellowship cycle (December deadline)
+    funding_range: Stipend varies by fellowship
+    cadence: Annual open calls plus periodic project-based fellowship announcements
     process: Open call; faculty review; cohort-based residency.
     url: https://cyber.harvard.edu/getinvolved/fellowships
     focus_layers:
       - governance
       - evaluation
-    notable_recent: 2026-2027 fellowship cycle open through December 2025 with explicit AI research agenda.
+    notable_recent: Most recent annual call closed; periodic project-specific fellowships continue to be announced.
     sources:
       - title: cyber.harvard.edu (audit-verified)
         url: https://cyber.harvard.edu/getinvolved/fellowships

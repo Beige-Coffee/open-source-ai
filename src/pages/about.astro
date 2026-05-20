@@ -66,8 +66,8 @@ import G from "../components/G.astro";
       <div class="about-section-body">
         <p>
           A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:
-          it pulls about thirty layer-specific RSS feeds and Atom feeds (GitHub
-          releases, vendor blogs, academic newsletters) plus a handful of
+          it pulls about forty layer-specific RSS and Atom feeds (GitHub
+          releases, vendor blogs, academic newsletters) plus about twenty
           HTML-scrape sources for vendor blogs without RSS. Items go into an
           inbox keyed on a content hash. <strong>Dedupe and route</strong>: URLs are
           normalized, SimHash clustering removes near-duplicates, and each
@@ -106,7 +106,7 @@ import G from "../components/G.astro";
       <summary>Glossary</summary>
       <div class="about-section-body">
         <p>
-          About 130 technical terms are defined at
+          About 145 technical terms are defined at
           <a href="/glossary">/glossary</a> (for example, <G term="mixture-of-experts">mixture of experts</G> or <G term="paged-attention">PagedAttention</G>), grouped by stack layer and
           cross-referenced by alias. Each entry has a 30-word summary
           (the hover-card definition) and a deeper page with a 3-4

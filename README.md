@@ -2,7 +2,7 @@
 
 A public educational website organized around ten production-pipeline layers
 and five cross-cutting meta-layers of the open-source AI stack. Updated daily
-by a scheduled Claude agent that reads ~30 layer-specific feeds, dedupes via
+by a scheduled Claude agent that reads ~60 layer-specific feeds, dedupes via
 SimHash, classifies each item by layer, and publishes a per-layer roundup.
 
 Live: https://open-source-ai.tech (once deployed; Week 1 in progress)
@@ -40,9 +40,9 @@ sources), and design decisions.
 
 - **Astro 6** + **MDX** + **Tailwind CSS v4** (Vite plugin)
 - TypeScript strict mode
-- Content collections for layer pages, synthesis, news
-- Layer taxonomy in `data/layers.yaml` (single source of truth for the diagram
-  and per-layer routing)
+- Content collections for layer pages, glossary, news
+- Layer taxonomy in `data/layers.yaml` (15 layers total: 10 core + 5 meta;
+  single source of truth for the diagram and per-layer routing)
 - RSS via `@astrojs/rss`
 - Sitemap via `@astrojs/sitemap`
 - Deploy: Vercel (static output)
@@ -69,14 +69,14 @@ npm run preview
 open-source-ai-stack/
 ├── astro.config.mjs            # Astro + integrations
 ├── data/
-│   └── layers.yaml             # Canonical taxonomy (9 core + 5 meta)
+│   └── layers.yaml             # Canonical taxonomy (10 core + 5 meta)
 ├── public/                     # Static assets, favicon, diagrams
 ├── scripts/                    # Automation helpers (Week 2 onward)
 ├── src/
 │   ├── components/             # Nav, Footer, StackDiagram
 │   ├── content/
-│   │   ├── layers/             # MDX per layer (14 files)
-│   │   ├── synthesis/          # Cross-cutting arguments
+│   │   ├── layers/             # MDX per layer (15 files)
+│   │   ├── glossary/           # Per-term MDX entries
 │   │   └── news/               # Daily issues (Week 2 onward)
 │   ├── content.config.ts       # Content collection schemas
 │   ├── layouts/

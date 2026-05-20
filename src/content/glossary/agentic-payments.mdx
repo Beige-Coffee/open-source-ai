@@ -20,12 +20,12 @@ API call, a piece of compute, a piece of content, or a third-party
 service; the agent must initiate and settle that payment without
 asking the user to type a card number on each call.
 
-Three competing protocol stacks address it. `x402` (Coinbase 2025) uses
-HTTP 402 Payment Required with stablecoin or Lightning settlement.
-`L402` (Lightning Labs 2020) is the Lightning-native predecessor.
-Google's AP2 framework (2025) layers cryptographically-signed payment
-authority on top of <G term="a2a">A2A</G> and <G term="mcp">MCP</G>, focused on intent and authorization
-rather than rails.
+Three competing protocol stacks address it. `x402` (Coinbase, May 2025)
+uses HTTP 402 Payment Required with USDC stablecoin settlement.
+`L402` (Lightning Labs, March 2020) is the Lightning-native HTTP 402
+predecessor. Google's AP2 framework (September 2025) layers
+cryptographically-signed payment authority on top of <G term="a2a">A2A</G> and <G term="mcp">MCP</G>,
+focused on intent and authorization rather than rails.
 
 The unsolved questions are economic and legal: who is liable when an
 agent overpays, how do refunds and disputes work for sub-cent metered

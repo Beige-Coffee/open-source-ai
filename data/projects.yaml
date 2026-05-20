@@ -206,7 +206,7 @@ projects:
     license: Proprietary
     focus: proprietary
     maturity: stable
-    url: https://www.apple.com/mac/m4-pro/
+    url: https://www.apple.com/newsroom/2024/10/apple-introduces-m4-pro-and-m4-max/
     description: Unified memory architecture; closed silicon, but the strongest on-device inference platform via llama.cpp and MLX.
     explainer: |
       Apple's M-series chips (M1, M2, M3, M4 across Pro, Max, Ultra
@@ -504,7 +504,7 @@ projects:
       - title: Lambda site
         url: https://lambdalabs.com/
       - title: Lambda Series D announcement (February 2025)
-        url: https://lambda.ai/blog/lambda-raises-480-million-series-d
+        url: https://lambda.ai/blog/lambda-raises-480m-to-expand-ai-cloud-platform
   - slug: voltage-park
     name: Voltage Park
     layers:
@@ -519,7 +519,7 @@ projects:
       - title: Voltage Park site
         url: https://voltagepark.com/
       - title: Voltage Park launch (TechCrunch, October 2023)
-        url: https://techcrunch.com/2023/10/30/24000-gpu-cluster-voltage-park/
+        url: https://techcrunch.com/2023/10/31/new-nonprofit-backed-by-crypto-billionaire-scores-ai-chips-worth-500m/
   - slug: common-crawl
     name: Common Crawl
     layers:
@@ -620,12 +620,12 @@ projects:
     license: License-clean
     focus: open
     maturity: new
-    url: https://blog.eleuther.ai/common-pile-v0/
+    url: https://blog.eleuther.ai/common-pile/
     description: EleutherAI's June 2025 license-clean pretraining corpus; one of few entries doing this work at scale.
     explainer: |
       Common Pile v0.1 is an 8TB pretraining corpus assembled by
-      EleutherAI in collaboration with around 30 partner
-      organizations, released June 2025. The distinguishing feature
+      EleutherAI with around a dozen partner institutions across
+      30 source datasets, released June 2025. The distinguishing feature
       is license-cleanness: every text source in the corpus is either
       explicitly under a permissive license (Creative Commons, public
       domain) or has documented permission for redistribution and
@@ -652,9 +652,9 @@ projects:
       open question.
     sources:
       - title: Common Pile v0.1 Announcement (EleutherAI)
-        url: https://blog.eleuther.ai/common-pile-v0/
+        url: https://blog.eleuther.ai/common-pile/
       - title: Common Pile on HuggingFace
-        url: https://huggingface.co/blog/stas/common-pile-v01
+        url: https://huggingface.co/blog/stellaathena/common-pile
       - title: OSAID v1.0 (data clause)
         url: https://opensource.org/ai/open-source-ai-definition
       - title: blog.eleuther.ai (audit-verified)
@@ -803,7 +803,7 @@ projects:
     license: Llama Community License
     focus: source-available
     maturity: stable
-    url: https://ai.meta.com/llama/
+    url: https://www.llama.com/
     description: Meta's open-weights family; dominant in usage; license carries a 700M-MAU clause and acceptable-use restrictions.
     explainer: |
       Llama is Meta's open-weights model family. Llama 1 (Feb 2023,
@@ -1813,7 +1813,7 @@ projects:
     license: Standard
     focus: open
     maturity: new
-    url: https://aaif.linuxfoundation.org/
+    url: https://aaif.io/
     description: Linux Foundation umbrella for agent and protocol governance; founded Dec 2025; hosts MCP, goose, AGENTS.md.
     sources:
       - title: linuxfoundation.org (audit-verified)
@@ -1825,7 +1825,7 @@ projects:
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: https://docs.lightning.engineering/lightning-network-tools/lnd/l402
+    url: https://docs.lightning.engineering/the-lightning-network/l402
     github: https://github.com/lightninglabs/L402
     description: Lightning Labs payment protocol pairing HTTP 402 with Lightning Network invoices; the original agentic-payments rail.
     explainer: |
@@ -2374,7 +2374,7 @@ projects:
       - title: Templar (project page)
         url: https://www.tplr.ai/
       - title: Bittensor Subnet Architecture
-        url: https://docs.bittensor.com/learn/subnets-and-blocks
+        url: https://docs.bittensor.com/subnets
   - slug: pluralis
     name: Pluralis Research
     layers:

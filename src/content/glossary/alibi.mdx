@@ -18,11 +18,12 @@ distance between tokens, scaled by a per-head slope. Closer tokens get
 near-zero bias; distant tokens get progressively more negative scores,
 effectively a soft recency bias.
 
-The headline property at release was train-short-test-long: models
-trained at 1024 tokens generalized to 4096+ tokens at <G term="inference">inference</G> with no
-<G term="fine-tuning">fine-tuning</G>, which <G term="rope">RoPE</G> without scaling could not. In practice the
-field converged on <G term="rope">RoPE</G> with frequency scaling for long-context work,
-and ALiBi sits in fewer production models than it once did.
+The headline property at release was train-short-test-long: a model
+trained on 1024-token inputs matched the perplexity of one trained on
+2048 tokens when evaluated at that longer length, without <G term="fine-tuning">fine-tuning</G>,
+which <G term="rope">RoPE</G> without scaling could not. In practice the field converged
+on <G term="rope">RoPE</G> with frequency scaling for long-context work, and ALiBi sits
+in fewer production models than it once did.
 
 It still appears in some <G term="open-weights">open-weight</G> families (early MPT, BLOOM, and
 several research-grade releases). Worth understanding as the contrast
