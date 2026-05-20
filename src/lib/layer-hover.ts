@@ -79,16 +79,17 @@ function renderCard(card: HTMLElement, layer: LayerSummary): void {
     typeof layer.sovereignty_relevance === "number"
       ? `<div class="layer-hover-row"><span class="layer-hover-key">Sovereignty</span><span class="layer-hover-val">${layer.sovereignty_relevance} / 5</span></div>`
       : "";
-  const lockHtml = layer.lock_in_vector
-    ? `<div class="layer-hover-row"><span class="layer-hover-key">Lock-in</span><span class="layer-hover-val">${layer.lock_in_vector}</span></div>`
-    : "";
+  // Lock-in vector intentionally omitted from the hover card; for most
+  // layers the vector slug duplicates the layer slug ("Lock-in: protocols"
+  // on the Protocols card reads as redundant). The lock_in_vector field
+  // still surfaces on the layer detail page where context disambiguates.
   card.innerHTML = `
     <div class="layer-hover-head">
       <span class="layer-hover-tier">${orderStr} · ${tier}</span>
       <a class="layer-hover-title" href="/stack/${layer.slug}">${layer.title}</a>
     </div>
     <p class="layer-hover-desc">${layer.short_description ?? ""}</p>
-    ${sovHtml}${lockHtml}${relatedHtml}
+    ${sovHtml}${relatedHtml}
     <div class="layer-hover-foot">
       <a class="layer-hover-link" href="/stack/${layer.slug}">Open layer →</a>
     </div>
