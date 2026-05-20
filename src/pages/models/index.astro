@@ -177,6 +177,24 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
   "source-available": "Weights are downloadable but the license includes acceptable-use policy clauses, scale caps, or other restrictions. Commercial use possible with conditions.",
   "proprietary": "Weights not released. Architecture and training data typically undisclosed. Available only through the lab's API or partner endpoints.",
 };
+
+// Architecture explainers. Rendered as HTML in the popover so we can
+// link to deeper glossary entries when one exists.
+const ARCH_POPOVER: Record<string, string> = {
+  dense: 'Dense transformer. Every parameter is activated on every token. The conventional architecture before mixture-of-experts became common for frontier models.',
+  moe: 'Mixture of experts. The model has more total parameters than it activates per token; a router picks a small subset of expert MLPs per token, trading sparsity for capacity at lower inference cost. <a href="/glossary/mixture-of-experts">Learn more &rarr;</a>',
+  hybrid: 'Hybrid attention. Mixes different attention mechanisms across layers (e.g. interleaved global and sliding-window attention).',
+  ssm: 'State space model. Replaces or supplements attention with a state-space recurrence (e.g. Mamba). Linear-time in sequence length.',
+  unknown: 'Architecture not disclosed by the developer. Proprietary models typically do not reveal their internal structure.',
+};
+
+// Openness ordering for sorting.
+const OPENNESS_RANK: Record<Openness, number> = {
+  "open": 0,
+  "open-weights": 1,
+  "source-available": 2,
+  "proprietary": 3,
+};
 ---
 
 <BaseLayout
@@ -332,6 +350,7 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
                 class="timeline-dot"
                 data-slug={m.slug}
                 data-name={m.display_name}
+                data-family={m.family}
                 data-dev={m.developer}
                 data-date={m.released_date}
                 data-openness={m.openness}
@@ -364,25 +383,26 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
     </p>
     {/* Family-color legend, shared by timeline + scatter. Compact:
         one swatch + family slug per chip; only families actually
-        present in the catalog appear. */}
-    <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2 items-center">
+        present in the catalog appear. Hover a chip to dim
+        non-matching dots across both visualizations. */}
+    <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2 items-center" id="family-legend">
       {legendFamilies.map(([fam, count]) => (
-        <span class="inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]">
+        <span class="family-legend-chip inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]" data-family-highlight={fam}>
           <span
             aria-hidden="true"
             style={`display:inline-block;width:8px;height:8px;border-radius:50%;background:${FAMILY_COLORS[fam]};`}
           ></span>
-          <span class="text-[var(--color-text-muted)]">{fam}</span>
+          <span class="family-legend-name text-[var(--color-text-muted)]">{fam}</span>
           <span class="text-[var(--color-text-subtle)]">({count})</span>
         </span>
       ))}
       {unmappedFamilies.length > 0 && (
-        <span class="inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]">
+        <span class="family-legend-chip inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]" data-family-highlight="__other__">
           <span
             aria-hidden="true"
             style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#737373;"
           ></span>
-          <span class="text-[var(--color-text-muted)]">other</span>
+          <span class="family-legend-name text-[var(--color-text-muted)]">other</span>
           <span class="text-[var(--color-text-subtle)]">({unmappedFamilies.reduce((s, [, c]) => s + c, 0)})</span>
         </span>
       )}
@@ -504,26 +524,27 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
       <table class="w-full text-sm" id="models-table">
         <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
           <tr class="text-left font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-            <th class="px-2 py-2"><span title="Pick up to 4 to compare side-by-side">cmp</span></th>
-            <th class="px-3 py-2" data-popover={COL_HELP.model}>Model</th>
-            <th class="px-3 py-2" data-popover={COL_HELP.developer}>Developer</th>
-            <th class="px-3 py-2" data-popover={COL_HELP.released}>Released</th>
-            <th class="px-3 py-2" data-popover={COL_HELP.openness}>Openness</th>
-            <th class="px-3 py-2" data-popover={COL_HELP.architecture}>Architecture</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.total}>Total params</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.active}>Active params</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.ctx}>Context</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.cost_in}>$/M in</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.cost_out}>$/M out</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.speed}>tok/s</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.mmlu}>MMLU</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.gpqa}>GPQA-D</th>
-            <th class="px-3 py-2 text-right" data-popover={COL_HELP.humaneval}>HumanEval</th>
+            <th class="px-2 py-2"><span data-popover="Pick up to 4 to compare side-by-side">cmp</span></th>
+            <th class="px-3 py-2 sortable" data-sort="name" data-popover={COL_HELP.model}>Model <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 sortable" data-sort="developer" data-popover={COL_HELP.developer}>Developer <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 sortable" data-sort="released" data-sort-type="numeric" data-popover={COL_HELP.released}>Released <span class="sort-chev">▼</span></th>
+            <th class="px-3 py-2 sortable" data-sort="openness" data-sort-type="numeric" data-popover={COL_HELP.openness}>Openness <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 sortable" data-sort="architecture" data-popover={COL_HELP.architecture}>Architecture <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="total" data-sort-type="numeric" data-popover={COL_HELP.total}>Total params <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="active" data-sort-type="numeric" data-popover={COL_HELP.active}>Active params <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="context" data-sort-type="numeric" data-popover={COL_HELP.ctx}>Context <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="costin" data-sort-type="numeric" data-popover={COL_HELP.cost_in}>$/M in <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="costout" data-sort-type="numeric" data-popover={COL_HELP.cost_out}>$/M out <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="speed" data-sort-type="numeric" data-popover={COL_HELP.speed}>tok/s <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="mmlu" data-sort-type="numeric" data-popover={COL_HELP.mmlu}>MMLU <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="gpqa" data-sort-type="numeric" data-popover={COL_HELP.gpqa}>GPQA-D <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="humaneval" data-sort-type="numeric" data-popover={COL_HELP.humaneval}>HumanEval <span class="sort-chev"></span></th>
           </tr>
         </thead>
         <tbody>
           {all.map((m) => {
             const bm = m.benchmarks ?? {};
+            const releasedTs = new Date(m.released_date).getTime();
             return (
               <tr
                 class="models-row border-t border-[var(--color-border)] hover:bg-[var(--color-surface-warm)]"
@@ -533,6 +554,20 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
                 data-openness={m.openness}
                 data-architecture={m.architecture}
                 data-slug={m.slug}
+                data-sort-name={m.display_name.toLowerCase()}
+                data-sort-developer={m.developer.toLowerCase()}
+                data-sort-released={String(releasedTs)}
+                data-sort-openness={String(OPENNESS_RANK[m.openness])}
+                data-sort-architecture={m.architecture}
+                data-sort-total={m.params_total > 0 ? String(m.params_total) : ""}
+                data-sort-active={m.params_active > 0 ? String(m.params_active) : ""}
+                data-sort-context={String(m.context_window)}
+                data-sort-costin={m.cost?.input_per_mtok_usd !== undefined ? String(m.cost.input_per_mtok_usd) : ""}
+                data-sort-costout={m.cost?.output_per_mtok_usd !== undefined ? String(m.cost.output_per_mtok_usd) : ""}
+                data-sort-speed={m.speed?.tokens_per_sec_output !== undefined ? String(m.speed.tokens_per_sec_output) : ""}
+                data-sort-mmlu={bm.mmlu ? String(bm.mmlu.score) : ""}
+                data-sort-gpqa={bm.gpqa_diamond ? String(bm.gpqa_diamond.score) : ""}
+                data-sort-humaneval={bm.humaneval ? String(bm.humaneval.score) : ""}
               >
                 <td class="px-2 py-2 text-center">
                   <input type="checkbox" class="cmp-cb" data-slug={m.slug} aria-label={`Add ${m.display_name} to compare`}/>
@@ -552,7 +587,9 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
                     {OPENNESS_LABEL[m.openness]}
                   </span>
                 </td>
-                <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)]">{m.architecture}</td>
+                <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)]">
+                  <span data-popover-html={ARCH_POPOVER[m.architecture] ?? "Architecture not described."}>{m.architecture}</span>
+                </td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_total > 0 ? formatParams(m.params_total) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_active > 0 ? formatParams(m.params_active) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{formatContext(m.context_window)}</td>
@@ -787,7 +824,7 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
         const isClosed = p.openness === "proprietary";
         const c = p.family_color || "#737373";
         const title = `${p.display_name} (${p.family}) · ${xMeta.short_label}: ${fmtTick(xMeta, p.metrics[xKey])} · ${yMeta.short_label}: ${fmtTick(yMeta, p.metrics[yKey])}`;
-        html += `<a href="/models/${p.slug}" class="scatter-dot"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"><title>${title}</title></circle></a>`;
+        html += `<a href="/models/${p.slug}" class="scatter-dot" data-family="${p.family}"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"><title>${title}</title></circle></a>`;
       }
 
       svg.innerHTML = html;
@@ -802,6 +839,114 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
       render();
     });
     render();
+  })();
+
+  // Sortable column headers. Click a header to toggle asc/desc on
+  // that column. Chevron beside the column name shows direction.
+  // Numeric columns sort numerically (empty values land at the end
+  // regardless of direction).
+  (function () {
+    const table = document.getElementById("models-table");
+    if (!table) return;
+    const tbody = table.querySelector("tbody");
+    const headers = Array.from(table.querySelectorAll("thead th.sortable"));
+    let current = { key: "released", dir: "desc" };
+
+    function getVal(row, key) {
+      // data-sort-name -> dataset.sortName, etc. The key matches the
+      // suffix used in the data-sort attribute on each row.
+      return row.dataset[`sort${key.charAt(0).toUpperCase()}${key.slice(1)}`];
+    }
+
+    function applySort(key) {
+      const header = headers.find((h) => h.dataset.sort === key);
+      if (!header) return;
+      const isNumeric = header.dataset.sortType === "numeric";
+      const dir = current.key === key && current.dir === "asc" ? "desc" : "asc";
+      current = { key, dir };
+      const rows = Array.from(tbody.querySelectorAll(".models-row"));
+      rows.sort((a, b) => {
+        const av = getVal(a, key);
+        const bv = getVal(b, key);
+        if (isNumeric) {
+          const an = av === "" || av == null ? null : parseFloat(av);
+          const bn = bv === "" || bv == null ? null : parseFloat(bv);
+          if (an === null && bn === null) return 0;
+          if (an === null) return 1;
+          if (bn === null) return -1;
+          return dir === "asc" ? an - bn : bn - an;
+        }
+        const cmp = (av || "").localeCompare(bv || "");
+        return dir === "asc" ? cmp : -cmp;
+      });
+      // Reattach in new order.
+      for (const r of rows) tbody.appendChild(r);
+      // Update chevrons.
+      for (const h of headers) {
+        const chev = h.querySelector(".sort-chev");
+        if (!chev) continue;
+        if (h.dataset.sort === key) chev.textContent = dir === "asc" ? "▲" : "▼";
+        else chev.textContent = "";
+      }
+    }
+
+    for (const h of headers) {
+      h.style.cursor = "pointer";
+      h.addEventListener("click", (e) => {
+        // Ignore clicks on the popover icon or on links inside the header.
+        if (e.target instanceof Element && e.target.tagName === "A") return;
+        applySort(h.dataset.sort);
+      });
+    }
+  })();
+
+  // Family-legend hover dimming. Hovering a legend chip fades dots in
+  // both visualizations that don't belong to the picked family. Use
+  // both timeline-dot (group) and scatter-dot (anchor) selectors so
+  // the styling applies in both charts.
+  (function () {
+    const legend = document.getElementById("family-legend");
+    if (!legend) return;
+    const chips = Array.from(legend.querySelectorAll(".family-legend-chip"));
+
+    function setHighlight(family) {
+      const timelineDots = document.querySelectorAll(".timeline-dot");
+      const scatterDots = document.querySelectorAll(".scatter-dot");
+      const mappedFamilies = new Set(Object.keys(
+        // The family color list is in lib/models.ts; we just check via
+        // the dot's actual data-family — anything matching the chip's
+        // data-family-highlight is "in"; for the "__other__" chip we
+        // pass null and dim everything that DOES have a known family.
+        {}
+      ));
+      const apply = (el) => {
+        if (!family) {
+          el.classList.remove("viz-dimmed");
+          return;
+        }
+        const elFamily = el.dataset.family || el.getAttribute("data-family") || "";
+        if (family === "__other__") {
+          // Other = families not in the legend (no swatch).
+          const inLegend = chips.find(
+            (c) => c.dataset.familyHighlight === elFamily && elFamily !== "__other__"
+          );
+          if (inLegend) el.classList.add("viz-dimmed");
+          else el.classList.remove("viz-dimmed");
+        } else {
+          if (elFamily === family) el.classList.remove("viz-dimmed");
+          else el.classList.add("viz-dimmed");
+        }
+      };
+      for (const d of timelineDots) apply(d);
+      for (const d of scatterDots) apply(d);
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener("mouseenter", () => setHighlight(chip.dataset.familyHighlight));
+      chip.addEventListener("mouseleave", () => setHighlight(null));
+      chip.addEventListener("focus", () => setHighlight(chip.dataset.familyHighlight));
+      chip.addEventListener("blur", () => setHighlight(null));
+    }
   })();
 
   // Rich timeline tooltip. On hover over a dot, position a small panel

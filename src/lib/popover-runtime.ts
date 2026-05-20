@@ -53,13 +53,24 @@ function position(el: Element): void {
 function show(el: Element): void {
   const p = ensurePanel();
   if (!p) return;
+  const html = (el as HTMLElement).getAttribute("data-popover-html");
   const text = (el as HTMLElement).getAttribute("data-popover");
-  if (!text) return;
+  if (!html && !text) return;
   if (hideTimer !== null) {
     window.clearTimeout(hideTimer);
     hideTimer = null;
   }
-  p.textContent = text;
+  // data-popover-html lets the popover carry inline links + emphasis.
+  // The HTML is server-authored (in the .astro template) so trust is
+  // bounded; we don't sanitize. data-popover is treated as plain
+  // text and is the safer default when in doubt.
+  if (html) {
+    p.innerHTML = html;
+    p.style.pointerEvents = "auto";
+  } else {
+    p.textContent = text!;
+    p.style.pointerEvents = "none";
+  }
   position(el);
   p.classList.add("visible");
   p.setAttribute("aria-hidden", "false");
@@ -80,20 +91,36 @@ function hide(): void {
 
 function isTrigger(target: EventTarget | null): Element | null {
   if (!(target instanceof Element)) return null;
-  return target.closest("[data-popover]");
+  return target.closest("[data-popover], [data-popover-html]");
 }
 
 document.addEventListener("mouseover", (e) => {
   const trigger = isTrigger(e.target);
   if (trigger) show(trigger);
+  // If the cursor moves into the popover itself (to click a link),
+  // cancel any pending hide.
+  if (e.target instanceof Element && e.target.closest("#site-popover")) {
+    if (hideTimer !== null) {
+      window.clearTimeout(hideTimer);
+      hideTimer = null;
+    }
+  }
 });
 document.addEventListener("mouseout", (e) => {
   const trigger = isTrigger(e.target);
+  const popoverEl = document.getElementById("site-popover");
   if (trigger) {
     const related = e.relatedTarget instanceof Element
-      ? e.relatedTarget.closest("[data-popover]")
+      ? (e.relatedTarget.closest("[data-popover], [data-popover-html]") ?? e.relatedTarget.closest("#site-popover"))
       : null;
-    if (related !== trigger) hide();
+    if (related !== trigger && !(related && related.id === "site-popover")) hide();
+  }
+  // Leaving the popover panel itself (and not back to the trigger).
+  if (e.target instanceof Element && e.target.closest("#site-popover")) {
+    const related = e.relatedTarget instanceof Element
+      ? (e.relatedTarget.closest("[data-popover], [data-popover-html]") ?? e.relatedTarget.closest("#site-popover"))
+      : null;
+    if (!related) hide();
   }
 });
 document.addEventListener("focusin", (e) => {

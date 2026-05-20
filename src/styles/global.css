@@ -85,13 +85,42 @@ body {
 }
 
 /*
- * Site-wide popover. Any element with [data-popover] gets a styled
- * hint on hover. Replaces the browser-native title tooltip so hints
- * match the site palette (mono font, soft border, no OS yellow) and
- * there is no question-mark "help" cursor.
+ * Site-wide popover. Any element with [data-popover] or
+ * [data-popover-html] gets a styled hint on hover. Replaces the
+ * browser-native title tooltip so hints match the site palette (mono
+ * font, soft border, no OS yellow) and there is no question-mark
+ * "help" cursor.
  */
-[data-popover] {
+[data-popover],
+[data-popover-html] {
   cursor: default;
+}
+
+/* Openness badges stay on one line so SOURCE-AVAILABLE doesn't break
+   onto two rows in a narrow column. */
+.openness-badge {
+  white-space: nowrap;
+}
+
+/* Dot dimming when the user highlights a single family via the legend.
+   .dimmed gets applied to non-matching timeline / scatter dots. */
+.viz-dimmed circle {
+  opacity: 0.12;
+  transition: opacity 0.12s;
+}
+.viz-dot circle,
+.timeline-dot circle,
+.scatter-dot circle {
+  transition: opacity 0.12s;
+}
+
+/* Family-color legend chips behave as buttons. */
+.family-legend-chip {
+  cursor: pointer;
+  user-select: none;
+}
+.family-legend-chip:hover .family-legend-name {
+  color: var(--color-text);
 }
 #site-popover {
   position: fixed;
@@ -114,6 +143,13 @@ body {
 }
 #site-popover.visible {
   opacity: 1;
+}
+#site-popover a {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+#site-popover a:hover {
+  color: var(--color-accent-strong);
 }
 
 /*
