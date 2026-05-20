@@ -637,16 +637,16 @@ export default function CoursePanel({
 
   if (!hasKey) {
     return (
-      <div class="p-4 text-sm text-[var(--color-text-muted)]">
-        <p class="mb-3">
+      <div className="p-4 text-sm text-[var(--color-text-muted)]">
+        <p className="mb-3">
           The course agent needs your API key to drive the dialogue.
         </p>
-        <p class="mb-4">
-          Open <a href="/settings" class="text-[var(--color-text)] underline">Settings</a> and paste an OpenRouter key. It stays in your browser; the server never sees it.
+        <p className="mb-4">
+          Open <a href="/settings" className="text-[var(--color-text)] underline">Settings</a> and paste an OpenRouter key. It stays in your browser; the server never sees it.
         </p>
         <a
           href="/settings"
-          class="inline-block px-3 py-1.5 text-xs rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
+          className="inline-block px-3 py-1.5 text-xs rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
         >
           Open Settings →
         </a>
@@ -661,12 +661,12 @@ export default function CoursePanel({
     // later.
     const phaseChip = phase === "read" ? null : phaseLabel(phase);
     return (
-      <div class="px-4 py-2 border-b border-[var(--color-border)] flex items-baseline justify-between">
-        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+      <div className="px-4 py-2 border-b border-[var(--color-border)] flex items-baseline justify-between">
+        <span className="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
           Course agent
         </span>
         {phaseChip && (
-          <span class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+          <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">
             {phaseChip}
           </span>
         )}
@@ -702,8 +702,8 @@ export default function CoursePanel({
     return (
       <>
         <PhaseHeader />
-        <div class="flex-1 flex flex-col p-5 gap-4">
-          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        <div className="flex-1 flex flex-col p-5 gap-4">
+          <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
             Read the content beside this chat. When you're ready,
             begin the Probe dialog — the agent will ask Socratic
             questions grounded in what you've just covered, and the
@@ -712,7 +712,7 @@ export default function CoursePanel({
           <button
             type="button"
             onClick={beginProbe}
-            class="self-start px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+            className="self-start px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
           >
             Begin Probe →
           </button>
@@ -725,7 +725,7 @@ export default function CoursePanel({
     return (
       <>
         <PhaseHeader />
-        <div class="p-4 text-sm text-[var(--color-text-muted)] leading-relaxed">
+        <div className="p-4 text-sm text-[var(--color-text-muted)] leading-relaxed">
           <p>
             You've completed this module. Use the navigation below the
             content to move to the next module, or revisit a phase by
@@ -740,8 +740,8 @@ export default function CoursePanel({
     return (
       <>
         <PhaseHeader />
-        <div class="flex-1 flex flex-col p-4 gap-3">
-          <p class="text-xs text-[var(--color-text-subtle)] leading-relaxed">
+        <div className="flex-1 flex flex-col p-4 gap-3">
+          <p className="text-xs text-[var(--color-text-subtle)] leading-relaxed">
             Write your own summary of this layer in your own words.
             One paragraph for fast pass; several paragraphs for deep
             pass. Save as you go.
@@ -751,13 +751,13 @@ export default function CoursePanel({
             onInput={(e) => setSynthBody((e.target as HTMLTextAreaElement).value)}
             onBlur={() => saveSynth(synthBody)}
             placeholder="My summary of this layer..."
-            class="flex-1 min-h-[200px] p-3 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-sm leading-relaxed resize-none"
+            className="flex-1 min-h-[200px] p-3 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-sm leading-relaxed resize-none"
           />
-          <div class="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
             <button
               type="button"
               onClick={() => saveSynth(synthBody)}
-              class="text-xs px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-[var(--color-border)]"
+              className="text-xs px-3 py-1.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-[var(--color-border)]"
             >
               Save
             </button>
@@ -768,7 +768,7 @@ export default function CoursePanel({
                 await advance();
               }}
               disabled={synthBody.trim().length < 50}
-              class="text-xs px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-subtle)] cursor-pointer"
+              className="text-xs px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-subtle)] cursor-pointer"
             >
               Done · complete module
             </button>
@@ -799,8 +799,8 @@ export default function CoursePanel({
   return (
     <>
       <PhaseHeader />
-      <div ref={scrollRef} class="course-chat-scroll flex-1 overflow-y-auto px-4 py-5">
-        <div class="space-y-5">
+      <div ref={scrollRef} className="course-chat-scroll flex-1 overflow-y-auto px-4 py-5">
+        <div className="space-y-5">
           {visibleTurns.map((t, i) => (
             <ChatMessage key={i} role={t.role} content={stripToken(t.content)} />
           ))}
@@ -820,15 +820,15 @@ export default function CoursePanel({
                   streaming
                 />
               ) : (
-                <div class="flex items-center gap-3 text-xs text-[var(--color-text-subtle)]">
-                  <span class="course-typing" aria-hidden="true">
+                <div className="flex items-center gap-3 text-xs text-[var(--color-text-subtle)]">
+                  <span className="course-typing" aria-hidden="true">
                     <span /><span /><span />
                   </span>
                   <span>{toolStatus ?? "Thinking"}</span>
                   <button
                     type="button"
                     onClick={() => abortRef.current?.abort()}
-                    class="ml-auto font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] cursor-pointer"
+                    className="ml-auto font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] cursor-pointer"
                   >
                     Stop
                   </button>
@@ -837,7 +837,7 @@ export default function CoursePanel({
             </>
           )}
           {error && (
-            <p class="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded">
+            <p className="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded">
               {error}
             </p>
           )}
@@ -849,9 +849,9 @@ export default function CoursePanel({
           if (!input.trim() || streaming) return;
           send(input.trim());
         }}
-        class="px-4 pt-3 pb-4 border-t border-[var(--color-border)]"
+        className="px-4 pt-3 pb-4 border-t border-[var(--color-border)]"
       >
-        <div class="relative flex items-end gap-2 border border-[var(--color-border-strong)] rounded-2xl bg-[var(--color-surface)] focus-within:border-[var(--color-text-muted)] transition-colors">
+        <div className="relative flex items-end gap-2 border border-[var(--color-border-strong)] rounded-2xl bg-[var(--color-surface)] focus-within:border-[var(--color-text-muted)] transition-colors">
           <textarea
             ref={textareaRef}
             value={input}
@@ -866,14 +866,14 @@ export default function CoursePanel({
             disabled={streaming}
             placeholder={streaming ? "Agent is responding…" : "Your answer…"}
             rows={1}
-            class="course-input flex-1 resize-none bg-transparent px-4 py-2.5 text-sm leading-snug placeholder:text-[var(--color-text-subtle)] focus:outline-none disabled:opacity-60"
+            className="course-input flex-1 resize-none bg-transparent px-4 py-2.5 text-sm leading-snug placeholder:text-[var(--color-text-subtle)] focus:outline-none disabled:opacity-60"
             style={{ maxHeight: "180px" }}
           />
           <button
             type="submit"
             disabled={streaming || !input.trim()}
             aria-label="Send"
-            class="self-end m-1.5 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--color-text)] text-[var(--color-surface)] disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-subtle)] cursor-pointer hover:opacity-90 disabled:cursor-not-allowed"
+            className="self-end m-1.5 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--color-text)] text-[var(--color-surface)] disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-subtle)] cursor-pointer hover:opacity-90 disabled:cursor-not-allowed"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 19V5" />
@@ -881,38 +881,38 @@ export default function CoursePanel({
             </svg>
           </button>
         </div>
-        <p class="mt-2 text-[10px] font-mono text-[var(--color-text-subtle)] flex items-center gap-2">
-          <kbd class="px-1 border border-[var(--color-border)] rounded">↵</kbd> send
-          <span class="opacity-50">·</span>
-          <kbd class="px-1 border border-[var(--color-border)] rounded">⇧↵</kbd> newline
+        <p className="mt-2 text-[10px] font-mono text-[var(--color-text-subtle)] flex items-center gap-2">
+          <kbd className="px-1 border border-[var(--color-border)] rounded">↵</kbd> send
+          <span className="opacity-50">·</span>
+          <kbd className="px-1 border border-[var(--color-border)] rounded">⇧↵</kbd> newline
         </p>
       </form>
       {phaseCompleteSeen && (
-        <div class="px-3 py-2 border-t border-[var(--color-border)] bg-[var(--color-surface-warm)] flex items-center justify-between gap-2 flex-wrap">
-          <span class="text-xs text-[var(--color-text-muted)]">
+        <div className="px-3 py-2 border-t border-[var(--color-border)] bg-[var(--color-surface-warm)] flex items-center justify-between gap-2 flex-wrap">
+          <span className="text-xs text-[var(--color-text-muted)]">
             {phase === "why_open" && !whyOpenSaved
               ? "Save your answer to your Personal Notes before continuing."
               : "The agent says this phase is done."}
           </span>
-          <div class="flex gap-2">
+          <div className="flex gap-2">
             {phase === "why_open" && !whyOpenSaved && (
               <button
                 type="button"
                 onClick={saveWhyOpen}
-                class="text-xs px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
+                className="text-xs px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
               >
                 Save my answer for my Personal Notes
               </button>
             )}
             {phase === "why_open" && whyOpenSaved && (
-              <span class="text-xs text-[var(--color-text-muted)] italic px-2 py-1">
+              <span className="text-xs text-[var(--color-text-muted)] italic px-2 py-1">
                 Saved.
               </span>
             )}
             <button
               type="button"
               onClick={advance}
-              class="text-xs px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white cursor-pointer"
+              className="text-xs px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white cursor-pointer"
             >
               Continue to {phaseLabel(nextPhase(phase as ModulePhase))} →
             </button>
@@ -945,21 +945,21 @@ function ChatMessage({
 }) {
   if (role === "user") {
     return (
-      <div class="flex justify-end">
-        <div class="max-w-[85%] px-3.5 py-2 rounded-2xl rounded-br-md bg-[var(--color-surface-warm)] text-[var(--color-text)] text-sm leading-snug whitespace-pre-wrap break-words">
+      <div className="flex justify-end">
+        <div className="max-w-[85%] px-3.5 py-2 rounded-2xl rounded-br-md bg-[var(--color-surface-warm)] text-[var(--color-text)] text-sm leading-snug whitespace-pre-wrap break-words">
           {content}
         </div>
       </div>
     );
   }
   return (
-    <div class="text-[var(--color-text)]">
-      <div class="course-msg-assistant text-sm leading-relaxed">
+    <div className="text-[var(--color-text)]">
+      <div className="course-msg-assistant text-sm leading-relaxed">
         <CitationProse text={content} />
         {streaming && (
           <span
             aria-hidden="true"
-            class="inline-block w-1.5 h-3.5 -mb-0.5 ml-0.5 bg-[var(--color-text)] align-baseline course-caret"
+            className="inline-block w-1.5 h-3.5 -mb-0.5 ml-0.5 bg-[var(--color-text)] align-baseline course-caret"
           />
         )}
       </div>
@@ -998,7 +998,7 @@ function CitationPill({ citation }: { citation: ParsedCitation }) {
   return (
     <a
       href={href}
-      class="inline-block align-baseline mx-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-accent-soft)] no-underline hover:bg-white"
+      className="inline-block align-baseline mx-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-accent-soft)] no-underline hover:bg-white"
       title={`${citation.kind}: ${citation.ref}`}
     >
       {citation.kind}: {citationLabel(citation)}
@@ -1052,7 +1052,7 @@ function ToolTrace({
   live: string | null;
 }) {
   return (
-    <div class="border-l-2 border-[var(--color-border-strong)] pl-3 py-1 space-y-1">
+    <div className="border-l-2 border-[var(--color-border-strong)] pl-3 py-1 space-y-1">
       {trace.map((t) => {
         const label = humanizeTool(t.name, t.input);
         const isLive = !t.done && live === label;
@@ -1073,7 +1073,7 @@ function ToolTrace({
               }`}
               aria-hidden="true"
             >
-              {t.done ? "✓" : isLive ? <span class="course-tool-pulse">●</span> : "…"}
+              {t.done ? "✓" : isLive ? <span className="course-tool-pulse">●</span> : "…"}
             </span>
             <span>{label}</span>
           </div>
