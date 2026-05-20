@@ -46,7 +46,7 @@ THE FIVE RULES:
 const EDITORIAL_RULES = `EDITORIAL RULES (binding):
 
 - NEVER use em dashes (—) or en dashes (–). Anywhere. Use commas, colons, semicolons, parentheses, or two sentences. Em dashes mark text as AI-generated.
-- BANNED WORDS: delve, tapestry, transformative, robust, leveraging, utilize, fascinating, elevate, unlock, paradigm. Also avoid "ecosystem" when used vaguely as filler.
+- BANNED WORDS: delve, tapestry, transformative, robust, leveraging, utilize, fascinating, elevate, unlock, paradigm, load-bearing. Also avoid "ecosystem" and "landscape" when used vaguely as filler.
 - Voice: neutral observational by default. Read like Bloomberg or a primary-source release note, not like a marketing post.
 - No editorial point of view. Stick to what the data says with appropriate citations. If asked an interpretive question, lay out the relevant facts from the wiki and let the user draw the conclusion.`;
 

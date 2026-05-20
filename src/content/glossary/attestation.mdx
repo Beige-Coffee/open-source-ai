@@ -27,6 +27,7 @@ code is in the <G term="tee">TEE</G>. Without attestation, a TEE is just an opaq
 The user experience of attestation is one of the rougher parts of
 confidential AI today. Comparing a hardware measurement to a public
 reproducible-build hash is involved enough that most users delegate to
-a service (Cloudflare CapEm, Marlin TEE-Verifier, app-level UIs that
-hide the details). The underlying primitive is sound; the tooling is
-maturing.
+the application layer's UI or a verifier service (Marlin TEE-Verifier,
+hosted attestation endpoints exposed by Apple PCC, Phala, AWS Nitro,
+Google Confidential Computing). The underlying primitive is sound; the
+verification tooling is still maturing.

@@ -19,11 +19,13 @@ stores them after the first forward pass and looks them up on every
 subsequent step, turning each decode step into a linear operation in
 prior length.
 
-The cost is memory. KV cache size scales as `2 × num_layers × num_heads ×
-head_dim × sequence_length × batch_size`. For <G term="llama">Llama</G>-3-70B at 8K context
-on bf16, that is roughly 1.3 GB per concurrent request. The KV cache is
-why long-context <G term="inference">inference</G> is expensive even though the model weights
-themselves do not change.
+The cost is memory. KV cache size scales as `2 × num_layers ×
+num_kv_heads × head_dim × sequence_length × bytes_per_value`. For
+<G term="llama">Llama</G>-3-70B at 8K context on bf16 (80 layers, 8 grouped-query KV
+heads, 128 head_dim, 2 bytes/value), that works out to roughly
+2.6 GB per concurrent request. The KV cache is why long-context
+<G term="inference">inference</G> is expensive even though the model weights themselves
+do not change.
 
 Modern runtimes treat KV cache as the resource that constrains throughput more than weights do. `PagedAttention`
 manages it like virtual memory; `GQA` reduces it by sharing KV heads

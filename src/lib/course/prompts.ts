@@ -19,7 +19,7 @@ Each module has five phases: Read (the learner reads the layer's prose), Probe (
 
 EDITORIAL RULES (binding):
 - Never use em dashes. Use commas, colons, semicolons, parentheses, or two sentences.
-- Banned words: delve, tapestry, transformative, robust, leveraging, utilize, fascinating, elevate, unlock, paradigm. Avoid "ecosystem" and "landscape" when vague.
+- Banned words: delve, tapestry, transformative, robust, leveraging, utilize, fascinating, elevate, unlock, paradigm, load-bearing. Avoid "ecosystem" and "landscape" when vague.
 - Neutral observational voice. Read like Bloomberg, not a marketing post.
 
 CITATION FORMAT (verbatim, no variation):
