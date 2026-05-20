@@ -4,13 +4,13 @@ order: 6
 title: "Production serving"
 one_liner: "Prefill, decode, batching, scheduling, parallelism. The system around the model."
 sources:
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
   - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
     url: "https://arxiv.org/abs/2309.06180"
   - title: "Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2023)"
     url: "https://arxiv.org/abs/2211.17192"
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
 updated: 2026-05-20
 ---
@@ -22,7 +22,7 @@ checkpoint into a service. Six concerns recur: phase separation, KV
 cache management, batching, parallelism, speculative decoding, and
 disaggregation. Each is implemented differently by each serving
 engine; together they determine whether a deployment hits its SLA at
-target concurrency, or thrashes under load (Grootendorst, 2026).
+target concurrency, or thrashes under load (Osman, 2026).
 
 <G term="prefill">Prefill</G> and <G term="decode">decode</G> are different workloads
 that share a model. Prefill processes the entire input prompt in one
@@ -69,7 +69,7 @@ serving but demands fast interconnect. Data parallelism replicates the
 full model on each GPU and partitions the request stream; it works
 when the model fits on one GPU and the bottleneck is throughput. Context
 parallelism splits very long sequences across GPUs at attention time
-(Grootendorst, 2026).
+(Osman, 2026).
 
 <G term="speculative-decoding">Speculative decoding</G> (Leviathan et al., 2023) attacks the
 decode bandwidth bound directly. A small draft model proposes several

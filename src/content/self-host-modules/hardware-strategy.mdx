@@ -4,11 +4,11 @@ order: 5
 title: "Hardware strategy"
 one_liner: "Pick a hardware strategy and workload shape first; the engine follows."
 sources:
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
-  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2041331757329285589"
 updated: 2026-05-20
 ---
@@ -22,7 +22,7 @@ loops), the concurrency target, the acceptable <G term="ttft">TTFT</G> and
 <G term="tpot">TPOT</G>, and the cost ceiling per million tokens narrows the
 hardware shortlist much faster than ranking GPUs by VRAM. The
 engine choice and the quantization format both fall out of the
-hardware decision (Grootendorst, 2026).
+hardware decision (Osman, 2026).
 
 A CPU-only server still has a role for small models or for workloads
 with very low throughput requirements. llama.cpp on a modern Xeon or
@@ -38,7 +38,7 @@ architecture removes the GPU-VRAM capacity ceiling. A Mac Studio M3
 Ultra with 192 GB can host a 70B model at FP16 or a 405B model
 quantized, with MLX or llama.cpp serving tokens. The tradeoff is
 bandwidth at 819 GB/s (M3 Ultra), 546 GB/s (M4 Max), or lower on
-smaller parts (Grootendorst, 2026). Acceptable for personal use and
+smaller parts (Osman, 2026). Acceptable for personal use and
 small-team serving; not competitive with discrete GPU bandwidth for
 high-throughput production.
 
@@ -71,7 +71,7 @@ stack in a developer-appliance form factor, at bandwidths in the 250 to
 300 GB/s range. Strix Halo is the first serious x86 contender for
 unified memory on the AMD side. Both are aimed at developers who want
 Mac-Studio-like capacity flexibility on an x86 platform with the option
-of running native CUDA or ROCm code paths (Grootendorst, 2026).
+of running native CUDA or ROCm code paths (Osman, 2026).
 
 Tenstorrent's Blackhole p150 is the wildcard. The hardware is competitive
 on bandwidth (450 to 650 GB/s tier), and the entire stack (silicon to

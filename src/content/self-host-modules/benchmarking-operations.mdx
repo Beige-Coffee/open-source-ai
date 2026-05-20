@@ -4,11 +4,11 @@ order: 7
 title: "Benchmarking and operations"
 one_liner: "Bad benchmark: 180 tok/s. Good benchmark: TTFT + TPOT + p95 + cost per million tokens at your workload shape."
 sources:
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
-  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2041331757329285589"
 updated: 2026-05-20
 ---
@@ -19,7 +19,7 @@ A single tokens-per-second number on a Twitter screenshot is rarely
 useful. Production benchmarks need workload shape, hardware identity,
 software identity, and the metrics that actually predict user
 experience. Without those, two benchmark results that look like the
-same number can come from completely different setups (Grootendorst,
+same number can come from completely different setups (Osman,
 2026).
 
 A good benchmark records every variable that moves the result. Model
@@ -62,7 +62,7 @@ Benchmark structured output (JSON mode, function calling) separately,
 because constraint decoding has different performance characteristics
 than free generation. Benchmark LoRA loading separately if you serve
 adapters. Re-test after every driver, CUDA, model, or engine upgrade,
-because regressions are common (Grootendorst, 2026).
+because regressions are common (Osman, 2026).
 
 Common mistakes that send benchmarks in the wrong direction. Choosing
 hardware by VRAM alone without checking bandwidth tier; a Mac Studio
@@ -94,4 +94,4 @@ to operate? Engines that look identical on a benchmark chart diverge
 sharply when you score them against these ten. The engine choice is
 downstream of the workload shape, not upstream of it. Pick the
 workload, then pick the hardware, then pick the engine, then benchmark
-the configuration end-to-end, then iterate (Grootendorst, 2026).
+the configuration end-to-end, then iterate (Osman, 2026).

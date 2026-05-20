@@ -1,196 +1,256 @@
 ---
-import { getCollection, render } from "astro:content";
-import BaseLayout from "../../../layouts/BaseLayout.astro";
+export const prerender = false;
 
-export async function getStaticPaths() {
-  const entries = await getCollection("self_host_modules");
-  return entries.map((entry) => ({
-    params: { module: entry.data.slug },
-    props: { entry },
-  }));
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import CoursePanel from "../../../components/CoursePanel.tsx";
+import {
+  MODULE_BY_SLUG,
+  SELF_HOST_MODULES,
+  nextModule,
+  prevModule,
+  PHASE_ORDER,
+  phaseLabel,
+  type ProgressPhase,
+} from "../../../lib/course/modules";
+
+const { module: moduleSlug } = Astro.params;
+if (!moduleSlug || !MODULE_BY_SLUG[moduleSlug] || MODULE_BY_SLUG[moduleSlug].track !== "self-host") {
+  return Astro.redirect("/learn/self-host");
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const courseModule = MODULE_BY_SLUG[moduleSlug];
+const { user, supabase } = Astro.locals;
 
-const all = await getCollection("self_host_modules");
-const sorted = all
-  .map((m) => ({ ...m.data, id: m.id }))
-  .sort((a, b) => a.order - b.order);
+// Load this module's MDX from the self_host_modules content collection.
+const allModules = await getCollection("self_host_modules");
+const entry = allModules.find((m) => m.data.slug === moduleSlug);
+const ModuleContent = entry ? (await render(entry)).Content : null;
+const probePrimer = courseModule.probe_primer ?? [];
 
-const idx = sorted.findIndex((m) => m.slug === entry.data.slug);
-const prev = idx > 0 ? sorted[idx - 1] : null;
-const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+// Look up the learner's current progress for this module.
+let currentPhase: ProgressPhase = "read";
+let jumped = false;
+let passChoice: "fast" | "deep" = "fast";
+type PriorWriting = {
+  module_slug: string;
+  module_title: string;
+  module_order: number;
+  synthesize?: string;
+  why_open?: string;
+};
+let priorWritings: PriorWriting[] = [];
+if (user && supabase) {
+  const { data } = await supabase
+    .from("module_progress")
+    .select("phase, jumped")
+    .eq("user_id", user.id)
+    .eq("module_slug", moduleSlug)
+    .maybeSingle();
+  if (data) {
+    currentPhase = data.phase as ProgressPhase;
+    jumped = data.jumped;
+  }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("pass_choice")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (profile?.pass_choice) {
+    passChoice = profile.pass_choice as "fast" | "deep";
+  }
+
+  // Earlier self-host modules' writings, so the Probe agent can reference
+  // the learner's own arc across the track.
+  const earlierModules = SELF_HOST_MODULES.filter((m) => m.order < courseModule.order);
+  if (earlierModules.length > 0) {
+    const earlierSlugs = earlierModules.map((m) => m.slug);
+    const [{ data: synthRows }, { data: whyOpenRows }] = await Promise.all([
+      supabase
+        .from("synthesize_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+      supabase
+        .from("why_open_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+    ]);
+    const synthBySlug = new Map((synthRows ?? []).map((r) => [r.module_slug, r.body]));
+    const whyOpenBySlug = new Map(
+      (whyOpenRows ?? []).map((r) => [r.module_slug, r.body]),
+    );
+    priorWritings = earlierModules
+      .filter((m) => synthBySlug.has(m.slug) || whyOpenBySlug.has(m.slug))
+      .map((m) => ({
+        module_slug: m.slug,
+        module_title: m.title,
+        module_order: m.order,
+        synthesize: synthBySlug.get(m.slug),
+        why_open: whyOpenBySlug.get(m.slug),
+      }));
+  }
+}
+
+const next = nextModule(moduleSlug);
+const prev = prevModule(moduleSlug);
 ---
 
 <BaseLayout
-  title={`${entry.data.title} · Self-host · Learn`}
-  description={entry.data.one_liner}
+  title={`${courseModule.title} · Self-host · Learn`}
+  description={`Self-host module: ${courseModule.one_liner}`}
 >
-  <article class="max-w-3xl mx-auto px-6 pt-12 pb-16">
-    <a
-      href="/learn/self-host"
-      class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4"
-    >
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M19 12H5"/>
-        <path d="M12 19l-7-7 7-7"/>
-      </svg>
-      All self-host modules
-    </a>
-
-    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
-      Self-host · Module {String(entry.data.order).padStart(2, "0")} of {sorted.length}
-    </p>
-    <h1 class="font-serif text-3xl md:text-4xl leading-tight tracking-tight text-[var(--color-text)] mb-3">
-      {entry.data.title}
-    </h1>
-    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-8 max-w-prose">
-      {entry.data.one_liner}
-    </p>
-
-    <div class="prose-course">
-      <Content />
-    </div>
-
-    {/* Mark-as-read widget. Hydrates client-side because the page is
-        prerendered. Only renders the button when there's an active
-        Supabase session; anonymous visitors see nothing.
-
-        Note: this writes to the same module_progress table used by the
-        stack-walk Socratic course, with phase=complete. Self-host slugs
-        and stack-walk slugs are disjoint, so they share the table
-        without collision. */}
-    <div
-      id="self-host-mark-read"
-      data-module-slug={entry.data.slug}
-      class="mt-12 pt-6 border-t border-[var(--color-border)]"
-    >
-      <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-        Progress
-      </p>
-      <div id="mark-read-state" class="text-sm text-[var(--color-text-subtle)]">
-        Loading...
+  <script is:inline>
+    {`
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var val = params.get("set_pass");
+          if (val !== "fast" && val !== "deep") return;
+          var KEY = "oas-course-v1";
+          var raw = window.localStorage.getItem(KEY);
+          var state = raw ? JSON.parse(raw) : { version: "v1", modules: {} };
+          state.pass_choice = val;
+          window.localStorage.setItem(KEY, JSON.stringify(state));
+          params.delete("set_pass");
+          var qs = params.toString();
+          var path = window.location.pathname + (qs ? "?" + qs : "");
+          window.history.replaceState({}, "", path);
+        } catch (e) { /* ignore */ }
+      })();
+    `}
+  </script>
+  <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+    <header class="mb-6">
+      <a
+        href="/learn/self-host"
+        class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-3"
+      >
+        ← Self-host track
+      </a>
+      <div class="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+        <h1 class="font-serif text-3xl md:text-4xl text-[var(--color-text)]">
+          <span class="font-mono text-base text-[var(--color-text-subtle)] mr-3">
+            {String(courseModule.order).padStart(2, "0")}
+          </span>
+          {courseModule.title}
+        </h1>
+        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] px-2 py-1 rounded border border-[var(--color-border)]">
+          self-host
+        </span>
       </div>
-    </div>
+      <p class="text-base text-[var(--color-text-muted)] max-w-prose leading-relaxed">
+        {courseModule.one_liner}
+      </p>
+    </header>
 
-    {entry.data.sources && entry.data.sources.length > 0 && (
-      <section class="mt-12 pt-6 border-t border-[var(--color-border)]">
-        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-          Sources
-        </h2>
-        <ul class="space-y-1 text-sm">
-          {entry.data.sources.map((s) => (
-            <li>
-              <a href={s.url} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
-                {s.title} ↗
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
+    <nav
+      aria-label="Module phases"
+      class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
+    >
+      {
+        PHASE_ORDER.filter((p) => p !== "complete" && p !== "read").map((phase) => {
+          const isCurrent = phase === currentPhase;
+          const isDone =
+            PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);
+          return (
+            <span
+              class={`font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded ${
+                isCurrent
+                  ? "bg-[var(--color-accent-strong)] text-white"
+                  : isDone
+                    ? "text-[var(--color-text)]"
+                    : "text-[var(--color-text-subtle)]"
+              }`}
+            >
+              {phaseLabel(phase)}
+            </span>
+          );
+        })
+      }
+      {
+        jumped && (
+          <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded text-[var(--color-text-subtle)] italic ml-auto">
+            jumped to
+          </span>
+        )
+      }
+    </nav>
+
+    <div class="grid gap-6 md:grid-cols-[3fr_2fr]">
+      <div class="prose-course min-h-[60vh] md:min-h-[calc(100vh-6rem)]">
+        {entry && ModuleContent && (
+          <Fragment>
+            <ModuleContent />
+
+            {currentPhase === "complete" && next && (
+              <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+                <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                  You've completed this module. Move on to the next, or revisit
+                  any phase from the ribbon above.
+                </p>
+                <a
+                  href={`/learn/self-host/${next.slug}`}
+                  class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                >
+                  Next: {next.title} →
+                </a>
+              </div>
+            )}
+          </Fragment>
+        )}
+      </div>
+
+      <aside>
+        <div
+          class="md:sticky md:top-20 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[40vh] md:min-h-[480px] md:max-h-[calc(100vh-6rem)] flex flex-col overflow-hidden"
+        >
+          <CoursePanel
+            client:load
+            moduleSlug={moduleSlug}
+            initialPhase={currentPhase}
+            userId={user?.id ?? null}
+            passChoice={passChoice}
+            priorWritings={priorWritings}
+            probePrimer={probePrimer}
+          />
+        </div>
+      </aside>
+    </div>
 
     <nav
       aria-label="Module navigation"
-      class="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center justify-between gap-3 flex-wrap"
+      class="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center justify-between gap-3"
     >
-      {prev ? (
-        <a
-          href={`/learn/self-host/${prev.slug}`}
-          class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
-        >
-          ← {prev.title}
-        </a>
-      ) : (
-        <a href="/learn/self-host" class="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline">
-          ← Track overview
-        </a>
-      )}
-      {next ? (
-        <a
-          href={`/learn/self-host/${next.slug}`}
-          class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline ml-auto"
-        >
-          {next.title} →
-        </a>
-      ) : (
-        <a href="/learn" class="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline ml-auto">
-          Back to /learn →
-        </a>
-      )}
+      {
+        prev ? (
+          <a
+            href={`/learn/self-host/${prev.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            ← {prev.title}
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (first module)
+          </span>
+        )
+      }
+      {
+        next ? (
+          <a
+            href={`/learn/self-host/${next.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            {next.title} →
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (capstone)
+          </span>
+        )
+      }
     </nav>
-  </article>
-
-  <script>
-    // Self-host mark-as-read widget. Reads + writes to the
-    // module_progress table directly with the browser Supabase client.
-    // No-op for anonymous visitors.
-    import { browserSupabase } from "../../../lib/course/supabase";
-
-    (async () => {
-      const root = document.getElementById("self-host-mark-read");
-      const state = document.getElementById("mark-read-state");
-      if (!root || !state) return;
-      const moduleSlug = root.getAttribute("data-module-slug");
-      if (!moduleSlug) return;
-
-      const sb = browserSupabase();
-      if (!sb) {
-        state.innerHTML = `<a href="/learn/login" class="text-[var(--color-text)] hover:underline">Log in</a> <span class="text-[var(--color-text-subtle)]">to track progress on this track.</span>`;
-        return;
-      }
-      const { data: u } = await sb.auth.getUser();
-      const userId = u?.user?.id;
-      if (!userId) {
-        state.innerHTML = `<a href="/learn/login" class="text-[var(--color-text)] hover:underline">Log in</a> <span class="text-[var(--color-text-subtle)]">to track progress on this track.</span>`;
-        return;
-      }
-
-      function renderComplete() {
-        state.innerHTML = `
-          <div class="flex items-center gap-3 flex-wrap">
-            <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded bg-[var(--color-status-fresh)] text-white">✓ Read</span>
-            <button id="undo-read" class="font-mono text-xs text-[var(--color-text-subtle)] hover:text-[var(--color-text)] underline bg-transparent border-0 p-0 cursor-pointer">undo</button>
-          </div>
-        `;
-        document.getElementById("undo-read")?.addEventListener("click", undo);
-      }
-      function renderUnread() {
-        state.innerHTML = `
-          <button id="mark-read-btn" class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer border-0">
-            Mark module as read →
-          </button>
-        `;
-        document.getElementById("mark-read-btn")?.addEventListener("click", markRead);
-      }
-
-      async function markRead() {
-        const btn = document.getElementById("mark-read-btn");
-        if (btn) btn.textContent = "Saving...";
-        await sb!.from("module_progress").upsert({
-          user_id: userId,
-          module_slug: moduleSlug,
-          phase: "complete",
-          phase_started_at: new Date().toISOString(),
-          phase_completed_at: new Date().toISOString(),
-        });
-        renderComplete();
-      }
-      async function undo() {
-        await sb!.from("module_progress").delete()
-          .eq("user_id", userId)
-          .eq("module_slug", moduleSlug);
-        renderUnread();
-      }
-
-      const { data } = await sb.from("module_progress")
-        .select("phase")
-        .eq("user_id", userId)
-        .eq("module_slug", moduleSlug)
-        .maybeSingle();
-      if (data?.phase === "complete") renderComplete();
-      else renderUnread();
-    })();
-  </script>
+  </div>
 </BaseLayout>

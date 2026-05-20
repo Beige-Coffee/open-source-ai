@@ -4,11 +4,11 @@ order: 2
 title: "Memory bandwidth"
 one_liner: "Capacity decides what fits. Bandwidth decides how fast it runs. They're not the same."
 sources:
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
-  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2041331757329285589"
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
 updated: 2026-05-20
 ---
@@ -19,7 +19,7 @@ Memory capacity tells you whether a model will load. Memory bandwidth
 tells you how fast the loaded model will run. The two are independent
 specs, and people who treat them as one number consistently buy boxes
 that disappoint them. The framework most practitioners reach for is
-simple: capacity is for fitting, bandwidth is for serving (Grootendorst,
+simple: capacity is for fitting, bandwidth is for serving (Osman,
 2026).
 
 The reason bandwidth matters so much for LLM <G term="decode">decode</G> is that
@@ -43,7 +43,7 @@ Radeon AI PRO R9700, and Tenstorrent's Blackhole p150. The 250 to 300
 GB/s unified-memory tier is the DGX Spark, Mac mini M4 Pro, and Ryzen
 AI Max / Strix Halo. The thin-and-light tier (MacBook Air M5, Snapdragon
 X Elite, Intel Lunar Lake, Snapdragon X2 Elite) sits around 100 to 220
-GB/s (Grootendorst, 2026).
+GB/s (Osman, 2026).
 
 Bigger boxes feel slow even when the model fits because the bandwidth
 math is unforgiving. A Mac Studio with 192 GB of <G term="unified-memory">unified memory</G>
@@ -64,7 +64,7 @@ capacity superpower. The tradeoff is that the bandwidth lags top-end
 discrete GPUs by a factor of two to four, depending on the part. For
 "can I run a 70B model at all?" the Mac wins; for "how many tokens per
 second does it sustain at production load?" the discrete GPU usually
-wins (Grootendorst, 2026).
+wins (Osman, 2026).
 
 The "fit" versus "serve" distinction is the most useful framing for
 hardware choices. A model fits when its weights, <G term="kv-cache">KV cache</G> at

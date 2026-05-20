@@ -4,11 +4,11 @@ order: 1
 title: "GPU memory math"
 one_liner: "VRAM ≈ parameters × (bits ÷ 8). The one formula that explains every model-fits-or-doesn't question."
 sources:
-  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2041331757329285589"
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
 updated: 2026-05-20
 ---
@@ -21,7 +21,7 @@ divided by eight. A 7B model at FP16 needs about 14 GB of weight memory.
 The same model at FP8 needs about 7 GB. At 4-bit, about 3.5 GB. That
 single relation, plus a handful of overhead terms, predicts whether a
 checkpoint will load on a given card. It is the prerequisite for every
-other self-hosting decision (Grootendorst, 2026).
+other self-hosting decision (Osman, 2026).
 
 The per-format heuristics fall out of the formula. FP16 weights take
 roughly two bytes per parameter, so model size in GB is approximately
@@ -40,7 +40,7 @@ Q5_K near 0.69 GB, Q4_K near 0.56 GB, Q3_K near 0.43 GB, and Q2_K near
 Q5_K is about 48 GB. These are the numbers behind the "fits in 48 GB"
 claims that float around community boards. The compression is real, but
 runtime memory will exceed the on-disk number, sometimes substantially
-(Grootendorst, 2026).
+(Osman, 2026).
 
 A worked fit table makes the point. A 7B model needs roughly 14 GB at
 FP16, 7 GB at FP8, and 4 GB at 4-bit. A 13B model needs 26 / 13 / 7 GB.
@@ -70,7 +70,7 @@ total parameter memory to fit (every expert weight must be loaded), but
 active parameters determine the per-token compute and bandwidth cost.
 DeepSeek-V3 needs 671B worth of memory to load but moves about 37B per
 token at <G term="decode">decode</G>, so it feels much faster than its size
-suggests while still requiring a small cluster to host (Grootendorst, 2026).
+suggests while still requiring a small cluster to host (Osman, 2026).
 
 <G term="gguf">GGUF</G> is not magic. The numbers above are runtime-specific. The same
 weights at the same nominal bit count can have very different memory

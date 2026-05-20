@@ -4,11 +4,11 @@ order: 4
 title: "Inference engines"
 one_liner: "The traffic cop, memory manager, scheduler, and API surface that turns hardware into served tokens."
 sources:
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
   - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
     url: "https://arxiv.org/abs/2309.06180"
-  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
 updated: 2026-05-20
 ---
@@ -22,7 +22,7 @@ on whatever accelerator is present, samples the next token, maintains
 the <G term="kv-cache">KV cache</G> across steps, and streams output back to the
 client. Everything that determines how fast a given model serves on
 given hardware (memory layout, scheduler, batching, kernel selection,
-attention implementation) lives in this layer (Grootendorst, 2026).
+attention implementation) lives in this layer (Osman, 2026).
 
 The workload has two phases with very different characteristics.
 <G term="prefill">Prefill</G> processes the entire input prompt in parallel and
@@ -47,7 +47,7 @@ and tight single-stream <G term="decode">decode</G>. Production serving engines
 concurrent requests, with <G term="paged-attention">PagedAttention</G>-style
 <G term="kv-cache">KV cache</G> management, <G term="continuous-batching">continuous batching</G>,
 and the operational features (metrics, structured output, multi-LoRA)
-that production deployments demand (Grootendorst, 2026).
+that production deployments demand (Osman, 2026).
 
 A new orchestration tier sits above engines. NVIDIA Dynamo coordinates
 fleets of inference workers across multiple nodes, doing
@@ -80,7 +80,7 @@ quality (how the engine picks which requests to batch, how it manages
 preemption and chunked prefill) determines whether the engine
 gracefully degrades under load or thrashes. Runtime overhead (Python
 hot paths, framework dispatch, CUDA Graph use) sets the floor on
-small-model latency (Grootendorst, 2026).
+small-model latency (Osman, 2026).
 
 The reason engines do not converge is that these bottlenecks pull in
 different directions. An engine optimized for single-stream interactive

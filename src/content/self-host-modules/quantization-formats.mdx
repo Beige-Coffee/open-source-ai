@@ -4,9 +4,9 @@ order: 3
 title: "Quantization formats"
 one_liner: "GGUF, GPTQ, AWQ, NF4, EXL2, EXL3, FP8, FP4, MLX, ONNX. None are interchangeable."
 sources:
-  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+  - title: "LLM Inference Engines (Part 3), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2057183854444843202"
-  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Osman"
     url: "https://x.com/TheAhmadOsman/status/2041331757329285589"
   - title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers (Frantar et al., 2022)"
     url: "https://arxiv.org/abs/2210.17323"
@@ -25,7 +25,7 @@ to a discrete grid of values, store the grid index plus a scale), but
 the file formats and the kernels that consume them are not
 interchangeable. A model quantized for one engine usually cannot be
 loaded by another without conversion, and the conversion may not be
-exact (Grootendorst, 2026).
+exact (Osman, 2026).
 
 <G term="gguf">GGUF</G> is the llama.cpp container. It packages weights, tokenizer, prompt
 template, and metadata into one file, then layers a family of

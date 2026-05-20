@@ -1,11 +1,35 @@
 ---
-import { getCollection } from "astro:content";
-import BaseLayout from "../../../layouts/BaseLayout.astro";
+export const prerender = false;
 
-const all = await getCollection("self_host_modules");
-const modules = all
-  .map((m) => ({ ...m.data, id: m.id }))
-  .sort((a, b) => a.order - b.order);
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { SELF_HOST_MODULES, phaseLabel } from "../../../lib/course/modules";
+
+const { user, supabase } = Astro.locals;
+
+type ProgressRow = { module_slug: string; phase: string };
+const progressBySlug = new Map<string, ProgressRow>();
+let totalComplete = 0;
+
+if (user && supabase) {
+  const slugs = SELF_HOST_MODULES.map((m) => m.slug);
+  const { data } = await supabase
+    .from("module_progress")
+    .select("module_slug, phase")
+    .eq("user_id", user.id)
+    .in("module_slug", slugs);
+  for (const r of data ?? []) {
+    progressBySlug.set(r.module_slug, r as ProgressRow);
+    if (r.phase === "complete") totalComplete++;
+  }
+}
+
+function progressBadge(slug: string): { label: string; cls: string } | null {
+  const p = progressBySlug.get(slug);
+  if (!p) return null;
+  if (p.phase === "complete") return { label: "complete", cls: "bg-[var(--color-status-fresh)] text-white" };
+  if (p.phase === "read") return null;
+  return { label: p.phase.replace("_", " "), cls: "bg-[var(--color-accent-soft)] text-[var(--color-accent)] border border-[var(--color-border)]" };
+}
 ---
 
 <BaseLayout
@@ -28,9 +52,9 @@ const modules = all
       Self-host the stack
     </h1>
     <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
-      A practical companion to the stack walk. The stack-walk track teaches what each layer is;
-      this one teaches how to actually run the stack on hardware you control. Read in order or
-      pick the module that answers the question you have right now.
+      A practical companion to the stack walk. Each module follows the same Read /
+      Probe / Compare / Why-Open / Synthesize structure as the main course, applied to
+      the practical "how do I actually run this?" topics.
     </p>
     <p class="text-sm text-[var(--color-text-subtle)] max-w-prose">
       Inspired by the
@@ -43,75 +67,43 @@ const modules = all
   </section>
 
   <section class="max-w-3xl mx-auto px-6 mt-8 mb-16">
-    <div id="self-host-progress-summary" class="font-mono text-xs text-[var(--color-text-subtle)] mb-3" data-total={modules.length}></div>
+    {user && (
+      <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-3">
+        {totalComplete} of {SELF_HOST_MODULES.length} complete
+      </p>
+    )}
     <ol class="border-t border-[var(--color-border)]">
       {
-        modules.map((m) => (
-          <li>
-            <a
-              href={`/learn/self-host/${m.slug}`}
-              title={m.one_liner}
-              class="self-host-module-row flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
-              data-slug={m.slug}
-            >
-              <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
-                {String(m.order).padStart(2, "0")}
-              </span>
-              <span class="flex-1">
-                <span class="block font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-0.5">
-                  {m.title}
+        SELF_HOST_MODULES.map((m) => {
+          const badge = user ? progressBadge(m.slug) : null;
+          return (
+            <li>
+              <a
+                href={`/learn/self-host/${m.slug}`}
+                title={m.one_liner}
+                class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              >
+                <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
+                  {String(m.order).padStart(2, "0")}
                 </span>
-                <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
-                  {m.one_liner}
+                <span class="flex-1">
+                  <span class="block font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-0.5">
+                    {m.title}
+                  </span>
+                  <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
+                    {m.one_liner}
+                  </span>
                 </span>
-              </span>
-              <span class="self-host-status font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] shrink-0"></span>
-            </a>
-          </li>
-        ))
+                {badge && (
+                  <span class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${badge.cls}`}>
+                    {badge.label}
+                  </span>
+                )}
+              </a>
+            </li>
+          );
+        })
       }
     </ol>
   </section>
-
-  <script>
-    // Hydrate per-module completion badges + a summary count from
-    // module_progress. Anonymous visitors see no badges (and no
-    // summary line); the section still works as a plain list.
-    import { browserSupabase } from "../../../lib/course/supabase";
-
-    (async () => {
-      const sb = browserSupabase();
-      if (!sb) return;
-      const { data: u } = await sb.auth.getUser();
-      const userId = u?.user?.id;
-      if (!userId) return;
-
-      const rows = Array.from(document.querySelectorAll<HTMLAnchorElement>(".self-host-module-row"));
-      const slugs = rows.map((r) => r.dataset.slug!).filter(Boolean);
-      const { data } = await sb.from("module_progress")
-        .select("module_slug, phase")
-        .eq("user_id", userId)
-        .in("module_slug", slugs);
-      const byModule = new Map<string, string>((data ?? []).map((r) => [r.module_slug, r.phase]));
-
-      let complete = 0;
-      for (const r of rows) {
-        const slug = r.dataset.slug!;
-        const phase = byModule.get(slug);
-        const status = r.querySelector(".self-host-status");
-        if (!status) continue;
-        if (phase === "complete") {
-          status.textContent = "✓ read";
-          status.classList.add("text-[var(--color-status-fresh)]");
-          complete++;
-        }
-      }
-
-      const summary = document.getElementById("self-host-progress-summary");
-      const total = summary?.dataset.total;
-      if (summary && total) {
-        summary.textContent = `${complete} of ${total} read`;
-      }
-    })();
-  </script>
 </BaseLayout>
