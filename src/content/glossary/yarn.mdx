@@ -22,10 +22,12 @@ proposed in the year before.
 
 The mechanism modifies the RoPE rotation frequencies in a way that
 preserves the model's training-time behavior at short contexts while
-generalizing smoothly to longer ones. The paper showed that a Llama 2
-7B model trained at 4K context could be YaRN-extended to 128K with
-roughly 0.5% of the original pretraining compute, while keeping
-perplexity stable across the new range.
+generalizing smoothly to longer ones. The paper reports that YaRN
+can extend the context window using roughly 10x fewer tokens and
+2.5x fewer training steps than prior context-extension methods,
+while keeping perplexity stable across the new range. Demonstrated
+on LLaMA models extending well beyond the original 2K training
+length.
 
 In open-weights AI, YaRN became one of the standard tools for
 context-window extension. <G term="deepseek">DeepSeek</G> V2, V2.5, V3, and R1 all use
