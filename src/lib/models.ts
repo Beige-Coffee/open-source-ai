@@ -108,6 +108,64 @@ export interface ModelSource {
   url: string;
 }
 
+/**
+ * Cost panel. Numbers are USD per million tokens at the source's
+ * canonical reference vendor / provider. `as_of` carries the
+ * snapshot date so readers know when the number was captured;
+ * `source` is the canonical Artificial Analysis (or lab API) page
+ * we read it from. We never infer or interpolate: if the lab does
+ * not publish a number and Artificial Analysis does not list one,
+ * the field stays undefined and the UI renders "not available".
+ */
+export interface ModelCost {
+  input_per_mtok_usd?: number;
+  output_per_mtok_usd?: number;
+  /** Free-form: "Together AI", "Anthropic API", "DeepSeek API", or
+   *  "Artificial Analysis median across providers". */
+  vendor?: string;
+  as_of: string;
+  /** Artificial Analysis canonical URL or lab pricing page. */
+  source: string;
+  /** When the source is Artificial Analysis specifically (vs. a lab
+   *  pricing page), the UI surfaces a clear "via Artificial Analysis"
+   *  attribution. Set true to opt into that styling. */
+  via_artificial_analysis?: boolean;
+}
+
+/**
+ * Speed panel. tokens_per_sec_output is the decode throughput;
+ * ttft_ms is the time-to-first-token at the reference vendor.
+ * Same `as_of` + `source` discipline as ModelCost.
+ */
+export interface ModelSpeed {
+  tokens_per_sec_output?: number;
+  ttft_ms?: number;
+  vendor?: string;
+  as_of: string;
+  source: string;
+  via_artificial_analysis?: boolean;
+}
+
+/** Lineage relationships within and across families. */
+export interface ModelLineage {
+  /** Slug of the model this checkpoint was derived from
+   *  (continued pretrain, fine-tune target, distillation teacher). */
+  parent?: string;
+  /** Slugs of models derived from this checkpoint. */
+  children?: string[];
+  /** Free-form note on the relationship (e.g. "Distilled R1 reasoning
+   *  traces into the dense Llama base"). */
+  note?: string;
+}
+
+/** Single sourced limitation observation. */
+export interface ModelLimitation {
+  text: string;
+  /** URL backing the observation (paper section, model card caveat,
+   *  evaluation thread, GitHub issue). */
+  source: string;
+}
+
 export interface Model {
   /** Stable canonical identifier. Lowercase, hyphenated, includes
    *  size or version where ambiguous (e.g. "llama-3-1-70b-instruct"). */
@@ -208,6 +266,25 @@ export interface Model {
   /** Curated reception quotes; 0-4 entries. Each is a factual claim
    *  about who said what, ledger-tracked. */
   reception?: ReceptionQuote[];
+
+  /** Cost per million tokens at a reference vendor. Sourced. */
+  cost?: ModelCost;
+  /** Decode throughput + TTFT at a reference vendor. Sourced. */
+  speed?: ModelSpeed;
+  /** Lineage parent / children within the catalog. */
+  lineage?: ModelLineage;
+  /** Short labels for the kinds of work this checkpoint is a strong
+   *  fit for (e.g. "general chat", "code agent", "math reasoning").
+   *  Subject to framing-lane audit. */
+  recommended_use_cases?: string[];
+  /** Sourced limitation observations. Each entry must carry a URL
+   *  backing the claim; otherwise the linter rejects it. */
+  known_limitations?: ModelLimitation[];
+  /** Optional 200-400 word "Why people cared at release" prose.
+   *  Renders below the architecture diagram on the detail page. Every
+   *  factual claim inside must be traceable to `sources` (or to a
+   *  benchmark/timeline field that has its own source). */
+  long_form?: string;
 
   /** Provenance for every numeric field that isn't a typed schema
    *  value. Linter expects this to be non-empty for any entry whose

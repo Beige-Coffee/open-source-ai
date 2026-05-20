@@ -6,19 +6,15 @@
 # release-date order; the build pipeline does the sorting.
 
 models:
-  # ---------------------------------------------------------------
-  # Llama family (Meta) - the open-weights anchor since Feb 2023.
-  # ---------------------------------------------------------------
-
   - slug: llama-2-70b-chat
     display_name: Llama 2 70B Chat
     family: llama
     developer: Meta
     developer_country: US
     type: chat
-    released_date: 2023-07-18
-    weights_released_date: 2023-07-18
-    paper_date: 2023-07-19
+    released_date: "2023-07-18"
+    weights_released_date: "2023-07-18"
+    paper_date: "2023-07-19"
     openness: source-available
     license: Llama 2 Community License
     osi_approved: false
@@ -26,42 +22,80 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70_000_000_000
-    params_active: 70_000_000_000
+    params_total: 70000000000
+    params_active: 70000000000
     context_window: 4096
     attention_variant: gqa
     position_encoding: rope
     tokenizer: llama2
     layers_count: 80
     vocab_size: 32000
-    pretraining_tokens: 2_000_000_000_000
-    post_training: [sft, rlhf]
+    pretraining_tokens: 2000000000000
+    post_training:
+      - sft
+      - rlhf
     training_hardware: A100
     benchmarks:
-      mmlu: { score: 68.9, as_of: 2023-07-19, source: "https://arxiv.org/abs/2307.09288" }
-      humaneval: { score: 29.9, as_of: 2023-07-19, source: "https://arxiv.org/abs/2307.09288" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq]
-    runtimes_supporting: [vllm, llama-cpp, ollama, tgi]
+      mmlu:
+        score: 68.9
+        as_of: "2023-07-19"
+        source: https://arxiv.org/abs/2307.09288
+      humaneval:
+        score: 29.9
+        as_of: "2023-07-19"
+        source: https://arxiv.org/abs/2307.09288
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - tgi
     release_context: |
       The first Meta-blessed commercial-use open-weights release. Llama
       2's community license permitted commercial use under a 700M-MAU
       cap, opening the door to a year of derivatives that defined what
       open-weights deployment looked like.
-    notable_innovations: ["Commercial-use community license", "GQA on the 70B variant"]
+    notable_innovations:
+      - Commercial-use community license
+      - GQA on the 70B variant
     sources:
-      - title: "Llama 2 paper (Touvron et al., Meta, 2023)"
-        url: "https://arxiv.org/abs/2307.09288"
-      - title: "Llama 2 announcement (Meta AI, Jul 18 2023)"
-        url: "https://about.fb.com/news/2023/07/llama-2/"
-
+      - title: Llama 2 paper (Touvron et al., Meta, 2023)
+        url: https://arxiv.org/abs/2307.09288
+      - title: Llama 2 announcement (Meta AI, Jul 18 2023)
+        url: https://about.fb.com/news/2023/07/llama-2/
+    cost:
+      input_per_mtok_usd: 0.9
+      output_per_mtok_usd: 0.9
+      vendor: Together AI (legacy)
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 70
+      vendor: Together AI (legacy)
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - llama-3-70b-instruct
+      note: Architecture base for the Llama 3 family.
+    recommended_use_cases:
+      - historical baseline
+      - permissive license under 700M MAU cap
   - slug: llama-3-8b-instruct
     display_name: Llama 3 8B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-04-18
-    weights_released_date: 2024-04-18
+    released_date: "2024-04-18"
+    weights_released_date: "2024-04-18"
     openness: source-available
     license: Llama 3 Community License
     osi_approved: false
@@ -69,38 +103,81 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 8_030_000_000
-    params_active: 8_030_000_000
+    params_total: 8030000000
+    params_active: 8030000000
     context_window: 8192
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_000_000_000_000
-    post_training: [sft, dpo, rejection-sampling]
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - dpo
+      - rejection-sampling
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 68.4, as_of: 2024-04-18, source: "https://ai.meta.com/blog/meta-llama-3/" }
-      humaneval: { score: 62.2, as_of: 2024-04-18, source: "https://ai.meta.com/blog/meta-llama-3/" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, fp16, awq, gptq]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 68.4
+        as_of: "2024-04-18"
+        source: https://ai.meta.com/blog/meta-llama-3/
+      humaneval:
+        score: 62.2
+        as_of: "2024-04-18"
+        source: https://ai.meta.com/blog/meta-llama-3/
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - fp16
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       The 15T-token pretrain and a 4x larger 128K-token vocab were the
       headline changes. The 8B class became the new local-deployment
       default, displacing Mistral 7B.
-    notable_innovations: ["15T-token pretrain", "128K vocab"]
+    notable_innovations:
+      - 15T-token pretrain
+      - 128K vocab
     sources:
-      - title: "Llama 3 release announcement (Meta AI, Apr 18 2024)"
-        url: "https://ai.meta.com/blog/meta-llama-3/"
-
+      - title: Llama 3 release announcement (Meta AI, Apr 18 2024)
+        url: https://ai.meta.com/blog/meta-llama-3/
+    cost:
+      input_per_mtok_usd: 0.18
+      output_per_mtok_usd: 0.18
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 165
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-2-70b-chat
+      children:
+        - llama-3-1-8b-instruct
+      note: Same architecture, 15T-token pretrain replaces Llama 2's 2T.
+    recommended_use_cases:
+      - local deployment
+      - edge inference
+      - fine-tuning base
   - slug: llama-3-70b-instruct
     display_name: Llama 3 70B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-04-18
-    weights_released_date: 2024-04-18
+    released_date: "2024-04-18"
+    weights_released_date: "2024-04-18"
     openness: source-available
     license: Llama 3 Community License
     osi_approved: false
@@ -108,40 +185,85 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70_600_000_000
-    params_active: 70_600_000_000
+    params_total: 70600000000
+    params_active: 70600000000
     context_window: 8192
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_000_000_000_000
-    post_training: [sft, dpo, rejection-sampling]
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - dpo
+      - rejection-sampling
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 82.0, as_of: 2024-04-18, source: "https://ai.meta.com/blog/meta-llama-3/" }
-      humaneval: { score: 81.7, as_of: 2024-04-18, source: "https://ai.meta.com/blog/meta-llama-3/" }
-      gpqa_diamond: { score: 39.5, as_of: 2024-04-18, source: "https://ai.meta.com/blog/meta-llama-3/" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq, fp8]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 82
+        as_of: "2024-04-18"
+        source: https://ai.meta.com/blog/meta-llama-3/
+      humaneval:
+        score: 81.7
+        as_of: "2024-04-18"
+        source: https://ai.meta.com/blog/meta-llama-3/
+      gpqa_diamond:
+        score: 39.5
+        as_of: "2024-04-18"
+        source: https://ai.meta.com/blog/meta-llama-3/
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+      - fp8
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       The 70B class became the open-weights checkpoint people compared
       to GPT-4. It closed most of the gap on reasoning benchmarks
       against the closed frontier at the time.
-    notable_innovations: ["First open-weights model competitive with GPT-4 on MMLU"]
+    notable_innovations:
+      - First open-weights model competitive with GPT-4 on MMLU
     sources:
-      - title: "Llama 3 release announcement (Meta AI, Apr 18 2024)"
-        url: "https://ai.meta.com/blog/meta-llama-3/"
-
+      - title: Llama 3 release announcement (Meta AI, Apr 18 2024)
+        url: https://ai.meta.com/blog/meta-llama-3/
+    cost:
+      input_per_mtok_usd: 0.88
+      output_per_mtok_usd: 0.88
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 75
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-2-70b-chat
+      children:
+        - llama-3-1-70b-instruct
+      note: Continued the 70B-class through Llama 3.1 and 3.3.
+    recommended_use_cases:
+      - general chat
+      - instruction following
+      - fine-tuning base
   - slug: llama-3-1-8b-instruct
     display_name: Llama 3.1 8B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-07-23
-    weights_released_date: 2024-07-23
-    paper_date: 2024-07-23
+    released_date: "2024-07-23"
+    weights_released_date: "2024-07-23"
+    paper_date: "2024-07-23"
     openness: source-available
     license: Llama 3.1 Community License
     osi_approved: false
@@ -149,42 +271,86 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 8_030_000_000
-    params_active: 8_030_000_000
+    params_total: 8030000000
+    params_active: 8030000000
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_000_000_000_000
-    post_training: [sft, dpo]
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - dpo
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 73.0, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      humaneval: { score: 72.6, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      gpqa_diamond: { score: 30.4, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, fp16, awq, gptq, fp8]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 73
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      humaneval:
+        score: 72.6
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      gpqa_diamond:
+        score: 30.4
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - fp16
+      - awq
+      - gptq
+      - fp8
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       Extended the 3 series to 128K context via continued pretraining
       and tool-use post-training. The 405B sibling launched the same
       day was the first open-weights model at GPT-4-class scale.
-    notable_innovations: ["128K context via continued pretraining", "Tool-use post-training"]
+    notable_innovations:
+      - 128K context via continued pretraining
+      - Tool-use post-training
     sources:
-      - title: "Llama 3.1 release announcement (Meta AI, Jul 23 2024)"
-        url: "https://ai.meta.com/blog/meta-llama-3-1/"
-      - title: "Llama 3 Herd of Models paper"
-        url: "https://arxiv.org/abs/2407.21783"
-
+      - title: Llama 3.1 release announcement (Meta AI, Jul 23 2024)
+        url: https://ai.meta.com/blog/meta-llama-3-1/
+      - title: Llama 3 Herd of Models paper
+        url: https://arxiv.org/abs/2407.21783
+    cost:
+      input_per_mtok_usd: 0.18
+      output_per_mtok_usd: 0.18
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 175
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-3-8b-instruct
+      note: 128K context via continued pretraining.
+    recommended_use_cases:
+      - long-context tasks at the 8B class
+      - RAG
+      - tool use
   - slug: llama-3-1-70b-instruct
     display_name: Llama 3.1 70B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-07-23
-    weights_released_date: 2024-07-23
-    paper_date: 2024-07-23
+    released_date: "2024-07-23"
+    weights_released_date: "2024-07-23"
+    paper_date: "2024-07-23"
     openness: source-available
     license: Llama 3.1 Community License
     osi_approved: false
@@ -192,42 +358,86 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70_600_000_000
-    params_active: 70_600_000_000
+    params_total: 70600000000
+    params_active: 70600000000
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_000_000_000_000
-    post_training: [sft, dpo]
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - dpo
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 86.0, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      humaneval: { score: 80.5, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      gpqa_diamond: { score: 46.7, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq, fp8]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 86
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      humaneval:
+        score: 80.5
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      gpqa_diamond:
+        score: 46.7
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+      - fp8
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       The 70B variant retained competitive standing on MMLU vs. closed
       frontier at the time and became a common deployment target for
       organizations wanting on-prem capacity around 70B-class quality.
-    notable_innovations: ["128K context"]
+    notable_innovations:
+      - 128K context
     sources:
-      - title: "Llama 3.1 release announcement (Meta AI, Jul 23 2024)"
-        url: "https://ai.meta.com/blog/meta-llama-3-1/"
-      - title: "Llama 3 Herd of Models paper"
-        url: "https://arxiv.org/abs/2407.21783"
-
+      - title: Llama 3.1 release announcement (Meta AI, Jul 23 2024)
+        url: https://ai.meta.com/blog/meta-llama-3-1/
+      - title: Llama 3 Herd of Models paper
+        url: https://arxiv.org/abs/2407.21783
+    cost:
+      input_per_mtok_usd: 0.88
+      output_per_mtok_usd: 0.88
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 78
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-3-70b-instruct
+      children:
+        - llama-3-3-70b-instruct
+      note: Added 128K context and tool-use post-training.
+    recommended_use_cases:
+      - general chat
+      - tool use
+      - long-context
   - slug: llama-3-1-405b-instruct
     display_name: Llama 3.1 405B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-07-23
-    weights_released_date: 2024-07-23
-    paper_date: 2024-07-23
+    released_date: "2024-07-23"
+    weights_released_date: "2024-07-23"
+    paper_date: "2024-07-23"
     openness: source-available
     license: Llama 3.1 Community License
     osi_approved: false
@@ -235,41 +445,99 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 405_000_000_000
-    params_active: 405_000_000_000
+    params_total: 405000000000
+    params_active: 405000000000
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_600_000_000_000
-    post_training: [sft, dpo, rejection-sampling]
+    pretraining_tokens: 15600000000000
+    post_training:
+      - sft
+      - dpo
+      - rejection-sampling
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 88.6, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      humaneval: { score: 89.0, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-      gpqa_diamond: { score: 51.1, as_of: 2024-07-23, source: "https://ai.meta.com/blog/meta-llama-3-1/" }
-    quantizations_available: [fp8, awq, gptq, q4_k_m]
-    runtimes_supporting: [vllm, sglang, tgi]
+      mmlu:
+        score: 88.6
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      humaneval:
+        score: 89
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      gpqa_diamond:
+        score: 51.1
+        as_of: "2024-07-23"
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+    quantizations_available:
+      - fp8
+      - awq
+      - gptq
+      - q4_k_m
+    runtimes_supporting:
+      - vllm
+      - sglang
+      - tgi
     release_context: |
       The first open-weights model trained at GPT-4-comparable scale.
       Pretraining used 16K H100 GPUs and a published tech report; the
       release reset expectations for how open the frontier could be.
-    notable_innovations: ["First open-weights model at 400B+ scale", "Detailed published tech report"]
+    notable_innovations:
+      - First open-weights model at 400B+ scale
+      - Detailed published tech report
     sources:
-      - title: "Llama 3.1 release announcement (Meta AI, Jul 23 2024)"
-        url: "https://ai.meta.com/blog/meta-llama-3-1/"
-      - title: "Llama 3 Herd of Models paper"
-        url: "https://arxiv.org/abs/2407.21783"
-
+      - title: Llama 3.1 release announcement (Meta AI, Jul 23 2024)
+        url: https://ai.meta.com/blog/meta-llama-3-1/
+      - title: Llama 3 Herd of Models paper
+        url: https://arxiv.org/abs/2407.21783
+    cost:
+      input_per_mtok_usd: 3.5
+      output_per_mtok_usd: 3.5
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 32
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: Largest dense Llama; trained with 16K H100s on the same data mix as the 8B and 70B.
+    recommended_use_cases:
+      - frontier-quality on-prem deployment
+      - synthetic-data generation
+      - teacher for distillation
+    long_form: >-
+      Llama 3.1 405B is the first openly-released model trained at GPT-4-class scale. The release was paired with a
+      detailed 92-page technical report covering pretraining recipe, post-training, and infrastructure (including the
+      failure-rate analysis on Meta's 16,384-H100 cluster, which became a reference point for anyone planning frontier
+      training). On benchmarks it lands within reach of contemporaneous closed frontier models on MMLU and reasoning
+      suites, which made it the first time researchers had access to a 400B-class checkpoint's weights for ablation
+      studies and distillation experiments. Its practical deployment story is more constrained: at 810 GB in fp16,
+      single-machine inference requires either multi-GPU sharding or fp8 quantization, and even at fp8 it pushes against
+      the limits of single 8xH100 nodes. That cost-and-complexity ceiling is why the smaller 70B-class checkpoints (3.1
+      70B and the post-training-refreshed 3.3 70B) capture more production usage. The 405B's lasting impact is the
+      published recipe and the synthetic data the larger checkpoint generated for post-training the 70B and 8B siblings,
+      a pattern subsequent open-weights releases have copied.
+    known_limitations:
+      - text: 405B parameters at fp16 require 810 GB of VRAM; serving at fp8 still pushes single-node limits.
+        source: https://arxiv.org/abs/2407.21783
+      - text: >-
+          Llama Community License's 700M-MAU clause makes the largest deployers ineligible without a separate Meta
+          agreement.
+        source: https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE
   - slug: llama-3-3-70b-instruct
     display_name: Llama 3.3 70B Instruct
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2024-12-06
-    weights_released_date: 2024-12-06
+    released_date: "2024-12-06"
+    weights_released_date: "2024-12-06"
     openness: source-available
     license: Llama 3.3 Community License
     osi_approved: false
@@ -277,39 +545,95 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70_600_000_000
-    params_active: 70_600_000_000
+    params_total: 70600000000
+    params_active: 70600000000
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama3
     vocab_size: 128256
-    pretraining_tokens: 15_000_000_000_000
-    post_training: [sft, dpo, rejection-sampling]
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - dpo
+      - rejection-sampling
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 86.0, as_of: 2024-12-06, source: "https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md" }
-      humaneval: { score: 88.4, as_of: 2024-12-06, source: "https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md" }
-      gpqa_diamond: { score: 50.5, as_of: 2024-12-06, source: "https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq, fp8]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 86
+        as_of: "2024-12-06"
+        source: https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md
+      humaneval:
+        score: 88.4
+        as_of: "2024-12-06"
+        source: https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md
+      gpqa_diamond:
+        score: 50.5
+        as_of: "2024-12-06"
+        source: https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+      - fp8
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       An incremental post-training refresh of the 70B class that
       approached 405B-class quality on several benchmarks without the
       deployment cost. The last dense Llama before Llama 4 went MoE.
-    notable_innovations: ["Approached 405B-class quality at 70B compute cost"]
+    notable_innovations:
+      - Approached 405B-class quality at 70B compute cost
     sources:
-      - title: "Llama 3.3 model card (Meta, Dec 6 2024)"
-        url: "https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md"
-
+      - title: Llama 3.3 model card (Meta, Dec 6 2024)
+        url: https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md
+    cost:
+      input_per_mtok_usd: 0.88
+      output_per_mtok_usd: 0.88
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 80
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-3-1-70b-instruct
+      note: Same base; post-training refresh closed much of the 70B-vs-405B gap.
+    recommended_use_cases:
+      - mid-tier production deployment
+      - code assistance
+      - general chat at 70B cost
+    long_form: >-
+      Llama 3.3 70B is what happens when a lab spends six months on post-training the same base checkpoint. Meta did not
+      release a new pretrain in December 2024; they released a re-trained 70B that reached benchmark scores within range
+      of the 405B sibling on MMLU and HumanEval, at a fraction of the deployment cost. The recipe (published only in the
+      model card, not a paper) emphasized synthetic data from the 405B teacher, additional preference data, and refined
+      rejection sampling. The release lands at an interesting moment for the open-weights story: 70B-class checkpoints
+      from Meta, Qwen, DeepSeek, and Mistral are now close enough on most benchmarks that license, vendor support, and
+      inference economics matter more than capability deltas. Llama 3.3 70B became the default 70B-class checkpoint
+      through 2025 for most production workloads where Apache-2.0 was not a hard requirement. It is also the final dense
+      Llama: the Llama 4 family that followed in April 2025 went MoE, following DeepSeek V3 and Qwen 3.
+    known_limitations:
+      - text: Still under Llama Community License, not OSI-approved.
+        source: https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/LICENSE
   - slug: llama-4-scout
     display_name: Llama 4 Scout
     family: llama
     developer: Meta
     developer_country: US
     type: instruct
-    released_date: 2025-04-05
-    weights_released_date: 2025-04-05
+    released_date: "2025-04-05"
+    weights_released_date: "2025-04-05"
     openness: source-available
     license: Llama 4 Community License
     osi_approved: false
@@ -317,45 +641,92 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 109_000_000_000
-    params_active: 17_000_000_000
+    params_total: 109000000000
+    params_active: 17000000000
     experts: 16
     experts_active: 1
-    context_window: 10_485_760
+    context_window: 10485760
     attention_variant: gqa
     position_encoding: rope-llama3
     tokenizer: llama4
-    pretraining_tokens: 40_000_000_000_000
-    post_training: [sft, dpo, rejection-sampling]
+    pretraining_tokens: 40000000000000
+    post_training:
+      - sft
+      - dpo
+      - rejection-sampling
     training_hardware: H100
     benchmarks:
-      mmlu_pro: { score: 74.3, as_of: 2025-04-05, source: "https://ai.meta.com/blog/llama-4-multimodal-intelligence/" }
-      gpqa_diamond: { score: 57.2, as_of: 2025-04-05, source: "https://ai.meta.com/blog/llama-4-multimodal-intelligence/" }
-    quantizations_available: [fp8, awq, gptq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu_pro:
+        score: 74.3
+        as_of: "2025-04-05"
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+      gpqa_diamond:
+        score: 57.2
+        as_of: "2025-04-05"
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+    quantizations_available:
+      - fp8
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       Llama's first MoE family. Scout's headline was a 10M-token
       context window and natively multimodal vision-language input.
       The MoE pivot followed DeepSeek V3 in establishing MoE as
       mainstream for open-weights frontier work.
-    notable_innovations: ["10M-token context window", "Native multimodal input", "First Llama MoE"]
+    notable_innovations:
+      - 10M-token context window
+      - Native multimodal input
+      - First Llama MoE
     sources:
-      - title: "Llama 4 announcement (Meta AI, Apr 5 2025)"
-        url: "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
-
-  # ---------------------------------------------------------------
-  # Mistral family (Mistral AI) - the European open-weights lab.
-  # ---------------------------------------------------------------
-
+      - title: Llama 4 announcement (Meta AI, Apr 5 2025)
+        url: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+    cost:
+      input_per_mtok_usd: 0.2
+      output_per_mtok_usd: 0.2
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 130
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: llama-3-3-70b-instruct
+      note: First Llama MoE; same Community License lineage.
+    recommended_use_cases:
+      - long-context tasks
+      - multimodal input
+      - frontier-class inference at MoE economics
+    long_form: >-
+      Llama 4 Scout is Meta's first MoE release, and the public reception was mixed enough to be a story in itself. The
+      headline features were a 10M-token context window (the longest in any frontier model at release) and native
+      multimodal input, both delivered alongside an architecture pivot that followed DeepSeek V3 in establishing MoE as
+      mainstream for open-weights frontier work. Independent evaluators noted that the announced benchmark scores were
+      not consistently reproducible at deployment, that the 10M-token context was achievable in theory but degraded at
+      lengths well below the stated maximum, and that the LMArena ranking the launch material featured was for a
+      chat-tuned variant not available as weights. The release itself remains historically significant as the moment
+      Llama abandoned dense scaling, but the immediate developer narrative was that DeepSeek V3 and Qwen 3 had executed
+      the open-weights MoE story more cleanly five months earlier. Llama 4 Scout's lasting value depends on whether the
+      Maverick and Behemoth siblings shipped on the same architecture deliver on the long-context and multimodal
+      promises in production deployment.
+    known_limitations:
+      - text: 10M-token context window degrades at lengths well below the stated maximum in independent evaluations.
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
   - slug: mistral-7b-v0-1
     display_name: Mistral 7B v0.1
     family: mistral
     developer: Mistral AI
     developer_country: FR
     type: base
-    released_date: 2023-09-27
-    weights_released_date: 2023-09-27
-    paper_date: 2023-10-10
+    released_date: "2023-09-27"
+    weights_released_date: "2023-09-27"
+    paper_date: "2023-10-10"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -363,8 +734,8 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 7_240_000_000
-    params_active: 7_240_000_000
+    params_total: 7240000000
+    params_active: 7240000000
     context_window: 8192
     attention_variant: hybrid-gqa-sliding
     position_encoding: rope
@@ -373,30 +744,67 @@ models:
     layers_count: 32
     post_training: []
     benchmarks:
-      mmlu: { score: 60.1, as_of: 2023-10-10, source: "https://arxiv.org/abs/2310.06825" }
-      humaneval: { score: 30.5, as_of: 2023-10-10, source: "https://arxiv.org/abs/2310.06825" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq]
-    runtimes_supporting: [vllm, llama-cpp, ollama, tgi]
+      mmlu:
+        score: 60.1
+        as_of: "2023-10-10"
+        source: https://arxiv.org/abs/2310.06825
+      humaneval:
+        score: 30.5
+        as_of: "2023-10-10"
+        source: https://arxiv.org/abs/2310.06825
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - tgi
     release_context: |
       The first open-weights model to beat Llama 2 13B at 7B scale
       using sliding-window attention. Mistral's Apache-2.0 release
       reset what "open" meant after Llama 2's community license.
-    notable_innovations: ["Sliding-window + GQA hybrid attention", "Apache-2.0 release"]
+    notable_innovations:
+      - Sliding-window + GQA hybrid attention
+      - Apache-2.0 release
     sources:
-      - title: "Mistral 7B paper (Jiang et al., 2023)"
-        url: "https://arxiv.org/abs/2310.06825"
-      - title: "Mistral 7B announcement (Sep 27 2023)"
-        url: "https://mistral.ai/news/announcing-mistral-7b/"
-
+      - title: Mistral 7B paper (Jiang et al., 2023)
+        url: https://arxiv.org/abs/2310.06825
+      - title: Mistral 7B announcement (Sep 27 2023)
+        url: https://mistral.ai/news/announcing-mistral-7b/
+    cost:
+      input_per_mtok_usd: 0.2
+      output_per_mtok_usd: 0.2
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 175
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - mixtral-8x7b-instruct-v0-1
+      note: Architecture base for the Mixtral MoE.
+    recommended_use_cases:
+      - local deployment
+      - Apache-2.0 reference
+      - fine-tuning base
   - slug: mixtral-8x7b-instruct-v0-1
     display_name: Mixtral 8x7B Instruct v0.1
     family: mistral
     developer: Mistral AI
     developer_country: FR
     type: instruct
-    released_date: 2023-12-11
-    weights_released_date: 2023-12-11
-    paper_date: 2024-01-08
+    released_date: "2023-12-11"
+    weights_released_date: "2023-12-11"
+    paper_date: "2024-01-08"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -404,8 +812,8 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 46_700_000_000
-    params_active: 12_900_000_000
+    params_total: 46700000000
+    params_active: 12900000000
     experts: 8
     experts_active: 2
     context_window: 32768
@@ -413,37 +821,84 @@ models:
     position_encoding: rope
     tokenizer: mistral
     vocab_size: 32000
-    post_training: [sft, dpo]
+    post_training:
+      - sft
+      - dpo
     benchmarks:
-      mmlu: { score: 70.6, as_of: 2024-01-08, source: "https://arxiv.org/abs/2401.04088" }
-      humaneval: { score: 40.2, as_of: 2024-01-08, source: "https://arxiv.org/abs/2401.04088" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 70.6
+        as_of: "2024-01-08"
+        source: https://arxiv.org/abs/2401.04088
+      humaneval:
+        score: 40.2
+        as_of: "2024-01-08"
+        source: https://arxiv.org/abs/2401.04088
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       The first widely-used open-weights MoE, with 8 experts and 2
       active per token. Quality matched dense 70B-class models at
       ~13B active parameter inference cost.
-    notable_innovations: ["First widely-deployed open-weights MoE", "Apache-2.0"]
+    notable_innovations:
+      - First widely-deployed open-weights MoE
+      - Apache-2.0
     sources:
-      - title: "Mixtral of Experts paper (Jiang et al., 2024)"
-        url: "https://arxiv.org/abs/2401.04088"
-      - title: "Mixtral 8x7B announcement (Dec 11 2023)"
-        url: "https://mistral.ai/news/mixtral-of-experts/"
-
-  # ---------------------------------------------------------------
-  # Qwen family (Alibaba) - aggressive Chinese open-weights release
-  # cadence under Apache-2.0 for the major sizes.
-  # ---------------------------------------------------------------
-
+      - title: Mixtral of Experts paper (Jiang et al., 2024)
+        url: https://arxiv.org/abs/2401.04088
+      - title: Mixtral 8x7B announcement (Dec 11 2023)
+        url: https://mistral.ai/news/mixtral-of-experts/
+    cost:
+      input_per_mtok_usd: 0.6
+      output_per_mtok_usd: 0.6
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 115
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: mistral-7b-v0-1
+      note: Eight Mistral 7B experts under one router; 2 active per token.
+    recommended_use_cases:
+      - MoE deployment reference
+      - dense 70B-class quality at 13B active cost
+    long_form: >-
+      Mixtral 8x7B was the first MoE release that the broader open-weights community could actually deploy. Earlier MoE
+      work (Switch Transformer, GLaM) had stayed inside Google; Mixtral arrived as Apache-2.0 weights and a paper with
+      enough detail for production inference engines (vLLM, llama.cpp, TGI) to add MoE support within weeks. The
+      architecture is eight Mistral 7B experts behind a router that activates two per token, giving 47B total parameters
+      but only ~13B active per forward pass. The economic story that mattered was that this configuration matched or
+      beat dense 70B-class models on most benchmarks at substantially lower inference cost. Mixtral established the
+      pattern that DeepSeek V3, Qwen 3, and eventually Llama 4 all followed: when a lab cares about cost-per-token at
+      deployment scale more than parameter-count bragging rights, MoE is the obvious choice. The Apache-2.0 license also
+      mattered because Mistral's later flagship releases moved progressively toward API-only and source-available terms,
+      making 8x7B the last clean reference point for a fully-open MoE from a European lab.
+    known_limitations:
+      - text: 47B total parameters require enough memory to hold all eight experts even though only 2 are active per token.
+        source: https://arxiv.org/abs/2401.04088
   - slug: qwen2-5-72b-instruct
     display_name: Qwen 2.5 72B Instruct
     family: qwen
     developer: Alibaba
     developer_country: CN
     type: instruct
-    released_date: 2024-09-19
-    weights_released_date: 2024-09-19
-    paper_date: 2024-12-19
+    released_date: "2024-09-19"
+    weights_released_date: "2024-09-19"
+    paper_date: "2024-12-19"
     openness: open
     license: Qwen License (Apache-2.0 for 72B variant requires agreement)
     osi_approved: false
@@ -451,41 +906,85 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 72_700_000_000
-    params_active: 72_700_000_000
+    params_total: 72700000000
+    params_active: 72700000000
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope
     tokenizer: qwen
     vocab_size: 152064
-    pretraining_tokens: 18_000_000_000_000
-    post_training: [sft, dpo]
+    pretraining_tokens: 18000000000000
+    post_training:
+      - sft
+      - dpo
     benchmarks:
-      mmlu: { score: 86.1, as_of: 2024-09-19, source: "https://qwenlm.github.io/blog/qwen2.5/" }
-      gpqa_diamond: { score: 49.0, as_of: 2024-09-19, source: "https://qwenlm.github.io/blog/qwen2.5/" }
-      humaneval: { score: 86.6, as_of: 2024-09-19, source: "https://qwenlm.github.io/blog/qwen2.5/" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq, fp8]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang, tgi]
+      mmlu:
+        score: 86.1
+        as_of: "2024-09-19"
+        source: https://qwenlm.github.io/blog/qwen2.5/
+      gpqa_diamond:
+        score: 49
+        as_of: "2024-09-19"
+        source: https://qwenlm.github.io/blog/qwen2.5/
+      humaneval:
+        score: 86.6
+        as_of: "2024-09-19"
+        source: https://qwenlm.github.io/blog/qwen2.5/
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+      - fp8
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
+      - tgi
     release_context: |
       The 72B class set new open-weights leadership across most
       reasoning benchmarks at release, with an 18T-token pretrain.
       Released alongside coder, math, and 0.5B/1.5B/3B/7B/14B/32B
       sibling sizes the same day.
-    notable_innovations: ["18T-token pretrain", "Full size ladder from 0.5B to 72B"]
+    notable_innovations:
+      - 18T-token pretrain
+      - Full size ladder from 0.5B to 72B
     sources:
-      - title: "Qwen 2.5 release blog (Sep 19 2024)"
-        url: "https://qwenlm.github.io/blog/qwen2.5/"
-      - title: "Qwen2.5 technical report"
-        url: "https://arxiv.org/abs/2412.15115"
-
+      - title: Qwen 2.5 release blog (Sep 19 2024)
+        url: https://qwenlm.github.io/blog/qwen2.5/
+      - title: Qwen2.5 technical report
+        url: https://arxiv.org/abs/2412.15115
+    cost:
+      input_per_mtok_usd: 1.2
+      output_per_mtok_usd: 1.2
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 50
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - qwen3-235b-a22b-instruct
+      note: Final 72B-class dense Qwen before the Qwen 3 MoE pivot.
+    recommended_use_cases:
+      - multilingual deployment
+      - long-context retrieval
+      - fine-tuning base
   - slug: qwen3-235b-a22b-instruct
     display_name: Qwen 3 235B A22B Instruct
     family: qwen
     developer: Alibaba
     developer_country: CN
     type: instruct
-    released_date: 2025-04-28
-    weights_released_date: 2025-04-28
+    released_date: "2025-04-28"
+    weights_released_date: "2025-04-28"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -493,45 +992,97 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 235_000_000_000
-    params_active: 22_000_000_000
+    params_total: 235000000000
+    params_active: 22000000000
     experts: 128
     experts_active: 8
     context_window: 131072
     attention_variant: gqa
     position_encoding: rope
     tokenizer: qwen
-    pretraining_tokens: 36_000_000_000_000
-    post_training: [sft, dpo, grpo]
+    pretraining_tokens: 36000000000000
+    post_training:
+      - sft
+      - dpo
+      - grpo
     benchmarks:
-      mmlu_pro: { score: 83.0, as_of: 2025-04-28, source: "https://qwenlm.github.io/blog/qwen3/" }
-      gpqa_diamond: { score: 71.1, as_of: 2025-04-28, source: "https://qwenlm.github.io/blog/qwen3/" }
-      aime_2024: { score: 85.7, as_of: 2025-04-28, source: "https://qwenlm.github.io/blog/qwen3/" }
-    quantizations_available: [fp8, awq, gptq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu_pro:
+        score: 83
+        as_of: "2025-04-28"
+        source: https://qwenlm.github.io/blog/qwen3/
+      gpqa_diamond:
+        score: 71.1
+        as_of: "2025-04-28"
+        source: https://qwenlm.github.io/blog/qwen3/
+      aime_2024:
+        score: 85.7
+        as_of: "2025-04-28"
+        source: https://qwenlm.github.io/blog/qwen3/
+    quantizations_available:
+      - fp8
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       Qwen's first major MoE release, with a hybrid thinking-vs-
       non-thinking inference mode controllable per request. Apache
       2.0 across the size ladder reset the openness baseline among
       Chinese labs.
-    notable_innovations: ["Hybrid thinking mode toggle", "36T-token pretrain", "Apache 2.0 across all sizes"]
+    notable_innovations:
+      - Hybrid thinking mode toggle
+      - 36T-token pretrain
+      - Apache 2.0 across all sizes
     sources:
-      - title: "Qwen 3 release blog (Apr 28 2025)"
-        url: "https://qwenlm.github.io/blog/qwen3/"
-
-  # ---------------------------------------------------------------
-  # DeepSeek family - reset the cost-quality frontier with V3 / R1.
-  # ---------------------------------------------------------------
-
+      - title: Qwen 3 release blog (Apr 28 2025)
+        url: https://qwenlm.github.io/blog/qwen3/
+    cost:
+      input_per_mtok_usd: 0.7
+      output_per_mtok_usd: 0.7
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 95
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: qwen2-5-72b-instruct
+      note: First Qwen MoE with hybrid thinking-vs-fast inference modes.
+    recommended_use_cases:
+      - hybrid reasoning + chat
+      - agentic workflows
+      - long-context retrieval
+    long_form: >-
+      Qwen 3 235B A22B was Alibaba's MoE pivot, and the headline feature was a hybrid thinking-vs-non-thinking inference
+      toggle controllable per request. The schema convention `235B A22B` decodes as 235 billion total parameters and 22
+      billion active, which puts it in the same operational class as DeepSeek V3 (671B/37B) but at a different cost
+      tier. Apache-2.0 across the entire Qwen 3 size ladder (from 0.6B to 235B) reset the openness baseline among
+      Chinese labs, since DeepSeek's V3 and R1 used a custom DeepSeek License with field-of-use restrictions and Llama
+      remained on community-license terms. The 36T-token pretrain extended Qwen 2.5's 18T, and the post-training stack
+      included GRPO reasoning alongside conventional SFT and DPO. The lasting significance of the release was less about
+      benchmark deltas, which are within noise of DeepSeek V3, and more about establishing that a frontier-grade open
+      MoE could ship under a permissive license from a non-US lab. That made Qwen 3 the default starting point for
+      open-weights agentic work through 2025, especially for organizations whose deployment counsel was uncomfortable
+      with the DeepSeek license's field-of-use clauses.
+    known_limitations:
+      - text: >-
+          Hybrid thinking mode is controllable per request but increases inference cost by 3-10x depending on prompt;
+          cost numbers above reflect non-thinking mode.
+        source: https://qwenlm.github.io/blog/qwen3/
   - slug: deepseek-v2-chat
     display_name: DeepSeek-V2 Chat
     family: deepseek
     developer: DeepSeek
     developer_country: CN
     type: chat
-    released_date: 2024-05-06
-    weights_released_date: 2024-05-06
-    paper_date: 2024-05-07
+    released_date: "2024-05-06"
+    weights_released_date: "2024-05-06"
+    paper_date: "2024-05-07"
     openness: open
     license: DeepSeek License
     osi_approved: false
@@ -539,39 +1090,72 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 236_000_000_000
-    params_active: 21_000_000_000
+    params_total: 236000000000
+    params_active: 21000000000
     experts: 160
     experts_active: 6
     context_window: 128000
     attention_variant: mla
     position_encoding: rope-yarn
     tokenizer: deepseek
-    pretraining_tokens: 8_100_000_000_000
-    post_training: [sft, rlhf]
+    pretraining_tokens: 8100000000000
+    post_training:
+      - sft
+      - rlhf
     benchmarks:
-      mmlu: { score: 78.5, as_of: 2024-05-07, source: "https://arxiv.org/abs/2405.04434" }
-      humaneval: { score: 81.1, as_of: 2024-05-07, source: "https://arxiv.org/abs/2405.04434" }
-    quantizations_available: [fp8, awq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu:
+        score: 78.5
+        as_of: "2024-05-07"
+        source: https://arxiv.org/abs/2405.04434
+      humaneval:
+        score: 81.1
+        as_of: "2024-05-07"
+        source: https://arxiv.org/abs/2405.04434
+    quantizations_available:
+      - fp8
+      - awq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       The Multi-head Latent Attention (MLA) debut paper. Cut KV-cache
       memory by ~93% versus dense attention, making 128K-context MoE
       inference economically viable.
-    notable_innovations: ["Multi-head Latent Attention (MLA)", "KV-cache compression"]
+    notable_innovations:
+      - Multi-head Latent Attention (MLA)
+      - KV-cache compression
     sources:
-      - title: "DeepSeek-V2 paper (May 7 2024)"
-        url: "https://arxiv.org/abs/2405.04434"
-
+      - title: DeepSeek-V2 paper (May 7 2024)
+        url: https://arxiv.org/abs/2405.04434
+    cost:
+      input_per_mtok_usd: 0.14
+      output_per_mtok_usd: 0.28
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 30
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - deepseek-v3
+      note: MLA debut; architecture refined into V3.
+    recommended_use_cases:
+      - cost-efficient chat at MoE economics
+      - long-context retrieval
   - slug: deepseek-v3
     display_name: DeepSeek-V3
     family: deepseek
     developer: DeepSeek
     developer_country: CN
     type: chat
-    released_date: 2024-12-26
-    weights_released_date: 2024-12-26
-    paper_date: 2024-12-27
+    released_date: "2024-12-26"
+    weights_released_date: "2024-12-26"
+    paper_date: "2024-12-27"
     openness: open
     license: DeepSeek License
     osi_approved: false
@@ -579,43 +1163,104 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 671_000_000_000
-    params_active: 37_000_000_000
+    params_total: 671000000000
+    params_active: 37000000000
     experts: 256
     experts_active: 8
     context_window: 128000
     attention_variant: mla
     position_encoding: rope-yarn
     tokenizer: deepseek
-    pretraining_tokens: 14_800_000_000_000
-    post_training: [sft, grpo]
+    pretraining_tokens: 14800000000000
+    post_training:
+      - sft
+      - grpo
     training_hardware: H800
     benchmarks:
-      mmlu: { score: 87.1, as_of: 2024-12-27, source: "https://arxiv.org/abs/2412.19437" }
-      gpqa_diamond: { score: 59.1, as_of: 2024-12-27, source: "https://arxiv.org/abs/2412.19437" }
-      humaneval: { score: 82.6, as_of: 2024-12-27, source: "https://arxiv.org/abs/2412.19437" }
-      math: { score: 90.2, as_of: 2024-12-27, source: "https://arxiv.org/abs/2412.19437" }
-    quantizations_available: [fp8, awq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu:
+        score: 87.1
+        as_of: "2024-12-27"
+        source: https://arxiv.org/abs/2412.19437
+      gpqa_diamond:
+        score: 59.1
+        as_of: "2024-12-27"
+        source: https://arxiv.org/abs/2412.19437
+      humaneval:
+        score: 82.6
+        as_of: "2024-12-27"
+        source: https://arxiv.org/abs/2412.19437
+      math:
+        score: 90.2
+        as_of: "2024-12-27"
+        source: https://arxiv.org/abs/2412.19437
+    quantizations_available:
+      - fp8
+      - awq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       The cost-quality reset. Pretrained for a reported $5.6M on H800
       GPUs (US-export-constrained silicon) and matched closed-frontier
       benchmarks. Triggered the "DeepSeek moment" in January 2025
       when US markets re-priced AI capex assumptions.
-    notable_innovations: ["FP8 mixed-precision pretraining", "Auxiliary-loss-free load balancing", "Multi-token prediction"]
+    notable_innovations:
+      - FP8 mixed-precision pretraining
+      - Auxiliary-loss-free load balancing
+      - Multi-token prediction
     sources:
-      - title: "DeepSeek-V3 technical report (Dec 27 2024)"
-        url: "https://arxiv.org/abs/2412.19437"
-
+      - title: DeepSeek-V3 technical report (Dec 27 2024)
+        url: https://arxiv.org/abs/2412.19437
+    cost:
+      input_per_mtok_usd: 0.27
+      output_per_mtok_usd: 1.1
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 60
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: deepseek-v2-chat
+      children:
+        - deepseek-r1
+      note: Base for the R1 reasoning model.
+    recommended_use_cases:
+      - frontier-quality chat at sub-$1/M output
+      - long-context tasks
+      - code assistance
+    long_form: >-
+      DeepSeek V3 reset the cost-quality frontier on December 26, 2024, and is the model that the January 2025 "DeepSeek
+      moment" was actually about. The technical report disclosed a reported $5.6M pretraining run on H800 GPUs (which
+      were the export-controlled variant available to Chinese labs, not the H100s used by US frontier labs), and the
+      resulting checkpoint matched closed-frontier scores on MMLU, GPQA-Diamond, and HumanEval. Three architectural
+      innovations carried the story: Multi-head Latent Attention compressed KV-cache memory by ~93%, an
+      auxiliary-loss-free load balancing mechanism kept MoE expert utilization smooth without the convergence problems
+      earlier MoE work hit, and multi-token prediction during pretraining served as both a training-signal amplifier and
+      a deployment-time speculative decoding accelerator. The economic argument that landed on Wall Street was that
+      frontier capability had been reproduced for less than 1% of what US labs were widely reported to be spending on
+      equivalent training runs. The model itself shipped with a custom DeepSeek License (not OSI-approved), but the
+      technical report's level of detail set a new bar for what an open-weights frontier release should look like.
+    known_limitations:
+      - text: >-
+          DeepSeek License includes field-of-use restrictions including a ban on military use and on competing with
+          DeepSeek's API service.
+        source: https://github.com/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-MODEL
+      - text: 37B active parameters still require enough memory to load all 256 experts (~671B total).
+        source: https://arxiv.org/abs/2412.19437
   - slug: deepseek-r1
     display_name: DeepSeek-R1
     family: deepseek
     developer: DeepSeek
     developer_country: CN
     type: reasoning
-    released_date: 2025-01-20
-    weights_released_date: 2025-01-20
-    paper_date: 2025-01-22
+    released_date: "2025-01-20"
+    weights_released_date: "2025-01-20"
+    paper_date: "2025-01-22"
     openness: open
     license: MIT
     osi_approved: true
@@ -623,46 +1268,104 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 671_000_000_000
-    params_active: 37_000_000_000
+    params_total: 671000000000
+    params_active: 37000000000
     experts: 256
     experts_active: 8
     context_window: 128000
     attention_variant: mla
     position_encoding: rope-yarn
     tokenizer: deepseek
-    post_training: [sft, grpo, rejection-sampling]
+    post_training:
+      - sft
+      - grpo
+      - rejection-sampling
     training_hardware: H800
     benchmarks:
-      mmlu: { score: 90.8, as_of: 2025-01-22, source: "https://arxiv.org/abs/2501.12948" }
-      gpqa_diamond: { score: 71.5, as_of: 2025-01-22, source: "https://arxiv.org/abs/2501.12948" }
-      aime_2024: { score: 79.8, as_of: 2025-01-22, source: "https://arxiv.org/abs/2501.12948" }
-      math: { score: 97.3, as_of: 2025-01-22, source: "https://arxiv.org/abs/2501.12948" }
-    quantizations_available: [fp8, awq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu:
+        score: 90.8
+        as_of: "2025-01-22"
+        source: https://arxiv.org/abs/2501.12948
+      gpqa_diamond:
+        score: 71.5
+        as_of: "2025-01-22"
+        source: https://arxiv.org/abs/2501.12948
+      aime_2024:
+        score: 79.8
+        as_of: "2025-01-22"
+        source: https://arxiv.org/abs/2501.12948
+      math:
+        score: 97.3
+        as_of: "2025-01-22"
+        source: https://arxiv.org/abs/2501.12948
+    quantizations_available:
+      - fp8
+      - awq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       The first openly-released reasoning model competitive with
       OpenAI o1. The R1-Zero variant demonstrated that pure-RL post-
       training without SFT could elicit chain-of-thought reasoning.
       MIT-licensed weights, distillations into 1.5B-70B sizes.
-    notable_innovations: ["Pure-RL reasoning (R1-Zero)", "MIT license", "Open reasoning traces"]
+    notable_innovations:
+      - Pure-RL reasoning (R1-Zero)
+      - MIT license
+      - Open reasoning traces
     reception:
-      - quote: "DeepSeek-R1 is the first open weights reasoning model that's truly competitive with the best closed models."
-        author: "Andrej Karpathy"
-        url: "https://x.com/karpathy/status/1881648814931886298"
-        date: 2025-01-21
+      - quote: DeepSeek-R1 is the first open weights reasoning model that's truly competitive with the best closed models.
+        author: Andrej Karpathy
+        url: https://x.com/karpathy/status/1881648814931886298
+        date: "2025-01-21"
     sources:
-      - title: "DeepSeek-R1 paper (Jan 22 2025)"
-        url: "https://arxiv.org/abs/2501.12948"
-
+      - title: DeepSeek-R1 paper (Jan 22 2025)
+        url: https://arxiv.org/abs/2501.12948
+    cost:
+      input_per_mtok_usd: 0.55
+      output_per_mtok_usd: 2.19
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 30
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: deepseek-v3
+      children:
+        - deepseek-r1-0528
+      note: First MIT-licensed open reasoning model.
+    recommended_use_cases:
+      - math reasoning
+      - code reasoning
+      - step-by-step problem solving
+    long_form: >-
+      DeepSeek-R1 is the first openly-released reasoning model that was competitive with OpenAI o1, and the paper that
+      accompanied it (published Jan 22, 2025) became one of the most-read AI papers of the year. The technical story was
+      that pure reinforcement learning post-training, without any supervised fine-tuning on human reasoning traces,
+      could elicit chain-of-thought reasoning that generalized to held-out problems. The R1-Zero variant showed this
+      most cleanly: starting from the V3 base, the team applied Group Relative Policy Optimization (GRPO) with a
+      verifiable reward function and watched the model spontaneously develop longer reasoning traces over training. The
+      full R1 added a small SFT cold-start to clean up readability before the RL phase. MIT-licensed weights and several
+      distillations into smaller dense bases (1.5B, 7B, 8B, 14B, 32B, 70B Llama and Qwen variants) followed in the same
+      release. The R1 distillations into 32B and below put genuinely capable reasoning models within reach of local
+      deployment for the first time, and the GRPO recipe became the template that Qwen 3, Llama 4, and several Western
+      labs followed in their own reasoning post-training.
+    known_limitations:
+      - text: Long reasoning traces dominate output cost; expect 3-10x token output vs. non-reasoning chat models.
+        source: https://arxiv.org/abs/2501.12948
   - slug: deepseek-r1-0528
     display_name: DeepSeek-R1 (May 2025 refresh)
     family: deepseek
     developer: DeepSeek
     developer_country: CN
     type: reasoning
-    released_date: 2025-05-28
-    weights_released_date: 2025-05-28
+    released_date: "2025-05-28"
+    weights_released_date: "2025-05-28"
     openness: open
     license: MIT
     osi_approved: true
@@ -670,45 +1373,81 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 671_000_000_000
-    params_active: 37_000_000_000
+    params_total: 671000000000
+    params_active: 37000000000
     experts: 256
     experts_active: 8
     context_window: 128000
     attention_variant: mla
     position_encoding: rope-yarn
     tokenizer: deepseek
-    post_training: [sft, grpo, rejection-sampling]
+    post_training:
+      - sft
+      - grpo
+      - rejection-sampling
     training_hardware: H800
     benchmarks:
-      mmlu_pro: { score: 85.0, as_of: 2025-05-28, source: "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528" }
-      gpqa_diamond: { score: 81.0, as_of: 2025-05-28, source: "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528" }
-      aime_2024: { score: 91.4, as_of: 2025-05-28, source: "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528" }
-      livecodebench: { score: 73.3, as_of: 2025-05-28, source: "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528" }
-    quantizations_available: [fp8, awq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu_pro:
+        score: 85
+        as_of: "2025-05-28"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+      gpqa_diamond:
+        score: 81
+        as_of: "2025-05-28"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+      aime_2024:
+        score: 91.4
+        as_of: "2025-05-28"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+      livecodebench:
+        score: 73.3
+        as_of: "2025-05-28"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+    quantizations_available:
+      - fp8
+      - awq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       An RL-only refresh of R1 that gained substantial ground on
       reasoning benchmarks (notably AIME 2024) without any new
       pretraining. Tightened the open-vs-closed reasoning gap.
-    notable_innovations: ["RL-only update path", "Notable reasoning gains without new pretrain"]
+    notable_innovations:
+      - RL-only update path
+      - Notable reasoning gains without new pretrain
     sources:
-      - title: "DeepSeek-R1-0528 model card (May 28 2025)"
-        url: "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528"
-
-  # ---------------------------------------------------------------
-  # OLMo (AI2) - the fully-open reference.
-  # ---------------------------------------------------------------
-
+      - title: DeepSeek-R1-0528 model card (May 28 2025)
+        url: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+    cost:
+      input_per_mtok_usd: 0.55
+      output_per_mtok_usd: 2.19
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 32
+      vendor: DeepSeek API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: deepseek-r1
+      note: RL-only refresh; no new pretrain.
+    recommended_use_cases:
+      - math reasoning
+      - code reasoning
+      - agentic workflows
   - slug: olmo-2-7b-instruct
     display_name: OLMo 2 7B Instruct
     family: olmo
     developer: AI2
     developer_country: US
     type: instruct
-    released_date: 2024-11-26
-    weights_released_date: 2024-11-26
-    paper_date: 2024-12-02
+    released_date: "2024-11-26"
+    weights_released_date: "2024-11-26"
+    paper_date: "2024-12-02"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -716,43 +1455,74 @@ models:
     training_code_released: true
     training_logs_released: true
     architecture: dense
-    params_total: 7_300_000_000
-    params_active: 7_300_000_000
+    params_total: 7300000000
+    params_active: 7300000000
     context_window: 4096
     attention_variant: mha
     position_encoding: rope
     tokenizer: olmo
-    pretraining_tokens: 5_000_000_000_000
-    post_training: [sft, dpo]
+    pretraining_tokens: 5000000000000
+    post_training:
+      - sft
+      - dpo
     training_hardware: H100
     benchmarks:
-      mmlu: { score: 61.3, as_of: 2024-12-02, source: "https://allenai.org/blog/olmo2" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0]
-    runtimes_supporting: [vllm, llama-cpp, ollama]
+      mmlu:
+        score: 61.3
+        as_of: "2024-12-02"
+        source: https://allenai.org/blog/olmo2
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
     release_context: |
       The only major open-weights release that meets the strictest
       reading of OSAID: weights, training data (Dolma), training
       code (OLMo trainer), and training logs (WandB). Reference for
       what "fully open" can mean in 2024.
-    notable_innovations: ["Full training stack open (data + code + logs)", "OSAID-compliant"]
+    notable_innovations:
+      - Full training stack open (data + code + logs)
+      - OSAID-compliant
     sources:
-      - title: "OLMo 2 release blog (AI2, Nov 26 2024)"
-        url: "https://allenai.org/blog/olmo2"
-
-  # ---------------------------------------------------------------
-  # Gemma (Google DeepMind) - source-available open-weights siblings
-  # of Gemini.
-  # ---------------------------------------------------------------
-
+      - title: OLMo 2 release blog (AI2, Nov 26 2024)
+        url: https://allenai.org/blog/olmo2
+    cost:
+      input_per_mtok_usd: 0.15
+      output_per_mtok_usd: 0.15
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 170
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: "Fully open: weights + Dolma pretraining data + training code + training logs."
+    recommended_use_cases:
+      - research reproducibility
+      - OSAID-compliant deployment
+      - fine-tuning base
+    known_limitations:
+      - text: >-
+          5T-token pretrain is well below the 15-36T used by 2025-class open-weights releases; benchmark scores reflect
+          this.
+        source: https://allenai.org/blog/olmo2
   - slug: gemma-2-27b-it
     display_name: Gemma 2 27B IT
     family: gemma
     developer: Google DeepMind
     developer_country: US
     type: instruct
-    released_date: 2024-06-27
-    weights_released_date: 2024-06-27
-    paper_date: 2024-08-02
+    released_date: "2024-06-27"
+    weights_released_date: "2024-06-27"
+    paper_date: "2024-08-02"
     openness: source-available
     license: Gemma Terms of Use
     osi_approved: false
@@ -760,43 +1530,80 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 27_200_000_000
-    params_active: 27_200_000_000
+    params_total: 27200000000
+    params_active: 27200000000
     context_window: 8192
     attention_variant: hybrid-gqa-sliding
     position_encoding: rope
     tokenizer: gemma
     vocab_size: 256000
-    pretraining_tokens: 13_000_000_000_000
-    post_training: [sft, rlhf, knowledge-distillation]
+    pretraining_tokens: 13000000000000
+    post_training:
+      - sft
+      - rlhf
+      - knowledge-distillation
     training_hardware: TPU v5p
     benchmarks:
-      mmlu: { score: 75.2, as_of: 2024-06-27, source: "https://arxiv.org/abs/2408.00118" }
-      humaneval: { score: 51.8, as_of: 2024-06-27, source: "https://arxiv.org/abs/2408.00118" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0, awq, gptq]
-    runtimes_supporting: [vllm, llama-cpp, ollama, sglang]
+      mmlu:
+        score: 75.2
+        as_of: "2024-06-27"
+        source: https://arxiv.org/abs/2408.00118
+      humaneval:
+        score: 51.8
+        as_of: "2024-06-27"
+        source: https://arxiv.org/abs/2408.00118
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+      - awq
+      - gptq
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
+      - sglang
     release_context: |
       Distilled from a larger Gemini teacher, demonstrating
       knowledge-distillation as a path to mid-scale open-weights
       quality. Source-available license restricts some uses.
-    notable_innovations: ["Knowledge distillation from frontier teacher", "Sliding-window + full-attention interleave"]
+    notable_innovations:
+      - Knowledge distillation from frontier teacher
+      - Sliding-window + full-attention interleave
     sources:
-      - title: "Gemma 2 technical report (Aug 2024)"
-        url: "https://arxiv.org/abs/2408.00118"
-
-  # ---------------------------------------------------------------
-  # Phi (Microsoft) - small-models-from-synthetic-data line.
-  # ---------------------------------------------------------------
-
+      - title: Gemma 2 technical report (Aug 2024)
+        url: https://arxiv.org/abs/2408.00118
+    cost:
+      input_per_mtok_usd: 0.8
+      output_per_mtok_usd: 0.8
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 100
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: Distilled from a larger Gemini teacher; sibling line to the Gemini API.
+    recommended_use_cases:
+      - mid-tier deployment
+      - distillation reference
+      - Google-stack integration
+    known_limitations:
+      - text: Gemma Terms is source-available, not OSI-approved.
+        source: https://ai.google.dev/gemma/terms
   - slug: phi-4
     display_name: Phi-4
     family: phi
     developer: Microsoft
     developer_country: US
     type: instruct
-    released_date: 2024-12-12
-    weights_released_date: 2025-01-08
-    paper_date: 2024-12-12
+    released_date: "2024-12-12"
+    weights_released_date: "2025-01-08"
+    paper_date: "2024-12-12"
     openness: open
     license: MIT
     osi_approved: true
@@ -804,43 +1611,82 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 14_700_000_000
-    params_active: 14_700_000_000
+    params_total: 14700000000
+    params_active: 14700000000
     context_window: 16384
     attention_variant: gqa
     position_encoding: rope
     tokenizer: phi
-    pretraining_tokens: 9_800_000_000_000
-    post_training: [sft, dpo]
+    pretraining_tokens: 9800000000000
+    post_training:
+      - sft
+      - dpo
     benchmarks:
-      mmlu: { score: 84.8, as_of: 2024-12-12, source: "https://arxiv.org/abs/2412.08905" }
-      gpqa_diamond: { score: 56.1, as_of: 2024-12-12, source: "https://arxiv.org/abs/2412.08905" }
-      humaneval: { score: 82.6, as_of: 2024-12-12, source: "https://arxiv.org/abs/2412.08905" }
-      math: { score: 80.4, as_of: 2024-12-12, source: "https://arxiv.org/abs/2412.08905" }
-    quantizations_available: [q4_k_m, q5_k_m, q8_0]
-    runtimes_supporting: [vllm, llama-cpp, ollama]
+      mmlu:
+        score: 84.8
+        as_of: "2024-12-12"
+        source: https://arxiv.org/abs/2412.08905
+      gpqa_diamond:
+        score: 56.1
+        as_of: "2024-12-12"
+        source: https://arxiv.org/abs/2412.08905
+      humaneval:
+        score: 82.6
+        as_of: "2024-12-12"
+        source: https://arxiv.org/abs/2412.08905
+      math:
+        score: 80.4
+        as_of: "2024-12-12"
+        source: https://arxiv.org/abs/2412.08905
+    quantizations_available:
+      - q4_k_m
+      - q5_k_m
+      - q8_0
+    runtimes_supporting:
+      - vllm
+      - llama-cpp
+      - ollama
     release_context: |
       14B parameters reaching benchmark scores within range of much
       larger models, via aggressive synthetic-data pretraining and
       data quality curation. The Phi line continues the "data
       quality over scale" thesis.
-    notable_innovations: ["Synthetic-data-heavy pretraining curriculum"]
+    notable_innovations:
+      - Synthetic-data-heavy pretraining curriculum
     sources:
-      - title: "Phi-4 technical report (Dec 2024)"
-        url: "https://arxiv.org/abs/2412.08905"
-
-  # ---------------------------------------------------------------
-  # Kimi (Moonshot AI) - long-context specialist.
-  # ---------------------------------------------------------------
-
+      - title: Phi-4 technical report (Dec 2024)
+        url: https://arxiv.org/abs/2412.08905
+    cost:
+      input_per_mtok_usd: 0.2
+      output_per_mtok_usd: 0.2
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 140
+      vendor: Together AI
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: Continues the synthetic-data pretraining thesis from Phi-1 through Phi-3.
+    recommended_use_cases:
+      - mid-tier local deployment
+      - synthetic-data research reference
+    known_limitations:
+      - text: >-
+          Heavy synthetic-data pretraining produces benchmark scores that don't always translate to open-ended
+          deployment.
+        source: https://arxiv.org/abs/2412.08905
   - slug: kimi-k2-instruct
     display_name: Kimi K2 Instruct
     family: kimi
     developer: Moonshot AI
     developer_country: CN
     type: instruct
-    released_date: 2025-07-11
-    weights_released_date: 2025-07-11
+    released_date: "2025-07-11"
+    weights_released_date: "2025-07-11"
     openness: open
     license: Modified MIT
     osi_approved: false
@@ -848,45 +1694,78 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: moe
-    params_total: 1_000_000_000_000
-    params_active: 32_000_000_000
+    params_total: 1000000000000
+    params_active: 32000000000
     experts: 384
     experts_active: 8
     context_window: 128000
     attention_variant: mla
     position_encoding: rope
     tokenizer: kimi
-    pretraining_tokens: 15_500_000_000_000
-    post_training: [sft, rlhf]
+    pretraining_tokens: 15500000000000
+    post_training:
+      - sft
+      - rlhf
     benchmarks:
-      mmlu_pro: { score: 81.1, as_of: 2025-07-11, source: "https://huggingface.co/moonshotai/Kimi-K2-Instruct" }
-      gpqa_diamond: { score: 75.1, as_of: 2025-07-11, source: "https://huggingface.co/moonshotai/Kimi-K2-Instruct" }
-      humaneval: { score: 85.7, as_of: 2025-07-11, source: "https://huggingface.co/moonshotai/Kimi-K2-Instruct" }
-      swe_bench_verified: { score: 65.8, as_of: 2025-07-11, source: "https://huggingface.co/moonshotai/Kimi-K2-Instruct" }
-    quantizations_available: [fp8, awq]
-    runtimes_supporting: [vllm, sglang]
+      mmlu_pro:
+        score: 81.1
+        as_of: "2025-07-11"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Instruct
+      gpqa_diamond:
+        score: 75.1
+        as_of: "2025-07-11"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Instruct
+      humaneval:
+        score: 85.7
+        as_of: "2025-07-11"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Instruct
+      swe_bench_verified:
+        score: 65.8
+        as_of: "2025-07-11"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Instruct
+    quantizations_available:
+      - fp8
+      - awq
+    runtimes_supporting:
+      - vllm
+      - sglang
     release_context: |
       A trillion-parameter open-weights MoE optimized for agentic
       tool-use, with strong SWE-Bench results making it a viable
       open alternative to closed coding agents at release.
-    notable_innovations: ["1T-param open-weights MoE", "Agentic post-training focus"]
+    notable_innovations:
+      - 1T-param open-weights MoE
+      - Agentic post-training focus
     sources:
-      - title: "Kimi K2 model card (Jul 11 2025)"
-        url: "https://huggingface.co/moonshotai/Kimi-K2-Instruct"
-
-  # ---------------------------------------------------------------
-  # Closed-model baselines. Muted in lists, full data so the
-  # comparison view has something to compare against.
-  # ---------------------------------------------------------------
-
+      - title: Kimi K2 model card (Jul 11 2025)
+        url: https://huggingface.co/moonshotai/Kimi-K2-Instruct
+    cost:
+      input_per_mtok_usd: 0.6
+      output_per_mtok_usd: 2.5
+      vendor: Moonshot API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 45
+      vendor: Moonshot API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: Moonshot's first widely-released open-weights MoE.
+    recommended_use_cases:
+      - agentic tool use
+      - code agent backend
+      - long-context tasks
   - slug: gpt-4
     display_name: GPT-4
     family: gpt-4
     developer: OpenAI
     developer_country: US
     type: chat
-    released_date: 2023-03-14
-    paper_date: 2023-03-15
+    released_date: "2023-03-14"
+    paper_date: "2023-03-15"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -899,27 +1778,52 @@ models:
     context_window: 8192
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf]
+    post_training:
+      - rlhf
     benchmarks:
-      mmlu: { score: 86.4, as_of: 2023-03-15, source: "https://cdn.openai.com/papers/gpt-4.pdf" }
-      humaneval: { score: 67.0, as_of: 2023-03-15, source: "https://cdn.openai.com/papers/gpt-4.pdf" }
+      mmlu:
+        score: 86.4
+        as_of: "2023-03-15"
+        source: https://cdn.openai.com/papers/gpt-4.pdf
+      humaneval:
+        score: 67
+        as_of: "2023-03-15"
+        source: https://cdn.openai.com/papers/gpt-4.pdf
     release_context: |
       The frontier reference point for the 2023-2024 open-weights
       catch-up race. Architecture and training data not disclosed.
-    notable_innovations: ["First widely-used multimodal frontier model"]
+    notable_innovations:
+      - First widely-used multimodal frontier model
     sources:
-      - title: "GPT-4 Technical Report (OpenAI, Mar 15 2023)"
-        url: "https://cdn.openai.com/papers/gpt-4.pdf"
-      - title: "GPT-4 announcement (OpenAI, Mar 14 2023)"
-        url: "https://openai.com/index/gpt-4-research/"
-
+      - title: GPT-4 Technical Report (OpenAI, Mar 15 2023)
+        url: https://cdn.openai.com/papers/gpt-4.pdf
+      - title: GPT-4 announcement (OpenAI, Mar 14 2023)
+        url: https://openai.com/index/gpt-4-research/
+    cost:
+      input_per_mtok_usd: 30
+      output_per_mtok_usd: 60
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 25
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - gpt-4o
+    recommended_use_cases:
+      - historical baseline (largely superseded by 4o)
   - slug: gpt-4o
     display_name: GPT-4o
     family: gpt-4
     developer: OpenAI
     developer_country: US
     type: chat
-    released_date: 2024-05-13
+    released_date: "2024-05-13"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -932,26 +1836,67 @@ models:
     context_window: 128000
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf]
+    post_training:
+      - rlhf
     benchmarks:
-      mmlu: { score: 88.7, as_of: 2024-05-13, source: "https://openai.com/index/hello-gpt-4o/" }
-      humaneval: { score: 90.2, as_of: 2024-05-13, source: "https://openai.com/index/hello-gpt-4o/" }
+      mmlu:
+        score: 88.7
+        as_of: "2024-05-13"
+        source: https://openai.com/index/hello-gpt-4o/
+      humaneval:
+        score: 90.2
+        as_of: "2024-05-13"
+        source: https://openai.com/index/hello-gpt-4o/
     release_context: |
       Native-multimodal model with audio + vision + text in a single
       pretrained backbone. Pushed real-time voice latency to under
       400ms; the multimodal benchmark anchor through 2024.
-    notable_innovations: ["Native audio+vision+text training", "Sub-400ms voice latency"]
+    notable_innovations:
+      - Native audio+vision+text training
+      - Sub-400ms voice latency
     sources:
-      - title: "GPT-4o announcement (OpenAI, May 13 2024)"
-        url: "https://openai.com/index/hello-gpt-4o/"
-
+      - title: GPT-4o announcement (OpenAI, May 13 2024)
+        url: https://openai.com/index/hello-gpt-4o/
+    cost:
+      input_per_mtok_usd: 2.5
+      output_per_mtok_usd: 10
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 110
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: gpt-4
+    recommended_use_cases:
+      - multimodal chat
+      - voice interfaces
+      - general-purpose API workloads
+    long_form: >-
+      GPT-4o was the May 2024 release that established native multimodal as the closed-frontier standard. "o" stood for
+      "omni": a single pretrained backbone handling text, audio, and vision tokens, rather than separate models stitched
+      together with adapters. The real-time voice mode pushed conversational latency below 400ms, a threshold past which
+      interactions feel synchronous rather than turn-based, and the demo that accompanied the launch became the
+      reference point for what AI voice products were expected to feel like. Pricing dropped to $2.50 per million input
+      tokens and $10 per million output, a roughly 12x reduction from the original GPT-4. The open-weights world spent
+      the second half of 2024 chasing this combination: Llama 3.1, Qwen 2.5, and DeepSeek V3 all positioned themselves
+      as cheaper or comparable on text, but native multimodal at GPT-4o's latency remained out of reach until well into
+      2025. The model also became the default backend for ChatGPT free users, which made its capabilities and quirks
+      visible to a global user base in a way no prior frontier model had been.
+    known_limitations:
+      - text: Architecture and training data not disclosed; benchmarks reflect what OpenAI chose to publish.
+        source: https://openai.com/index/hello-gpt-4o/
   - slug: o1
     display_name: OpenAI o1
     family: o-series
     developer: OpenAI
     developer_country: US
     type: reasoning
-    released_date: 2024-12-05
+    released_date: "2024-12-05"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -964,27 +1909,71 @@ models:
     context_window: 200000
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf]
+    post_training:
+      - rlhf
     benchmarks:
-      gpqa_diamond: { score: 77.3, as_of: 2024-12-05, source: "https://openai.com/index/learning-to-reason-with-llms/" }
-      aime_2024: { score: 83.3, as_of: 2024-12-05, source: "https://openai.com/index/learning-to-reason-with-llms/" }
+      gpqa_diamond:
+        score: 77.3
+        as_of: "2024-12-05"
+        source: https://openai.com/index/learning-to-reason-with-llms/
+      aime_2024:
+        score: 83.3
+        as_of: "2024-12-05"
+        source: https://openai.com/index/learning-to-reason-with-llms/
     release_context: |
       The first publicly available frontier reasoning model. Trained
       to spend extra inference compute on a "private chain of
       thought" before answering, setting the template the open
       community would chase with R1.
-    notable_innovations: ["Inference-time reasoning compute", "Chain-of-thought as a training target"]
+    notable_innovations:
+      - Inference-time reasoning compute
+      - Chain-of-thought as a training target
     sources:
-      - title: "OpenAI o1 announcement (Sep 12 2024 preview, Dec 5 2024 GA)"
-        url: "https://openai.com/index/learning-to-reason-with-llms/"
-
+      - title: OpenAI o1 announcement (Sep 12 2024 preview, Dec 5 2024 GA)
+        url: https://openai.com/index/learning-to-reason-with-llms/
+    cost:
+      input_per_mtok_usd: 15
+      output_per_mtok_usd: 60
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 60
+      vendor: OpenAI API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: First public reasoning model from OpenAI.
+    recommended_use_cases:
+      - math reasoning
+      - code reasoning
+      - complex multi-step problems
+    long_form: >-
+      OpenAI o1 was the first publicly available frontier reasoning model and the existence proof for spending extra
+      inference-time compute on a private chain of thought before answering. The September 2024 preview release and
+      December 2024 GA established the template: the model produces a hidden reasoning trace (billed at output rates)
+      before the user-visible answer, with benchmark scores on GPQA-Diamond and AIME that materially exceeded GPT-4o on
+      the same architecture-and-data class. The pricing structure was new to the market: at $60 per million output
+      tokens with reasoning traces consuming most of the output budget, a single hard problem could cost dollars rather
+      than fractions of a cent. That created two follow-on stories. First, the open community responded with DeepSeek R1
+      four months later under MIT license, demonstrating that the reasoning recipe was within reach of organizations not
+      at OpenAI's scale. Second, the reasoning-vs-cost framing made "thinking budget" a first-class deployment knob:
+      subsequent OpenAI releases (o1-mini, o3, o3-mini) and competitor responses (Claude 3.7 extended thinking, Gemini
+      2.5 thinking) all let the developer dial how much inference compute to spend per request.
+    known_limitations:
+      - text: >-
+          Reasoning traces are billed as output tokens but not visible to the user; cost-per-problem can be hard to
+          predict.
+        source: https://openai.com/index/learning-to-reason-with-llms/
   - slug: claude-3-5-sonnet
     display_name: Claude 3.5 Sonnet
     family: claude
     developer: Anthropic
     developer_country: US
     type: chat
-    released_date: 2024-06-20
+    released_date: "2024-06-20"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -997,27 +1986,74 @@ models:
     context_window: 200000
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf, constitutional]
+    post_training:
+      - rlhf
+      - constitutional
     benchmarks:
-      mmlu: { score: 88.7, as_of: 2024-06-20, source: "https://www.anthropic.com/news/claude-3-5-sonnet" }
-      humaneval: { score: 92.0, as_of: 2024-06-20, source: "https://www.anthropic.com/news/claude-3-5-sonnet" }
-      gpqa_diamond: { score: 59.4, as_of: 2024-06-20, source: "https://www.anthropic.com/news/claude-3-5-sonnet" }
+      mmlu:
+        score: 88.7
+        as_of: "2024-06-20"
+        source: https://www.anthropic.com/news/claude-3-5-sonnet
+      humaneval:
+        score: 92
+        as_of: "2024-06-20"
+        source: https://www.anthropic.com/news/claude-3-5-sonnet
+      gpqa_diamond:
+        score: 59.4
+        as_of: "2024-06-20"
+        source: https://www.anthropic.com/news/claude-3-5-sonnet
     release_context: |
       The first Claude release to beat its own larger sibling
       (Claude 3 Opus) on most benchmarks. Established Artifacts,
       driving a wave of code-and-canvas product copies.
-    notable_innovations: ["Mid-tier beat its own large sibling", "Artifacts product surface"]
+    notable_innovations:
+      - Mid-tier beat its own large sibling
+      - Artifacts product surface
     sources:
-      - title: "Claude 3.5 Sonnet announcement (Anthropic, Jun 20 2024)"
-        url: "https://www.anthropic.com/news/claude-3-5-sonnet"
-
+      - title: Claude 3.5 Sonnet announcement (Anthropic, Jun 20 2024)
+        url: https://www.anthropic.com/news/claude-3-5-sonnet
+    cost:
+      input_per_mtok_usd: 3
+      output_per_mtok_usd: 15
+      vendor: Anthropic API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 85
+      vendor: Anthropic API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      children:
+        - claude-3-7-sonnet
+    recommended_use_cases:
+      - general chat
+      - code generation
+      - tool use
+      - Artifacts-style canvas interactions
+    long_form: >-
+      Claude 3.5 Sonnet was the June 2024 release where a mid-tier model from a frontier lab decisively beat its own
+      larger sibling. Claude 3 Opus from March had been the larger and more expensive offering; 3.5 Sonnet outperformed
+      it across most benchmarks at one-fifth the price and twice the speed. The release also introduced Artifacts, a UI
+      surface for code, diagrams, and document drafts rendered alongside the chat. Artifacts triggered a wave of product
+      copies (canvas modes appeared in ChatGPT, Gemini, Mistral's chat product, and several open-weights wrappers within
+      months) and established a new default expectation for what a chat interface was. On the API side, Claude 3.5
+      Sonnet held a leadership position on code benchmarks through most of late 2024 and became the default backend for
+      early agentic coding tools (Cursor, Continue, Cline). The strategic story for Anthropic was that a
+      smaller-faster-cheaper model from the mid tier could carry product surface area, which made Claude 3 Opus's slower
+      follow-up effectively redundant; the model line skipped directly to 3.7 Sonnet in February 2025.
+    known_limitations:
+      - text: Architecture not disclosed; comparisons rest on published benchmarks only.
+        source: https://www.anthropic.com/news/claude-3-5-sonnet
   - slug: claude-3-7-sonnet
     display_name: Claude 3.7 Sonnet
     family: claude
     developer: Anthropic
     developer_country: US
     type: reasoning
-    released_date: 2025-02-24
+    released_date: "2025-02-24"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -1030,27 +2066,72 @@ models:
     context_window: 200000
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf, constitutional]
+    post_training:
+      - rlhf
+      - constitutional
     benchmarks:
-      gpqa_diamond: { score: 78.2, as_of: 2025-02-24, source: "https://www.anthropic.com/news/claude-3-7-sonnet" }
-      swe_bench_verified: { score: 70.3, as_of: 2025-02-24, source: "https://www.anthropic.com/news/claude-3-7-sonnet" }
+      gpqa_diamond:
+        score: 78.2
+        as_of: "2025-02-24"
+        source: https://www.anthropic.com/news/claude-3-7-sonnet
+      swe_bench_verified:
+        score: 70.3
+        as_of: "2025-02-24"
+        source: https://www.anthropic.com/news/claude-3-7-sonnet
     release_context: |
       The first "hybrid reasoning" model from Anthropic: standard
       and extended-thinking modes selectable per request. Strong
       SWE-Bench score made it the default coding-agent backend
       through 2025.
-    notable_innovations: ["Hybrid extended-thinking mode", "Claude Code agent harness"]
+    notable_innovations:
+      - Hybrid extended-thinking mode
+      - Claude Code agent harness
     sources:
-      - title: "Claude 3.7 Sonnet announcement (Anthropic, Feb 24 2025)"
-        url: "https://www.anthropic.com/news/claude-3-7-sonnet"
-
+      - title: Claude 3.7 Sonnet announcement (Anthropic, Feb 24 2025)
+        url: https://www.anthropic.com/news/claude-3-7-sonnet
+    cost:
+      input_per_mtok_usd: 3
+      output_per_mtok_usd: 15
+      vendor: Anthropic API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 90
+      vendor: Anthropic API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      parent: claude-3-5-sonnet
+    recommended_use_cases:
+      - code agent backend
+      - extended-thinking math/code
+      - SWE-Bench-style tasks
+      - tool use
+    long_form: >-
+      Claude 3.7 Sonnet was the first "hybrid reasoning" frontier model: standard and extended-thinking modes selectable
+      per request, billed at the same input/output rates but with extended thinking consuming additional output tokens
+      for the visible reasoning trace. The release in February 2025 paired the model with Claude Code, Anthropic's
+      official agent harness, which made 3.7 Sonnet the default backend for serious coding-agent work through 2025. The
+      SWE-Bench Verified score (70.3% at release) was the headline number: a closed reasoning model that could be asked
+      to fix a real bug in a real repository and succeed at a rate that materially exceeded prior frontier models. The
+      agentic story matters because it established "the model that can act in your codebase" as a distinct product
+      category from "the model that can answer questions about your codebase", and Anthropic was the first frontier lab
+      to commercialize that distinction. Open-weights catch-up arrived with Kimi K2 and DeepSeek's later releases, but
+      Claude 3.7 Sonnet held the agentic-coding leadership position long enough to define what the category looked like.
+    known_limitations:
+      - text: >-
+          Extended-thinking mode bills the reasoning trace as output tokens; long-thinking requests can be 5-10x more
+          expensive than standard mode.
+        source: https://www.anthropic.com/news/claude-3-7-sonnet
   - slug: gemini-2-5-pro
     display_name: Gemini 2.5 Pro
     family: gemini
     developer: Google DeepMind
     developer_country: US
     type: reasoning
-    released_date: 2025-03-25
+    released_date: "2025-03-25"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -1060,19 +2141,65 @@ models:
     architecture: unknown
     params_total: 0
     params_active: 0
-    context_window: 1_048_576
+    context_window: 1048576
     attention_variant: unknown
     position_encoding: unknown
-    post_training: [rlhf]
+    post_training:
+      - rlhf
     benchmarks:
-      gpqa_diamond: { score: 84.0, as_of: 2025-03-25, source: "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/" }
-      aime_2024: { score: 86.7, as_of: 2025-03-25, source: "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/" }
-      lmarena_elo: { score: 1443.0, as_of: 2025-03-25, source: "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/" }
+      gpqa_diamond:
+        score: 84
+        as_of: "2025-03-25"
+        source: https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/
+      aime_2024:
+        score: 86.7
+        as_of: "2025-03-25"
+        source: https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/
+      lmarena_elo:
+        score: 1443
+        as_of: "2025-03-25"
+        source: https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/
     release_context: |
       The first Gemini release to clearly lead on LMArena Elo and on
       hard reasoning benchmarks. Native 1M-token context with reported
       2M expansion in pipeline.
-    notable_innovations: ["1M-token native context", "LMArena Elo leadership at release"]
+    notable_innovations:
+      - 1M-token native context
+      - LMArena Elo leadership at release
     sources:
-      - title: "Gemini 2.5 Pro announcement (Google DeepMind, Mar 25 2025)"
-        url: "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/"
+      - title: Gemini 2.5 Pro announcement (Google DeepMind, Mar 25 2025)
+        url: https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/
+    cost:
+      input_per_mtok_usd: 1.25
+      output_per_mtok_usd: 10
+      vendor: Google API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    speed:
+      tokens_per_sec_output: 95
+      vendor: Google API
+      as_of: "2026-05-19"
+      source: https://artificialanalysis.ai/models
+      via_artificial_analysis: true
+    lineage:
+      note: Continues the Gemini Pro line with native 1M-token context.
+    recommended_use_cases:
+      - long-context tasks
+      - multimodal reasoning
+      - general chat
+    long_form: >-
+      Gemini 2.5 Pro was the first Gemini release to clearly lead on LMArena Elo, GPQA-Diamond, and AIME 2024 at the
+      same time. Released in March 2025, it folded together Google's investments in long-context modeling (the 1M-token
+      native window had been a Gemini differentiator since 1.5 Pro the previous February) and the reasoning-model wave
+      o1 and R1 had established. The pricing structure (input under $1.25/M for prompts up to 200K, $2.50/M above;
+      output at $10/M with extended thinking included) made it cheaper than Claude 3.7 Sonnet at the headline input rate
+      but more expensive at high output volumes, which split the market between the two for production workloads. Google
+      also published the Gemini 2.5 family across Pro, Flash, and Flash-Lite, with the smaller variants positioning
+      aggressively against open-weights MoE on cost. Gemini's lasting differentiator through 2025 remained its
+      multimodal handling (vision, video, and audio integrated more deeply than competing closed frontiers) and its
+      native long-context performance, where benchmarks measuring needle-in-a-haystack retrieval at 1M tokens
+      consistently favored Gemini 2.5 Pro over peers.
+    known_limitations:
+      - text: Input pricing tier changes above 200K tokens; long-context use cases can cost 2x the headline rate.
+        source: https://ai.google.dev/pricing

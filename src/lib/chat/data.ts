@@ -178,6 +178,35 @@ interface ModelSource {
   url: string;
 }
 
+interface ModelCost {
+  input_per_mtok_usd?: number;
+  output_per_mtok_usd?: number;
+  vendor?: string;
+  as_of: string;
+  source: string;
+  via_artificial_analysis?: boolean;
+}
+
+interface ModelSpeed {
+  tokens_per_sec_output?: number;
+  ttft_ms?: number;
+  vendor?: string;
+  as_of: string;
+  source: string;
+  via_artificial_analysis?: boolean;
+}
+
+interface ModelLineage {
+  parent?: string;
+  children?: string[];
+  note?: string;
+}
+
+interface ModelLimitation {
+  text: string;
+  source: string;
+}
+
 interface ModelEntry {
   slug: string;
   display_name: string;
@@ -217,6 +246,12 @@ interface ModelEntry {
   release_context?: string;
   notable_innovations?: string[];
   reception?: ModelReceptionQuote[];
+  cost?: ModelCost;
+  speed?: ModelSpeed;
+  lineage?: ModelLineage;
+  recommended_use_cases?: string[];
+  known_limitations?: ModelLimitation[];
+  long_form?: string;
   sources: ModelSource[];
 }
 

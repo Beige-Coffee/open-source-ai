@@ -5,13 +5,10 @@ import {
   OPENNESS_LABEL,
   formatParams,
   formatContext,
-  formatTokens,
-  BENCHMARK_LABEL,
   type Openness,
 } from "../../lib/models";
 
 const all = loadModels().slice().sort((a, b) => {
-  // Newest first by release date.
   const ad = a.released_date ?? "";
   const bd = b.released_date ?? "";
   return bd.localeCompare(ad);
@@ -21,7 +18,6 @@ const openCount = all.filter((m) => m.openness === "open").length;
 const openWeightsCount = all.filter((m) => m.openness === "open-weights" || m.openness === "source-available").length;
 const closedCount = all.filter((m) => m.openness === "proprietary").length;
 
-// Timeline strip math. X axis: Feb 2023 to today. Each model is a dot.
 const TIMELINE_START = new Date("2023-02-01").getTime();
 const TIMELINE_END = Date.now();
 function xForDate(dateStr: string, width: number): number {
@@ -36,7 +32,6 @@ const TIMELINE_H = 180;
 const TIMELINE_PAD_X = 24;
 const TIMELINE_INNER_W = TIMELINE_W - TIMELINE_PAD_X * 2;
 
-// Y position by openness so the dots don't all overlap.
 function yForOpenness(o: Openness): number {
   switch (o) {
     case "open": return 40;
@@ -47,15 +42,9 @@ function yForOpenness(o: Openness): number {
 }
 
 function opennessClass(o: Openness): string {
-  switch (o) {
-    case "open": return "openness-open";
-    case "open-weights": return "openness-open-weights";
-    case "source-available": return "openness-source-available";
-    case "proprietary": return "openness-proprietary";
-  }
+  return `openness-${o}`;
 }
 
-// Year tick marks: Feb 2023, 2024, 2025, 2026.
 const yearTicks = [];
 for (let y = 2023; y <= new Date().getFullYear(); y++) {
   yearTicks.push({
@@ -64,35 +53,160 @@ for (let y = 2023; y <= new Date().getFullYear(); y++) {
   });
 }
 
-// Filter facets derived from data so the UI is always in sync.
 const developers = Array.from(new Set(all.map((m) => m.developer))).sort();
-const families = Array.from(new Set(all.map((m) => m.family))).sort();
 const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort();
+
+// Scatter plot math. X = input $/M tok (log scale), Y = GPQA-Diamond
+// score (or MMLU-Pro fallback). Only models with both a cost and a
+// quality score plotted.
+const scatterPoints = all
+  .map((m) => {
+    const cost = m.cost?.input_per_mtok_usd;
+    const quality = m.benchmarks?.gpqa_diamond?.score ?? m.benchmarks?.mmlu_pro?.score;
+    if (!cost || cost <= 0 || !quality) return null;
+    const usingFallback = !m.benchmarks?.gpqa_diamond?.score;
+    return { m, cost, quality, usingFallback };
+  })
+  .filter((p): p is { m: typeof all[number]; cost: number; quality: number; usingFallback: boolean } => !!p);
+
+const SCAT_W = 720;
+const SCAT_H = 320;
+const SCAT_PAD = 40;
+const minLogCost = Math.log10(Math.min(...scatterPoints.map((p) => p.cost)));
+const maxLogCost = Math.log10(Math.max(...scatterPoints.map((p) => p.cost)));
+const minQ = Math.min(...scatterPoints.map((p) => p.quality));
+const maxQ = Math.max(...scatterPoints.map((p) => p.quality));
+function scatterX(cost: number): number {
+  const lc = Math.log10(cost);
+  const range = Math.max(0.1, maxLogCost - minLogCost);
+  return SCAT_PAD + ((lc - minLogCost) / range) * (SCAT_W - SCAT_PAD * 2);
+}
+function scatterY(quality: number): number {
+  const range = Math.max(1, maxQ - minQ);
+  return SCAT_H - SCAT_PAD - ((quality - minQ) / range) * (SCAT_H - SCAT_PAD * 2);
+}
+// X-axis tick marks at meaningful cost milestones.
+const scatterXTicks = [0.1, 1, 10, 100].filter((v) => v >= 10 ** minLogCost / 1.5 && v <= 10 ** maxLogCost * 1.5);
+
+// Column tooltips: short blurb shown on hover via title attribute.
+const COL_HELP = {
+  model: "The checkpoint's display name. Click to open its detail page.",
+  developer: "The lab or organization that released the checkpoint.",
+  released: "Date the checkpoint was first announced or made available.",
+  openness: "License + release tier. Hover the badge on a row for the tier's definition.",
+  architecture: "Model family architecture: dense, MoE (mixture of experts), hybrid, or unknown for closed models.",
+  total: "Total parameter count, including inactive experts on MoE models. Closed models with undisclosed counts show —.",
+  active: "Parameters activated per forward pass. Equals total for dense models; smaller for MoE (e.g. 37B active of 671B total for DeepSeek V3).",
+  ctx: "Native context window in tokens, before any YaRN or extrapolation tricks.",
+  cost_in: "USD per million input tokens at the source's reference vendor.",
+  cost_out: "USD per million output tokens. Reasoning models output more tokens per request because the reasoning trace counts.",
+  speed: "Decode throughput at the reference vendor, in output tokens per second.",
+  mmlu: "MMLU general-knowledge benchmark, 0-100. Most-quoted but oldest; treat as a rough capability floor.",
+  gpqa: "GPQA-Diamond, graduate-level science. The current standard for hard reasoning. 70%+ is frontier.",
+  humaneval: "HumanEval pass@1 for code completion. Saturated at the frontier; SWE-Bench Verified is now the harder code benchmark.",
+};
+
+// Openness tier explainers for the popover.
+const OPENNESS_EXPLAINER: Record<Openness, string> = {
+  "open": "Apache-2.0 or MIT class license; OSI-approved by the most common reading. Weights and license terms unrestricted for commercial use. Does not imply training data or training code are released.",
+  "open-weights": "Weights are downloadable under a permissive license, but the license carries field-of-use restrictions or revocable terms that prevent OSI approval.",
+  "source-available": "Weights are downloadable but the license includes acceptable-use policy clauses, scale caps, or other restrictions. Commercial use possible with conditions.",
+  "proprietary": "Weights not released. Architecture and training data typically undisclosed. Available only through the lab's API or partner endpoints.",
+};
 ---
 
 <BaseLayout
   title="Models"
-  description="Open-source and frontier language models, side by side. Timeline, architecture, training, benchmarks. Every claim sourced."
+  description="Open-source and frontier language models, side by side. Timeline, architecture, training, benchmarks, cost, speed. Every claim sourced."
 >
   <section class="max-w-5xl mx-auto px-6 pt-16 pb-6">
-    <p
-      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
-    >
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4">
       Models
     </p>
-    <h1
-      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
-    >
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6">
       What's actually shipped, and how it compares
     </h1>
-    <p
-      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
-    >
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-4">
       One row per checkpoint, not per family. {openCount} OSI-open, {openWeightsCount} source-available
       open-weights, {closedCount} proprietary baselines, since Feb 2023. Every architecture parameter,
-      benchmark score, and release date is sourced. Use the timeline to see the launch
-      cadence; use the table to filter and compare.
+      benchmark score, release date, and price is sourced.
     </p>
+
+    <!-- "How to read model names" collapsible -->
+    <details class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] mb-2">
+      <summary class="px-4 py-3 cursor-pointer font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] list-none flex items-center justify-between">
+        <span>How to read model names</span>
+        <span class="font-mono text-[10px]">expand ↓</span>
+      </summary>
+      <div class="px-4 pb-4 text-sm text-[var(--color-text-muted)] leading-relaxed border-t border-[var(--color-border)]">
+        <p class="mt-3 mb-3">
+          Model names look like jargon because labs cram several facts into one string.
+          Once you know the convention they're easier to read than they look.
+        </p>
+        <ul class="space-y-3">
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">Llama 3.3 70B Instruct</p>
+            <p class="text-xs">
+              <span class="font-medium">Llama</span> = family ·
+              <span class="font-medium">3.3</span> = version ·
+              <span class="font-medium">70B</span> = parameter count (70 billion) ·
+              <span class="font-medium">Instruct</span> = post-trained for following instructions
+              (vs "Base" which is the pretrained checkpoint before any RLHF).
+            </p>
+          </li>
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">DeepSeek-R1</p>
+            <p class="text-xs">
+              <span class="font-medium">DeepSeek</span> = family ·
+              <span class="font-medium">R1</span> = "Reasoning 1", a model post-trained with
+              reinforcement learning to emit chain-of-thought before answering. The
+              "thinking model" naming convention started with OpenAI's o1; R1 is
+              DeepSeek's open answer to it.
+            </p>
+          </li>
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">Qwen 3 235B A22B Instruct</p>
+            <p class="text-xs">
+              <span class="font-medium">Qwen</span> = family ·
+              <span class="font-medium">3</span> = version ·
+              <span class="font-medium">235B</span> = total parameters across all experts ·
+              <span class="font-medium">A22B</span> = "active 22 billion" — the parameters used per
+              forward pass. This is the MoE convention: total/active. Compare to
+              DeepSeek V3 at 671B total / 37B active.
+            </p>
+          </li>
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">Mixtral 8x7B Instruct v0.1</p>
+            <p class="text-xs">
+              <span class="font-medium">Mixtral</span> = family ·
+              <span class="font-medium">8x7B</span> = eight 7B experts, with two activated per token
+              (Mistral's earlier MoE notation; same idea as Qwen's total/active just expressed
+              differently) ·
+              <span class="font-medium">v0.1</span> = release version.
+            </p>
+          </li>
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">Claude 3.5 Sonnet</p>
+            <p class="text-xs">
+              <span class="font-medium">Claude</span> = family ·
+              <span class="font-medium">3.5</span> = version ·
+              <span class="font-medium">Sonnet</span> = tier name (Anthropic uses Haiku &lt; Sonnet
+              &lt; Opus to rank speed/cost/quality within a generation; tier semantics shift
+              across generations).
+            </p>
+          </li>
+          <li>
+            <p class="font-mono text-xs text-[var(--color-text)] mb-1">GPT-4o vs o1 vs o3</p>
+            <p class="text-xs">
+              <span class="font-medium">GPT-4o</span> is OpenAI's multimodal model. The
+              <span class="font-medium">o-series</span> (o1, o3, o3-mini) is their reasoning line —
+              the o stands for "OpenAI" branding here, not a version qualifier. Numbers grow
+              with capability, not with chronology (o3 launched before o2 was named publicly).
+            </p>
+          </li>
+        </ul>
+      </div>
+    </details>
   </section>
 
   <!-- Timeline strip -->
@@ -100,7 +214,7 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
     <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
       Launch timeline
     </h2>
-    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto">
+    <div id="timeline-container" class="relative border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto">
       <svg
         viewBox={`0 0 ${TIMELINE_W} ${TIMELINE_H}`}
         width="100%"
@@ -108,7 +222,6 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
         role="img"
         aria-label="Launch timeline of catalogued models"
       >
-        <!-- Lane labels -->
         <g font-size="10" fill="var(--color-text-subtle)">
           <text x={4} y={44}>open</text>
           <text x={4} y={74}>open-weights</text>
@@ -116,7 +229,6 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
           <text x={4} y={134}>proprietary</text>
         </g>
 
-        <!-- Lane lines -->
         <g stroke="var(--color-border)" stroke-width="1">
           <line x1={TIMELINE_PAD_X + 80} y1={40} x2={TIMELINE_W - TIMELINE_PAD_X} y2={40}/>
           <line x1={TIMELINE_PAD_X + 80} y1={70} x2={TIMELINE_W - TIMELINE_PAD_X} y2={70}/>
@@ -124,7 +236,6 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
           <line x1={TIMELINE_PAD_X + 80} y1={130} x2={TIMELINE_W - TIMELINE_PAD_X} y2={130}/>
         </g>
 
-        <!-- Year ticks -->
         <g font-size="10" fill="var(--color-text-muted)" stroke="none">
           {yearTicks.map((t) => (
             <>
@@ -145,7 +256,6 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
           ))}
         </g>
 
-        <!-- Model dots -->
         <g>
           {all.map((m) => {
             const x = TIMELINE_PAD_X + 80 + xForDate(m.released_date, TIMELINE_INNER_W - 80);
@@ -155,28 +265,132 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
               m.openness === "open-weights" ? "var(--color-focus-open-weights)" :
               m.openness === "source-available" ? "var(--color-focus-source-available)" :
               "var(--color-focus-proprietary)";
+            const gpqa = m.benchmarks?.gpqa_diamond?.score;
+            const mmluPro = m.benchmarks?.mmlu_pro?.score;
             return (
-              <g class="timeline-dot" data-slug={m.slug}>
+              <g
+                class="timeline-dot"
+                data-slug={m.slug}
+                data-name={m.display_name}
+                data-dev={m.developer}
+                data-date={m.released_date}
+                data-openness={m.openness}
+                data-license={m.license}
+                data-arch={m.architecture}
+                data-params-total={m.params_total > 0 ? formatParams(m.params_total) : "—"}
+                data-params-active={m.params_active > 0 ? formatParams(m.params_active) : "—"}
+                data-context={formatContext(m.context_window)}
+                data-gpqa={gpqa !== undefined ? gpqa.toFixed(1) : ""}
+                data-mmlu-pro={mmluPro !== undefined ? mmluPro.toFixed(1) : ""}
+                data-cost-in={m.cost?.input_per_mtok_usd !== undefined ? m.cost.input_per_mtok_usd.toFixed(2) : ""}
+                data-cost-out={m.cost?.output_per_mtok_usd !== undefined ? m.cost.output_per_mtok_usd.toFixed(2) : ""}
+              >
                 <a href={`/models/${m.slug}`}>
                   <circle cx={x} cy={y} r="5" fill={fill} stroke="var(--color-surface)" stroke-width="1.2"/>
-                  <title>{m.display_name} · {m.developer} · {m.released_date}</title>
                 </a>
               </g>
             );
           })}
         </g>
       </svg>
+      <div
+        id="timeline-tooltip"
+        class="absolute hidden pointer-events-none z-10 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] shadow-lg p-3 text-xs"
+        style="min-width: 240px; max-width: 320px;"
+      ></div>
     </div>
     <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-      Dots ordered top to bottom by openness tier. Hover for name + date; click to open the model page.
+      Dots in lanes by openness. Hover for details; click to open the model page.
     </p>
   </section>
 
+  <!-- Scatter plot: quality vs cost -->
+  {scatterPoints.length > 4 && (
+    <section class="max-w-6xl mx-auto px-6 pb-8">
+      <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+        Quality vs cost
+      </h2>
+      <p class="text-xs text-[var(--color-text-subtle)] mb-3">
+        Each dot is a model. X axis is input $/M tokens, log scale. Y axis is GPQA-Diamond
+        (or MMLU-Pro for models that didn't report GPQA). Open as filled dot, closed as ring.
+        Cheap-and-strong is bottom-left to top-left. Costs via Artificial Analysis.
+      </p>
+      <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto relative">
+        <svg
+          viewBox={`0 0 ${SCAT_W} ${SCAT_H}`}
+          width="100%"
+          style={`max-width: ${SCAT_W}px; display: block; font-family: var(--font-mono);`}
+          role="img"
+          aria-label="Quality vs cost scatter"
+        >
+          <!-- Axes -->
+          <line x1={SCAT_PAD} y1={SCAT_H - SCAT_PAD} x2={SCAT_W - SCAT_PAD} y2={SCAT_H - SCAT_PAD} stroke="var(--color-border-strong)" stroke-width="1"/>
+          <line x1={SCAT_PAD} y1={SCAT_PAD} x2={SCAT_PAD} y2={SCAT_H - SCAT_PAD} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+          <!-- X ticks -->
+          <g font-size="10" fill="var(--color-text-subtle)">
+            {scatterXTicks.map((v) => (
+              <>
+                <line x1={scatterX(v)} y1={SCAT_H - SCAT_PAD} x2={scatterX(v)} y2={SCAT_H - SCAT_PAD + 4} stroke="var(--color-border-strong)"/>
+                <text x={scatterX(v)} y={SCAT_H - SCAT_PAD + 16} text-anchor="middle">${v}</text>
+              </>
+            ))}
+            <text x={SCAT_W / 2} y={SCAT_H - 6} text-anchor="middle" fill="var(--color-text-muted)">input $/M tokens (log)</text>
+          </g>
+
+          <!-- Y ticks at 25/50/75 if in range -->
+          <g font-size="10" fill="var(--color-text-subtle)">
+            {[25, 50, 75].filter((y) => y >= minQ && y <= maxQ).map((q) => (
+              <>
+                <line x1={SCAT_PAD - 4} y1={scatterY(q)} x2={SCAT_W - SCAT_PAD} y2={scatterY(q)} stroke="var(--color-border)" stroke-dasharray="2 4"/>
+                <text x={SCAT_PAD - 6} y={scatterY(q) + 3} text-anchor="end">{q}</text>
+              </>
+            ))}
+            <text x={6} y={SCAT_PAD + 4} text-anchor="start" fill="var(--color-text-muted)" font-size="10">quality →</text>
+          </g>
+
+          <!-- Points -->
+          <g>
+            {scatterPoints.map((p) => {
+              const cx = scatterX(p.cost);
+              const cy = scatterY(p.quality);
+              const isClosed = p.m.openness === "proprietary";
+              const color =
+                p.m.openness === "open" ? "var(--color-focus-open)" :
+                p.m.openness === "open-weights" ? "var(--color-focus-open-weights)" :
+                p.m.openness === "source-available" ? "var(--color-focus-source-available)" :
+                "var(--color-focus-proprietary)";
+              return (
+                <a href={`/models/${p.m.slug}`} class="scatter-dot">
+                  <circle
+                    cx={cx} cy={cy} r="5"
+                    fill={isClosed ? "transparent" : color}
+                    stroke={color}
+                    stroke-width="1.5"
+                  />
+                  <title>{p.m.display_name} · ${p.cost.toFixed(2)}/M in · {p.usingFallback ? "MMLU-Pro" : "GPQA-D"} {p.quality.toFixed(1)}</title>
+                </a>
+              );
+            })}
+          </g>
+        </svg>
+      </div>
+    </section>
+  )}
+
   <!-- Filter bar + table -->
   <section class="max-w-6xl mx-auto px-6 pb-16" id="models-table-section">
-    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
-      All models ({all.length})
-    </h2>
+    <div class="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+      <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+        All models ({all.length})
+      </h2>
+      <div id="multi-compare-cta" class="hidden font-mono text-xs">
+        <span id="multi-compare-count" class="text-[var(--color-text-muted)] mr-2"></span>
+        <a id="multi-compare-link" href="/models/compare" class="px-2 py-1 rounded border border-[var(--color-text)] text-[var(--color-text)] no-underline hover:bg-[var(--color-surface-warm)]">
+          Compare selected →
+        </a>
+      </div>
+    </div>
     <div class="flex flex-wrap items-center gap-3 mb-4 text-sm">
       <input
         id="models-search"
@@ -211,22 +425,26 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
       <table class="w-full text-sm" id="models-table">
         <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
           <tr class="text-left font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-            <th class="px-3 py-2">Model</th>
-            <th class="px-3 py-2">Developer</th>
-            <th class="px-3 py-2">Released</th>
-            <th class="px-3 py-2">Openness</th>
-            <th class="px-3 py-2">Architecture</th>
-            <th class="px-3 py-2 text-right">Total</th>
-            <th class="px-3 py-2 text-right">Active</th>
-            <th class="px-3 py-2 text-right">Ctx</th>
-            <th class="px-3 py-2 text-right">MMLU</th>
-            <th class="px-3 py-2 text-right">GPQA-D</th>
-            <th class="px-3 py-2 text-right">HumanEval</th>
+            <th class="px-2 py-2"><span title="Pick up to 4 to compare side-by-side">cmp</span></th>
+            <th class="px-3 py-2" title={COL_HELP.model}>Model</th>
+            <th class="px-3 py-2" title={COL_HELP.developer}>Developer</th>
+            <th class="px-3 py-2" title={COL_HELP.released}>Released</th>
+            <th class="px-3 py-2" title={COL_HELP.openness}>Openness</th>
+            <th class="px-3 py-2" title={COL_HELP.architecture}>Architecture</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.total}>Total params</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.active}>Active params</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.ctx}>Context</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.cost_in}>$/M in</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.cost_out}>$/M out</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.speed}>tok/s</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.mmlu}>MMLU</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.gpqa}>GPQA-D</th>
+            <th class="px-3 py-2 text-right" title={COL_HELP.humaneval}>HumanEval</th>
           </tr>
         </thead>
         <tbody>
           {all.map((m) => {
-            const ar = m.benchmarks ?? {};
+            const bm = m.benchmarks ?? {};
             return (
               <tr
                 class="models-row border-t border-[var(--color-border)] hover:bg-[var(--color-surface-warm)]"
@@ -235,7 +453,11 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
                 data-developer={m.developer}
                 data-openness={m.openness}
                 data-architecture={m.architecture}
+                data-slug={m.slug}
               >
+                <td class="px-2 py-2 text-center">
+                  <input type="checkbox" class="cmp-cb" data-slug={m.slug} aria-label={`Add ${m.display_name} to compare`}/>
+                </td>
                 <td class="px-3 py-2">
                   <a href={`/models/${m.slug}`} class="text-[var(--color-text)] no-underline hover:underline font-medium">
                     {m.display_name}
@@ -244,7 +466,10 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
                 <td class="px-3 py-2 text-[var(--color-text-muted)]">{m.developer}</td>
                 <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)] tabular-nums">{m.released_date}</td>
                 <td class="px-3 py-2">
-                  <span class={`openness-badge ${opennessClass(m.openness)} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}>
+                  <span
+                    class={`openness-badge ${opennessClass(m.openness)} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded cursor-help`}
+                    title={OPENNESS_EXPLAINER[m.openness]}
+                  >
                     {OPENNESS_LABEL[m.openness]}
                   </span>
                 </td>
@@ -252,15 +477,23 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_total > 0 ? formatParams(m.params_total) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_active > 0 ? formatParams(m.params_active) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{formatContext(m.context_window)}</td>
-                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.mmlu ? ar.mmlu.score.toFixed(1) : "—"}</td>
-                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.gpqa_diamond ? ar.gpqa_diamond.score.toFixed(1) : "—"}</td>
-                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.humaneval ? ar.humaneval.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.cost?.input_per_mtok_usd !== undefined ? `$${m.cost.input_per_mtok_usd.toFixed(2)}` : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.cost?.output_per_mtok_usd !== undefined ? `$${m.cost.output_per_mtok_usd.toFixed(2)}` : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.speed?.tokens_per_sec_output ?? "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{bm.mmlu ? bm.mmlu.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{bm.gpqa_diamond ? bm.gpqa_diamond.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{bm.humaneval ? bm.humaneval.score.toFixed(1) : "—"}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
     </div>
+
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
+      Cost and speed via <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener" class="hover:text-[var(--color-text)] no-underline hover:underline">Artificial Analysis ↗</a>;
+      benchmark scores from each model's primary source (model card or paper). Click any row name for the full record.
+    </p>
   </section>
 </BaseLayout>
 
@@ -270,11 +503,16 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
   .openness-source-available { background: var(--color-surface-warm); color: var(--color-focus-source-available); border: 1px solid var(--color-focus-source-available); }
   .openness-proprietary { background: var(--color-surface-warm); color: var(--color-focus-proprietary); border: 1px solid var(--color-focus-proprietary); }
   .timeline-dot:hover circle { r: 7; cursor: pointer; }
+  .scatter-dot:hover circle { r: 8; cursor: pointer; }
+  /* Native browser title attributes show a hover tooltip; for richer
+     popovers we'd render our own. Native title is sufficient here because
+     the help text is one or two sentences. */
+  th[title] { cursor: help; }
+  /* Custom summary chevron + remove default disclosure triangle */
+  details > summary::-webkit-details-marker { display: none; }
 </style>
 
 <script is:inline>
-  // Filter the models table client-side. Resets on /reset click. No
-  // network; reads everything off data-* attrs.
   (function () {
     const search = document.getElementById("models-search");
     const fOpen = document.getElementById("filter-openness");
@@ -319,5 +557,74 @@ const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort()
       fDev.value = "";
       apply();
     });
+  })();
+
+  // Multi-select compare. Up to 4 checkboxes; surfaces a floating
+  // "compare N selected →" link that builds /models/compare?slugs=...
+  (function () {
+    const MAX = 4;
+    const cbs = Array.from(document.querySelectorAll(".cmp-cb"));
+    const cta = document.getElementById("multi-compare-cta");
+    const link = document.getElementById("multi-compare-link");
+    const counter = document.getElementById("multi-compare-count");
+
+    function update() {
+      const selected = cbs.filter((c) => c.checked).map((c) => c.dataset.slug);
+      // Cap selection at MAX: if the user checks a 5th, refuse it.
+      if (selected.length > MAX) {
+        cbs.find((c) => c.checked && !selected.slice(0, MAX).includes(c.dataset.slug)).checked = false;
+        return update();
+      }
+      if (selected.length >= 2) {
+        cta.classList.remove("hidden");
+        counter.textContent = `${selected.length} selected · max ${MAX}`;
+        link.href = `/models/compare?slugs=${selected.join(",")}`;
+      } else {
+        cta.classList.add("hidden");
+      }
+      // Disable empty checkboxes once max is reached.
+      for (const c of cbs) {
+        if (!c.checked) c.disabled = selected.length >= MAX;
+      }
+    }
+    for (const c of cbs) c.addEventListener("change", update);
+  })();
+
+  // Rich timeline tooltip. On hover over a dot, position a small panel
+  // near the cursor showing the headline fields.
+  (function () {
+    const container = document.getElementById("timeline-container");
+    const tip = document.getElementById("timeline-tooltip");
+    if (!container || !tip) return;
+    const dots = Array.from(document.querySelectorAll(".timeline-dot"));
+
+    function show(g, evt) {
+      const d = g.dataset;
+      const rect = container.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+      tip.style.left = `${Math.min(x + 12, rect.width - 320)}px`;
+      tip.style.top = `${Math.max(8, y - 110)}px`;
+      const gpqaLine = d.gpqa ? `GPQA-D ${d.gpqa}` : "";
+      const mmluLine = d.mmluPro ? `MMLU-Pro ${d.mmluPro}` : "";
+      const benches = [gpqaLine, mmluLine].filter(Boolean).join(" · ");
+      const costLine = d.costIn && d.costOut ? `$${d.costIn} / $${d.costOut} per Mtok` : "no public price";
+      tip.innerHTML = `
+        <div style="font-family: var(--font-sans); font-weight: 600; color: var(--color-text); margin-bottom: 2px;">${d.name}</div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--color-text-subtle); margin-bottom: 6px;">${d.dev} · ${d.date} · ${d.license}</div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--color-text-muted); line-height: 1.6;">
+          <div>${d.arch} · ${d.paramsTotal} total / ${d.paramsActive} active · ${d.context} ctx</div>
+          ${benches ? `<div>${benches}</div>` : ""}
+          <div>${costLine}</div>
+        </div>
+      `;
+      tip.classList.remove("hidden");
+    }
+    function hide() { tip.classList.add("hidden"); }
+    for (const g of dots) {
+      g.addEventListener("mouseenter", (e) => show(g, e));
+      g.addEventListener("mousemove", (e) => show(g, e));
+      g.addEventListener("mouseleave", hide);
+    }
   })();
 </script>

@@ -171,6 +171,109 @@ function rowsForModel(m) {
     });
   }
 
+  // Cost — factual / amount. Source is whatever the schema field
+  // points to (Artificial Analysis URL or lab pricing page).
+  if (m.cost && m.cost.input_per_mtok_usd !== undefined) {
+    rows.push(row(
+      `models.${slug}.cost.input`,
+      surface, location,
+      `${m.display_name} input price: $${m.cost.input_per_mtok_usd} per million tokens (vendor=${m.cost.vendor ?? "?"}, as of ${toISODate(m.cost.as_of)})`,
+      "factual", "amount", m.cost.source,
+      "cost.input_per_mtok_usd schema field",
+    ));
+  }
+  if (m.cost && m.cost.output_per_mtok_usd !== undefined) {
+    rows.push(row(
+      `models.${slug}.cost.output`,
+      surface, location,
+      `${m.display_name} output price: $${m.cost.output_per_mtok_usd} per million tokens (vendor=${m.cost.vendor ?? "?"}, as of ${toISODate(m.cost.as_of)})`,
+      "factual", "amount", m.cost.source,
+      "cost.output_per_mtok_usd schema field",
+    ));
+  }
+
+  // Speed — factual / amount.
+  if (m.speed && m.speed.tokens_per_sec_output !== undefined) {
+    rows.push(row(
+      `models.${slug}.speed.output_tps`,
+      surface, location,
+      `${m.display_name} output throughput: ${m.speed.tokens_per_sec_output} tokens/sec (vendor=${m.speed.vendor ?? "?"}, as of ${toISODate(m.speed.as_of)})`,
+      "factual", "amount", m.speed.source,
+      "speed.tokens_per_sec_output schema field",
+    ));
+  }
+  if (m.speed && m.speed.ttft_ms !== undefined) {
+    rows.push(row(
+      `models.${slug}.speed.ttft`,
+      surface, location,
+      `${m.display_name} time-to-first-token: ${m.speed.ttft_ms} ms (vendor=${m.speed.vendor ?? "?"}, as of ${toISODate(m.speed.as_of)})`,
+      "factual", "amount", m.speed.source,
+      "speed.ttft_ms schema field",
+    ));
+  }
+
+  // Lineage parent / children — factual / attribution.
+  if (m.lineage?.parent) {
+    rows.push(row(
+      `models.${slug}.lineage.parent`,
+      surface, location,
+      `${m.display_name} is derived from ${m.lineage.parent}`,
+      "factual", "attribution", primary,
+      "lineage.parent schema field",
+    ));
+  }
+  if (Array.isArray(m.lineage?.children)) {
+    m.lineage.children.forEach((c, i) => {
+      rows.push(row(
+        `models.${slug}.lineage.child.${i}`,
+        surface, location,
+        `${m.display_name} has derivative: ${c}`,
+        "factual", "attribution", primary,
+        "lineage.children schema field",
+      ));
+    });
+  }
+
+  // Recommended use cases — framing lane (subjective).
+  if (Array.isArray(m.recommended_use_cases)) {
+    m.recommended_use_cases.forEach((uc, i) => {
+      rows.push(row(
+        `models.${slug}.use_case.${i}`,
+        surface, location,
+        `${m.display_name} is recommended for: ${uc}`,
+        "framing", "attribution", primary,
+        "recommended_use_cases schema field",
+      ));
+    });
+  }
+
+  // Known limitations — factual / attribution, each carries own source.
+  if (Array.isArray(m.known_limitations)) {
+    m.known_limitations.forEach((lim, i) => {
+      rows.push(row(
+        `models.${slug}.limitation.${i}`,
+        surface, location,
+        `${m.display_name} limitation: ${lim.text.slice(0, 140)}${lim.text.length > 140 ? "..." : ""}`,
+        "factual", "attribution", lim.source,
+        "known_limitations schema field",
+      ));
+    });
+  }
+
+  // Long-form essay — framing lane, paragraph-level consistency check.
+  if (typeof m.long_form === "string" && m.long_form.length > 0) {
+    const paras = m.long_form.split(/\n\n/).filter(Boolean);
+    paras.forEach((p, i) => {
+      rows.push(row(
+        `models.${slug}.long_form.${i}`,
+        surface, location,
+        `${m.display_name} long-form paragraph ${i + 1}: "${p.slice(0, 100)}..."`,
+        "framing", "attribution", primary,
+        `long_form paragraph; paragraph-level consistency check`,
+      ));
+    });
+  }
+
   return rows;
 }
 

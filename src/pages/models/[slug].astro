@@ -4,6 +4,7 @@ import ModelArchitecture from "../../components/ModelArchitecture.astro";
 import {
   loadModels,
   loadModelsByFamily,
+  loadModelBySlug,
   BENCHMARK_GROUPS,
   BENCHMARK_LABEL,
   OPENNESS_LABEL,
@@ -27,10 +28,6 @@ const siblings = loadModelsByFamily(model.family)
   .filter((m) => m.slug !== model.slug)
   .sort((a, b) => (a.released_date ?? "").localeCompare(b.released_date ?? ""));
 
-// Closed-model nearest neighbor for comparison. For open models we
-// surface the proprietary model released closest in time; for closed
-// models we surface the open one released closest in time. Lets a
-// reader jump straight to a side-by-side without thinking.
 const ALL = loadModels();
 const counterpartPool = ALL.filter((m) =>
   model.openness === "proprietary"
@@ -46,11 +43,23 @@ const counterpart = counterpartPool
   .slice()
   .sort((a, b) => dayDelta(a.released_date, model.released_date) - dayDelta(b.released_date, model.released_date))[0];
 
+const parent = model.lineage?.parent ? loadModelBySlug(model.lineage.parent) : null;
+const children = (model.lineage?.children ?? [])
+  .map((s) => loadModelBySlug(s))
+  .filter((m): m is Model => !!m);
+
 const opennessClass =
   model.openness === "open" ? "openness-open" :
   model.openness === "open-weights" ? "openness-open-weights" :
   model.openness === "source-available" ? "openness-source-available" :
   "openness-proprietary";
+
+const opennessExplainer: Record<typeof model.openness, string> = {
+  "open": "Apache-2.0 or MIT class license; OSI-approved by the most common reading. Weights and license terms unrestricted for commercial use. Does not imply training data or training code are released.",
+  "open-weights": "Weights are downloadable under a permissive license, but the license carries field-of-use restrictions or revocable terms that prevent OSI approval.",
+  "source-available": "Weights are downloadable but the license includes acceptable-use policy clauses, scale caps, or other restrictions. Commercial use possible with conditions.",
+  "proprietary": "Weights not released. Architecture and training data typically undisclosed. Available only through the lab's API or partner endpoints.",
+};
 
 const benchmarkGroupOrder = ["general", "code", "math", "arena"] as const;
 const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = {
@@ -59,13 +68,31 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
   math: "Math",
   arena: "Held-out / arena",
 };
+
+function fmtCurrency(n: number | undefined): string {
+  if (n === undefined || n === null) return "—";
+  if (n < 0.1) return `$${n.toFixed(2)}`;
+  if (n < 10) return `$${n.toFixed(2)}`;
+  return `$${n.toFixed(2)}`;
+}
 ---
 
 <BaseLayout
   title={`${model.display_name} · Models`}
   description={model.release_context ?? `${model.display_name} architecture, training, benchmarks, sources.`}
 >
-  <section class="max-w-4xl mx-auto px-6 pt-12 pb-4">
+  <section class="max-w-4xl mx-auto px-6 pt-8 pb-2">
+    <a
+      href="/models"
+      class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4 transition-colors"
+      title="Back to all models"
+    >
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M19 12H5"/>
+        <path d="M12 19l-7-7 7-7"/>
+      </svg>
+      All models
+    </a>
     <p class="font-mono text-xs uppercase tracking-wider mb-2">
       <a href="/models" class="no-underline hover:underline text-[var(--color-text-subtle)]">
         Models
@@ -77,7 +104,10 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
       {model.display_name}
     </h1>
     <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
-      <span class={`openness-badge ${opennessClass} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}>
+      <span
+        class={`openness-badge ${opennessClass} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded cursor-help`}
+        title={opennessExplainer[model.openness]}
+      >
         {OPENNESS_LABEL[model.openness]}
       </span>
       <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.developer}</span>
@@ -95,7 +125,90 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
 
   <div class="max-w-4xl mx-auto px-6 grid gap-10 md:grid-cols-[1fr_320px] mt-4 pb-16">
     <article>
-      <!-- Architecture diagram -->
+      <!-- Cost + speed cards at the top so production decisions are upfront. -->
+      {(model.cost || model.speed) && (
+        <section class="mb-10 grid grid-cols-2 gap-4">
+          {model.cost && (
+            <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+              <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+                Cost
+              </p>
+              <div class="flex items-baseline gap-3 mb-1">
+                <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
+                  {model.cost.input_per_mtok_usd !== undefined ? `$${model.cost.input_per_mtok_usd.toFixed(2)}` : "—"}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  / Mtok input
+                </span>
+              </div>
+              <div class="flex items-baseline gap-3 mb-3">
+                <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
+                  {model.cost.output_per_mtok_usd !== undefined ? `$${model.cost.output_per_mtok_usd.toFixed(2)}` : "—"}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  / Mtok output
+                </span>
+              </div>
+              <p class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+                {model.cost.vendor} · as of {model.cost.as_of}
+              </p>
+              <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-1">
+                {model.cost.via_artificial_analysis ? "via " : ""}<a href={model.cost.source} target="_blank" rel="noopener" class="hover:text-[var(--color-text)] no-underline hover:underline">
+                  {model.cost.via_artificial_analysis ? "Artificial Analysis ↗" : "source ↗"}
+                </a>
+              </p>
+            </div>
+          )}
+          {model.speed && (
+            <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+              <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+                Speed
+              </p>
+              <div class="flex items-baseline gap-3 mb-1">
+                <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
+                  {model.speed.tokens_per_sec_output ?? "—"}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  tok/sec output
+                </span>
+              </div>
+              {model.speed.ttft_ms !== undefined && (
+                <div class="flex items-baseline gap-3 mb-3">
+                  <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
+                    {model.speed.ttft_ms}
+                  </span>
+                  <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                    ms TTFT
+                  </span>
+                </div>
+              )}
+              <p class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+                {model.speed.vendor} · as of {model.speed.as_of}
+              </p>
+              <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-1">
+                {model.speed.via_artificial_analysis ? "via " : ""}<a href={model.speed.source} target="_blank" rel="noopener" class="hover:text-[var(--color-text)] no-underline hover:underline">
+                  {model.speed.via_artificial_analysis ? "Artificial Analysis ↗" : "source ↗"}
+                </a>
+              </p>
+            </div>
+          )}
+        </section>
+      )}
+
+      <!-- Long-form 'Why people cared' section, priority models only. -->
+      {model.long_form && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Why people cared
+          </h2>
+          <div class="prose prose-sm max-w-none text-[var(--color-text-muted)] leading-relaxed">
+            {model.long_form.split(/\n\n/).map((para) => (
+              <p class="mb-4">{para}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section class="mb-10">
         <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
           Architecture
@@ -103,7 +216,6 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
         <ModelArchitecture model={model} />
       </section>
 
-      <!-- Architecture facts table -->
       <section class="mb-10">
         <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
           Specs
@@ -166,15 +278,13 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
         </dl>
       </section>
 
-      <!-- Benchmarks -->
       {model.benchmarks && Object.keys(model.benchmarks).length > 0 && (
         <section class="mb-10">
           <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
             Benchmarks
           </h2>
           <p class="text-xs text-[var(--color-text-subtle)] mb-3">
-            Each score carries the date it was published; we never infer or
-            interpolate missing scores.
+            Each score carries the date it was published; we never infer or interpolate missing scores.
           </p>
           {benchmarkGroupOrder.map((g) => {
             const slugs = BENCHMARK_GROUPS[g];
@@ -210,7 +320,21 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
         </section>
       )}
 
-      <!-- Notable innovations -->
+      {model.recommended_use_cases && model.recommended_use_cases.length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Recommended use cases
+          </h2>
+          <ul class="flex flex-wrap gap-2">
+            {model.recommended_use_cases.map((uc) => (
+              <li class="font-mono text-xs px-2 py-1 rounded bg-[var(--color-surface-warm)] border border-[var(--color-border)] text-[var(--color-text-muted)]">
+                {uc}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {model.notable_innovations && model.notable_innovations.length > 0 && (
         <section class="mb-10">
           <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
@@ -224,7 +348,66 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
         </section>
       )}
 
-      <!-- Reception -->
+      {model.known_limitations && model.known_limitations.length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Known limitations
+          </h2>
+          <ul class="space-y-2 text-sm">
+            {model.known_limitations.map((l) => (
+              <li class="text-[var(--color-text-muted)] leading-relaxed">
+                · {l.text}
+                {" "}
+                <a href={l.source} target="_blank" rel="noopener" class="font-mono text-[10px] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline hover:underline">
+                  source ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(parent || children.length > 0 || model.lineage?.note) && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Lineage
+          </h2>
+          {model.lineage?.note && (
+            <p class="text-sm text-[var(--color-text-muted)] mb-3 leading-relaxed">
+              {model.lineage.note}
+            </p>
+          )}
+          {parent && (
+            <div class="mb-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+                Derived from
+              </p>
+              <a href={`/models/${parent.slug}`} class="text-sm text-[var(--color-text)] no-underline hover:underline">
+                {parent.display_name}
+                <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{parent.released_date}</span>
+              </a>
+            </div>
+          )}
+          {children.length > 0 && (
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+                Derivatives
+              </p>
+              <ul class="space-y-1">
+                {children.map((c) => (
+                  <li>
+                    <a href={`/models/${c.slug}`} class="text-sm text-[var(--color-text)] no-underline hover:underline">
+                      {c.display_name}
+                      <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{c.released_date}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
       {model.reception && model.reception.length > 0 && (
         <section class="mb-10">
           <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
@@ -244,7 +427,6 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
         </section>
       )}
 
-      <!-- Sources -->
       <section class="mb-10">
         <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
           Sources
@@ -261,7 +443,6 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
       </section>
     </article>
 
-    <!-- Right rail -->
     <aside class="text-sm space-y-6 md:sticky md:top-20 md:self-start">
       <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
         <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
@@ -301,7 +482,7 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
               {counterpart.display_name}
             </a>
             <p class="mt-2">
-              <a href={`/models/compare?a=${model.slug}&b=${counterpart.slug}`} class="font-mono text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+              <a href={`/models/compare?slugs=${model.slug},${counterpart.slug}`} class="font-mono text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
                 compare side-by-side →
               </a>
             </p>
@@ -329,8 +510,6 @@ const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = 
 </style>
 
 <script is:inline>
-  // Wire the "Ask chat about this model" button to dispatch a chat-trigger event.
-  // ChatBubble listens for this and opens with a pre-filled prompt.
   (function () {
     const btn = document.querySelector("[data-ask-model]");
     if (!btn) return;

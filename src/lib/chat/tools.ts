@@ -180,13 +180,31 @@ export const TOOLS = [
   {
     name: "read_model",
     description:
-      "Fetch the full record for one model checkpoint by canonical slug. Returns identity, timeline, openness, license, architecture (params, attention variant, position encoding, MoE experts when applicable), training (tokens, hardware, post-training stages), every reported benchmark with its as-of date and source URL, quantizations and runtimes that support it, release_context, notable_innovations, reception quotes with author + URL, full sources list, and the family siblings (other checkpoints by the same family). Use this when the user asks about a specific named model; prefer it over find_models when you already know the slug. Limit: 4 calls per turn.",
+      "Fetch the full record for one model checkpoint by canonical slug. Returns identity, timeline, openness, license, architecture (params, attention variant, position encoding, MoE experts when applicable), training (tokens, hardware, post-training stages), every reported benchmark with its as-of date and source URL, cost (input + output $/M tok via Artificial Analysis), speed (decode tokens/sec, TTFT), lineage (parent + children slugs), recommended use cases, known limitations, long-form 'why people cared' essay, quantizations and runtimes that support it, release_context, notable_innovations, reception quotes with author + URL, full sources list, and the family siblings. Use this when the user asks about a specific named model; prefer it over find_models when you already know the slug. Limit: 4 calls per turn.",
     input_schema: {
       type: "object",
       properties: {
         slug: { type: "string", description: "Canonical model slug, e.g. 'deepseek-r1', 'llama-3-1-405b-instruct', 'claude-3-5-sonnet'." },
       },
       required: ["slug"],
+    },
+  },
+  {
+    name: "compare_models",
+    description:
+      "Compare 2 to 4 model checkpoints by slug. Returns an array of records (one per slug) with normalized fields ready for side-by-side analysis: identity, openness, architecture, params, context, cost, speed, full benchmark scores, recommended use cases, lineage, and release_context. Use when the user asks to compare named models. Limit: 2 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slugs: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 2,
+          maxItems: 4,
+          description: "Array of 2 to 4 canonical model slugs.",
+        },
+      },
+      required: ["slugs"],
     },
   },
   {
@@ -220,6 +238,7 @@ const LIMITS: Record<string, number> = {
   read_project: 4,
   read_glossary: 4,
   read_model: 4,
+  compare_models: 2,
   today_news: 1,
   search: 2,
 };
@@ -642,6 +661,43 @@ export async function executeTool(
             benchmarks: m.benchmarks,
           })),
         };
+        break;
+      }
+
+      case "compare_models": {
+        const slugs = Array.isArray(call.input.slugs) ? (call.input.slugs as string[]) : [];
+        if (slugs.length < 2 || slugs.length > 4) {
+          result = { error: "compare_models requires 2 to 4 slugs." };
+          break;
+        }
+        const models = await getModels();
+        const compared = slugs.map((s) => {
+          const m = models.find((x) => x.slug === s);
+          if (!m) return { slug: s, error: `unknown slug` };
+          return {
+            slug: m.slug,
+            display_name: m.display_name,
+            family: m.family,
+            developer: m.developer,
+            released_date: m.released_date,
+            openness: m.openness,
+            license: m.license,
+            architecture: m.architecture,
+            params_total: m.params_total,
+            params_active: m.params_active,
+            experts: m.experts,
+            experts_active: m.experts_active,
+            context_window: m.context_window,
+            attention_variant: m.attention_variant,
+            cost: m.cost,
+            speed: m.speed,
+            benchmarks: m.benchmarks,
+            recommended_use_cases: m.recommended_use_cases,
+            release_context: m.release_context,
+            lineage: m.lineage,
+          };
+        });
+        result = { models: compared };
         break;
       }
 
