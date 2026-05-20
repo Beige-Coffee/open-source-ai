@@ -633,7 +633,36 @@ export default function CoursePanel({
     setWhyOpenSaved(true);
   }, [phase, userId, supabase, turns, moduleSlug]);
 
+  // Begin Probe: optimistically transition the panel into the Probe
+  // phase (the load + auto-start effects will then fire the opening
+  // question). Logged-in users get a module_progress upsert; anonymous
+  // users get a localStorage write. Either way, a refresh lands the
+  // learner back in Probe and the saved turns surface again.
+  const beginProbe = useCallback(async () => {
+    setPhase("probe");
+    if (userId && supabase) {
+      try {
+        await supabase.from("module_progress").upsert({
+          user_id: userId,
+          module_slug: moduleSlug,
+          phase: "probe",
+          phase_started_at: new Date().toISOString(),
+        });
+      } catch {
+        // Non-fatal: local phase has already moved, so the dialog
+        // proceeds. Persistence will retry on the next phase change.
+      }
+    } else if (!userId) {
+      writeAnonPhase(moduleSlug, "probe");
+    }
+  }, [userId, supabase, moduleSlug]);
+
   // ---- Render ----
+  // Every hook above runs unconditionally on every render; the early
+  // returns and conditional branches below only affect what's
+  // rendered, never the hook order. Adding a new hook means it must
+  // sit above this line, or React will throw a rules-of-hooks error
+  // the first time hasKey or phase changes between renders.
 
   if (!hasKey) {
     return (
@@ -673,30 +702,6 @@ export default function CoursePanel({
       </div>
     );
   }
-
-  // Begin Probe: optimistically transition the panel into the Probe
-  // phase (the load + auto-start effects will then fire the opening
-  // question). Logged-in users get a module_progress upsert; anonymous
-  // users get a localStorage write. Either way, a refresh lands the
-  // learner back in Probe and the saved turns surface again.
-  const beginProbe = useCallback(async () => {
-    setPhase("probe");
-    if (userId && supabase) {
-      try {
-        await supabase.from("module_progress").upsert({
-          user_id: userId,
-          module_slug: moduleSlug,
-          phase: "probe",
-          phase_started_at: new Date().toISOString(),
-        });
-      } catch {
-        // Non-fatal: local phase has already moved, so the dialog
-        // proceeds. Persistence will retry on the next phase change.
-      }
-    } else if (!userId) {
-      writeAnonPhase(moduleSlug, "probe");
-    }
-  }, [userId, supabase, moduleSlug]);
 
   if (phase === "read") {
     return (

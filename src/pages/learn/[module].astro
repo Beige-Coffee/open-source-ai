@@ -296,7 +296,13 @@ const prev = prevModule(moduleSlug);
            instead of growing it downward.
            The ModuleSidebar lives below the chat and flows naturally;
            on long Read content the user scrolls the page to reach it. -->
-      <aside class="md:self-start">
+      {/* No align-self: start here. With md:self-start the aside shrank
+          to its content (~552px), which capped the sticky child's scroll
+          window to that span and let the chat scroll off-screen partway
+          down a long Read section. Letting the aside stretch to the
+          grid row height (matches the article column) gives the sticky
+          chat room to track the full scroll. */}
+      <aside>
         {/* Chat container: always visible (min-h-[480px] on desktop)
             so the panel is recognizable even before the React island
             hydrates or before the learner has started Probe. Caps at

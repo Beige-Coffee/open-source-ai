@@ -30,7 +30,15 @@ export default defineConfig({
     // this, the browser sees the CJS module directly and the
     // createRoot named export is missing.
     optimizeDeps: {
-      include: ["react-dom/client"],
+      include: ["react", "react/jsx-runtime", "react/jsx-dev-runtime", "react-dom", "react-dom/client"],
+    },
+    // Force a single React instance across the bundle. Without this,
+    // vite's prebundle put react inside react-dom's chunk and re-bundled
+    // a second copy for components, which left the hooks dispatcher
+    // unset and every component threw "Invalid hook call" on first
+    // render — the React-island chat box stayed visually empty.
+    resolve: {
+      dedupe: ["react", "react-dom"],
     },
   },
 });
