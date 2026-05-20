@@ -510,97 +510,105 @@ export default function ChatBubble() {
           aria-hidden="true"
         />
 
-        {/* Header */}
-        <header className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-[var(--color-border)]">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <button
-              type="button"
-              onClick={() => setShowThreadList(!showThreadList)}
-              className="p-1.5 rounded hover:bg-[var(--color-surface-warm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              aria-label={showThreadList ? "Hide thread list" : "Show thread list"}
-              title={showThreadList ? "Hide threads" : "Show threads"}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
-              </svg>
-            </button>
-            <span className="font-serif text-sm text-[var(--color-text)] truncate flex-1 min-w-0" title={activeThread?.title ?? "Chat"}>
-              {activeThread?.title ?? "Chat"}
-            </span>
+        {/* Persistent layout: thin icon rail | optional threads panel | main column.
+            No top hamburger; the rail is always visible and threads slide in. */}
+        <div className="flex-1 flex min-h-0">
+          {/* Icon rail (always visible). New chat + threads toggle on top,
+              settings + close pinned to the bottom. */}
+          <nav
+            className="w-11 border-r border-[var(--color-border)] bg-[var(--color-surface-warm)] flex flex-col items-center py-2 gap-1 shrink-0"
+            aria-label="Chat controls"
+          >
             <button
               type="button"
               onClick={() => {
                 const id = createThread();
                 setActiveThread(id);
+                setShowThreadList(false);
               }}
-              className="p-1.5 rounded hover:bg-[var(--color-surface-warm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              className="p-2 rounded hover:bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40"
               aria-label="New chat"
               title="New chat"
               disabled={streaming}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
             </button>
-          </div>
-          <div className="flex items-center gap-1">
-            <a
-              href="/settings"
-              className="p-1.5 rounded text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-warm)] no-underline"
-              title="Settings (API key, model)"
-              aria-label="Open settings"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-              </svg>
-            </a>
             <button
               type="button"
-              onClick={() => setOpen(false)}
-              className="p-1.5 rounded text-[var(--color-text-subtle)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)]"
-              title="Close chat"
-              aria-label="Close chat"
+              onClick={() => setShowThreadList(!showThreadList)}
+              className={`p-2 rounded ${
+                showThreadList
+                  ? "bg-[var(--color-surface)] text-[var(--color-text)]"
+                  : "hover:bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              }`}
+              aria-label={showThreadList ? "Hide thread list" : "Show thread list"}
+              aria-pressed={showThreadList}
+              title="Chats"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
             </button>
-          </div>
-        </header>
+            <div className="mt-auto flex flex-col items-center gap-1">
+              <a
+                href="/settings"
+                className="p-2 rounded text-[var(--color-text-subtle)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)] no-underline"
+                title="Settings (API key, model)"
+                aria-label="Open settings"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </a>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="p-2 rounded text-[var(--color-text-subtle)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)]"
+                title="Close chat"
+                aria-label="Close chat"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </nav>
 
-        {/* Thread-action row (kept for the per-thread Clear button). */}
-        {activeThread && messages.length > 0 && (
-          <div className="flex items-center justify-end px-3 py-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
-            <button
-              type="button"
-              onClick={() => {
-                if (confirm("Clear all messages in this thread?")) clearActive();
-              }}
-              className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-              title="Clear messages in this thread"
-              disabled={streaming}
-            >
-              Clear
-            </button>
-          </div>
-        )}
-
-        <div className="flex-1 flex min-h-0">
-          {/* Thread sidebar (left, collapsible) */}
+          {/* Threads panel (slides in next to the rail). Header in here
+              gives the panel its own "+ New chat" entry, matching the
+              Claude/ChatGPT pattern where the list lives in its own
+              column rather than under a top hamburger. */}
           {showThreadList && (
             <nav
-              className="w-44 border-r border-[var(--color-border)] bg-[var(--color-bg)] overflow-y-auto"
+              className="w-52 border-r border-[var(--color-border)] bg-[var(--color-bg)] overflow-y-auto shrink-0 flex flex-col"
               aria-label="Chat threads"
             >
-              <ul className="py-1">
+              <div className="px-3 py-2 border-b border-[var(--color-border)] flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  Chats
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const id = createThread();
+                    setActiveThread(id);
+                  }}
+                  className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40"
+                  disabled={streaming}
+                  title="New chat"
+                >
+                  + New
+                </button>
+              </div>
+              <ul className="py-1 flex-1">
                 {threads.length === 0 && (
                   <li className="px-3 py-2 text-xs text-[var(--color-text-subtle)] italic">
-                    No threads yet
+                    No chats yet
                   </li>
                 )}
                 {threads.map((t) => (
@@ -629,12 +637,12 @@ export default function ChatBubble() {
                         type="button"
                         onClick={() => setActiveThread(t.id)}
                         onDoubleClick={() => setRenamingId(t.id)}
-                        className={`block w-full text-left px-3 py-1.5 text-xs ${
+                        className={`block w-full text-left px-3 py-1.5 text-xs pr-12 ${
                           t.id === activeThreadId
                             ? "bg-[var(--color-surface)] text-[var(--color-text)] font-medium"
                             : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-warm)]"
                         }`}
-                        title={`${t.title} (double-click to rename)`}
+                        title={t.title}
                       >
                         <div className="truncate">{t.title}</div>
                         <div className="text-[10px] font-mono text-[var(--color-text-subtle)] mt-0.5">
@@ -642,23 +650,43 @@ export default function ChatBubble() {
                         </div>
                       </button>
                     )}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (confirm(`Delete thread "${t.title}"?`)) {
-                          deleteThread(t.id);
-                        }
-                      }}
-                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-1 text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-                      title="Delete thread"
-                      aria-label="Delete thread"
-                    >
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                      </svg>
-                    </button>
+                    {renamingId !== t.id && (
+                      <div className="absolute top-1 right-1 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRenamingId(t.id);
+                          }}
+                          className="p-1 text-[var(--color-text-subtle)] hover:text-[var(--color-text)] rounded hover:bg-[var(--color-surface-warm)]"
+                          title="Rename"
+                          aria-label="Rename chat"
+                        >
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm(`Delete chat "${t.title}"?`)) {
+                              deleteThread(t.id);
+                            }
+                          }}
+                          className="p-1 text-[var(--color-text-subtle)] hover:text-[var(--color-text)] rounded hover:bg-[var(--color-surface-warm)]"
+                          title="Delete"
+                          aria-label="Delete chat"
+                        >
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6M14 11v6"/>
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -667,6 +695,30 @@ export default function ChatBubble() {
 
           {/* Main message column */}
           <div className="flex-1 flex flex-col min-w-0">
+            {/* Thread title + per-thread actions (replaces the old top
+                header). Title stays visible regardless of threads-panel
+                state; Clear only shows when there's something to clear. */}
+            <header className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]">
+              <span
+                className="font-serif text-sm text-[var(--color-text)] truncate"
+                title={activeThread?.title ?? "Chat"}
+              >
+                {activeThread?.title ?? "New chat"}
+              </span>
+              {activeThread && messages.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm("Clear all messages in this chat?")) clearActive();
+                  }}
+                  className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] disabled:opacity-40"
+                  title="Clear messages in this chat"
+                  disabled={streaming}
+                >
+                  Clear
+                </button>
+              )}
+            </header>
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
               {messages.length === 0 ? (
                 <div className="space-y-3">

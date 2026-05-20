@@ -119,6 +119,20 @@ body[data-chat-open="true"] > header {
 }
 
 /*
+ * When the chat panel is open, the main column shrinks by --chat-width.
+ * On pages where a two-column grid (Tailwind `md:grid-cols-[1fr_240px]`)
+ * activates at 768px viewport, the right column can get clipped behind
+ * the chat panel because the breakpoint fires on full viewport width,
+ * not on the available width after the chat takes its 480px+.
+ *
+ * Force the stack diagram back to single column when chat is open so
+ * the "Cross-cutting meta-layers" rail wraps below instead of hiding.
+ */
+body[data-chat-open="true"] .stack-diagram-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/*
  * Markdown rendering inside chat messages. Tight spacing for the chat
  * panel; lists and paragraphs get vertical rhythm but not too much.
  */
