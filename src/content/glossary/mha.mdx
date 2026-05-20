@@ -1,0 +1,37 @@
+---
+term: MHA
+aliases: [multi-head attention, multi-head-attention, multihead attention]
+primary_layer: runtime
+secondary_layers: [weights]
+summary: Standard transformer attention where each layer has N independent query, key, and value heads; foundational but memory-heavy as context windows grow.
+sources:
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The attention mechanism introduced in the original 2017 <G term="transformer">transformer</G>
+paper. Each layer has N independent attention heads, and each head has
+its own query, key, and value projection. The N heads run in parallel,
+their outputs concatenate, and a final projection mixes them back to
+the model's hidden dimension. The "multi-head" part lets different
+heads specialize on different relational patterns (positional,
+syntactic, semantic).
+
+The cost dominant in deployment is the <G term="kv-cache">KV cache</G>: at decode time the
+model has to remember every prior token's key and value across every
+head, which is `N_heads x context_length x hidden_dim` floats per
+layer. For long contexts this dwarfs the model parameters themselves.
+A Llama 2 70B at 8K context with 64 KV heads stores roughly 32 GB of
+KV cache per concurrent request before any quantization.
+
+That memory bottleneck is why almost no current production model uses
+plain MHA. <G term="mqa">Multi-query attention</G> (one shared KV head) and <G term="gqa">grouped-query
+attention</G> (N query heads share K KV heads) both shrink the cache by
+4x to 8x at small quality cost, and <G term="mla">multi-head latent attention</G>
+shrinks it further via a learned low-rank projection. <G term="llama">Llama</G> 2 was the
+last major release to use plain MHA at the 7B and 13B sizes; from
+<G term="llama">Llama</G> 3 onward, every model in this catalog uses GQA, MLA, or a
+hybrid.

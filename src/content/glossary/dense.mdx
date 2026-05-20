@@ -1,0 +1,42 @@
+---
+term: dense
+aliases: [dense transformer, dense model]
+primary_layer: weights
+secondary_layers: [training, runtime]
+summary: A transformer where every parameter activates on every token; the conventional architecture before mixture of experts became common at frontier scale.
+sources:
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+  - title: "Llama 3 Herd of Models (Meta, 2024)"
+    url: "https://arxiv.org/abs/2407.21783"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A <G term="transformer">transformer</G> where every parameter in every layer participates in every forward
+pass. The feed-forward block is a single MLP, the <G term="attention">attention</G> heads see the full
+hidden state, and no routing or sparsity is involved. This is the
+architecture introduced in the original 2017 transformer paper and was
+the default for every <G term="open-weights">open-weights</G> frontier model from <G term="llama">Llama</G> 1 (Feb 2023)
+through <G term="llama">Llama</G> 3.3 (Dec 2024).
+
+The economic property that defines dense models is that capacity and
+inference cost scale together. A 70B dense model uses 70B parameters
+per forward pass; a 405B dense model uses 405B. There is no way to add
+capacity without paying for it at every token. <G term="mixture-of-experts">Mixture of experts</G> breaks
+that one-to-one coupling, which is why most 2025 frontier open-weights
+releases (<G term="deepseek">DeepSeek</G> V3, <G term="qwen">Qwen</G> 3 235B, <G term="llama">Llama</G> 4) moved to MoE for the largest
+sizes while keeping dense variants at the 8B and 70B class.
+
+Dense models are still the default at the small end (under ~30B) and
+for fine-tuning bases, because the routing overhead of MoE only pays
+off at scale and dense architectures are simpler to quantize, serve on
+a single GPU, and fine-tune with techniques like <G term="lora">LoRA</G>. <G term="llama">Llama</G> 3.3 70B,
+<G term="qwen">Qwen</G> 2.5 72B, <G term="phi">Phi-4</G>, <G term="gemma">Gemma</G> 2 27B, and <G term="olmo">OLMo</G> 2 13B are all dense releases
+from the 2024 to 2025 window.
+
+The opposite end of the spectrum is the new generation of MoE releases
+where total parameters exceed active parameters by 10 to 30 times.
+Dense models remain the reference architecture against which MoE
+quality claims are measured.

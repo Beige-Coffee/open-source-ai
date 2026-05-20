@@ -179,12 +179,12 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
 };
 
 // Architecture explainers. Rendered as HTML in the popover so we can
-// link to deeper glossary entries when one exists.
+// link to the deeper glossary entry for each architecture type.
 const ARCH_POPOVER: Record<string, string> = {
-  dense: 'Dense transformer. Every parameter is activated on every token. The conventional architecture before mixture-of-experts became common for frontier models.',
+  dense: 'Dense transformer. Every parameter is activated on every token; the conventional architecture before MoE became common at frontier scale. <a href="/glossary/dense">Learn more &rarr;</a>',
   moe: 'Mixture of experts. The model has more total parameters than it activates per token; a router picks a small subset of expert MLPs per token, trading sparsity for capacity at lower inference cost. <a href="/glossary/mixture-of-experts">Learn more &rarr;</a>',
-  hybrid: 'Hybrid attention. Mixes different attention mechanisms across layers (e.g. interleaved global and sliding-window attention).',
-  ssm: 'State space model. Replaces or supplements attention with a state-space recurrence (e.g. Mamba). Linear-time in sequence length.',
+  hybrid: 'Hybrid attention. Mixes different attention mechanisms across layers, typically global plus sliding-window. <a href="/glossary/hybrid-attention">Learn more &rarr;</a>',
+  ssm: 'State space model. Replaces or supplements attention with a state-space recurrence (e.g. Mamba). Linear-time in sequence length. <a href="/glossary/state-space-model">Learn more &rarr;</a>',
   unknown: 'Architecture not disclosed by the developer. Proprietary models typically do not reveal their internal structure.',
 };
 

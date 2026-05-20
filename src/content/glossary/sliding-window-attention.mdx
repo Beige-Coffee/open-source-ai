@@ -1,0 +1,37 @@
+---
+term: sliding window attention
+aliases: [sliding-window-attention, swa, sliding window, sliding-window]
+primary_layer: runtime
+secondary_layers: [weights]
+summary: An attention pattern where each token attends only to a fixed window of recent tokens, trading global lookup for linear-cost inference at long sequence lengths.
+sources:
+  - title: "Longformer: The Long-Document Transformer (Beltagy et al., 2020)"
+    url: "https://arxiv.org/abs/2004.05150"
+  - title: "Mistral 7B paper (Jiang et al., 2023)"
+    url: "https://arxiv.org/abs/2310.06825"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A local <G term="attention">attention</G> pattern where each token attends only to a fixed-size
+window of preceding tokens (typically 256 to 4096) rather than the
+entire context. Cost scales linearly with sequence length instead of
+quadratically, which is the headline benefit. The trade-off is that
+distant tokens are no longer directly reachable in a single attention
+step; information has to propagate through the layers.
+
+The technique was popularized for long documents by the Longformer
+paper in 2020. Mistral 7B in September 2023 brought sliding-window
+attention to the open-weights mainstream, using a 4096-token window
+inside an 8192-token context. The Mistral 7B paper reports the
+resulting memory and throughput wins that made the model competitive
+with the much larger Llama 2 13B at the time.
+
+Sliding-window rarely appears in pure form in current frontier
+releases. The dominant pattern is <G term="hybrid-attention">hybrid attention</G>: alternate sliding
+layers with periodic full-attention layers so the model can still
+attend globally when needed. <G term="gemma">Gemma</G> 2 is the cleanest example of this
+design. <G term="llama">Llama</G> 4 Scout's 10M-token context combines sliding-window
+techniques with other extensions, though Meta has not fully disclosed
+the exact attention pattern in the model card.

@@ -1,0 +1,39 @@
+---
+term: YaRN
+aliases: [yarn, yarn-context-extension, yet-another-rope-extension]
+primary_layer: weights
+secondary_layers: [training, runtime]
+summary: A position-encoding extension technique that lets a RoPE-pretrained model handle context windows longer than its training length without quality collapse.
+sources:
+  - title: "YaRN: Efficient Context Window Extension of Large Language Models (Peng et al., 2023)"
+    url: "https://arxiv.org/abs/2309.00071"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A technique for extending the context window of a transformer that
+was pretrained with <G term="rope">rotary position embedding</G> (RoPE), without
+retraining from scratch and without the quality cliff that naive
+extrapolation triggers. The name expands to "Yet another RoPE
+extensioN", a self-deprecating nod to how many prior context-extension
+methods (Position Interpolation, NTK-aware scaling, ALiBi) had been
+proposed in the year before.
+
+The mechanism modifies the RoPE rotation frequencies in a way that
+preserves the model's training-time behavior at short contexts while
+generalizing smoothly to longer ones. The paper showed that a Llama 2
+7B model trained at 4K context could be YaRN-extended to 128K with
+roughly 0.5% of the original pretraining compute, while keeping
+perplexity stable across the new range.
+
+In open-weights AI, YaRN became one of the standard tools for
+context-window extension. <G term="deepseek">DeepSeek</G> V2, V2.5, V3, and R1 all use
+YaRN to reach 128K context from a shorter training length; the
+attention-variant column in this catalog tags those models with
+`position_encoding: rope-yarn` to distinguish from plain RoPE. <G term="qwen">Qwen</G> 2
+and 2.5 also use YaRN for their long-context variants.
+
+The technique is a good example of how a single targeted intervention
+can defer or eliminate the need for new pretraining when the goal is
+just to extend an existing capability.

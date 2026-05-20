@@ -1,0 +1,36 @@
+---
+term: MQA
+aliases: [multi-query attention, multi-query-attention, multiquery attention]
+primary_layer: runtime
+secondary_layers: [weights]
+summary: An attention variant where N query heads share a single key and value head, minimizing KV cache memory at a modest quality cost compared to multi-head attention.
+sources:
+  - title: "Fast Transformer Decoding: One Write-Head is All You Need (Shazeer, 2019)"
+    url: "https://arxiv.org/abs/1911.02150"
+  - title: "Falcon technical report (TII, 2023)"
+    url: "https://arxiv.org/abs/2311.16867"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A simplification of <G term="mha">multi-head attention</G> where every query head shares a
+single key and value head. The cost saving is dramatic: the <G term="kv-cache">KV cache</G>
+shrinks by a factor of N_heads (typically 32 to 128 times) compared
+to MHA, which directly translates to higher batch sizes or longer
+contexts at the same memory budget. The quality cost is small but
+real, and the technique was less popular until <G term="gqa">grouped-query
+attention</G> arrived as a middle ground.
+
+Noam Shazeer (a Google researcher, later at Character AI) proposed
+MQA in 2019 with the title "One Write-Head is All You Need." Falcon
+180B (Sep 2023, TII) was the most prominent early <G term="open-weights">open-weights</G>
+adoption. PaLM also used MQA. Most current frontier models use GQA or
+MLA instead, both of which preserve more quality while keeping most
+of the memory win.
+
+The architecture-variant taxonomy on this catalog distinguishes MQA,
+GQA, MLA, and full MHA so readers can see at a glance which family of
+trade-offs each checkpoint made. Pure MQA is rare in 2026 models
+because GQA is almost always a better Pareto point on quality vs
+memory.

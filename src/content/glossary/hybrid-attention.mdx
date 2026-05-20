@@ -1,0 +1,37 @@
+---
+term: hybrid attention
+aliases: [hybrid-attention, interleaved attention, gqa-sliding]
+primary_layer: runtime
+secondary_layers: [weights]
+summary: An attention design that interleaves different mechanisms across layers, typically global plus sliding-window, to combine quality with long-context efficiency.
+sources:
+  - title: "Gemma 2 Technical Report (Google DeepMind, 2024)"
+    url: "https://arxiv.org/abs/2408.00118"
+  - title: "Mistral 7B paper (Jiang et al., 2023)"
+    url: "https://arxiv.org/abs/2310.06825"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A <G term="transformer">transformer</G> attention pattern where different layers use different attention
+mechanisms, interleaved across the depth of the network. The most
+common design pairs full global <G term="attention">attention</G> with <G term="sliding-window-attention">sliding-window
+attention</G>, giving roughly half the cost of all-global attention while
+keeping the model's ability to attend to distant tokens through the
+global layers.
+
+Mistral 7B (September 2023) was the first widely-used <G term="open-weights">open-weights</G>
+release to ship a hybrid pattern, combining <G term="gqa">GQA</G> with a 4096-token
+sliding window. Gemma 2 (June 2024) extended the idea, alternating
+sliding-window and full-attention layers in a 1:1 ratio, with the
+window set to 4096 tokens against a 8192-token context. The Gemma 2
+technical report frames this as an explicit cost/quality tradeoff: the
+sliding layers cost less per token, and the periodic full-attention
+layers carry the long-range routing capacity.
+
+Hybrid designs occupy the middle of a spectrum that runs from pure
+sliding-window (cheap but no long-range lookup) to all-global (the
+original transformer cost). The exact ratio and window size are tuned
+per-model, and the attention-variant column on this catalog records
+them as `hybrid-gqa-sliding` to distinguish from plain <G term="gqa">GQA</G>.

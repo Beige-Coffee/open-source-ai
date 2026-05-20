@@ -1,0 +1,41 @@
+---
+term: state space model
+aliases: [ssm, mamba, state-space-model]
+primary_layer: weights
+secondary_layers: [runtime]
+summary: An alternative to attention that processes sequences via a learned linear recurrence; scales linearly with sequence length where attention scales quadratically.
+sources:
+  - title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces (Gu and Dao, 2023)"
+    url: "https://arxiv.org/abs/2312.00752"
+  - title: "Efficiently Modeling Long Sequences with Structured State Spaces, S4 (Gu et al., 2021)"
+    url: "https://arxiv.org/abs/2111.00396"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A neural architecture that replaces or supplements the <G term="attention">attention</G> mechanism in a
+<G term="transformer">transformer</G> with a learned linear recurrence over the sequence. Where
+attention's compute and memory scale quadratically with context length,
+a state space model (SSM) scales linearly, which is the headline
+selling point for very long contexts.
+
+The recurrence has the shape `h_t = A h_(t-1) + B x_t`, with A and B
+learned. Earlier SSM variants (S4 in 2021, then H3) struggled to match
+attention quality on language tasks. Mamba in December 2023 introduced
+input-dependent A and B (the "selective" mechanism), which closed most
+of the gap and showed Mamba-3B matching transformers of comparable
+size on standard benchmarks at much lower inference cost on long
+sequences.
+
+In open-weights AI, SSMs remain a research line rather than the
+default. The trade-off is that the recurrence has no explicit key-value
+cache to look back through, so retrieval-heavy benchmarks (long-context
+needle-in-a-haystack tasks) historically favored attention. Hybrid
+designs that interleave SSM layers with attention layers (Jamba from
+AI21, Zamba from Zyphra) have been the main path to picking up the
+linear-scaling benefit without losing the lookup capability.
+
+None of the open-weights checkpoints in this catalog are pure SSM as
+of 2026; the dominant architecture remains attention-based with <G term="gqa">GQA</G>
+or <G term="mla">MLA</G> for memory savings.
