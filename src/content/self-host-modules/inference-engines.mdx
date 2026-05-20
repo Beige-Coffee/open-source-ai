@@ -1,0 +1,94 @@
+---
+slug: inference-engines
+order: 4
+title: "Inference engines"
+one_liner: "The traffic cop, memory manager, scheduler, and API surface that turns hardware into served tokens."
+sources:
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+An inference engine is the software layer between the model weights on
+disk and the tokens streamed back to the caller. It loads the weights
+in the right precision, tokenizes the prompt, runs the forward pass
+on whatever accelerator is present, samples the next token, maintains
+the <G term="kv-cache">KV cache</G> across steps, and streams output back to the
+client. Everything that determines how fast a given model serves on
+given hardware (memory layout, scheduler, batching, kernel selection,
+attention implementation) lives in this layer (Grootendorst, 2026).
+
+The workload has two phases with very different characteristics.
+<G term="prefill">Prefill</G> processes the entire input prompt in parallel and
+fills the <G term="kv-cache">KV cache</G>; it is compute-intensive and saturates
+the matrix-multiply units. <G term="decode">Decode</G> generates tokens one at a
+time and is memory-bandwidth-bound, since each step must stream the
+full activated weights once. An engine that is excellent at prefill can
+still be mediocre at decode, and vice versa. <G term="ttft">TTFT</G> measures
+prefill quality; <G term="tpot">TPOT</G> measures decode quality. The two
+metrics rarely move together.
+
+The field has settled into four engine families. Portable local
+runtimes (<G term="gguf">llama.cpp</G>, MLC LLM, ONNX Runtime GenAI, OpenVINO) prioritize
+cross-platform support and on-device deployment over peak performance.
+They run on CPUs, integrated GPUs, NPUs, and a wide range of discrete
+accelerators. Apple unified-memory runtimes (MLX, MLX-LM) target the
+M-series shared memory model and exploit it with custom kernels that
+discrete-GPU engines cannot match. Consumer CUDA quant engines (ExLlamaV2,
+ExLlamaV3) target single or paired RTX cards with EXL2 or EXL3 quants
+and tight single-stream <G term="decode">decode</G>. Production serving engines
+(vLLM, SGLang, TensorRT-LLM, TGI, LMDeploy) are designed for many
+concurrent requests, with <G term="paged-attention">PagedAttention</G>-style
+<G term="kv-cache">KV cache</G> management, <G term="continuous-batching">continuous batching</G>,
+and the operational features (metrics, structured output, multi-LoRA)
+that production deployments demand (Grootendorst, 2026).
+
+A new orchestration tier sits above engines. NVIDIA Dynamo coordinates
+fleets of inference workers across multiple nodes, doing
+<G term="kv-cache">KV cache</G>-aware request routing, disaggregated <G term="prefill">prefill</G>
+and <G term="decode">decode</G> workers, and cross-node parallelism strategies.
+Dynamo does not replace engines; it orchestrates engines (typically
+TensorRT-LLM or vLLM) at fleet scale.
+
+The one-page decision guide: laptop or general portability points to
+<G term="gguf">llama.cpp</G>; Mac points to MLX; single RTX card points to
+ExLlamaV2; two to four NVIDIA cards point to ExLlamaV3; general
+production serving points to vLLM; long-context or MoE or complex
+routing points to SGLang; max NVIDIA performance points to TensorRT-LLM;
+cluster orchestration points to Dynamo. None of these are absolute. A
+benchmark on the actual workload is the deciding step, not the
+recommendation list.
+
+The bottleneck taxonomy is what separates engines worth choosing from
+each other. Memory bandwidth dominates <G term="decode">decode</G> on every
+modern engine, so engines that minimize unnecessary reads
+(<G term="kv-cache">KV cache</G> layout, dequantization strategy, weight-streaming
+order) win on <G term="tpot">TPOT</G>. <G term="kv-cache">KV cache</G> growth dominates
+memory pressure at long contexts; engines that page or share or
+quantize the cache (vLLM's <G term="paged-attention">PagedAttention</G>, SGLang's
+<G term="prefix-caching">RadixAttention</G>) serve longer contexts on the same
+hardware. Interconnect bandwidth (NVLink, NVSwitch, PCIe) dominates
+multi-GPU serving; <G term="tensor-parallelism">tensor parallelism</G> needs all-reduce
+between every layer, so weak interconnect actively hurts. Scheduler
+quality (how the engine picks which requests to batch, how it manages
+preemption and chunked prefill) determines whether the engine
+gracefully degrades under load or thrashes. Runtime overhead (Python
+hot paths, framework dispatch, CUDA Graph use) sets the floor on
+small-model latency (Grootendorst, 2026).
+
+The reason engines do not converge is that these bottlenecks pull in
+different directions. An engine optimized for single-stream interactive
+use will spend its complexity budget on CUDA Graphs and aggressive
+kernel fusion; an engine optimized for many-concurrent serving will
+spend it on scheduling and <G term="kv-cache">KV cache</G> management. The same
+team cannot do both equally well, and the projects with the most
+mindshare specialize: vLLM is the throughput specialist, SGLang is the
+flexibility specialist, TensorRT-LLM is the NVIDIA-max specialist,
+llama.cpp is the portability specialist. Pick by workload shape, not
+by Twitter sentiment.

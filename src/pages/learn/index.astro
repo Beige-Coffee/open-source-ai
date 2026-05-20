@@ -340,6 +340,30 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
     )}
   </section>
 
+  {/* Self-host track card: parallel learn-track surface so the
+      practical "how do I run this?" content is discoverable from the
+      same landing page as the stack walk. */}
+  <section class="max-w-3xl mx-auto px-6 mb-10">
+    <a
+      href="/learn/self-host"
+      class="block p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:border-[var(--color-text)] hover:bg-[var(--color-surface-warm)] no-underline transition-colors"
+    >
+      <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
+        <span class="font-serif text-xl text-[var(--color-text)]">
+          Self-host the stack
+        </span>
+        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+          companion track · 7 modules
+        </span>
+      </div>
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        The practical companion. VRAM math, memory bandwidth tiers, quantization formats,
+        inference engines, hardware strategy, production serving, benchmarking. Skim or
+        read in order.
+      </p>
+    </a>
+  </section>
+
   <section class="max-w-3xl mx-auto px-6 mb-16">
     <h2 class="font-serif text-2xl text-[var(--color-text)] mb-4">
       The 15 modules

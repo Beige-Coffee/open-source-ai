@@ -1,0 +1,40 @@
+---
+term: tensor parallelism
+aliases: [tensor-parallelism, tp, model parallelism]
+primary_layer: runtime
+secondary_layers: [training, infrastructure]
+summary: A way to split a single model across multiple GPUs by sharding each layer's weight matrices and doing an all-reduce after every layer. Bandwidth-hungry but layer-by-layer fine-grained.
+sources:
+  - title: "Megatron-LM paper (Shoeybi et al., 2019)"
+    url: "https://arxiv.org/abs/1909.08053"
+  - title: "vLLM distributed inference docs"
+    url: "https://docs.vllm.ai/en/latest/serving/distributed_serving.html"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A way to run a model that's too large for a single GPU by splitting
+every layer's weight matrices across multiple GPUs. Each GPU holds a
+slice of the layer's weights and produces a slice of the output;
+after each layer, the GPUs do an all-reduce collective to combine
+their outputs before continuing. The Megatron-LM paper from 2019
+formalized the approach for transformers.
+
+Tensor parallelism's strength is granularity: it works inside a
+single layer, so it pairs well with batch sizes that wouldn't be
+large enough to feed pipeline-parallelism stages. Its weakness is
+interconnect demand: an all-reduce after every layer means hundreds
+or thousands of cross-GPU collectives per forward pass. Without
+<G term="nvlink">NVLink</G> or NVSwitch (~600 GB/s between GPUs),
+the all-reduce time dominates and the speedup over a single GPU
+collapses. vLLM's docs explicitly note that without NVLink, pipeline
+parallelism often outperforms tensor parallelism on the same
+hardware.
+
+In production serving, tensor parallelism is the default
+multi-GPU mode for models that fit across a single node's GPUs
+connected by NVLink (8xH100, 8xA100 nodes). For multi-node serving
+or for GPUs without NVLink (consumer 3090/4090/5090 boxes connected
+over PCIe), other strategies (pipeline parallelism, expert
+parallelism for MoE, sharded data parallelism) usually win.

@@ -1,0 +1,39 @@
+---
+term: VRAM math
+aliases: [vram-math, gpu memory math, model fit calculation]
+primary_layer: weights
+secondary_layers: [runtime, silicon]
+summary: The first-pass formula for whether a model fits on a GPU. VRAM ≈ parameters × (bits ÷ 8), plus 10-30 percent for KV cache, activations, and overhead.
+sources:
+  - title: "GPU Memory Math for LLMs 2026"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The one formula that decides whether a model fits in a given GPU's
+memory. Take the parameter count, multiply by the effective
+bits-per-weight after <G term="quantization">quantization</G>, divide by 8 to
+convert bits to bytes, and you get the model's weight footprint in
+gigabytes.
+
+The intuition this produces per format: FP16 or BF16 weights take
+roughly 2 GB per billion parameters; FP8 or INT8 weights take roughly
+1 GB per billion; 4-bit weights take roughly 0.5 GB per billion. GGUF
+variants sit between these landmarks (Q6_K ~0.82 GB per 1B, Q5_K
+~0.69 GB per 1B, Q4_K ~0.56 GB per 1B, Q3_K ~0.43 GB per 1B, Q2_K
+~0.33 GB per 1B). A 70B model is therefore roughly 140 GB at FP16,
+70 GB at FP8, or 35 to 40 GB at 4-bit; a 405B model is 810 GB, 405
+GB, or 200+ GB at the same three points.
+
+Weight footprint is only the first line item on the VRAM bill.
+<G term="kv-cache">KV cache</G> grows with context length and
+concurrent requests; activations vary by runtime; framework overhead
+adds its own tax; CUDA Graphs reserve extra memory for stable
+latency. Budget 10 to 30 percent above the weight number for
+realistic single-user use, more for long context and high
+concurrency. <G term="mixture-of-experts">MoE</G> models complicate
+the math further: total parameters drive the memory footprint, but
+active parameters drive the speed. Treating an 8x7B MoE as 56B for
+fit and as ~13B for speed is the right mental model.

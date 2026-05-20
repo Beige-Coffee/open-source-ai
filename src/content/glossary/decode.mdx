@@ -1,0 +1,40 @@
+---
+term: decode
+aliases: [decode phase, autoregressive decode, token generation]
+primary_layer: runtime
+secondary_layers: [silicon, infrastructure]
+summary: The second phase of LLM inference, generating one token at a time from the KV cache. Memory-bandwidth-bound; throughput tracks memory bandwidth more than peak compute.
+sources:
+  - title: "LLM Inference Engines (Maarten Grootendorst, 2026)"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "Memory Bandwidth for Local AI Hardware 2026"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The second half of LLM inference. After <G term="prefill">prefill</G>
+has built the initial <G term="kv-cache">KV cache</G>, the model
+generates one token per step. Each step reads the model weights and
+the entire KV cache to produce the next token, then writes that
+token's key and value back into the cache and repeats. The arithmetic
+intensity per step is low; the work is dominated by memory reads.
+
+That memory-bandwidth dependence is the reason decode throughput
+tracks memory bandwidth much more closely than it tracks peak compute
+(FLOPs). An H100 with 3.35 TB/s of HBM bandwidth decodes faster than
+a Mac Studio M3 Ultra with 819 GB/s of unified memory, even though
+both can fit the same model. Same model, same parameter count, same
+weight format; the H100 simply moves bytes faster between memory and
+the compute units.
+
+The decode bottleneck shapes most production-serving optimizations.
+Larger batches amortize the same weight-memory reads across more
+generated tokens. <G term="paged-attention">PagedAttention</G> reduces
+KV-cache fragmentation so more requests fit. <G term="speculative-decoding">Speculative
+decoding</G> drafts cheap tokens with a small model and verifies them
+in parallel with the big one, raising effective throughput. KV-cache
+quantization halves the bytes read per step at small quality cost. All
+of these are bandwidth-savings techniques, dressed up in different
+clothes.

@@ -1,0 +1,39 @@
+---
+term: GPTQ
+aliases: [gptq, generative pre-trained transformer quantization]
+primary_layer: weights
+secondary_layers: [runtime]
+summary: A post-training quantization method that compresses transformer weights to 3 or 4 bits layer-by-layer with one-shot optimization against calibration data.
+sources:
+  - title: "GPTQ paper (Frantar et al., 2022)"
+    url: "https://arxiv.org/abs/2210.17323"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A one-shot post-training weight <G term="quantization">quantization</G>
+method for transformers, introduced by Frantar et al. in late 2022.
+GPTQ quantizes one layer at a time, using a small calibration dataset
+to choose per-weight scales that minimize the reconstruction error of
+that layer's output. The result is 3-bit or 4-bit weights with
+roughly the same quality as 8-bit naive quantization, at a quarter
+or half the memory footprint.
+
+GPTQ is one of three quantization formats that dominate the
+<G term="open-weights">open-weights</G> ecosystem for GPU inference,
+alongside <G term="awq">AWQ</G> and the bitsandbytes <G term="nf4">NF4</G>
+4-bit format. Each engine has its preferred format: vLLM and SGLang
+support GPTQ and AWQ natively with optimized kernels; ExLlamaV2/V3
+use their own EXL2/EXL3 formats which build on similar layer-wise
+optimization ideas with additional tricks. <G term="gguf">GGUF</G>
+inside llama.cpp uses a different per-channel scheme that interleaves
+quantization scales differently.
+
+The practical implication: weights that have been GPTQ-quantized are
+not directly portable to non-GPTQ engines. To switch engines, you
+either pick a format the new engine has optimized kernels for, or
+you re-quantize from the FP16/BF16 source weights. This is part of
+why the format zoo (GPTQ, AWQ, NF4, EXL2, EXL3, GGUF variants, FP8,
+FP4, MLX formats, ONNX) reads as messy: there's no universal
+representation, only ecosystem-specific ones.

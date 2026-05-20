@@ -115,8 +115,32 @@ const glossary = defineCollection({
   }),
 });
 
+/**
+ * Self-host learn track. A parallel course to the stack-walk modules,
+ * focused on practical "how do I actually run this locally / in
+ * production?" topics: VRAM math, memory bandwidth tiers, quantization
+ * formats, inference engines, hardware strategy, production serving,
+ * benchmarking. Each module is a single MDX file in
+ * src/content/self-host-modules/.
+ */
+const self_host_modules = defineCollection({
+  loader: glob({
+    pattern: "**/*.mdx",
+    base: "./src/content/self-host-modules",
+  }),
+  schema: z.object({
+    slug: z.string(),
+    order: z.number().int().min(1),
+    title: z.string(),
+    one_liner: z.string(),
+    sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
+    updated: z.coerce.date(),
+  }),
+});
+
 export const collections = {
   layers,
   news,
   glossary,
+  self_host_modules,
 };

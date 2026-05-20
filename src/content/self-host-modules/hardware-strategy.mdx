@@ -1,0 +1,97 @@
+---
+slug: hardware-strategy
+order: 5
+title: "Hardware strategy"
+one_liner: "Pick a hardware strategy and workload shape first; the engine follows."
+sources:
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A useful self-hosting plan starts with the workload shape, not with the
+hardware budget. Knowing the prompt distribution (interactive chat,
+RAG with long contexts, batched offline summarization, agent tool
+loops), the concurrency target, the acceptable <G term="ttft">TTFT</G> and
+<G term="tpot">TPOT</G>, and the cost ceiling per million tokens narrows the
+hardware shortlist much faster than ranking GPUs by VRAM. The
+engine choice and the quantization format both fall out of the
+hardware decision (Grootendorst, 2026).
+
+A CPU-only server still has a role for small models or for workloads
+with very low throughput requirements. llama.cpp on a modern Xeon or
+EPYC will run a quantized 7B model at single-digit tokens per second,
+useful for batch summarization, embedding generation, or as a fallback
+tier when GPU capacity is exhausted. The fit calculation is favorable
+(server RAM is cheap and plentiful), but bandwidth caps performance
+hard.
+
+The MacBook and Mac Studio class is the most popular developer
+self-hosting platform in 2026 because the <G term="unified-memory">unified memory</G>
+architecture removes the GPU-VRAM capacity ceiling. A Mac Studio M3
+Ultra with 192 GB can host a 70B model at FP16 or a 405B model
+quantized, with MLX or llama.cpp serving tokens. The tradeoff is
+bandwidth at 819 GB/s (M3 Ultra), 546 GB/s (M4 Max), or lower on
+smaller parts (Grootendorst, 2026). Acceptable for personal use and
+small-team serving; not competitive with discrete GPU bandwidth for
+high-throughput production.
+
+Single RTX cards (3090, 4090, 5090) remain the workstation sweet spot.
+A 24 GB 4090 serves a quantized 30B model in ExLlamaV2 at
+double-digit-plus tokens per second; a 32 GB 5090 with 1792 GB/s of
+bandwidth approaches workstation-GPU performance on tasks where the
+model fits. The 5090's bandwidth tier puts it within reach of older
+H100s on decode-bound workloads at a fraction of the price. Dual or
+quad consumer RTX boxes extend the fit window and add modest throughput
+on tensor-parallel workloads, but the PCIe interconnect is the
+bottleneck. Tensor parallelism without NVLink hurts on every workload
+that requires frequent all-reduce.
+
+The datacenter tier (8x H100 or H200 nodes, B200 and GB200 / GB300 class
+systems) is where production frontier-model serving lives. These nodes
+have HBM3 or HBM3e memory with 3 to 8 TB/s of bandwidth, NVLink or
+NVSwitch interconnect for cross-GPU operations, and the operational
+software (TensorRT-LLM, vLLM at scale, NVIDIA Dynamo orchestration) to
+saturate them. AMD's MI300, MI325, MI350, and MI355 line is the
+competitive non-NVIDIA option in this tier; the hardware is strong but
+the software stack (ROCm) trails CUDA in maturity. Both Intel's Xeon
+plus Gaudi line and the Core Ultra plus Arc consumer line are present
+but have not gained meaningful production share.
+
+The new x86 unified-memory category, anchored by NVIDIA DGX Spark and
+AMD Ryzen AI Max / Strix Halo, occupies an interesting middle.
+DGX Spark gives developers coherent CPU-GPU memory plus the full CUDA
+stack in a developer-appliance form factor, at bandwidths in the 250 to
+300 GB/s range. Strix Halo is the first serious x86 contender for
+unified memory on the AMD side. Both are aimed at developers who want
+Mac-Studio-like capacity flexibility on an x86 platform with the option
+of running native CUDA or ROCm code paths (Grootendorst, 2026).
+
+Tenstorrent's Blackhole p150 is the wildcard. The hardware is competitive
+on bandwidth (450 to 650 GB/s tier), and the entire stack (silicon to
+firmware to kernels) is open source. For organizations that need to
+audit their inference stack end-to-end, or that want to break NVIDIA's
+software lock-in, Tenstorrent is the only credible option at the
+performance tier. The mainstream tooling is younger than CUDA's, so
+the operational burden is higher.
+
+The browser, mobile, and embedded tier is its own thing. WebGPU runtimes
+(MLC LLM via WebLLM, ONNX Runtime Web) put small models in the browser
+without a server. Apple Foundation Models and Google AI Core put models
+on phones with hardware NPU acceleration. None of these tiers compete
+with workstation GPUs on raw performance; they compete on privacy,
+latency, and ability to function offline.
+
+The "AI PC trap" is the temptation to pick a thin-and-light laptop
+marketed as AI-capable for serious self-hosting work. The bandwidth
+tier is 100 to 228 GB/s on Snapdragon X, Snapdragon X2 Elite, Lunar
+Lake, and MacBook Air M5; that range is fine for small models running
+local chat or simple agents, but a 9B-dense model running interactive
+chat needs the next tier up. The marketing implies parity with
+discrete GPUs; the bandwidth math says otherwise.

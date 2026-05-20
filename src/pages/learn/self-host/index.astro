@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const all = await getCollection("self_host_modules");
+const modules = all
+  .map((m) => ({ ...m.data, id: m.id }))
+  .sort((a, b) => a.order - b.order);
+---
+
+<BaseLayout
+  title="Self-host the stack · Learn"
+  description="A practical course on running LLMs locally and in production: VRAM math, memory bandwidth tiers, quantization formats, inference engines, hardware strategy, production serving, benchmarking."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
+    <a
+      href="/learn"
+      class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4"
+    >
+      ← All learn tracks
+    </a>
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4">
+      Self-host track
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
+    >
+      Self-host the stack
+    </h1>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+      A practical companion to the stack walk. The stack-walk track teaches what each layer is;
+      this one teaches how to actually run the stack on hardware you control. Read in order or
+      pick the module that answers the question you have right now.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 mt-8 mb-16">
+    <ol class="border-t border-[var(--color-border)]">
+      {
+        modules.map((m) => (
+          <li>
+            <a
+              href={`/learn/self-host/${m.slug}`}
+              title={m.one_liner}
+              class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+            >
+              <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
+                {String(m.order).padStart(2, "0")}
+              </span>
+              <span class="flex-1">
+                <span class="block font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-0.5">
+                  {m.title}
+                </span>
+                <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
+                  {m.one_liner}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</BaseLayout>

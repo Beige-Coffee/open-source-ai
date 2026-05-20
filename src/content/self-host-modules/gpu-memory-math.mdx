@@ -1,0 +1,82 @@
+---
+slug: gpu-memory-math
+order: 1
+title: "GPU memory math"
+one_liner: "VRAM ≈ parameters × (bits ÷ 8). The one formula that explains every model-fits-or-doesn't question."
+sources:
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+Every "will this model fit in my GPU?" question reduces to one formula:
+VRAM in bytes is roughly parameters multiplied by bits-per-weight
+divided by eight. A 7B model at FP16 needs about 14 GB of weight memory.
+The same model at FP8 needs about 7 GB. At 4-bit, about 3.5 GB. That
+single relation, plus a handful of overhead terms, predicts whether a
+checkpoint will load on a given card. It is the prerequisite for every
+other self-hosting decision (Grootendorst, 2026).
+
+The per-format heuristics fall out of the formula. FP16 weights take
+roughly two bytes per parameter, so model size in GB is approximately
+2x parameter count in billions. FP8 takes one byte per parameter, so
+size in GB is approximately 1x parameter count. <G term="quantization">Four-bit
+quantization</G> takes half a byte per parameter, so size in GB is
+approximately 0.5x. These ratios are first-pass estimates; the actual
+on-disk number for a given checkpoint depends on the <G term="quantization">quantization</G>
+scheme, the block size, and whether scales and zero-points are stored
+inline. Treat the heuristic as a planning number, not a contract.
+
+The <G term="gguf">GGUF</G> format has its own per-quant table that practitioners
+internalize. Per billion parameters, a Q6_K file lands near 0.82 GB,
+Q5_K near 0.69 GB, Q4_K near 0.56 GB, Q3_K near 0.43 GB, and Q2_K near
+0.33 GB. A 70B model at Q4_K is about 39 GB on disk; the same model at
+Q5_K is about 48 GB. These are the numbers behind the "fits in 48 GB"
+claims that float around community boards. The compression is real, but
+runtime memory will exceed the on-disk number, sometimes substantially
+(Grootendorst, 2026).
+
+A worked fit table makes the point. A 7B model needs roughly 14 GB at
+FP16, 7 GB at FP8, and 4 GB at 4-bit. A 13B model needs 26 / 13 / 7 GB.
+A 70B model needs 140 / 70 / 39 GB. A 405B dense model needs 810 / 405
+/ 226 GB. The 7B and 13B rows fit on consumer cards in some
+configuration; the 70B row needs either a heavy quant on a 48 GB card
+or multi-GPU; the 405B row demands an 8-GPU H100 or equivalent class
+node even after aggressive <G term="quantization">quantization</G>.
+
+The complication is the VRAM tax: the model weights are only one term
+in the budget. The <G term="kv-cache">KV cache</G> grows with sequence length and
+concurrency, often dominating memory in long-context serving.
+Activations, intermediate buffers, framework overhead, CUDA Graph
+scratch space, and the engine's own bookkeeping each add fixed and
+variable costs. A 13B model that nominally fits in 16 GB at Q4 may need
+20+ GB once you account for a 32K context with two concurrent users.
+Plan with 20-30% headroom above the weight number, and more for long
+context.
+
+A practical fit table per GPU size: 8 GB serves quantized 3-7B models
+comfortably, 12 GB serves quantized 7-13B, 16 GB serves 13B at moderate
+quant, 24 GB (the 3090 / 4090 sweet spot) serves 30B-class models at
+4-bit or 13B at FP16, 48 GB serves 70B at 4-bit, and 80 GB (H100) serves
+70B at FP16 or 405B-class models in a multi-GPU configuration.
+<G term="mixture-of-experts">Mixture-of-experts</G> models add a wrinkle: you need
+total parameter memory to fit (every expert weight must be loaded), but
+active parameters determine the per-token compute and bandwidth cost.
+DeepSeek-V3 needs 671B worth of memory to load but moves about 37B per
+token at <G term="decode">decode</G>, so it feels much faster than its size
+suggests while still requiring a small cluster to host (Grootendorst, 2026).
+
+<G term="gguf">GGUF</G> is not magic. The numbers above are runtime-specific. The same
+weights at the same nominal bit count can have very different memory
+footprints in different engines, because each runtime keeps its own
+dequantized scratch buffers, <G term="kv-cache">KV cache</G> representation, and
+activation layout. A "Q4_K_M file fits in 6 GB" claim is true for some
+combination of llama.cpp version, context length, and batch size, and
+not true in another. Always benchmark the actual configuration you plan
+to serve before committing to a hardware purchase.

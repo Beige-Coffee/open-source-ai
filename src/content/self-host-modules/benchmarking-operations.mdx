@@ -1,0 +1,97 @@
+---
+slug: benchmarking-operations
+order: 7
+title: "Benchmarking and operations"
+one_liner: "Bad benchmark: 180 tok/s. Good benchmark: TTFT + TPOT + p95 + cost per million tokens at your workload shape."
+sources:
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A single tokens-per-second number on a Twitter screenshot is rarely
+useful. Production benchmarks need workload shape, hardware identity,
+software identity, and the metrics that actually predict user
+experience. Without those, two benchmark results that look like the
+same number can come from completely different setups (Grootendorst,
+2026).
+
+A good benchmark records every variable that moves the result. Model
+identity (Llama 3.1 70B Instruct, DeepSeek-V3, Qwen3 32B), weights
+dtype plus quant plus group size plus calibration (FP16, AWQ-4bit
+group-128 calibrated on WikiText), engine version plus commit plus
+backend plus flags (vLLM 0.6.3, CUDA 12.6, FlashAttention 3 enabled,
+chunked prefill on), hardware SKU plus memory plus bandwidth plus
+interconnect plus CPU plus host RAM (8x H100 SXM5, 80 GB HBM3, NVLink),
+workload shape (prompt length distribution, output length
+distribution, concurrency, prompt cache reuse rate), and the metric
+definitions. Two benchmarks differing on any of these are not directly
+comparable.
+
+The metrics to track form a hierarchy. <G term="ttft">TTFT</G> at p50, p95, p99.
+<G term="tpot">TPOT</G> at the same percentiles. End-to-end latency. Tokens per
+second per request and per GPU. Requests per second sustained. GPU
+memory usage at peak. KV cache hit rate when prefix caching is on.
+Prefill throughput in tokens per second. Decode throughput in tokens
+per second. Cost per million tokens (input and output separately) at
+sustained load. Each metric measures a different failure mode; a
+serving deployment that looks great on average TPS can have a p99 TTFT
+that breaks the user experience under load.
+
+The benchmarking rules that catch the most mistakes. Never compare
+engines on single-user TPS, because most engines are tuned for
+concurrent serving and the single-user case is not their optimization
+target. Test with your actual prompt distribution, not synthetic
+fixed-length prompts, because prefill scales nonlinearly with prompt
+length and the variance of your prompts changes scheduler behavior.
+Test with realistic concurrency, because single-stream numbers tell
+you nothing about how the engine schedules under load. Separate
+prefill and decode throughput; one number does not represent the
+workload. Always report p95 and p99, never just averages, because the
+tail is where SLAs break. Measure memory headroom at target context
+length and target concurrency, not at minimum config. Test cache reuse
+if your app has repeated prefixes (RAG, agents with persistent system
+prompts); prefix caching can flip the cost calculation entirely.
+Benchmark structured output (JSON mode, function calling) separately,
+because constraint decoding has different performance characteristics
+than free generation. Benchmark LoRA loading separately if you serve
+adapters. Re-test after every driver, CUDA, model, or engine upgrade,
+because regressions are common (Grootendorst, 2026).
+
+Common mistakes that send benchmarks in the wrong direction. Choosing
+hardware by VRAM alone without checking bandwidth tier; a Mac Studio
+will load a 70B model where a 24 GB RTX cannot, but the RTX will
+generate tokens three to five times faster once the model is quantized
+to fit on both. Using <G term="tensor-parallelism">tensor parallelism</G> on weak
+interconnects; PCIe-only multi-GPU systems will be slower than a single
+GPU on most tensor-parallel configurations. Ignoring KV cache when
+sizing memory; a model that fits at 2K context may not fit at 32K
+context under concurrency. Treating local engines as production servers
+(llama.cpp is excellent for desktop use, not designed for
+high-concurrency serving with SLAs). Assuming quant formats are
+portable; the same nominal 4-bit weights have different memory
+footprints in vLLM-AWQ, ExLlamaV2-EXL2, and llama.cpp-GGUF. Ignoring
+model architecture; a <G term="mixture-of-experts">mixture-of-experts</G> model needs
+total parameter memory to fit but only moves active parameters per
+token, so its bandwidth profile differs from a dense model of the same
+total size. Trusting benchmark charts without workload shape; the same
+chart can show two different engines as winners depending on which
+workload you actually run.
+
+The ten questions to answer before picking an engine. What model? At
+what quant? On what hardware? At what context length? At what
+concurrency? With what prompt distribution? What TTFT and TPOT targets?
+What cost per million tokens ceiling? What operational features are
+required (multi-LoRA, structured output, observability, OpenAI-compatible
+API, KV cache snapshot/restore)? What does the team already know how
+to operate? Engines that look identical on a benchmark chart diverge
+sharply when you score them against these ten. The engine choice is
+downstream of the workload shape, not upstream of it. Pick the
+workload, then pick the hardware, then pick the engine, then benchmark
+the configuration end-to-end, then iterate (Grootendorst, 2026).

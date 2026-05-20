@@ -1,0 +1,35 @@
+---
+term: NF4
+aliases: [nf4, 4-bit normal float, normalfloat4]
+primary_layer: weights
+secondary_layers: [training, runtime]
+summary: A 4-bit normal-float quantization format from the QLoRA paper. The 16 quantization levels are spaced to match the empirical distribution of pretrained weights.
+sources:
+  - title: "QLoRA paper (Dettmers et al., 2023)"
+    url: "https://arxiv.org/abs/2305.14314"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A 4-bit weight <G term="quantization">quantization</G> format
+introduced in the QLoRA paper by Tim Dettmers and collaborators in
+May 2023. The design observation: pretrained transformer weights
+follow a roughly normal distribution. Standard 4-bit quantization
+spaces its 16 levels uniformly from -1 to 1, which wastes precision
+in the tails and underrepresents the densely-populated middle. NF4
+instead places its 16 levels at the quantiles of a standard normal
+distribution, so the level density matches the weight density.
+
+NF4 is the default 4-bit format inside bitsandbytes, the library
+that powers most fine-tuning workflows in Hugging Face's
+transformers. The format pairs naturally with <G term="lora">LoRA</G>
+adapters: load the base weights at NF4, train small high-precision
+LoRA adapters on top, and the combined memory footprint stays tiny.
+QLoRA used this combination to fine-tune Llama 65B on a single 48 GB
+A6000.
+
+Production serving engines (vLLM, SGLang, TensorRT-LLM) typically
+prefer <G term="gptq">GPTQ</G> or <G term="awq">AWQ</G> over NF4 for
+inference because their kernels are more optimized; NF4's natural
+habitat is fine-tuning and research workflows.

@@ -1,0 +1,33 @@
+---
+term: TPOT
+aliases: [time per output token, time-per-output-token, inter-token latency]
+primary_layer: runtime
+secondary_layers: [evaluation]
+summary: Time per output token. The latency between successive tokens during decode; tracks memory bandwidth and concurrent batch size more than peak compute.
+sources:
+  - title: "LLM Inference Engines (Maarten Grootendorst, 2026)"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The time between successive tokens during the <G term="decode">decode</G>
+phase. If a model streams 50 output tokens per second, TPOT is 20 ms.
+TPOT is the metric a reader feels as "speed" once the first token has
+arrived; <G term="ttft">TTFT</G> is the metric they feel as
+"responsiveness" before it does.
+
+Because decode is memory-bandwidth-bound, TPOT tracks the ratio of
+weight-and-KV-cache bytes read per token to the memory bandwidth
+available. Larger batches improve aggregate throughput (more tokens
+served per second across all users) but can keep TPOT for any single
+request the same or worse, since each user still waits for the
+slowest member of the batch.
+
+Production serving reports TPOT alongside TTFT as a percentile
+distribution (p50, p95, p99), not as a single number. The tail
+matters: a model that averages 30 ms TPOT but has a p99 of 400 ms
+will feel inconsistent and frustrating in practice. Schedulers in
+vLLM, SGLang, TensorRT-LLM, and orchestrators above them all aim
+to control TPOT tails as much as raw throughput.

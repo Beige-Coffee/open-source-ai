@@ -1,0 +1,88 @@
+---
+slug: memory-bandwidth
+order: 2
+title: "Memory bandwidth"
+one_liner: "Capacity decides what fits. Bandwidth decides how fast it runs. They're not the same."
+sources:
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+Memory capacity tells you whether a model will load. Memory bandwidth
+tells you how fast the loaded model will run. The two are independent
+specs, and people who treat them as one number consistently buy boxes
+that disappoint them. The framework most practitioners reach for is
+simple: capacity is for fitting, bandwidth is for serving (Grootendorst,
+2026).
+
+The reason bandwidth matters so much for LLM <G term="decode">decode</G> is that
+generating each new token requires streaming the entire model's
+activated weights through the compute units once. On a 70B dense model
+at FP16, that is 140 GB of data per token. A card with 1.8 TB/s of
+bandwidth caps out at about 12 tokens per second on raw memory motion
+alone; a card with 250 GB/s caps out closer to 1.7 tokens per second on
+the same workload. The compute units may be idle waiting for memory in
+either case, but the slower memory pipe ends up being the binding
+constraint.
+
+The bandwidth tiers in 2026 form five distinct markets pretending to be
+one. The top class clears 1792 GB/s: the RTX 5090 and the RTX PRO 6000
+Blackwell sit here, alongside H100 / H200 / B200 datacenter parts that
+push much higher again with HBM3 and HBM3e. The next class, around 819
+GB/s, is the Mac Studio M3 Ultra, which combines high <G term="unified-memory">unified-memory</G>
+capacity with bandwidth that approaches workstation GPUs. The 450 to
+650 GB/s tier holds the Mac Studio M4 Max, MacBook Pro M5 Max, AMD
+Radeon AI PRO R9700, and Tenstorrent's Blackhole p150. The 250 to 300
+GB/s unified-memory tier is the DGX Spark, Mac mini M4 Pro, and Ryzen
+AI Max / Strix Halo. The thin-and-light tier (MacBook Air M5, Snapdragon
+X Elite, Intel Lunar Lake, Snapdragon X2 Elite) sits around 100 to 220
+GB/s (Grootendorst, 2026).
+
+Bigger boxes feel slow even when the model fits because the bandwidth
+math is unforgiving. A Mac Studio with 192 GB of <G term="unified-memory">unified memory</G>
+will load a 70B FP16 model where a 24 GB RTX cannot, but the RTX will
+generate tokens roughly three to five times faster on the same prompt
+once the model is quantized to fit on both. The <G term="kv-cache">KV cache</G> grows
+with sequence length and must also be streamed each step, so long
+contexts amplify the bandwidth dependence. Dequantization of compressed
+weights costs additional reads. Concurrent batching shares the
+bandwidth pie across requests. Scheduler quality and framework overhead
+each shave a few percent.
+
+Apple's <G term="unified-memory">unified memory</G> design is the clearest illustration of
+the capacity-versus-bandwidth tradeoff. The same memory pool serves CPU
+and GPU, so a 128 GB or 192 GB Mac Studio can host enormous models
+without the partitioning headaches of multi-GPU systems. That is the
+capacity superpower. The tradeoff is that the bandwidth lags top-end
+discrete GPUs by a factor of two to four, depending on the part. For
+"can I run a 70B model at all?" the Mac wins; for "how many tokens per
+second does it sustain at production load?" the discrete GPU usually
+wins (Grootendorst, 2026).
+
+The "fit" versus "serve" distinction is the most useful framing for
+hardware choices. A model fits when its weights, <G term="kv-cache">KV cache</G> at
+target context, activations, and framework overhead sum below the
+memory capacity. It serves when the box delivers acceptable <G term="ttft">TTFT</G>
+and <G term="tpot">TPOT</G> at the concurrency and prompt distribution you
+care about. The same model can fit and not serve; the same model can
+serve well on smaller hardware with better bandwidth than on bigger
+hardware with worse bandwidth.
+
+The five markets pretending to be one: datacenter GPUs (HBM-class,
+priced per node), workstation GPUs (RTX 5090 class, priced for power
+users), Apple unified memory (high capacity, mid bandwidth, priced
+for prosumers and developers), x86 unified memory like DGX Spark and
+Strix Halo (developer appliances entering the field in 2026), and AI
+PC mobile parts (bandwidth-starved at 100 to 228 GB/s, fine for small
+models and edge tasks). Picking among them by capacity alone, without
+checking the bandwidth tier, is the single most common
+self-hosting mistake. The box you want for personal exploration is not
+the same box you want for production serving, and neither is the same
+box you want for an edge agent.

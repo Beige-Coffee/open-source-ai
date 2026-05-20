@@ -1,0 +1,100 @@
+---
+slug: quantization-formats
+order: 3
+title: "Quantization formats"
+one_liner: "GGUF, GPTQ, AWQ, NF4, EXL2, EXL3, FP8, FP4, MLX, ONNX. None are interchangeable."
+sources:
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "GPU Memory Math for LLMs (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026"
+  - title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers (Frantar et al., 2022)"
+    url: "https://arxiv.org/abs/2210.17323"
+  - title: "AWQ: Activation-aware Weight Quantization (Lin et al., 2023)"
+    url: "https://arxiv.org/abs/2306.00978"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+<G term="quantization">Quantization</G> compresses model weights from their native FP16 or BF16
+training precision down to lower-bit formats so they take less memory
+and stream faster from HBM or unified memory to compute units. The
+arithmetic is the same idea every time (map a continuous weight range
+to a discrete grid of values, store the grid index plus a scale), but
+the file formats and the kernels that consume them are not
+interchangeable. A model quantized for one engine usually cannot be
+loaded by another without conversion, and the conversion may not be
+exact (Grootendorst, 2026).
+
+<G term="gguf">GGUF</G> is the llama.cpp container. It packages weights, tokenizer, prompt
+template, and metadata into one file, then layers a family of
+<G term="quantization">quantization</G> schemes on top: <G term="gptq">Q2_K through Q8_0</G>, k-quants
+with different block structures, and newer i-quants that improve
+quality at very low bit counts. <G term="gguf">GGUF</G> is the dominant on-device
+format. Ollama, LM Studio, GPT4All, and most consumer local runtimes
+consume it directly. Hugging Face hosts thousands of community-quantized
+<G term="gguf">GGUF</G> variants of official safetensors releases.
+
+<G term="gptq">GPTQ</G> is a layer-wise post-training weight <G term="quantization">quantization</G> scheme
+designed for GPU inference (Frantar et al., 2022). It uses approximate
+second-order information to choose <G term="quantization">quantization</G> values that
+minimize per-layer reconstruction error. GPTQ files are typically 4-bit
+with optional grouping, and the format is consumed by ExLlamaV2, AutoGPTQ,
+and vLLM's GPTQ kernels. The format predates AWQ but remains widely
+used for consumer-GPU 4-bit serving.
+
+<G term="awq">AWQ</G> (Activation-aware Weight Quantization, Lin et al., 2023) takes a
+different view: instead of treating all weights equally, it identifies
+the small fraction of weight channels that disproportionately affect
+activations and protects them from aggressive quantization. The result
+is better quality at the same bit count for many models, especially
+instruction-tuned variants. AWQ files are consumed by vLLM, TensorRT-LLM,
+and the AutoAWQ toolchain.
+
+NF4 is the 4-bit normal float used by the bitsandbytes library. It is
+the format behind QLoRA fine-tuning and many Hugging Face Transformers
+quantized loads. NF4 maps weight values to a non-uniform grid chosen
+to fit the normal distribution that pretrained weights tend to follow,
+which improves quality versus uniform 4-bit at minimal cost. It is most
+commonly seen during training-time loads rather than production
+serving.
+
+<G term="gptq">EXL2 and EXL3</G> are ExLlamaV2 and ExLlamaV3's native formats,
+optimized for consumer NVIDIA GPUs with single-stream <G term="decode">decode</G>
+in mind. EXL2 supports mixed-precision quantization where different
+layers run at different bit counts within the same model, letting
+authors tune for a target file size. EXL3 extends this with newer
+kernel paths and tighter integration with <G term="flash-attention">flash attention</G>.
+Both formats are the typical choice for single-RTX-card workstations
+running 30B to 70B models.
+
+<G term="fp8">FP8</G> and FP4 are native hardware formats on H100 and B200 class GPUs.
+Unlike post-training quantization formats above, FP8 and FP4 are
+floating-point types with their own exponent and mantissa bits, and the
+hardware multiplies them natively. Models trained in FP8 (DeepSeek-V3
+is one) avoid the post-training quantization step entirely for these
+cards. FP4 is newer and tied to Blackwell-generation accelerators.
+
+MLX format is Apple's quantization scheme for unified memory hardware.
+The MLX framework uses its own weight layout optimized for the M-series
+chips' shared memory model and supports 4-bit, 8-bit, and mixed-precision
+variants. MLX files are not interchangeable with <G term="gguf">GGUF</G> even at the
+same nominal bit count.
+
+ONNX is a portable serialization format with optional quantization
+support, used by ONNX Runtime and OpenVINO for cross-platform deployment.
+ONNX favors compatibility over peak performance; it is the format of
+choice when the same model needs to ship to multiple hardware targets
+(NVIDIA, AMD, Intel, ARM) without re-training.
+
+The implication for self-hosting: "this 13B model fits in 6 GB"
+claims are runtime-specific. The same nominal weight precision can
+have very different memory footprints in different engines because of
+how each one keeps dequantized scratch buffers, KV cache representation
+(often quantized separately), and intermediate activations. A Q4_K_M
+file in llama.cpp at 8K context uses meaningfully more RAM than the
+same file at 2K context, and meaningfully less than the equivalent AWQ
+file in vLLM at the same context because vLLM keeps a separate
+<G term="paged-attention">paged KV cache</G> in fixed blocks. Always measure the
+actual configuration you intend to run.

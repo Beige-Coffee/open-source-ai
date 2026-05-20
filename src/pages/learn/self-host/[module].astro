@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("self_host_modules");
+  return entries.map((entry) => ({
+    params: { module: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const all = await getCollection("self_host_modules");
+const sorted = all
+  .map((m) => ({ ...m.data, id: m.id }))
+  .sort((a, b) => a.order - b.order);
+
+const idx = sorted.findIndex((m) => m.slug === entry.data.slug);
+const prev = idx > 0 ? sorted[idx - 1] : null;
+const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+---
+
+<BaseLayout
+  title={`${entry.data.title} · Self-host · Learn`}
+  description={entry.data.one_liner}
+>
+  <article class="max-w-3xl mx-auto px-6 pt-12 pb-16">
+    <a
+      href="/learn/self-host"
+      class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4"
+    >
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M19 12H5"/>
+        <path d="M12 19l-7-7 7-7"/>
+      </svg>
+      All self-host modules
+    </a>
+
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+      Self-host · Module {String(entry.data.order).padStart(2, "0")} of {sorted.length}
+    </p>
+    <h1 class="font-serif text-3xl md:text-4xl leading-tight tracking-tight text-[var(--color-text)] mb-3">
+      {entry.data.title}
+    </h1>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-8 max-w-prose">
+      {entry.data.one_liner}
+    </p>
+
+    <div class="prose-course">
+      <Content />
+    </div>
+
+    {entry.data.sources && entry.data.sources.length > 0 && (
+      <section class="mt-12 pt-6 border-t border-[var(--color-border)]">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Sources
+        </h2>
+        <ul class="space-y-1 text-sm">
+          {entry.data.sources.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+                {s.title} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <nav
+      aria-label="Module navigation"
+      class="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center justify-between gap-3 flex-wrap"
+    >
+      {prev ? (
+        <a
+          href={`/learn/self-host/${prev.slug}`}
+          class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+        >
+          ← {prev.title}
+        </a>
+      ) : (
+        <a href="/learn/self-host" class="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline">
+          ← Track overview
+        </a>
+      )}
+      {next ? (
+        <a
+          href={`/learn/self-host/${next.slug}`}
+          class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline ml-auto"
+        >
+          {next.title} →
+        </a>
+      ) : (
+        <a href="/learn" class="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline ml-auto">
+          Back to /learn →
+        </a>
+      )}
+    </nav>
+  </article>
+</BaseLayout>

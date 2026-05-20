@@ -1,0 +1,35 @@
+---
+term: AWQ
+aliases: [awq, activation-aware weight quantization]
+primary_layer: weights
+secondary_layers: [runtime]
+summary: A post-training quantization method that protects the small fraction of weight channels that handle the largest activations, achieving 4-bit weights with little quality loss.
+sources:
+  - title: "AWQ paper (Lin et al., 2023)"
+    url: "https://arxiv.org/abs/2306.00978"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A post-training weight <G term="quantization">quantization</G> method
+introduced by MIT researchers in mid-2023. The observation behind
+AWQ: not all weight channels matter equally. A small fraction
+(roughly 0.1 to 1 percent) of channels see the largest activation
+magnitudes and therefore dominate model output; quantizing them
+aggressively breaks the model. AWQ identifies these "salient"
+channels using calibration data and keeps them at higher precision
+while quantizing the rest to 4 bits.
+
+In practice, AWQ produces 4-bit weights with smaller quality
+degradation than naive 4-bit quantization, comparable to or better
+than <G term="gptq">GPTQ</G> on many benchmarks. The mechanism is
+different from GPTQ's layer-wise reconstruction but the outcome is
+similar: aggressive memory savings (~4x) with small accuracy cost.
+
+vLLM, SGLang, TensorRT-LLM, and most production serving engines
+support AWQ alongside GPTQ. Which format performs better on a given
+deployment depends on the kernel implementations the engine has for
+each, not on the underlying math; on H100s with optimized AWQ
+kernels, AWQ often edges out GPTQ on throughput. The two are
+practical alternatives and most quantization workflows publish both.

@@ -1,0 +1,40 @@
+---
+term: expert parallelism
+aliases: [expert-parallelism, ep, moe parallelism]
+primary_layer: runtime
+secondary_layers: [training, infrastructure]
+summary: A parallelism strategy for mixture-of-experts models where different GPUs hold different experts; requires all-to-all communication on every token routing step.
+sources:
+  - title: "Mixtral of Experts (Jiang et al., 2024)"
+    url: "https://arxiv.org/abs/2401.04088"
+  - title: "DeepSeek-V3 Technical Report"
+    url: "https://arxiv.org/abs/2412.19437"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The parallelism strategy that <G term="mixture-of-experts">mixture-of-experts</G>
+models use to spread their experts across multiple GPUs. Each GPU
+holds a subset of the experts; on every forward pass, tokens are
+routed to the experts that should process them, and the GPUs do an
+all-to-all collective to exchange tokens with their assigned experts.
+
+Expert parallelism's strength is that it makes large MoE models
+serveable on a fleet. <G term="deepseek">DeepSeek</G> V3's 671B
+total parameters across 256 experts can't fit on a single GPU; spread
+across an 8xH100 node with expert parallelism, each GPU holds 32
+experts (~85B parameters) and the all-to-all shuffles tokens to the
+right experts per step. <G term="mixture-of-experts">Mixtral</G> 8x7B
+similarly benefits.
+
+The weakness is interconnect: all-to-all traffic is denser than
+tensor parallelism's all-reduce because every GPU sends data to
+every other GPU on every routing step. On nodes without
+<G term="nvlink">NVLink</G> or NVSwitch, the all-to-all becomes the
+bottleneck and expert parallelism can be slower than other
+strategies. DeepSeek V3's published recipe explicitly trades off
+expert parallelism, tensor parallelism, and pipeline parallelism
+depending on the interconnect topology. Production serving engines
+(vLLM, SGLang, TensorRT-LLM) implement expert parallelism as one
+of several parallelism modes the operator picks at deployment.

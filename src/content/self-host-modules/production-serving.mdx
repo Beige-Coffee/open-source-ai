@@ -1,0 +1,103 @@
+---
+slug: production-serving
+order: 6
+title: "Production serving"
+one_liner: "Prefill, decode, batching, scheduling, parallelism. The system around the model."
+sources:
+  - title: "LLM Inference Engines (Part 3), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+  - title: "Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2023)"
+    url: "https://arxiv.org/abs/2211.17192"
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Maarten Grootendorst"
+    url: "https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+Production serving is the engineering around the model that turns a
+checkpoint into a service. Six concerns recur: phase separation, KV
+cache management, batching, parallelism, speculative decoding, and
+disaggregation. Each is implemented differently by each serving
+engine; together they determine whether a deployment hits its SLA at
+target concurrency, or thrashes under load (Grootendorst, 2026).
+
+<G term="prefill">Prefill</G> and <G term="decode">decode</G> are different workloads
+that share a model. Prefill processes the entire input prompt in one
+pass, runs the matrix-multiply units at saturation, and is
+compute-bound on most hardware. Decode generates one token at a time,
+streams the activated weights through the compute units per step, and
+is memory-bandwidth-bound. <G term="ttft">TTFT</G> is dominated by prefill;
+<G term="tpot">TPOT</G> is dominated by decode. Serving systems that conflate
+the two phases miss optimizations available only when each phase is
+scheduled and parallelized appropriately.
+
+<G term="paged-attention">PagedAttention</G> (Kwon et al., SOSP 2023) reorganized
+<G term="kv-cache">KV cache</G> management around fixed-size blocks tracked by per-request
+page tables, the way an operating system manages virtual memory. The
+result is near-zero memory fragmentation and the ability to share
+identical prefix blocks across requests. <G term="prefix-caching">Prefix caching</G>
+falls out naturally: if two requests share the first 2000 tokens of
+prompt, the KV blocks for those tokens are computed once and reused.
+For agents with repeated system prompts or RAG pipelines with shared
+retrieved context, prefix caching cuts prefill cost by an order of
+magnitude or more.
+
+<G term="continuous-batching">Continuous batching</G> lets the serving engine add new
+requests to a running batch mid-decode. The alternative (static
+batching, where the engine waits for a full batch before starting and
+finishes all requests together) wastes GPU cycles whenever requests
+finish at different times. Combined with chunked prefill (interleaving
+prefill chunks with decode steps from other requests) and KV
+quantization (storing the KV cache in lower precision), these
+techniques are what take an engine from acceptable single-stream
+performance to acceptable high-concurrency performance.
+
+Parallelism strategies multiply by what they need from the
+interconnect. <G term="tensor-parallelism">Tensor parallelism</G> splits each layer's
+matrix multiplications across GPUs and requires an all-reduce after
+every transformer block; it needs NVLink or NVSwitch to be efficient,
+and it actively underperforms on PCIe. <G term="pipeline-parallelism">Pipeline parallelism</G>
+splits the model across stages with each GPU holding a slice of the
+layers; it tolerates slower interconnects but adds pipeline-bubble
+latency. <G term="expert-parallelism">Expert parallelism</G> for <G term="mixture-of-experts">MoE</G>
+models places different experts on different GPUs and requires
+all-to-all routing each step; it scales <G term="mixture-of-experts">MoE</G>
+serving but demands fast interconnect. Data parallelism replicates the
+full model on each GPU and partitions the request stream; it works
+when the model fits on one GPU and the bottleneck is throughput. Context
+parallelism splits very long sequences across GPUs at attention time
+(Grootendorst, 2026).
+
+<G term="speculative-decoding">Speculative decoding</G> (Leviathan et al., 2023) attacks the
+decode bandwidth bound directly. A small draft model proposes several
+tokens cheaply; the target model verifies them in parallel, accepting
+the prefix that matches its own predictions. When draft and target
+agree often (typical for in-distribution prompts), speculative decoding
+yields 1.5x to 3x speedup on decode without changing the model's
+output distribution. The gain depends on draft quality and acceptance
+rate; the cost is the additional draft-model memory and the
+verification step.
+
+Disaggregated serving separates prefill workers from decode workers
+onto different machines or different GPUs within a machine. Prefill is
+compute-bound and benefits from high-FLOPS hardware; decode is
+memory-bandwidth-bound and benefits from high-bandwidth memory. The
+two phases have different optimal hardware shapes and different optimal
+batching strategies. SGLang and TensorRT-LLM both ship disaggregated
+modes. The KV cache produced by the prefill worker is transferred to
+the decode worker over a fast interconnect (NVLink, InfiniBand, or
+GPU-direct RDMA). NVIDIA Dynamo coordinates this across fleets, with
+<G term="kv-cache">KV cache</G>-aware request routing that places follow-up
+requests on workers that already hold the relevant cache blocks.
+
+The SLA metrics that matter for production: <G term="ttft">TTFT</G> at p50, p95,
+and p99 for the latency budget; <G term="tpot">TPOT</G> at the same percentiles
+for the streaming experience; end-to-end latency for non-streaming
+calls; throughput in tokens per second per GPU; cost per million
+tokens at sustained load. Averages hide the long tail; the p99 is
+where users notice. A serving deployment with excellent p50 numbers
+and bad p99 numbers will get complaints proportional to the p99 gap,
+not the p50 mean.

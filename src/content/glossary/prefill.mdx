@@ -1,0 +1,39 @@
+---
+term: prefill
+aliases: [prefill phase, prompt processing]
+primary_layer: runtime
+secondary_layers: [silicon, infrastructure]
+summary: The first phase of LLM inference, processing the input prompt and building the initial KV cache. Compute-bound and parallel across prompt tokens.
+sources:
+  - title: "LLM Inference Engines (Maarten Grootendorst, 2026)"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+  - title: "FlashAttention paper (Dao et al., 2022)"
+    url: "https://arxiv.org/abs/2205.14135"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The first half of LLM inference. The prompt comes in as a sequence of
+tokens; the model runs a forward pass over every prompt token at once,
+producing the initial <G term="kv-cache">KV cache</G> that the <G term="decode">decode</G>
+phase will read from one token at a time. Because every prompt token is
+processed in parallel, prefill is dominated by matrix-matrix
+multiplications and saturates GPU compute, not memory bandwidth.
+
+The opposite shape, decode, generates one token per step and reads the
+entire KV cache plus the model weights each time. Decode is therefore
+memory-bandwidth-bound. The compute-bound prefill plus the
+bandwidth-bound decode is why a single workload can look completely
+different depending on whether the prompt is long and the answer short
+(prefill dominates) or the prompt is short and the answer long (decode
+dominates).
+
+Production serving stacks treat prefill and decode as separate
+operations. <G term="paged-attention">PagedAttention</G> manages the KV
+cache. <G term="continuous-batching">Continuous batching</G> reduces
+head-of-line blocking. Chunked prefill breaks long prompts into pieces
+so they don't starve decode for any one request. Disaggregated serving
+(SGLang, TensorRT-LLM) separates prefill workers from decode workers
+entirely, passing the KV cache between them so neither phase blocks
+the other.

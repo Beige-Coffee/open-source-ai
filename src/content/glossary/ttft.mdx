@@ -1,0 +1,33 @@
+---
+term: TTFT
+aliases: [time to first token, time-to-first-token]
+primary_layer: runtime
+secondary_layers: [evaluation]
+summary: Time to first token. The latency from request received to the first output token streamed back; dominated by prompt-prefill cost and scheduler queueing.
+sources:
+  - title: "LLM Inference Engines (Maarten Grootendorst, 2026)"
+    url: "https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+The latency from receiving a request to streaming the first output
+token back. TTFT is dominated by <G term="prefill">prefill</G> cost (how
+long it takes to process the prompt) plus any time the request spent
+queued behind other requests in the scheduler.
+
+For interactive chat, TTFT is the metric users actually feel. A
+2-second TTFT followed by fast streaming feels responsive; a 5-second
+TTFT followed by the same fast streaming feels broken. Production
+serving benchmarks always report TTFT alongside <G term="tpot">TPOT</G>
+(time per output token) because optimizing for one can hurt the other:
+batching aggressively raises decode throughput but can push prefill
+latency for any individual request.
+
+Practical TTFT numbers depend on prompt length, model size, hardware,
+and concurrency. Chunked prefill, prefix caching, and disaggregated
+serving all target TTFT specifically: chunked prefill prevents one
+long prompt from blocking everyone else's first-token latency; prefix
+caching lets a shared prompt prefix skip recomputation; disaggregated
+serving keeps prefill and decode workers from blocking each other.
