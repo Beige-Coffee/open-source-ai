@@ -105,8 +105,8 @@ function fmtCurrency(n: number | undefined): string {
     </h1>
     <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
       <span
-        class={`openness-badge ${opennessClass} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded cursor-help`}
-        title={opennessExplainer[model.openness]}
+        class={`openness-badge ${opennessClass} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}
+        data-popover={opennessExplainer[model.openness]}
       >
         {OPENNESS_LABEL[model.openness]}
       </span>

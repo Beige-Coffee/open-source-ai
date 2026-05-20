@@ -99,9 +99,15 @@ const isCourseRoute = Astro.url.pathname.startsWith("/learn");
     <Footer />
     {!isCourseRoute && <ChatBubble client:only="react" />}
     <SearchPopover client:idle />
+    {/* Site-wide popover element. Any element on any page with a
+        data-popover attribute shows a styled hint on hover. Replaces
+        the browser-native title tooltip so the popover matches the
+        site palette (mono font, soft border, no OS yellow). */}
+    <div id="site-popover" role="tooltip" aria-hidden="true"></div>
     <script>
       import "../lib/glossary-runtime";
       import "../lib/layer-hover";
+      import "../lib/popover-runtime";
     </script>
   </body>
 </html>

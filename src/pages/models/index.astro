@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   loadModels,
   OPENNESS_LABEL,
+  FAMILY_COLORS,
+  familyColor,
   formatParams,
   formatContext,
   type Openness,
@@ -56,6 +58,17 @@ for (let y = 2023; y <= new Date().getFullYear(); y++) {
 const developers = Array.from(new Set(all.map((m) => m.developer))).sort();
 const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort();
 
+// Family-color legend: only families that actually appear in the
+// catalog, sorted by count desc so the most common ones show first.
+// Anything not in FAMILY_COLORS falls back to the default gray and
+// goes under an "other" chip at the end.
+const familyCounts = new Map<string, number>();
+for (const m of all) familyCounts.set(m.family, (familyCounts.get(m.family) ?? 0) + 1);
+const legendFamilies = Array.from(familyCounts.entries())
+  .filter(([fam]) => fam in FAMILY_COLORS)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const unmappedFamilies = Array.from(familyCounts.entries()).filter(([fam]) => !(fam in FAMILY_COLORS));
+
 // Scatter plot: axes are user-selectable client-side. Server emits a
 // JSON payload of every metric for every model, and the inline JS
 // rerenders the dots whenever the user picks new X/Y metrics. Models
@@ -67,6 +80,8 @@ const scatterRows = all.map((m) => ({
   slug: m.slug,
   display_name: m.display_name,
   openness: m.openness,
+  family: m.family,
+  family_color: familyColor(m.family),
   released_date: m.released_date,
   // Flattened, picker-friendly metric map. Only fields with a number
   // get a non-null value so the JS filter is uniform.
@@ -274,28 +289,28 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
         <g font-size="10" fill="var(--color-text-subtle)">
           <text x={4} y={44}>open</text>
           <text x={4} y={74}>open-weights</text>
-          <text x={4} y={104}>src-available</text>
+          <text x={4} y={104}>source-available</text>
           <text x={4} y={134}>proprietary</text>
         </g>
 
         <g stroke="var(--color-border)" stroke-width="1">
-          <line x1={TIMELINE_PAD_X + 80} y1={40} x2={TIMELINE_W - TIMELINE_PAD_X} y2={40}/>
-          <line x1={TIMELINE_PAD_X + 80} y1={70} x2={TIMELINE_W - TIMELINE_PAD_X} y2={70}/>
-          <line x1={TIMELINE_PAD_X + 80} y1={100} x2={TIMELINE_W - TIMELINE_PAD_X} y2={100}/>
-          <line x1={TIMELINE_PAD_X + 80} y1={130} x2={TIMELINE_W - TIMELINE_PAD_X} y2={130}/>
+          <line x1={TIMELINE_PAD_X + 110} y1={40} x2={TIMELINE_W - TIMELINE_PAD_X} y2={40}/>
+          <line x1={TIMELINE_PAD_X + 110} y1={70} x2={TIMELINE_W - TIMELINE_PAD_X} y2={70}/>
+          <line x1={TIMELINE_PAD_X + 110} y1={100} x2={TIMELINE_W - TIMELINE_PAD_X} y2={100}/>
+          <line x1={TIMELINE_PAD_X + 110} y1={130} x2={TIMELINE_W - TIMELINE_PAD_X} y2={130}/>
         </g>
 
         <g font-size="10" fill="var(--color-text-muted)" stroke="none">
           {yearTicks.map((t) => (
             <>
               <line
-                x1={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W)}
-                x2={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W)}
+                x1={TIMELINE_PAD_X + 110 + t.x * ((TIMELINE_INNER_W - 110) / TIMELINE_INNER_W)}
+                x2={TIMELINE_PAD_X + 110 + t.x * ((TIMELINE_INNER_W - 110) / TIMELINE_INNER_W)}
                 y1={20} y2={150}
                 stroke="var(--color-border)"
               />
               <text
-                x={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W) + 4}
+                x={TIMELINE_PAD_X + 110 + t.x * ((TIMELINE_INNER_W - 110) / TIMELINE_INNER_W) + 4}
                 y={16}
                 fill="var(--color-text-subtle)"
               >
@@ -307,13 +322,9 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
 
         <g>
           {all.map((m) => {
-            const x = TIMELINE_PAD_X + 80 + xForDate(m.released_date, TIMELINE_INNER_W - 80);
+            const x = TIMELINE_PAD_X + 110 + xForDate(m.released_date, TIMELINE_INNER_W - 110);
             const y = yForOpenness(m.openness);
-            const fill =
-              m.openness === "open" ? "var(--color-focus-open)" :
-              m.openness === "open-weights" ? "var(--color-focus-open-weights)" :
-              m.openness === "source-available" ? "var(--color-focus-source-available)" :
-              "var(--color-focus-proprietary)";
+            const fill = familyColor(m.family);
             const gpqa = m.benchmarks?.gpqa_diamond?.score;
             const mmluPro = m.benchmarks?.mmlu_pro?.score;
             return (
@@ -349,8 +360,33 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
       ></div>
     </div>
     <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-      Dots in lanes by openness. Hover for details; click to open the model page.
+      Dots in lanes by openness, colored by family. Hover for details; click to open the model page.
     </p>
+    {/* Family-color legend, shared by timeline + scatter. Compact:
+        one swatch + family slug per chip; only families actually
+        present in the catalog appear. */}
+    <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2 items-center">
+      {legendFamilies.map(([fam, count]) => (
+        <span class="inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]">
+          <span
+            aria-hidden="true"
+            style={`display:inline-block;width:8px;height:8px;border-radius:50%;background:${FAMILY_COLORS[fam]};`}
+          ></span>
+          <span class="text-[var(--color-text-muted)]">{fam}</span>
+          <span class="text-[var(--color-text-subtle)]">({count})</span>
+        </span>
+      ))}
+      {unmappedFamilies.length > 0 && (
+        <span class="inline-flex items-center gap-1 font-mono text-[10px] text-[var(--color-text-subtle)]">
+          <span
+            aria-hidden="true"
+            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#737373;"
+          ></span>
+          <span class="text-[var(--color-text-muted)]">other</span>
+          <span class="text-[var(--color-text-subtle)]">({unmappedFamilies.reduce((s, [, c]) => s + c, 0)})</span>
+        </span>
+      )}
+    </div>
   </section>
 
   <!-- Configurable scatter plot. Server emits the data + metric
@@ -469,20 +505,20 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
         <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
           <tr class="text-left font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)]">
             <th class="px-2 py-2"><span title="Pick up to 4 to compare side-by-side">cmp</span></th>
-            <th class="px-3 py-2" title={COL_HELP.model}>Model</th>
-            <th class="px-3 py-2" title={COL_HELP.developer}>Developer</th>
-            <th class="px-3 py-2" title={COL_HELP.released}>Released</th>
-            <th class="px-3 py-2" title={COL_HELP.openness}>Openness</th>
-            <th class="px-3 py-2" title={COL_HELP.architecture}>Architecture</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.total}>Total params</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.active}>Active params</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.ctx}>Context</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.cost_in}>$/M in</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.cost_out}>$/M out</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.speed}>tok/s</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.mmlu}>MMLU</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.gpqa}>GPQA-D</th>
-            <th class="px-3 py-2 text-right" title={COL_HELP.humaneval}>HumanEval</th>
+            <th class="px-3 py-2" data-popover={COL_HELP.model}>Model</th>
+            <th class="px-3 py-2" data-popover={COL_HELP.developer}>Developer</th>
+            <th class="px-3 py-2" data-popover={COL_HELP.released}>Released</th>
+            <th class="px-3 py-2" data-popover={COL_HELP.openness}>Openness</th>
+            <th class="px-3 py-2" data-popover={COL_HELP.architecture}>Architecture</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.total}>Total params</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.active}>Active params</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.ctx}>Context</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.cost_in}>$/M in</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.cost_out}>$/M out</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.speed}>tok/s</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.mmlu}>MMLU</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.gpqa}>GPQA-D</th>
+            <th class="px-3 py-2 text-right" data-popover={COL_HELP.humaneval}>HumanEval</th>
           </tr>
         </thead>
         <tbody>
@@ -510,8 +546,8 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
                 <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)] tabular-nums">{m.released_date}</td>
                 <td class="px-3 py-2">
                   <span
-                    class={`openness-badge ${opennessClass(m.openness)} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded cursor-help`}
-                    title={OPENNESS_EXPLAINER[m.openness]}
+                    class={`openness-badge ${opennessClass(m.openness)} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}
+                    data-popover={OPENNESS_EXPLAINER[m.openness]}
                   >
                     {OPENNESS_LABEL[m.openness]}
                   </span>
@@ -547,12 +583,10 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
   .openness-proprietary { background: var(--color-surface-warm); color: var(--color-focus-proprietary); border: 1px solid var(--color-focus-proprietary); }
   .timeline-dot:hover circle { r: 7; cursor: pointer; }
   .scatter-dot:hover circle { r: 8; cursor: pointer; }
-  /* Native browser title attributes show a hover tooltip; for richer
-     popovers we'd render our own. Native title is sufficient here because
-     the help text is one or two sentences. */
-  th[title] { cursor: help; }
   /* Custom summary chevron + remove default disclosure triangle */
   details > summary::-webkit-details-marker { display: none; }
+  /* Site-wide popover styles live in global.css; data-popover attrs
+     on column headers and openness badges are handled there. */
 </style>
 
 <script is:inline>
@@ -652,14 +686,10 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
     const W = 720, H = 320, PAD = 56;
     const SVG_NS = "http://www.w3.org/2000/svg";
 
-    function color(openness) {
-      switch (openness) {
-        case "open": return "var(--color-focus-open)";
-        case "open-weights": return "var(--color-focus-open-weights)";
-        case "source-available": return "var(--color-focus-source-available)";
-        default: return "var(--color-focus-proprietary)";
-      }
-    }
+    // Each point carries its family color in the JSON payload; we read
+    // it directly. The openness tier still distinguishes filled vs
+    // ring on the dot, so cost/quality readers can still tell open
+    // from closed at a glance.
     function fmtTick(meta, v) {
       if (meta.log) {
         if (meta.group === "cost") return "$" + v.toFixed(v < 1 ? 2 : 0);
@@ -748,13 +778,15 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
       html += `<text x="${W / 2}" y="${H - 12}" text-anchor="middle" font-size="11" fill="var(--color-text-muted)">${xMeta.label}${xLog ? " (log)" : ""}</text>`;
       html += `<text x="${PAD - 36}" y="${H / 2}" text-anchor="middle" font-size="11" fill="var(--color-text-muted)" transform="rotate(-90, ${PAD - 36}, ${H / 2})">${yMeta.label}${yLog ? " (log)" : ""}</text>`;
 
-      // Points.
+      // Points. Color by family; ring (no fill) for proprietary so the
+      // closed-vs-open distinction is still visible even with the
+      // family palette taking the primary color slot.
       for (const p of points) {
         const cx = xToPx(p.metrics[xKey]);
         const cy = yToPx(p.metrics[yKey]);
         const isClosed = p.openness === "proprietary";
-        const c = color(p.openness);
-        const title = `${p.display_name} · ${xMeta.short_label}: ${fmtTick(xMeta, p.metrics[xKey])} · ${yMeta.short_label}: ${fmtTick(yMeta, p.metrics[yKey])}`;
+        const c = p.family_color || "#737373";
+        const title = `${p.display_name} (${p.family}) · ${xMeta.short_label}: ${fmtTick(xMeta, p.metrics[xKey])} · ${yMeta.short_label}: ${fmtTick(yMeta, p.metrics[yKey])}`;
         html += `<a href="/models/${p.slug}" class="scatter-dot"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"><title>${title}</title></circle></a>`;
       }
 

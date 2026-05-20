@@ -368,6 +368,44 @@ export function opennessColor(o: Openness): string {
   }
 }
 
+/**
+ * Restrained color palette per model family. The colors are
+ * communicative (the color IS data — same hue = same family), not
+ * decorative; that's why the otherwise-monochrome site gets to have
+ * them here. Hand-picked to be distinguishable at small dot size
+ * without resorting to neon.
+ *
+ * Families not in this map fall back to a mid-gray; the legend on
+ * each chart shows only the colored ones.
+ */
+export const FAMILY_COLORS: Record<string, string> = {
+  llama: "#4a6fa5",
+  mistral: "#ba5b4b",
+  qwen: "#117a60",
+  deepseek: "#1f3a6e",
+  gemma: "#9c8056",
+  gemini: "#5a8ac4",
+  "gpt-3-5": "#18181b",
+  "gpt-4": "#18181b",
+  "o-series": "#525252",
+  claude: "#c97e44",
+  grok: "#7a3838",
+  olmo: "#a78a52",
+  phi: "#5c4a8a",
+  kimi: "#9b4a7d",
+  yi: "#3d8a8a",
+  glm: "#6a4a8a",
+  falcon: "#8a6a3a",
+  command: "#3a7a8a",
+  starcoder: "#7a6a4a",
+  granite: "#3a3a6a",
+  tulu: "#b87a3a",
+};
+
+export function familyColor(family: string): string {
+  return FAMILY_COLORS[family] ?? "#737373";
+}
+
 export function formatParams(n: number): string {
   if (n >= 1e12) return `${(n / 1e12).toFixed(n % 1e12 === 0 ? 0 : 1)}T`;
   if (n >= 1e9) return `${(n / 1e9).toFixed(n % 1e9 === 0 ? 0 : 1)}B`;
