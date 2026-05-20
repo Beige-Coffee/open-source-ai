@@ -1,0 +1,347 @@
+[
+  {
+    "slug": "llama-3-2-1b-instruct",
+    "display_name": "Llama 3.2 1B Instruct",
+    "family": "llama",
+    "developer": "Meta",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-09-25",
+    "weights_released_date": "2024-09-25",
+    "openness": "source-available",
+    "license": "Llama 3.2 Community License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 1230000000,
+    "params_active": 1230000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "pretraining_tokens": 9000000000000,
+    "post_training": ["sft", "dpo", "rejection-sampling", "rlhf"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 49.3,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      },
+      "math": {
+        "score": 30.6,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      },
+      "gpqa": {
+        "score": 27.2,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      },
+      "ifeval": {
+        "score": 59.5,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      }
+    },
+    "release_context": "Released alongside the 3B as a lightweight, text-only Llama 3.2 checkpoint targeted at on-device and edge use cases. Meta built the 1B and 3B via structured pruning from Llama 3.1 8B plus knowledge distillation from larger Llama 3 teachers.",
+    "notable_innovations": [
+      "Pruning + distillation from Llama 3.1 8B",
+      "On-device target footprint",
+      "128K context at sub-2B scale"
+    ],
+    "sources": [
+      {
+        "title": "Llama 3.2 announcement (Meta AI, Sep 25 2024)",
+        "url": "https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"
+      },
+      {
+        "title": "Llama 3.2 1B Instruct model card",
+        "url": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.06,
+      "output_per_mtok_usd": 0.06,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "llama-3-2-3b-instruct",
+    "display_name": "Llama 3.2 3B Instruct",
+    "family": "llama",
+    "developer": "Meta",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-09-25",
+    "weights_released_date": "2024-09-25",
+    "openness": "source-available",
+    "license": "Llama 3.2 Community License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 3210000000,
+    "params_active": 3210000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "pretraining_tokens": 9000000000000,
+    "post_training": ["sft", "dpo", "rejection-sampling", "rlhf"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 63.4,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct"
+      },
+      "math": {
+        "score": 48.0,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct"
+      },
+      "ifeval": {
+        "score": 77.4,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct"
+      }
+    },
+    "release_context": "The larger of the two text-only Llama 3.2 lightweight checkpoints, also produced by pruning and distilling from Llama 3.1 8B. Meta positioned the 3B as the on-device tier for summarization, rewriting, and tool-use tasks.",
+    "notable_innovations": [
+      "Pruning + distillation from Llama 3.1 8B",
+      "On-device target footprint",
+      "Tool-use support at 3B scale"
+    ],
+    "sources": [
+      {
+        "title": "Llama 3.2 announcement (Meta AI, Sep 25 2024)",
+        "url": "https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"
+      },
+      {
+        "title": "Llama 3.2 3B Instruct model card",
+        "url": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.06,
+      "output_per_mtok_usd": 0.06,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "llama-3-2-11b-vision-instruct",
+    "display_name": "Llama 3.2 11B Vision Instruct",
+    "family": "llama",
+    "developer": "Meta",
+    "developer_country": "US",
+    "type": "vision-language",
+    "released_date": "2024-09-25",
+    "weights_released_date": "2024-09-25",
+    "openness": "source-available",
+    "license": "Llama 3.2 Community License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 10600000000,
+    "params_active": 10600000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "post_training": ["sft", "rlhf"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 73.0,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct"
+      },
+      "math": {
+        "score": 51.9,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct"
+      },
+      "gpqa": {
+        "score": 32.8,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct"
+      }
+    },
+    "release_context": "Llama's first openly released vision-language checkpoint at small-medium scale, built by training a cross-attention adapter that integrates a pre-trained image encoder into the Llama 3.1 8B text backbone. The text-only behavior of the underlying language model is preserved so the model can substitute for the dense text checkpoint.",
+    "notable_innovations": [
+      "First Llama vision-language model",
+      "Cross-attention vision adapter",
+      "Preserves text-only behavior"
+    ],
+    "sources": [
+      {
+        "title": "Llama 3.2 announcement (Meta AI, Sep 25 2024)",
+        "url": "https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"
+      },
+      {
+        "title": "Llama 3.2 11B Vision Instruct model card",
+        "url": "https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.18,
+      "output_per_mtok_usd": 0.18,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "llama-3-2-90b-vision-instruct",
+    "display_name": "Llama 3.2 90B Vision Instruct",
+    "family": "llama",
+    "developer": "Meta",
+    "developer_country": "US",
+    "type": "vision-language",
+    "released_date": "2024-09-25",
+    "weights_released_date": "2024-09-25",
+    "openness": "source-available",
+    "license": "Llama 3.2 Community License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 88800000000,
+    "params_active": 88800000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "post_training": ["sft", "rlhf"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 86.0,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-90B-Vision-Instruct"
+      },
+      "math": {
+        "score": 68.0,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-90B-Vision-Instruct"
+      },
+      "gpqa": {
+        "score": 46.7,
+        "as_of": "2024-09-25",
+        "source": "https://huggingface.co/meta-llama/Llama-3.2-90B-Vision-Instruct"
+      }
+    },
+    "release_context": "The frontier-tier Llama 3.2 vision-language checkpoint, built by attaching a cross-attention vision adapter to the Llama 3.1 70B text backbone. Meta positioned it as competitive with Claude 3 Haiku and GPT-4o-mini on image reasoning at release.",
+    "notable_innovations": [
+      "Frontier-class open vision-language model",
+      "Cross-attention vision adapter on 70B backbone",
+      "Document and chart understanding"
+    ],
+    "sources": [
+      {
+        "title": "Llama 3.2 announcement (Meta AI, Sep 25 2024)",
+        "url": "https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"
+      },
+      {
+        "title": "Llama 3.2 90B Vision Instruct model card",
+        "url": "https://huggingface.co/meta-llama/Llama-3.2-90B-Vision-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.88,
+      "output_per_mtok_usd": 0.88,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "llama-4-maverick",
+    "display_name": "Llama 4 Maverick",
+    "family": "llama",
+    "developer": "Meta",
+    "developer_country": "US",
+    "type": "vision-language",
+    "released_date": "2025-04-05",
+    "weights_released_date": "2025-04-05",
+    "openness": "source-available",
+    "license": "Llama 4 Community License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "moe",
+    "params_total": 400000000000,
+    "params_active": 17000000000,
+    "experts": 128,
+    "experts_active": 1,
+    "context_window": 1048576,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama4",
+    "pretraining_tokens": 22000000000000,
+    "post_training": ["sft", "online-rl", "dpo"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu_pro": {
+        "score": 80.5,
+        "as_of": "2025-04-05",
+        "source": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct"
+      },
+      "gpqa_diamond": {
+        "score": 69.8,
+        "as_of": "2025-04-05",
+        "source": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct"
+      },
+      "livecodebench": {
+        "score": 43.4,
+        "as_of": "2025-04-05",
+        "source": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct"
+      },
+      "lmarena_elo": {
+        "score": 1417,
+        "as_of": "2025-04-05",
+        "source": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
+      }
+    },
+    "release_context": "The mid-tier sibling in Meta's first MoE Llama family, sharing the natively multimodal early-fusion architecture used across Llama 4. Maverick pairs 17B active parameters with 128 routed experts, and Meta positioned it against GPT-4o and Gemini 2.0 Flash on standard reasoning and coding suites.",
+    "notable_innovations": [
+      "128 routed experts plus shared expert",
+      "Native multimodal early fusion",
+      "Online RL post-training loop"
+    ],
+    "sources": [
+      {
+        "title": "Llama 4 announcement (Meta AI, Apr 5 2025)",
+        "url": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
+      },
+      {
+        "title": "Llama 4 Maverick model card",
+        "url": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.27,
+      "output_per_mtok_usd": 0.27,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  }
+]

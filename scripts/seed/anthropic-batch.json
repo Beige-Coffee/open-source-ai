@@ -1,0 +1,341 @@
+[
+  {
+    "slug": "claude-3-opus",
+    "display_name": "Claude 3 Opus",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-03-04",
+    "weights_released_date": "2024-03-04",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "release_context": "The flagship of the Claude 3 family at launch, marketed as Anthropic's most capable model with vision input and a 200K context window. Set the price ceiling for closed frontier chat at $15 input / $75 output per million tokens, a tier matched by GPT-4 Turbo at the time.",
+    "notable_innovations": [
+      "200K context window across the family",
+      "Vision input on every Claude 3 variant",
+      "Near-perfect Needle-in-a-Haystack recall (>99%)"
+    ],
+    "sources": [
+      {
+        "title": "Introducing the next generation of Claude (Anthropic, Mar 4 2024)",
+        "url": "https://www.anthropic.com/news/claude-3-family"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 15,
+      "output_per_mtok_usd": 75,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "children": ["claude-4-opus"],
+      "note": "Predecessor flagship Opus; the Claude 4 line returned to the Opus name after skipping a 3.5 Opus."
+    }
+  },
+  {
+    "slug": "claude-3-haiku",
+    "display_name": "Claude 3 Haiku",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-03-13",
+    "weights_released_date": "2024-03-13",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "release_context": "The fast, low-cost tier of the Claude 3 family. Anthropic claimed throughput of roughly 21K tokens per second on prompts under 32K tokens at launch, and the $0.25 input / $1.25 output price point made it competitive with GPT-3.5-class small models while carrying the 200K context and vision capabilities of its larger siblings.",
+    "notable_innovations": [
+      "Tier 1 small-model pricing with frontier-family context window",
+      "Vision input at Haiku price tier"
+    ],
+    "sources": [
+      {
+        "title": "Claude 3 Haiku: our fastest model yet (Anthropic, Mar 13 2024)",
+        "url": "https://www.anthropic.com/news/claude-3-haiku"
+      },
+      {
+        "title": "Introducing the next generation of Claude (Anthropic, Mar 4 2024)",
+        "url": "https://www.anthropic.com/news/claude-3-family"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.25,
+      "output_per_mtok_usd": 1.25,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "children": ["claude-3-5-haiku"],
+      "note": "Direct predecessor to Claude 3.5 Haiku."
+    }
+  },
+  {
+    "slug": "claude-3-5-haiku",
+    "display_name": "Claude 3.5 Haiku",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-11-04",
+    "weights_released_date": "2024-11-04",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "benchmarks": {
+      "swe_bench_verified": {
+        "score": 40.6,
+        "as_of": "2024-10-22",
+        "source": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+      }
+    },
+    "release_context": "Announced October 22 2024 alongside the upgraded Claude 3.5 Sonnet and the computer-use beta; generally available in early November. Anthropic positioned it as matching Claude 3 Opus on many intelligence benchmarks at Haiku-tier speeds, with a SWE-Bench Verified score of 40.6% making it briefly the best small-tier coding model from a major lab.",
+    "notable_innovations": [
+      "Small-tier model matching prior flagship on many benchmarks",
+      "SWE-Bench Verified 40.6% at Haiku price tier"
+    ],
+    "sources": [
+      {
+        "title": "Introducing computer use, a new Claude 3.5 Sonnet, and Claude 3.5 Haiku (Anthropic, Oct 22 2024)",
+        "url": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.8,
+      "output_per_mtok_usd": 4,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "parent": "claude-3-haiku",
+      "note": "Successor to Claude 3 Haiku at the small-fast tier of the Claude lineup."
+    }
+  },
+  {
+    "slug": "claude-4-sonnet",
+    "display_name": "Claude Sonnet 4",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-05-22",
+    "weights_released_date": "2025-05-22",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "benchmarks": {
+      "swe_bench_verified": {
+        "score": 72.7,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4"
+      },
+      "gpqa_diamond": {
+        "score": 70.0,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4",
+        "variant": "without extended thinking"
+      },
+      "aime_2025": {
+        "score": 33.1,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4",
+        "variant": "without extended thinking"
+      }
+    },
+    "release_context": "Mid-tier model of the May 22 2025 Claude 4 launch. Inherited the hybrid-reasoning approach from Claude 3.7 Sonnet with near-instant and extended-thinking modes, plus parallel tool execution and an extended-thinking-with-tool-use beta. Held the SWE-Bench Verified lead for closed mid-tier coding through summer 2025 at the same $3 / $15 price point as 3.5 and 3.7 Sonnet.",
+    "notable_innovations": [
+      "Hybrid reasoning with tool use in extended thinking",
+      "Parallel tool execution",
+      "65% reduction in reward-hacking shortcuts vs Sonnet 3.7"
+    ],
+    "sources": [
+      {
+        "title": "Introducing Claude 4 (Anthropic, May 22 2025)",
+        "url": "https://www.anthropic.com/news/claude-4"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 3,
+      "output_per_mtok_usd": 15,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "parent": "claude-3-7-sonnet",
+      "children": ["claude-4-5-sonnet"],
+      "note": "Continues the Sonnet line: 3.5 Sonnet to 3.7 Sonnet to Sonnet 4 to Sonnet 4.5."
+    }
+  },
+  {
+    "slug": "claude-4-opus",
+    "display_name": "Claude Opus 4",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-05-22",
+    "weights_released_date": "2025-05-22",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "benchmarks": {
+      "swe_bench_verified": {
+        "score": 72.5,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4"
+      },
+      "gpqa_diamond": {
+        "score": 74.9,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4",
+        "variant": "without extended thinking"
+      },
+      "aime_2025": {
+        "score": 33.9,
+        "as_of": "2025-05-22",
+        "source": "https://www.anthropic.com/news/claude-4",
+        "variant": "without extended thinking"
+      }
+    },
+    "release_context": "Flagship of the May 22 2025 Claude 4 launch. Returned to the Opus name after the Claude 3.5 and 3.7 lines skipped Opus entirely. Held the same $15 / $75 input/output price ceiling as Claude 3 Opus, and like Sonnet 4 carried hybrid reasoning with extended thinking and parallel tool execution.",
+    "notable_innovations": [
+      "Flagship hybrid-reasoning Opus return",
+      "Extended thinking with tool use",
+      "Memory features for local file access during long tasks"
+    ],
+    "sources": [
+      {
+        "title": "Introducing Claude 4 (Anthropic, May 22 2025)",
+        "url": "https://www.anthropic.com/news/claude-4"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 15,
+      "output_per_mtok_usd": 75,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "parent": "claude-3-opus",
+      "note": "Successor flagship Opus after the 3.5 and 3.7 lines shipped Sonnet-only at the top end."
+    }
+  },
+  {
+    "slug": "claude-4-5-sonnet",
+    "display_name": "Claude Sonnet 4.5",
+    "family": "claude",
+    "developer": "Anthropic",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-09-29",
+    "weights_released_date": "2025-09-29",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf", "constitutional"],
+    "benchmarks": {
+      "swe_bench_verified": {
+        "score": 77.2,
+        "as_of": "2025-09-29",
+        "source": "https://www.anthropic.com/news/claude-sonnet-4-5",
+        "variant": "primary score, averaged over 10 trials"
+      }
+    },
+    "release_context": "September 29 2025 incremental update of the Sonnet line at the same $3 / $15 price point as Sonnet 4. Shipped alongside Claude Code checkpoints, a native VS Code extension, context editing and memory tools for long-running agents, and the Claude Agent SDK. OSWorld score of 61.4% positioned it as the strongest computer-use model from Anthropic at launch.",
+    "notable_innovations": [
+      "Claude Code checkpoints (progress save / rollback)",
+      "Claude Agent SDK",
+      "Context editing and memory tools for long-running agents",
+      "Native VS Code extension"
+    ],
+    "sources": [
+      {
+        "title": "Introducing Claude Sonnet 4.5 (Anthropic, Sep 29 2025)",
+        "url": "https://www.anthropic.com/news/claude-sonnet-4-5"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 3,
+      "output_per_mtok_usd": 15,
+      "vendor": "Anthropic API",
+      "as_of": "2026-05-19",
+      "source": "https://www.anthropic.com/pricing#anthropic-api",
+      "via_artificial_analysis": false
+    },
+    "lineage": {
+      "parent": "claude-4-sonnet",
+      "note": "Incremental Sonnet update; the agent-coding tooling around the model is the headline change."
+    }
+  }
+]

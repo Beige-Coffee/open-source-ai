@@ -1,0 +1,300 @@
+[
+  {
+    "slug": "mixtral-8x22b-instruct-v0-1",
+    "display_name": "Mixtral 8x22B Instruct v0.1",
+    "family": "mistral",
+    "developer": "Mistral AI",
+    "developer_country": "FR",
+    "type": "instruct",
+    "released_date": "2024-04-17",
+    "weights_released_date": "2024-04-17",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "moe",
+    "params_total": 141000000000,
+    "params_active": 39000000000,
+    "experts": 8,
+    "experts_active": 2,
+    "context_window": 65536,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "mistral",
+    "post_training": ["sft", "dpo"],
+    "benchmarks": {
+      "gsm8k": {
+        "score": 90.8,
+        "as_of": "2024-04-17",
+        "source": "https://mistral.ai/news/mixtral-8x22b/",
+        "notes": "maj@8, instruct model"
+      },
+      "math": {
+        "score": 44.6,
+        "as_of": "2024-04-17",
+        "source": "https://mistral.ai/news/mixtral-8x22b/",
+        "notes": "maj@4, instruct model"
+      }
+    },
+    "release_context": "Mistral's flagship open-weights sparse MoE released in April 2024 under Apache 2.0. Routes 39B active parameters per token through 2 of 8 experts, giving dense-class throughput at frontier-tier total capacity. Natively supports function calling and is multilingual across English, French, Italian, German, and Spanish.",
+    "notable_innovations": [
+      "Sparse MoE with 2-of-8 expert routing at 22B per expert",
+      "Native function calling tokens",
+      "64K context window in an Apache 2.0 release"
+    ],
+    "sources": [
+      {
+        "title": "Cheaper, Better, Faster, Stronger (Mistral AI, Apr 17 2024)",
+        "url": "https://mistral.ai/news/mixtral-8x22b/"
+      },
+      {
+        "title": "Mixtral-8x22B-Instruct-v0.1 model card (Hugging Face)",
+        "url": "https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 1.2,
+      "output_per_mtok_usd": 1.2,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "mistral-large-2",
+    "display_name": "Mistral Large 2",
+    "family": "mistral",
+    "developer": "Mistral AI",
+    "developer_country": "FR",
+    "type": "instruct",
+    "released_date": "2024-07-24",
+    "weights_released_date": "2024-07-24",
+    "openness": "source-available",
+    "license": "Mistral Research License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 123000000000,
+    "params_active": 123000000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "mistral",
+    "post_training": ["sft", "dpo"],
+    "benchmarks": {
+      "mmlu": {
+        "score": 84.0,
+        "as_of": "2024-07-24",
+        "source": "https://mistral.ai/news/mistral-large-2407/",
+        "notes": "pretrained base, 5-shot"
+      },
+      "humaneval": {
+        "score": 92.0,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "humaneval_plus": {
+        "score": 87.0,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "mbpp_base": {
+        "score": 80.0,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "gsm8k": {
+        "score": 93.0,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "math": {
+        "score": 71.5,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407",
+        "notes": "0-shot CoT, instruct"
+      },
+      "mt_bench": {
+        "score": 8.63,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "arena_hard": {
+        "score": 73.2,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      },
+      "wild_bench": {
+        "score": 56.3,
+        "as_of": "2024-07-24",
+        "source": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      }
+    },
+    "release_context": "Mistral's frontier dense model from July 2024, sized for single-node inference at 123B parameters with a 128K context. Weights are downloadable under the Mistral Research License for non-commercial use, with a separate paid Mistral Commercial License required for production deployment. Trained with explicit emphasis on reducing hallucinations and supporting parallel and sequential function calling across dozens of natural and coding languages.",
+    "notable_innovations": [
+      "Single-node-deployable 123B dense at 128K context",
+      "Explicit anti-hallucination fine-tuning target",
+      "Parallel and sequential function calling"
+    ],
+    "sources": [
+      {
+        "title": "Large Enough: Mistral Large 2 (Mistral AI, Jul 24 2024)",
+        "url": "https://mistral.ai/news/mistral-large-2407/"
+      },
+      {
+        "title": "Mistral-Large-Instruct-2407 model card (Hugging Face)",
+        "url": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 2.0,
+      "output_per_mtok_usd": 6.0,
+      "vendor": "Mistral La Plateforme",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models/mistral-large-2/providers",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "mistral-nemo-12b-instruct",
+    "display_name": "Mistral Nemo 12B Instruct",
+    "family": "mistral",
+    "developer": "Mistral AI",
+    "developer_country": "FR",
+    "type": "instruct",
+    "released_date": "2024-07-18",
+    "weights_released_date": "2024-07-18",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 12000000000,
+    "params_active": 12000000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "tekken",
+    "vocab_size": 131072,
+    "layers_count": 40,
+    "post_training": ["sft", "dpo"],
+    "benchmarks": {
+      "mmlu": {
+        "score": 68.0,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "5-shot"
+      },
+      "hellaswag": {
+        "score": 83.5,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "0-shot"
+      },
+      "winogrande": {
+        "score": 76.8,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "0-shot"
+      },
+      "triviaqa": {
+        "score": 73.8,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "5-shot"
+      },
+      "truthfulqa": {
+        "score": 50.3,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "0-shot"
+      },
+      "commonsenseqa": {
+        "score": 70.4,
+        "as_of": "2024-07-18",
+        "source": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+        "notes": "0-shot"
+      }
+    },
+    "release_context": "Co-developed with NVIDIA and released in July 2024 under Apache 2.0, Nemo positioned itself as a drop-in upgrade to Mistral 7B with a 128K context and quantisation-aware training that enables lossless FP8 inference. Ships with a new Tekken tokenizer trained on 100+ languages that is roughly 30% more efficient than Llama 3's tokenizer on code and major non-English languages.",
+    "notable_innovations": [
+      "Tekken tokenizer with ~128K vocab and improved multilingual compression",
+      "Quantisation-aware training for lossless FP8 inference",
+      "Drop-in replacement for Mistral 7B at 128K context"
+    ],
+    "sources": [
+      {
+        "title": "Mistral NeMo (Mistral AI, Jul 18 2024)",
+        "url": "https://mistral.ai/news/mistral-nemo/"
+      },
+      {
+        "title": "Mistral-Nemo-Instruct-2407 model card (Hugging Face)",
+        "url": "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.3,
+      "output_per_mtok_usd": 0.3,
+      "vendor": "Mistral La Plateforme",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "codestral-22b-v0-1",
+    "display_name": "Codestral 22B v0.1",
+    "family": "mistral",
+    "developer": "Mistral AI",
+    "developer_country": "FR",
+    "type": "code",
+    "released_date": "2024-05-29",
+    "weights_released_date": "2024-05-29",
+    "openness": "source-available",
+    "license": "Mistral AI Non-Production License (MNPL-0.1)",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 22000000000,
+    "params_active": 22000000000,
+    "context_window": 32768,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "mistral",
+    "post_training": ["sft"],
+    "benchmarks": {},
+    "release_context": "Mistral's first code-specialist release, weights-available in May 2024 under the Mistral AI Non-Production License (research and testing only, commercial requires a separate license). Trained on 80+ programming languages with a 32K context, four to eight times longer than contemporary code models, and supports both instruct-style answering and fill-in-the-middle completion for IDE integrations.",
+    "notable_innovations": [
+      "32K context for repo-scale code completion",
+      "Fill-in-the-middle endpoint for IDE plugin use cases",
+      "Coverage of 80+ programming languages"
+    ],
+    "sources": [
+      {
+        "title": "Codestral: Hello, World! (Mistral AI, May 29 2024)",
+        "url": "https://mistral.ai/news/codestral/"
+      },
+      {
+        "title": "Codestral-22B-v0.1 model card (Hugging Face)",
+        "url": "https://huggingface.co/mistralai/Codestral-22B-v0.1"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.3,
+      "output_per_mtok_usd": 0.9,
+      "vendor": "Mistral La Plateforme",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  }
+]

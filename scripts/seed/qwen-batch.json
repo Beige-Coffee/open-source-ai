@@ -1,0 +1,295 @@
+[
+  {
+    "slug": "qwen2-72b-instruct",
+    "display_name": "Qwen 2 72B Instruct",
+    "family": "qwen",
+    "developer": "Alibaba",
+    "developer_country": "CN",
+    "type": "instruct",
+    "released_date": "2024-06-07",
+    "weights_released_date": "2024-06-07",
+    "openness": "source-available",
+    "license": "Tongyi Qianwen License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 72710000000,
+    "params_active": 72710000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "qwen",
+    "vocab_size": 152064,
+    "post_training": [
+      "sft",
+      "rlhf",
+      "dpo"
+    ],
+    "benchmarks": {
+      "mmlu": {
+        "score": 82.3,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "mmlu_pro": {
+        "score": 64.4,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "gpqa": {
+        "score": 42.4,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "humaneval": {
+        "score": 86.0,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "mbpp": {
+        "score": 80.2,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "math": {
+        "score": 59.7,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "gsm8k": {
+        "score": 91.1,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      "ifeval": {
+        "score": 77.6,
+        "as_of": "2024-06-07",
+        "source": "https://qwenlm.github.io/blog/qwen2/"
+      }
+    },
+    "release_context": "Predecessor to the Qwen 2.5 family. The 72B class brought 128K-token context via YaRN and added 27 multilingual languages to the pretraining mix, but Alibaba kept the 72B variant under the Tongyi Qianwen License while smaller siblings moved to Apache 2.0.",
+    "notable_innovations": [
+      "128K context via YaRN",
+      "Online DPO post-training",
+      "27 new multilingual languages"
+    ],
+    "sources": [
+      {
+        "title": "Hello Qwen2 release blog (Jun 7 2024)",
+        "url": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      {
+        "title": "Qwen2-72B-Instruct model card",
+        "url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.9,
+      "output_per_mtok_usd": 0.9,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "qwen2-5-coder-32b-instruct",
+    "display_name": "Qwen 2.5 Coder 32B Instruct",
+    "family": "qwen",
+    "developer": "Alibaba",
+    "developer_country": "CN",
+    "type": "code",
+    "released_date": "2024-11-12",
+    "weights_released_date": "2024-11-12",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 32500000000,
+    "params_active": 32500000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "qwen",
+    "layers_count": 64,
+    "post_training": [
+      "sft",
+      "dpo"
+    ],
+    "benchmarks": {
+      "aider": {
+        "score": 73.7,
+        "as_of": "2024-11-12",
+        "source": "https://qwenlm.github.io/blog/qwen2.5-coder-family/"
+      },
+      "mceval": {
+        "score": 65.9,
+        "as_of": "2024-11-12",
+        "source": "https://qwenlm.github.io/blog/qwen2.5-coder-family/"
+      },
+      "mdeval": {
+        "score": 75.2,
+        "as_of": "2024-11-12",
+        "source": "https://qwenlm.github.io/blog/qwen2.5-coder-family/"
+      }
+    },
+    "release_context": "Code-specialized 32B sibling to Qwen 2.5, released alongside 0.5B / 1.5B / 7B / 14B / 32B coder variants all under Apache 2.0. Alibaba positioned it as comparable to GPT-4o on Aider code-repair and first among open models on multi-language repair.",
+    "notable_innovations": [
+      "40+ programming language coverage",
+      "Fill-in-the-Middle SOTA across 5 benchmarks",
+      "Apache 2.0 across full coder size ladder"
+    ],
+    "sources": [
+      {
+        "title": "Qwen2.5-Coder Family release blog (Nov 12 2024)",
+        "url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/"
+      },
+      {
+        "title": "Qwen2.5-Coder-32B-Instruct model card",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.8,
+      "output_per_mtok_usd": 0.8,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "qwen3-32b-instruct",
+    "display_name": "Qwen 3 32B Instruct",
+    "family": "qwen",
+    "developer": "Alibaba",
+    "developer_country": "CN",
+    "type": "instruct",
+    "released_date": "2025-04-29",
+    "weights_released_date": "2025-04-29",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 32800000000,
+    "params_active": 32800000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "qwen",
+    "layers_count": 64,
+    "pretraining_tokens": 36000000000000,
+    "post_training": [
+      "sft",
+      "grpo",
+      "rlhf"
+    ],
+    "benchmarks": {},
+    "release_context": "Dense 32B variant of the Qwen 3 release, shipped alongside the MoE 235B A22B flagship and a full size ladder from 0.6B to 32B dense. All sizes ship under Apache 2.0, with the same hybrid thinking-vs-fast inference toggle as the MoE.",
+    "notable_innovations": [
+      "Hybrid thinking mode toggle",
+      "Four-stage post-training including long-CoT cold start",
+      "131K context via YaRN, 32K native",
+      "Apache 2.0 across the full Qwen 3 size ladder"
+    ],
+    "sources": [
+      {
+        "title": "Qwen 3 release blog (Apr 29 2025)",
+        "url": "https://qwenlm.github.io/blog/qwen3/"
+      },
+      {
+        "title": "Qwen3-32B model card",
+        "url": "https://huggingface.co/Qwen/Qwen3-32B"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.4,
+      "output_per_mtok_usd": 0.4,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  },
+  {
+    "slug": "qwq-32b-preview",
+    "display_name": "QwQ 32B Preview",
+    "family": "qwen",
+    "developer": "Alibaba",
+    "developer_country": "CN",
+    "type": "reasoning",
+    "released_date": "2024-11-28",
+    "weights_released_date": "2024-11-28",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 32500000000,
+    "params_active": 32500000000,
+    "context_window": 32768,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "qwen",
+    "layers_count": 64,
+    "post_training": [
+      "sft"
+    ],
+    "benchmarks": {
+      "gpqa": {
+        "score": 65.2,
+        "as_of": "2024-11-28",
+        "source": "https://qwenlm.github.io/blog/qwq-32b-preview/"
+      },
+      "aime_2024": {
+        "score": 50.0,
+        "as_of": "2024-11-28",
+        "source": "https://qwenlm.github.io/blog/qwq-32b-preview/"
+      },
+      "math_500": {
+        "score": 90.6,
+        "as_of": "2024-11-28",
+        "source": "https://qwenlm.github.io/blog/qwq-32b-preview/"
+      },
+      "livecodebench": {
+        "score": 50.0,
+        "as_of": "2024-11-28",
+        "source": "https://qwenlm.github.io/blog/qwq-32b-preview/"
+      }
+    },
+    "release_context": "Alibaba's first public reasoning model, fine-tuned from Qwen 2.5 32B Instruct and shipped as a research preview a month after OpenAI's o1-preview. Apache 2.0 under the Qwen umbrella, with the explicit framing of contemplative problem-solving rather than fast token generation.",
+    "notable_innovations": [
+      "First open-weights o1-style reasoning preview at the 32B scale",
+      "Apache 2.0 reasoning model",
+      "Built on Qwen 2.5 32B Instruct base"
+    ],
+    "sources": [
+      {
+        "title": "QwQ-32B-Preview release blog (Nov 28 2024)",
+        "url": "https://qwenlm.github.io/blog/qwq-32b-preview/"
+      },
+      {
+        "title": "QwQ-32B-Preview model card",
+        "url": "https://huggingface.co/Qwen/QwQ-32B-Preview"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 1.2,
+      "output_per_mtok_usd": 1.2,
+      "vendor": "Together AI",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models",
+      "via_artificial_analysis": true
+    }
+  }
+]

@@ -1,0 +1,338 @@
+[
+  {
+    "slug": "deepseek-v2-5",
+    "display_name": "DeepSeek-V2.5",
+    "family": "deepseek",
+    "developer": "DeepSeek",
+    "developer_country": "CN",
+    "type": "chat",
+    "released_date": "2024-09-05",
+    "weights_released_date": "2024-09-05",
+    "openness": "open-weights",
+    "license": "DeepSeek License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "moe",
+    "params_total": 236000000000,
+    "params_active": 21000000000,
+    "experts": 160,
+    "experts_active": 6,
+    "context_window": 128000,
+    "attention_variant": "mla",
+    "position_encoding": "rope-yarn",
+    "tokenizer": "deepseek",
+    "post_training": ["sft", "rlhf"],
+    "benchmarks": {
+      "humaneval": {
+        "score": 89,
+        "as_of": "2024-09-05",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      },
+      "livecodebench": {
+        "score": 41.8,
+        "as_of": "2024-09-05",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      },
+      "arena_hard": {
+        "score": 76.2,
+        "as_of": "2024-09-05",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      },
+      "alpaca_eval_2": {
+        "score": 50.5,
+        "as_of": "2024-09-05",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      },
+      "mt_bench": {
+        "score": 9.02,
+        "as_of": "2024-09-05",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      }
+    },
+    "quantizations_available": ["fp8", "awq"],
+    "runtimes_supporting": ["vllm", "sglang"],
+    "release_context": "Intermediate checkpoint between DeepSeek-V2 and DeepSeek-V3. Merged the previously separate Chat (V2-0628) and Coder (Coder-V2-0724) tracks into a single model, reusing the V2 architecture (236B MoE, 21B active, MLA, 128K context) and adding function calling, JSON mode, and FIM completion.",
+    "notable_innovations": [
+      "Chat + Coder track merger",
+      "Function calling and FIM in a single checkpoint",
+      "Safety score lifted to 82.6% (vs 74.4% for V2-0628)"
+    ],
+    "sources": [
+      {
+        "title": "DeepSeek-V2.5 release notes (Sep 5 2024)",
+        "url": "https://api-docs.deepseek.com/news/news0905"
+      },
+      {
+        "title": "DeepSeek-V2.5 model card",
+        "url": "https://huggingface.co/deepseek-ai/DeepSeek-V2.5"
+      }
+    ],
+    "lineage": {
+      "parent": "deepseek-v2-chat",
+      "children": ["deepseek-v3"],
+      "note": "Combined the Chat and Coder tracks into one V2-architecture checkpoint, on the path to V3."
+    },
+    "recommended_use_cases": [
+      "cost-efficient chat with code competence",
+      "long-context retrieval",
+      "function-calling agents"
+    ]
+  },
+  {
+    "slug": "deepseek-coder-v2-instruct",
+    "display_name": "DeepSeek-Coder-V2 Instruct",
+    "family": "deepseek",
+    "developer": "DeepSeek",
+    "developer_country": "CN",
+    "type": "code",
+    "released_date": "2024-06-17",
+    "weights_released_date": "2024-06-17",
+    "paper_date": "2024-06-17",
+    "openness": "open-weights",
+    "license": "DeepSeek License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "moe",
+    "params_total": 236000000000,
+    "params_active": 21000000000,
+    "experts": 160,
+    "experts_active": 6,
+    "context_window": 128000,
+    "attention_variant": "mla",
+    "position_encoding": "rope-yarn",
+    "tokenizer": "deepseek",
+    "pretraining_tokens": 6000000000000,
+    "post_training": ["sft", "rlhf"],
+    "benchmarks": {
+      "humaneval": {
+        "score": 90.2,
+        "as_of": "2024-06-17",
+        "source": "https://github.com/deepseek-ai/DeepSeek-Coder-V2"
+      },
+      "mbpp_plus": {
+        "score": 76.2,
+        "as_of": "2024-06-17",
+        "source": "https://github.com/deepseek-ai/DeepSeek-Coder-V2"
+      },
+      "livecodebench": {
+        "score": 43.4,
+        "as_of": "2024-06-17",
+        "source": "https://github.com/deepseek-ai/DeepSeek-Coder-V2"
+      }
+    },
+    "quantizations_available": ["fp8", "awq"],
+    "runtimes_supporting": ["vllm", "sglang"],
+    "release_context": "Code specialist branch of the V2 line. Continued pretraining from an intermediate V2 checkpoint on an additional 6 trillion code and math tokens, expanding programming language coverage from 86 to 338 and extending context from 16K to 128K. The Instruct variant reported HumanEval scores competitive with GPT-4 Turbo.",
+    "notable_innovations": [
+      "MoE code model at GPT-4 Turbo HumanEval parity",
+      "338 programming languages",
+      "Context extended to 128K for repo-scale tasks"
+    ],
+    "sources": [
+      {
+        "title": "DeepSeek-Coder-V2 paper (Jun 17 2024)",
+        "url": "https://arxiv.org/abs/2406.11931"
+      },
+      {
+        "title": "DeepSeek-Coder-V2 GitHub",
+        "url": "https://github.com/deepseek-ai/DeepSeek-Coder-V2"
+      },
+      {
+        "title": "DeepSeek-Coder-V2-Instruct model card",
+        "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct"
+      }
+    ],
+    "lineage": {
+      "parent": "deepseek-v2-chat",
+      "note": "Coder branch of the V2 line; later folded into V2.5."
+    },
+    "recommended_use_cases": [
+      "repo-scale code generation",
+      "multi-language code assistance",
+      "code reasoning at MoE economics"
+    ]
+  },
+  {
+    "slug": "deepseek-r1-distill-llama-70b",
+    "display_name": "DeepSeek-R1-Distill-Llama-70B",
+    "family": "deepseek",
+    "developer": "DeepSeek",
+    "developer_country": "CN",
+    "type": "reasoning",
+    "released_date": "2025-01-20",
+    "weights_released_date": "2025-01-20",
+    "paper_date": "2025-01-22",
+    "openness": "open",
+    "license": "MIT",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 70000000000,
+    "params_active": 70000000000,
+    "context_window": 128000,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "post_training": ["sft"],
+    "benchmarks": {
+      "aime_2024": {
+        "score": 70,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      },
+      "math_500": {
+        "score": 94.5,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      },
+      "gpqa_diamond": {
+        "score": 65.2,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      },
+      "livecodebench": {
+        "score": 57.5,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      },
+      "codeforces": {
+        "score": 1633,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      }
+    },
+    "quantizations_available": ["fp8", "awq", "gguf"],
+    "runtimes_supporting": ["vllm", "sglang", "ollama", "llama.cpp"],
+    "release_context": "Dense Llama 3.3 70B Instruct base supervised-fine-tuned on reasoning traces sampled from DeepSeek-R1. Released alongside the R1 paper under MIT, the largest of the R1 distill series and the closest open dense reasoning model to R1-grade math performance.",
+    "notable_innovations": [
+      "MIT-licensed dense reasoning model at 70B",
+      "Reasoning capability transferred via SFT from R1 traces",
+      "Closes much of the reasoning gap to the MoE R1"
+    ],
+    "sources": [
+      {
+        "title": "DeepSeek-R1-Distill-Llama-70B model card",
+        "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+      },
+      {
+        "title": "DeepSeek-R1 paper (Jan 22 2025)",
+        "url": "https://arxiv.org/abs/2501.12948"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.7,
+      "output_per_mtok_usd": 1.05,
+      "vendor": "Median across providers",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models/deepseek-r1-distill-llama-70b",
+      "via_artificial_analysis": true
+    },
+    "speed": {
+      "tokens_per_sec_output": 42.9,
+      "vendor": "Median across providers",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models/deepseek-r1-distill-llama-70b",
+      "via_artificial_analysis": true
+    },
+    "lineage": {
+      "parent": "deepseek-r1",
+      "note": "Distilled from R1 reasoning traces into a Llama 3.3 70B Instruct base."
+    },
+    "recommended_use_cases": [
+      "open-weights reasoning at dense 70B",
+      "math and code reasoning where MoE serving is impractical",
+      "reasoning inside Llama-compatible stacks"
+    ]
+  },
+  {
+    "slug": "deepseek-r1-distill-qwen-32b",
+    "display_name": "DeepSeek-R1-Distill-Qwen-32B",
+    "family": "deepseek",
+    "developer": "DeepSeek",
+    "developer_country": "CN",
+    "type": "reasoning",
+    "released_date": "2025-01-20",
+    "weights_released_date": "2025-01-20",
+    "paper_date": "2025-01-22",
+    "openness": "open",
+    "license": "MIT",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 32000000000,
+    "params_active": 32000000000,
+    "context_window": 128000,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "qwen2",
+    "post_training": ["sft"],
+    "benchmarks": {
+      "aime_2024": {
+        "score": 72.6,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      },
+      "math_500": {
+        "score": 94.3,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      },
+      "gpqa_diamond": {
+        "score": 62.1,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      },
+      "livecodebench": {
+        "score": 57.2,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      },
+      "codeforces": {
+        "score": 1691,
+        "as_of": "2025-01-22",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      }
+    },
+    "quantizations_available": ["fp8", "awq", "gguf"],
+    "runtimes_supporting": ["vllm", "sglang", "ollama", "llama.cpp"],
+    "release_context": "Dense Qwen2.5-32B base supervised-fine-tuned on reasoning traces sampled from DeepSeek-R1. The sweet-spot distill of the series: small enough to run on a single high-memory GPU, and reported by DeepSeek as outperforming OpenAI o1-mini on AIME 2024 and MATH-500.",
+    "notable_innovations": [
+      "MIT-licensed reasoning at 32B dense",
+      "Single-GPU-deployable reasoning model",
+      "Outperformed o1-mini on AIME 2024 and MATH-500 per DeepSeek's report"
+    ],
+    "sources": [
+      {
+        "title": "DeepSeek-R1-Distill-Qwen-32B model card",
+        "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+      },
+      {
+        "title": "DeepSeek-R1 paper (Jan 22 2025)",
+        "url": "https://arxiv.org/abs/2501.12948"
+      }
+    ],
+    "cost": {
+      "vendor": "Median across providers",
+      "as_of": "2026-05-19",
+      "source": "https://artificialanalysis.ai/models/deepseek-r1-distill-qwen-32b",
+      "via_artificial_analysis": true
+    },
+    "lineage": {
+      "parent": "deepseek-r1",
+      "note": "Distilled from R1 into a Qwen 2.5 32B base."
+    },
+    "recommended_use_cases": [
+      "single-GPU open reasoning",
+      "math and code reasoning at local-deployable scale",
+      "reasoning inside Qwen-compatible stacks"
+    ]
+  }
+]

@@ -1,0 +1,392 @@
+[
+  {
+    "slug": "phi-3-mini-instruct",
+    "display_name": "Phi-3 Mini 4K Instruct",
+    "family": "phi",
+    "developer": "Microsoft",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-04-23",
+    "weights_released_date": "2024-04-23",
+    "paper_date": "2024-04-22",
+    "openness": "open",
+    "license": "MIT",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 3800000000,
+    "params_active": 3800000000,
+    "context_window": 4096,
+    "attention_variant": "mha",
+    "position_encoding": "rope",
+    "tokenizer": "llama",
+    "vocab_size": 32064,
+    "pretraining_tokens": 3300000000000,
+    "post_training": ["sft", "dpo"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 70.9,
+        "as_of": "2024-04-23",
+        "source": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct"
+      },
+      "gpqa_diamond": {
+        "score": 30.6,
+        "as_of": "2024-04-23",
+        "source": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct",
+        "variant": "0-shot"
+      },
+      "humaneval": {
+        "score": 57.3,
+        "as_of": "2024-04-23",
+        "source": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct",
+        "variant": "0-shot"
+      }
+    },
+    "quantizations_available": ["q4_k_m", "q5_k_m", "q8_0", "awq", "gptq"],
+    "runtimes_supporting": ["vllm", "llama-cpp", "ollama"],
+    "release_context": "Microsoft's first small-model release demonstrating that 3.8B parameters with heavy data filtering and synthetic data could reach MMLU 70%, matching much larger 2023-era models. A 128K-context variant shipped alongside via LongRoPE.",
+    "notable_innovations": [
+      "Heavily filtered + synthetic pretraining data",
+      "3.8B reaching MMLU 70%",
+      "LongRoPE 128K variant"
+    ],
+    "sources": [
+      {
+        "title": "Phi-3 Technical Report (Abdin et al., arXiv 2404.14219)",
+        "url": "https://arxiv.org/abs/2404.14219"
+      },
+      {
+        "title": "Phi-3-mini-4k-instruct model card",
+        "url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct"
+      }
+    ],
+    "recommended_use_cases": [
+      "edge / on-device inference",
+      "small-model fine-tuning base",
+      "latency-sensitive serving"
+    ],
+    "known_limitations": [
+      {
+        "text": "Pretraining data is not released; only the weights and inference code are open.",
+        "source": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct"
+      }
+    ]
+  },
+  {
+    "slug": "phi-3-medium-instruct",
+    "display_name": "Phi-3 Medium 4K Instruct",
+    "family": "phi",
+    "developer": "Microsoft",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-05-21",
+    "weights_released_date": "2024-05-21",
+    "paper_date": "2024-04-22",
+    "openness": "open",
+    "license": "MIT",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 14000000000,
+    "params_active": 14000000000,
+    "context_window": 4096,
+    "attention_variant": "mha",
+    "position_encoding": "rope",
+    "tokenizer": "llama",
+    "vocab_size": 32064,
+    "pretraining_tokens": 4800000000000,
+    "post_training": ["sft", "dpo"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 78.0,
+        "as_of": "2024-05-21",
+        "source": "https://huggingface.co/microsoft/Phi-3-medium-4k-instruct",
+        "variant": "5-shot"
+      },
+      "humaneval": {
+        "score": 62.2,
+        "as_of": "2024-05-21",
+        "source": "https://huggingface.co/microsoft/Phi-3-medium-4k-instruct",
+        "variant": "0-shot"
+      }
+    },
+    "quantizations_available": ["q4_k_m", "q5_k_m", "q8_0", "awq", "gptq"],
+    "runtimes_supporting": ["vllm", "llama-cpp", "ollama"],
+    "release_context": "Microsoft's 14B follow-up to Phi-3 Mini, trained on 4.8T tokens across 42 days on 512 H100s. Sat at MMLU 78 at release, on par with Llama 3 8B Instruct.",
+    "notable_innovations": [
+      "Data-curated small-frontier scaling",
+      "14B at MMLU 78 in mid-2024"
+    ],
+    "sources": [
+      {
+        "title": "Phi-3 Technical Report (Abdin et al., arXiv 2404.14219)",
+        "url": "https://arxiv.org/abs/2404.14219"
+      },
+      {
+        "title": "Phi-3-medium-4k-instruct model card",
+        "url": "https://huggingface.co/microsoft/Phi-3-medium-4k-instruct"
+      }
+    ],
+    "recommended_use_cases": [
+      "mid-tier deployment",
+      "fine-tuning base",
+      "single-GPU serving"
+    ],
+    "known_limitations": [
+      {
+        "text": "Pretraining data and training code are not released; only the weights and inference code are open.",
+        "source": "https://huggingface.co/microsoft/Phi-3-medium-4k-instruct"
+      }
+    ]
+  },
+  {
+    "slug": "olmo-2-13b-instruct",
+    "display_name": "OLMo 2 13B Instruct",
+    "family": "olmo",
+    "developer": "AI2",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-11-26",
+    "weights_released_date": "2024-11-26",
+    "paper_date": "2024-12-02",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": true,
+    "training_code_released": true,
+    "training_logs_released": true,
+    "architecture": "dense",
+    "params_total": 13700000000,
+    "params_active": 13700000000,
+    "context_window": 4096,
+    "attention_variant": "mha",
+    "position_encoding": "rope",
+    "tokenizer": "olmo",
+    "pretraining_tokens": 5000000000000,
+    "post_training": ["sft", "dpo", "rlvr"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 68.5,
+        "as_of": "2024-11-26",
+        "source": "https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct"
+      },
+      "math": {
+        "score": 39.2,
+        "as_of": "2024-11-26",
+        "source": "https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct"
+      },
+      "ifeval": {
+        "score": 82.6,
+        "as_of": "2024-11-26",
+        "source": "https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct"
+      }
+    },
+    "quantizations_available": ["q4_k_m", "q5_k_m", "q8_0"],
+    "runtimes_supporting": ["vllm", "llama-cpp", "ollama"],
+    "release_context": "The 13B counterpart to OLMo 2 7B, sharing the same full-open stack: Dolma pretraining data, OLMo trainer code, WandB training logs, and Apache-2.0 weights. Post-trained with the Tülu 3 recipe of SFT, DPO, and RLVR.",
+    "notable_innovations": [
+      "Full training stack open (data + code + logs)",
+      "OSAID-aligned at 13B",
+      "RLVR post-training"
+    ],
+    "sources": [
+      {
+        "title": "OLMo 2 release blog (AI2, Nov 26 2024)",
+        "url": "https://allenai.org/blog/olmo2"
+      },
+      {
+        "title": "OLMo 2 13B Instruct model card",
+        "url": "https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct"
+      }
+    ],
+    "lineage": {
+      "note": "Fully open: weights + Dolma pretraining data + training code + WandB logs. Post-training shares the Tülu 3 recipe."
+    },
+    "recommended_use_cases": [
+      "research reproducibility",
+      "OSAID-aligned deployment",
+      "fine-tuning base"
+    ],
+    "known_limitations": [
+      {
+        "text": "5T-token pretrain is below the 15-36T used by 2025-class open-weights releases; benchmark scores reflect this.",
+        "source": "https://allenai.org/blog/olmo2"
+      }
+    ]
+  },
+  {
+    "slug": "tulu-3-70b",
+    "display_name": "Llama 3.1 Tülu 3 70B",
+    "family": "tulu",
+    "developer": "AI2",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-11-21",
+    "weights_released_date": "2024-11-21",
+    "paper_date": "2024-11-22",
+    "openness": "open-weights",
+    "license": "Llama 3.1 Community License",
+    "osi_approved": false,
+    "data_released": true,
+    "training_code_released": true,
+    "training_logs_released": true,
+    "architecture": "dense",
+    "params_total": 70000000000,
+    "params_active": 70000000000,
+    "context_window": 8192,
+    "attention_variant": "gqa",
+    "position_encoding": "rope-llama3",
+    "tokenizer": "llama3",
+    "post_training": ["sft", "dpo", "rlvr"],
+    "benchmarks": {
+      "mmlu": {
+        "score": 83.1,
+        "as_of": "2024-11-21",
+        "source": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B",
+        "variant": "0-5 shot CoT"
+      },
+      "math": {
+        "score": 63.0,
+        "as_of": "2024-11-21",
+        "source": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B",
+        "variant": "4-shot Flex"
+      },
+      "ifeval": {
+        "score": 83.2,
+        "as_of": "2024-11-21",
+        "source": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B",
+        "variant": "prompt loose"
+      },
+      "humaneval": {
+        "score": 92.4,
+        "as_of": "2024-11-21",
+        "source": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B",
+        "variant": "pass@10"
+      }
+    },
+    "quantizations_available": ["q4_k_m", "q5_k_m", "q8_0", "awq"],
+    "runtimes_supporting": ["vllm", "llama-cpp", "sglang"],
+    "release_context": "AI2's flagship demonstration that the open community could match closed instruct recipes. Post-trained on top of Llama 3.1 70B with SFT, DPO, and the new RLVR (Reinforcement Learning with Verifiable Rewards) stage. Recipes, data, code, and infrastructure all open even though the weights carry Llama Community License inherited from the base.",
+    "notable_innovations": [
+      "RLVR (Reinforcement Learning with Verifiable Rewards)",
+      "Fully open post-training recipe",
+      "Open instruct match to closed Llama 3.1 70B Instruct"
+    ],
+    "sources": [
+      {
+        "title": "Tülu 3 release blog (AI2, Nov 21 2024)",
+        "url": "https://allenai.org/blog/tulu-3"
+      },
+      {
+        "title": "Tülu 3 paper (Lambert et al., arXiv 2411.15124)",
+        "url": "https://arxiv.org/abs/2411.15124"
+      },
+      {
+        "title": "Llama-3.1-Tulu-3-70B model card",
+        "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B"
+      }
+    ],
+    "lineage": {
+      "parent": "llama-3-1-70b-instruct",
+      "note": "Post-trained from Llama 3.1 70B base; fully open recipe (SFT + DPO + RLVR). Weights inherit the Llama 3.1 Community License from the base."
+    },
+    "recommended_use_cases": [
+      "open instruct baseline",
+      "post-training research reproducibility",
+      "RLVR experimentation"
+    ],
+    "known_limitations": [
+      {
+        "text": "Weights are released under the Llama 3.1 Community License, not Apache; the Tülu 3 code and data are Apache but the checkpoint itself inherits Meta's license.",
+        "source": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B"
+      }
+    ]
+  },
+  {
+    "slug": "granite-3-8b-instruct",
+    "display_name": "Granite 3.0 8B Instruct",
+    "family": "granite",
+    "developer": "IBM",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2024-10-21",
+    "weights_released_date": "2024-10-21",
+    "openness": "open",
+    "license": "Apache-2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 8100000000,
+    "params_active": 8100000000,
+    "context_window": 4096,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "granite",
+    "layers_count": 40,
+    "pretraining_tokens": 12000000000000,
+    "post_training": ["sft", "rlhf"],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "mmlu": {
+        "score": 65.82,
+        "as_of": "2024-10-21",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      },
+      "mmlu_pro": {
+        "score": 34.45,
+        "as_of": "2024-10-21",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      },
+      "gpqa_diamond": {
+        "score": 33.81,
+        "as_of": "2024-10-21",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      },
+      "ifeval": {
+        "score": 52.27,
+        "as_of": "2024-10-21",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      },
+      "humaneval": {
+        "score": 64.63,
+        "as_of": "2024-10-21",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct",
+        "variant": "HumanEvalSynthesis"
+      }
+    },
+    "quantizations_available": ["q4_k_m", "q5_k_m", "q8_0"],
+    "runtimes_supporting": ["vllm", "llama-cpp", "ollama"],
+    "release_context": "IBM's first Apache-licensed enterprise instruct model in the Granite 3 line, trained on 12T tokens on IBM's Blue Vela H100 supercluster. Targeted at function calling, RAG, and 12-language multilingual workloads with permissive Apache-2.0 weights.",
+    "notable_innovations": [
+      "Apache-2.0 enterprise instruct release",
+      "Function-calling and RAG focus",
+      "12-language multilingual coverage"
+    ],
+    "sources": [
+      {
+        "title": "Granite 3.0 8B Instruct model card",
+        "url": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      }
+    ],
+    "recommended_use_cases": [
+      "enterprise RAG",
+      "function-calling agents",
+      "multilingual chat"
+    ],
+    "known_limitations": [
+      {
+        "text": "Pretraining data and training code are not released; only the weights are open.",
+        "source": "https://huggingface.co/ibm-granite/granite-3.0-8b-instruct"
+      }
+    ]
+  }
+]

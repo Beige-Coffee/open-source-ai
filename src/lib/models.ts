@@ -238,7 +238,7 @@ export interface Model {
    *  "FineWeb-Edu + RedPajama-v2 sample + code"). Optional. */
   training_data_summary?: string;
   /** Post-training stages applied. */
-  post_training: Array<"sft" | "dpo" | "rlhf" | "rlaif" | "constitutional" | "grpo" | "ppo" | "kto" | "orpo" | "rejection-sampling">;
+  post_training: Array<"sft" | "dpo" | "rlhf" | "rlaif" | "constitutional" | "grpo" | "ppo" | "kto" | "orpo" | "rejection-sampling" | "rlvr" | "online-rl" | "knowledge-distillation">;
   /** Training hardware family if disclosed (e.g. "H100", "H800",
    *  "TPU v5p"). */
   training_hardware?: string;

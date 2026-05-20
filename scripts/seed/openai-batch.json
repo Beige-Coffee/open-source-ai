@@ -1,0 +1,348 @@
+[
+  {
+    "slug": "gpt-3-5-turbo",
+    "display_name": "GPT-3.5 Turbo",
+    "family": "gpt-3-5",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2022-11-30",
+    "weights_released_date": "2022-11-30",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 16385,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {},
+    "release_context": "Launched alongside ChatGPT on November 30, 2022 as the chat-optimized successor to text-davinci-003 at roughly one-tenth the cost. The 0125 revision settled on a 16K context window and became the default low-cost endpoint through the GPT-4 era.",
+    "notable_innovations": [
+      "Chat-optimized API at GPT-3-class cost",
+      "Backed the original ChatGPT launch"
+    ],
+    "sources": [
+      {
+        "title": "OpenAI o3 article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/ChatGPT"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      },
+      {
+        "title": "GPT-3.5 Turbo on OpenRouter",
+        "url": "https://openrouter.ai/openai/gpt-3.5-turbo"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.50,
+      "output_per_mtok_usd": 1.50,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "gpt-4-turbo",
+    "display_name": "GPT-4 Turbo",
+    "family": "gpt-4",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-04-09",
+    "weights_released_date": "2024-04-09",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 128000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {},
+    "release_context": "Announced at OpenAI DevDay on November 6, 2023 as a 128K-context, cheaper successor to the original GPT-4 endpoint. The gpt-4-turbo-2024-04-09 revision shipped as the general-availability version with vision support and a knowledge cutoff through December 2023.",
+    "notable_innovations": [
+      "128K context window at frontier quality",
+      "Native vision input in the GA release",
+      "Roughly 3x cheaper than original GPT-4"
+    ],
+    "sources": [
+      {
+        "title": "GPT-4 article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/GPT-4"
+      },
+      {
+        "title": "GPT-4 Turbo on OpenRouter",
+        "url": "https://openrouter.ai/openai/gpt-4-turbo"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 10,
+      "output_per_mtok_usd": 30,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "gpt-4-5",
+    "display_name": "GPT-4.5",
+    "family": "gpt-4",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2025-02-27",
+    "weights_released_date": "2025-02-27",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 128000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {},
+    "release_context": "Released February 27, 2025 as a research preview of OpenAI's largest pretrained chat model, internally referred to as Orion. Sam Altman characterized it as a giant, expensive model; pricing came in at $75 input and $150 output per million tokens, roughly 30x GPT-4o's input rate at launch.",
+    "notable_innovations": [
+      "Largest publicly accessible OpenAI non-reasoning model at release",
+      "Multilingual MMLU coverage across 15 languages"
+    ],
+    "sources": [
+      {
+        "title": "GPT-4.5 article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/GPT-4.5"
+      },
+      {
+        "title": "GPT-4.5 on Artificial Analysis",
+        "url": "https://artificialanalysis.ai/models/gpt-4-5"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 75,
+      "output_per_mtok_usd": 150,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "o3-mini",
+    "display_name": "OpenAI o3-mini",
+    "family": "o-series",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-01-31",
+    "weights_released_date": "2025-01-31",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {
+      "aime_2024": {
+        "score": 87.3,
+        "as_of": "2025-01-31",
+        "source": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      },
+      "gpqa_diamond": {
+        "score": 79.7,
+        "as_of": "2025-01-31",
+        "source": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      },
+      "swe_bench_verified": {
+        "score": 49.3,
+        "as_of": "2025-01-31",
+        "source": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      }
+    },
+    "release_context": "Released January 31, 2025 as a smaller, faster o-series reasoning model with three selectable effort levels (low, medium, high). Positioned by OpenAI as a specialized alternative to o1 for technical domains requiring precision and speed at a fraction of o1's cost.",
+    "notable_innovations": [
+      "Selectable reasoning effort levels exposed in the API",
+      "First o-series model offered at sub-$5 per million output tokens"
+    ],
+    "sources": [
+      {
+        "title": "OpenAI o3 article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      },
+      {
+        "title": "o3-mini on OpenRouter",
+        "url": "https://openrouter.ai/openai/o3-mini"
+      },
+      {
+        "title": "o3-mini on Artificial Analysis",
+        "url": "https://artificialanalysis.ai/models/o3-mini"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 1.10,
+      "output_per_mtok_usd": 4.40,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "o3",
+    "display_name": "OpenAI o3",
+    "family": "o-series",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-04-16",
+    "weights_released_date": "2025-04-16",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {
+      "gpqa_diamond": {
+        "score": 87.7,
+        "as_of": "2025-04-16",
+        "source": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      },
+      "swe_bench_verified": {
+        "score": 71.7,
+        "as_of": "2025-04-16",
+        "source": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      }
+    },
+    "release_context": "Released April 16, 2025 as the full-size successor to o1 in the o-series reasoning lineage, with multimodal (text plus image) input and a 200K-token context. OpenAI reported large jumps over o1 on SWE-bench Verified and Codeforces and roughly 3x the accuracy of o1 on ARC-AGI.",
+    "notable_innovations": [
+      "Multimodal reasoning over text and images",
+      "Step-change in SWE-bench Verified over o1"
+    ],
+    "sources": [
+      {
+        "title": "OpenAI o3 article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/OpenAI_o3"
+      },
+      {
+        "title": "o3 on OpenRouter",
+        "url": "https://openrouter.ai/openai/o3"
+      },
+      {
+        "title": "o3 on Artificial Analysis",
+        "url": "https://artificialanalysis.ai/models/o3"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 2,
+      "output_per_mtok_usd": 8,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "o4-mini",
+    "display_name": "OpenAI o4-mini",
+    "family": "o-series",
+    "developer": "OpenAI",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-04-16",
+    "weights_released_date": "2025-04-16",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 200000,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": ["rlhf"],
+    "benchmarks": {},
+    "release_context": "Released April 16, 2025 alongside o3 as a smaller multimodal reasoning model with a 200K-token context. Initially launched to paid subscribers and expanded to all ChatGPT users on April 24, 2025; OpenAI positioned it as the cost-efficient successor to o3-mini with image-input support.",
+    "notable_innovations": [
+      "Multimodal reasoning at o3-mini's price point",
+      "Image-input chain-of-thought (analyzing diagrams and sketches)"
+    ],
+    "sources": [
+      {
+        "title": "OpenAI o4-mini article (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/OpenAI_o4-mini"
+      },
+      {
+        "title": "o4-mini on OpenRouter",
+        "url": "https://openrouter.ai/openai/o4-mini"
+      },
+      {
+        "title": "o4-mini on Artificial Analysis",
+        "url": "https://artificialanalysis.ai/models/o4-mini"
+      },
+      {
+        "title": "OpenAI API pricing page",
+        "url": "https://openai.com/api/pricing/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 1.10,
+      "output_per_mtok_usd": 4.40,
+      "vendor": "OpenAI API",
+      "as_of": "2026-05-19",
+      "source": "https://openai.com/api/pricing/",
+      "via_artificial_analysis": false
+    }
+  }
+]

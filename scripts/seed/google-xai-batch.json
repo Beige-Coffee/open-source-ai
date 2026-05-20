@@ -1,0 +1,189 @@
+[
+  {
+    "slug": "gemini-1-5-pro",
+    "display_name": "Gemini 1.5 Pro",
+    "family": "gemini",
+    "developer": "Google DeepMind",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-02-15",
+    "weights_released_date": "2024-02-15",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 2097152,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": [
+      "rlhf"
+    ],
+    "benchmarks": {},
+    "release_context": "Google's first long-context Gemini checkpoint, introduced with a 128K standard window and a 1M token preview tier. Google described the design as a mixture-of-experts that activates a subset of expert networks per input, and demonstrated 99% recall on needle-in-a-haystack across 1M tokens at launch. The context window was later extended to 2M tokens in private preview, announced May 14 2024.",
+    "notable_innovations": [
+      "Mixture-of-experts Gemini architecture",
+      "1M token context at launch, later 2M",
+      "Strong in-context language learning (Kalamang grammar)"
+    ],
+    "sources": [
+      {
+        "title": "Our next-generation model: Gemini 1.5 (Google, Feb 15 2024)",
+        "url": "https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/"
+      },
+      {
+        "title": "New features, tools and pricing for Gemini API and Google AI Studio (Google, May 14 2024)",
+        "url": "https://blog.google/technology/developers/gemini-gemma-developer-updates-may-2024/"
+      }
+    ]
+  },
+  {
+    "slug": "gemini-2-0-flash",
+    "display_name": "Gemini 2.0 Flash",
+    "family": "gemini",
+    "developer": "Google DeepMind",
+    "developer_country": "US",
+    "type": "chat",
+    "released_date": "2024-12-11",
+    "weights_released_date": "2024-12-11",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 1048576,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": [
+      "rlhf"
+    ],
+    "benchmarks": {
+      "webvoyager": {
+        "score": 83.5,
+        "as_of": "2024-12-11",
+        "source": "https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/"
+      }
+    },
+    "release_context": "Google's workhorse Gemini 2.0 checkpoint, released initially as an experimental developer preview. Google positioned it as outperforming Gemini 1.5 Pro on key benchmarks at roughly twice the speed, with native multimodal output (image generation, text-to-speech) and native tool use including Google Search and code execution. The Multimodal Live API added real-time audio and video streaming.",
+    "notable_innovations": [
+      "Native multimodal output (image, audio)",
+      "Native tool use with Google Search and code execution",
+      "Multimodal Live API for realtime audio and video"
+    ],
+    "sources": [
+      {
+        "title": "Introducing Gemini 2.0: our new AI model for the agentic era (Google, Dec 11 2024)",
+        "url": "https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.1,
+      "output_per_mtok_usd": 0.4,
+      "vendor": "Google API",
+      "as_of": "2026-05-19",
+      "source": "https://ai.google.dev/pricing",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "gemini-2-5-flash",
+    "display_name": "Gemini 2.5 Flash",
+    "family": "gemini",
+    "developer": "Google DeepMind",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-04-17",
+    "weights_released_date": "2025-04-17",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 1048576,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": [
+      "rlhf"
+    ],
+    "benchmarks": {},
+    "release_context": "Google's cost-efficient thinking model in the 2.5 family, sharing the reasoning-first design that Google introduced with 2.5 Pro on March 25 2025. Google described the 2.5 family as 'thinking models, capable of reasoning through their thoughts before responding,' with a 1M token context window at launch and 2M planned.",
+    "notable_innovations": [
+      "Thinking-enabled reasoning at Flash tier",
+      "1M token context with thinking",
+      "Configurable thinking budget"
+    ],
+    "sources": [
+      {
+        "title": "Gemini 2.5: Our most intelligent AI model (Google, Mar 25 2025)",
+        "url": "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 0.3,
+      "output_per_mtok_usd": 2.5,
+      "vendor": "Google API",
+      "as_of": "2026-05-19",
+      "source": "https://ai.google.dev/pricing",
+      "via_artificial_analysis": false
+    }
+  },
+  {
+    "slug": "grok-3",
+    "display_name": "Grok 3",
+    "family": "grok",
+    "developer": "xAI",
+    "developer_country": "US",
+    "type": "reasoning",
+    "released_date": "2025-02-17",
+    "weights_released_date": "2025-02-17",
+    "openness": "proprietary",
+    "license": "Proprietary",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "unknown",
+    "params_total": 0,
+    "params_active": 0,
+    "context_window": 131072,
+    "attention_variant": "unknown",
+    "position_encoding": "unknown",
+    "post_training": [
+      "rlhf"
+    ],
+    "training_hardware": "H100",
+    "benchmarks": {},
+    "release_context": "xAI's third-generation flagship, trained on the Colossus supercomputer (approximately 200,000 GPUs) with roughly 10x the compute of Grok 2. Released alongside a separate Grok 3 Reasoning variant and a DeepSearch product, with xAI claiming wins over GPT-4o on AIME math and GPQA science benchmarks. API access launched in April 2025.",
+    "notable_innovations": [
+      "Think mode and Big Brain mode for reasoning",
+      "DeepSearch over web plus X",
+      "Trained on Colossus 200K GPU cluster"
+    ],
+    "sources": [
+      {
+        "title": "Grok 3 (Wikipedia, accessed 2026-05-19)",
+        "url": "https://en.wikipedia.org/wiki/Grok_(chatbot)"
+      }
+    ],
+    "cost": {
+      "input_per_mtok_usd": 3.0,
+      "output_per_mtok_usd": 15.0,
+      "vendor": "xAI API",
+      "as_of": "2026-05-19",
+      "source": "https://x.ai/api",
+      "via_artificial_analysis": false
+    }
+  }
+]

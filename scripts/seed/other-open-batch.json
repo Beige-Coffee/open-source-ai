@@ -1,0 +1,510 @@
+[
+  {
+    "slug": "yi-34b-chat",
+    "display_name": "Yi-34B-Chat",
+    "family": "yi",
+    "developer": "01.AI",
+    "developer_country": "CN",
+    "type": "chat",
+    "released_date": "2023-11-23",
+    "weights_released_date": "2023-11-23",
+    "paper_date": "2024-03-07",
+    "openness": "open-weights",
+    "license": "Apache 2.0",
+    "osi_approved": true,
+    "data_released": false,
+    "training_code_released": true,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 34000000000,
+    "params_active": 34000000000,
+    "context_window": 4096,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "yi",
+    "pretraining_tokens": 3000000000000,
+    "post_training": [
+      "sft"
+    ],
+    "benchmarks": {
+      "mmlu": {
+        "score": 73.5,
+        "as_of": "2024-03-07",
+        "source": "https://arxiv.org/abs/2403.04652"
+      },
+      "gsm8k": {
+        "score": 67.6,
+        "as_of": "2024-03-07",
+        "source": "https://arxiv.org/abs/2403.04652"
+      },
+      "humaneval": {
+        "score": 26.2,
+        "as_of": "2024-03-07",
+        "source": "https://arxiv.org/abs/2403.04652"
+      }
+    },
+    "quantizations_available": [
+      "awq",
+      "gptq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "llama-cpp",
+      "ollama",
+      "tgi"
+    ],
+    "release_context": "Kai-Fu Lee's 01.AI released Yi-34B and the chat variant in late 2023, positioning a Chinese-developed open-weights model at the top of English and Chinese leaderboards. The Llama-compatible architecture meant existing Llama tooling worked unmodified, and the Apache 2.0 license cleared commercial use without an MAU cap.",
+    "notable_innovations": [
+      "Apache 2.0 at 34B scale from a Chinese lab",
+      "3T-token bilingual pretrain",
+      "Llama-architecture-compatible"
+    ],
+    "sources": [
+      {
+        "title": "Yi: Open Foundation Models by 01.AI (2024)",
+        "url": "https://arxiv.org/abs/2403.04652"
+      },
+      {
+        "title": "01-ai/Yi-34B-Chat model card",
+        "url": "https://huggingface.co/01-ai/Yi-34B-Chat"
+      }
+    ],
+    "lineage": {
+      "note": "Sibling to Yi-34B base; the Yi-34B-200K variant extends context to 200K with continued pretraining."
+    },
+    "recommended_use_cases": [
+      "bilingual English-Chinese chat",
+      "commercial use under Apache 2.0",
+      "Llama-tooling drop-in"
+    ]
+  },
+  {
+    "slug": "glm-4-9b-chat",
+    "display_name": "GLM-4-9B-Chat",
+    "family": "glm",
+    "developer": "Zhipu AI",
+    "developer_country": "CN",
+    "type": "chat",
+    "released_date": "2024-06-05",
+    "weights_released_date": "2024-06-05",
+    "paper_date": "2024-06-18",
+    "openness": "source-available",
+    "license": "GLM-4 Model License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 9000000000,
+    "params_active": 9000000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "glm-4",
+    "post_training": [
+      "sft",
+      "rlhf"
+    ],
+    "benchmarks": {
+      "mmlu": {
+        "score": 72.4,
+        "as_of": "2024-06-05",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      },
+      "gsm8k": {
+        "score": 79.6,
+        "as_of": "2024-06-05",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      },
+      "humaneval": {
+        "score": 71.8,
+        "as_of": "2024-06-05",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      },
+      "math": {
+        "score": 50.6,
+        "as_of": "2024-06-05",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      },
+      "ifeval": {
+        "score": 69.0,
+        "as_of": "2024-06-05",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      }
+    },
+    "quantizations_available": [
+      "q4_k_m",
+      "q8_0",
+      "awq",
+      "gptq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "llama-cpp",
+      "ollama",
+      "sglang"
+    ],
+    "release_context": "Zhipu AI and THUDM's GLM-4-9B-Chat brought 128K context, tool use, and multilingual coverage to a 9B-class open-weights model. A 1M-context variant shipped alongside the base 128K version. The GLM-4 model license is source-available rather than OSI-approved.",
+    "notable_innovations": [
+      "128K context at 9B scale",
+      "Native tool use and function calling",
+      "26-language coverage"
+    ],
+    "sources": [
+      {
+        "title": "ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools",
+        "url": "https://arxiv.org/abs/2406.12793"
+      },
+      {
+        "title": "THUDM/glm-4-9b-chat model card",
+        "url": "https://huggingface.co/THUDM/glm-4-9b-chat"
+      }
+    ],
+    "lineage": {
+      "note": "Descended from the GLM-130B and ChatGLM lines at Tsinghua's KEG lab; the 1M-context sibling extends GLM-4-9B-Chat-1M."
+    },
+    "recommended_use_cases": [
+      "long-context summarization",
+      "agentic tool use",
+      "Chinese-English bilingual chat"
+    ],
+    "known_limitations": [
+      {
+        "text": "GLM-4 Model License is source-available, not OSI-approved.",
+        "source": "https://huggingface.co/THUDM/glm-4-9b-chat/blob/main/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "falcon-180b-chat",
+    "display_name": "Falcon 180B Chat",
+    "family": "falcon",
+    "developer": "Technology Innovation Institute",
+    "developer_country": "AE",
+    "type": "chat",
+    "released_date": "2023-09-06",
+    "weights_released_date": "2023-09-06",
+    "openness": "source-available",
+    "license": "Falcon-180B TII License",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 180000000000,
+    "params_active": 180000000000,
+    "context_window": 2048,
+    "attention_variant": "mqa",
+    "position_encoding": "rope",
+    "tokenizer": "falcon",
+    "layers_count": 80,
+    "vocab_size": 65024,
+    "post_training": [
+      "sft"
+    ],
+    "training_hardware": "A100 40GB",
+    "benchmarks": {},
+    "quantizations_available": [
+      "q4_k_m",
+      "q8_0",
+      "gptq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "tgi",
+      "sglang"
+    ],
+    "release_context": "TII's Falcon 180B was, at release, the largest openly available language model weights, fine-tuned on Ultrachat, Platypus, and Airoboros for the Chat variant. Trained on RefinedWeb across up to 4,096 A100 40GB GPUs on AWS SageMaker. The TII Falcon License is source-available with an acceptable-use policy attached.",
+    "notable_innovations": [
+      "Largest openly available weights at 2023 release",
+      "Multi-query attention with parallel attention/MLP blocks",
+      "RefinedWeb pretraining corpus"
+    ],
+    "sources": [
+      {
+        "title": "tiiuae/falcon-180B-chat model card",
+        "url": "https://huggingface.co/tiiuae/falcon-180B-chat"
+      },
+      {
+        "title": "The Falcon Series of Open Language Models",
+        "url": "https://arxiv.org/abs/2311.16867"
+      }
+    ],
+    "lineage": {
+      "note": "Chat fine-tune of Falcon-180B base; descends from the earlier Falcon-7B and Falcon-40B releases."
+    },
+    "recommended_use_cases": [
+      "large-scale generation under TII license",
+      "research deployments with 8x A100 80GB"
+    ],
+    "known_limitations": [
+      {
+        "text": "TII Falcon License is source-available, not OSI-approved.",
+        "source": "https://falconllm.tii.ae/falcon-180b-license.html"
+      },
+      {
+        "text": "2,048-token context is narrow by 2024-onward standards.",
+        "source": "https://huggingface.co/tiiuae/falcon-180B-chat"
+      }
+    ]
+  },
+  {
+    "slug": "command-r-plus",
+    "display_name": "Command R+",
+    "family": "command",
+    "developer": "Cohere",
+    "developer_country": "CA",
+    "type": "chat",
+    "released_date": "2024-04-04",
+    "weights_released_date": "2024-04-04",
+    "openness": "source-available",
+    "license": "CC BY-NC 4.0",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 104000000000,
+    "params_active": 104000000000,
+    "context_window": 131072,
+    "attention_variant": "gqa",
+    "position_encoding": "rope",
+    "tokenizer": "command-r",
+    "post_training": [
+      "sft",
+      "dpo"
+    ],
+    "benchmarks": {
+      "mmlu": {
+        "score": 75.7,
+        "as_of": "2024-04-04",
+        "source": "https://huggingface.co/CohereForAI/c4ai-command-r-plus"
+      },
+      "gsm8k": {
+        "score": 70.7,
+        "as_of": "2024-04-04",
+        "source": "https://huggingface.co/CohereForAI/c4ai-command-r-plus"
+      }
+    },
+    "quantizations_available": [
+      "q4_k_m",
+      "q8_0",
+      "awq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "llama-cpp",
+      "ollama",
+      "sglang",
+      "tgi"
+    ],
+    "release_context": "Cohere released Command R+ as a 104B dense model with 128K context, optimized for retrieval-augmented generation, multi-step tool use, and grounded citation. Production weights remain proprietary, but Cohere Labs published the research weights on Hugging Face under CC BY-NC 4.0, making it source-available for non-commercial use.",
+    "notable_innovations": [
+      "Grounded generation with citation templates",
+      "Multi-step tool use in the base chat template",
+      "Optimized for 10 business languages"
+    ],
+    "sources": [
+      {
+        "title": "CohereForAI/c4ai-command-r-plus model card",
+        "url": "https://huggingface.co/CohereForAI/c4ai-command-r-plus"
+      },
+      {
+        "title": "Cohere Command R+ documentation",
+        "url": "https://docs.cohere.com/docs/command-r-plus"
+      }
+    ],
+    "lineage": {
+      "note": "Larger sibling of Command R (35B). Superseded by Command R+ 08-2024 and later Command A releases on the production API."
+    },
+    "recommended_use_cases": [
+      "retrieval-augmented generation with citations",
+      "agentic tool-use workflows",
+      "non-commercial research under CC BY-NC"
+    ],
+    "known_limitations": [
+      {
+        "text": "CC BY-NC 4.0 forbids commercial use of the open weights; production use requires the Cohere API.",
+        "source": "https://huggingface.co/CohereForAI/c4ai-command-r-plus"
+      }
+    ]
+  },
+  {
+    "slug": "starcoder2-15b",
+    "display_name": "StarCoder 2 15B",
+    "family": "starcoder",
+    "developer": "BigCode",
+    "developer_country": "FR",
+    "type": "code",
+    "released_date": "2024-02-29",
+    "weights_released_date": "2024-02-29",
+    "paper_date": "2024-02-29",
+    "openness": "source-available",
+    "license": "BigCode OpenRAIL-M v1",
+    "osi_approved": false,
+    "data_released": true,
+    "training_code_released": true,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 15000000000,
+    "params_active": 15000000000,
+    "context_window": 16384,
+    "attention_variant": "hybrid-gqa-sliding",
+    "position_encoding": "rope",
+    "tokenizer": "starcoder2",
+    "pretraining_tokens": 4000000000000,
+    "post_training": [],
+    "training_hardware": "H100",
+    "benchmarks": {
+      "humaneval": {
+        "score": 46.3,
+        "as_of": "2024-02-29",
+        "source": "https://arxiv.org/abs/2402.19173"
+      },
+      "gsm8k": {
+        "score": 65.1,
+        "as_of": "2024-02-29",
+        "source": "https://arxiv.org/abs/2402.19173"
+      }
+    },
+    "quantizations_available": [
+      "q4_k_m",
+      "q8_0",
+      "gptq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "llama-cpp",
+      "ollama",
+      "tgi"
+    ],
+    "release_context": "BigCode's StarCoder 2 15B trained on 4T+ tokens of The Stack v2, a publicly released code dataset spanning 600+ languages and permissive licenses only. Sliding-window attention plus grouped-query attention gave it 16K context at the 15B scale. The accompanying data, training code, and search index for attribution were all released alongside the weights.",
+    "notable_innovations": [
+      "Full data release via The Stack v2",
+      "Pretraining attribution search index",
+      "Fill-in-the-middle objective at 4T tokens"
+    ],
+    "sources": [
+      {
+        "title": "StarCoder 2 and The Stack v2: The Next Generation",
+        "url": "https://arxiv.org/abs/2402.19173"
+      },
+      {
+        "title": "bigcode/starcoder2-15b model card",
+        "url": "https://huggingface.co/bigcode/starcoder2-15b"
+      },
+      {
+        "title": "The Stack v2 training dataset",
+        "url": "https://huggingface.co/datasets/bigcode/the-stack-v2-train-full-ids"
+      }
+    ],
+    "lineage": {
+      "note": "Successor to StarCoder and StarCoder Plus. Siblings at 3B and 7B in the StarCoder 2 family. The Stack v2 dataset supersedes The Stack v1."
+    },
+    "recommended_use_cases": [
+      "code completion and FIM",
+      "research baseline with full data release",
+      "fine-tune starting point for code chat"
+    ],
+    "known_limitations": [
+      {
+        "text": "Base model is not instruction-tuned; designed for code completion rather than chat.",
+        "source": "https://huggingface.co/bigcode/starcoder2-15b"
+      },
+      {
+        "text": "BigCode OpenRAIL-M v1 carries use restrictions and is not OSI-approved.",
+        "source": "https://www.bigcode-project.org/docs/pages/bigcode-openrail/"
+      }
+    ]
+  },
+  {
+    "slug": "gemma-3-27b-it",
+    "display_name": "Gemma 3 27B IT",
+    "family": "gemma",
+    "developer": "Google DeepMind",
+    "developer_country": "US",
+    "type": "instruct",
+    "released_date": "2025-03-12",
+    "weights_released_date": "2025-03-12",
+    "openness": "source-available",
+    "license": "Gemma Terms of Use",
+    "osi_approved": false,
+    "data_released": false,
+    "training_code_released": false,
+    "training_logs_released": false,
+    "architecture": "dense",
+    "params_total": 27000000000,
+    "params_active": 27000000000,
+    "context_window": 131072,
+    "attention_variant": "hybrid-gqa-sliding",
+    "position_encoding": "rope",
+    "tokenizer": "gemma",
+    "pretraining_tokens": 14000000000000,
+    "post_training": [
+      "sft",
+      "rlhf"
+    ],
+    "training_hardware": "TPU v5p",
+    "benchmarks": {
+      "mmlu": {
+        "score": 78.6,
+        "as_of": "2025-03-12",
+        "source": "https://huggingface.co/google/gemma-3-27b-it"
+      },
+      "gsm8k": {
+        "score": 82.6,
+        "as_of": "2025-03-12",
+        "source": "https://huggingface.co/google/gemma-3-27b-it"
+      },
+      "humaneval": {
+        "score": 48.8,
+        "as_of": "2025-03-12",
+        "source": "https://huggingface.co/google/gemma-3-27b-it"
+      }
+    },
+    "quantizations_available": [
+      "q4_k_m",
+      "q5_k_m",
+      "q8_0",
+      "awq",
+      "gptq"
+    ],
+    "runtimes_supporting": [
+      "vllm",
+      "llama-cpp",
+      "ollama",
+      "sglang",
+      "tgi"
+    ],
+    "release_context": "Gemma 3 27B IT introduced native multimodal input (text plus images at 896x896 normalized to 256 tokens) and pushed context to 128K at the 27B scale. Trained on 14T tokens across 140+ languages on TPU v5p. The Gemma Terms of Use remain source-available rather than OSI-approved.",
+    "notable_innovations": [
+      "Native multimodal at 27B scale",
+      "128K context with hybrid sliding-window attention",
+      "140+ language coverage"
+    ],
+    "sources": [
+      {
+        "title": "google/gemma-3-27b-it model card",
+        "url": "https://huggingface.co/google/gemma-3-27b-it"
+      },
+      {
+        "title": "Gemma 3 technical report",
+        "url": "https://goo.gle/Gemma3Report"
+      }
+    ],
+    "lineage": {
+      "note": "Successor to Gemma 2 27B IT. Siblings at 1B, 4B, and 12B in the Gemma 3 family."
+    },
+    "recommended_use_cases": [
+      "multimodal text-and-image instruct",
+      "long-context document tasks",
+      "multilingual deployment"
+    ],
+    "known_limitations": [
+      {
+        "text": "Gemma Terms of Use are source-available, not OSI-approved.",
+        "source": "https://ai.google.dev/gemma/terms"
+      }
+    ]
+  }
+]
