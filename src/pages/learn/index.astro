@@ -118,15 +118,25 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
 >
   <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
     {!user && (
-      <div class="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs text-[var(--color-text-subtle)]">
-        <span>Want to track progress and sync across devices?</span>
-        <a href="/learn/login" class="text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:underline">
-          Log in
-        </a>
-        <span aria-hidden="true">·</span>
-        <a href="/learn/signup" class="text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:underline">
-          Sign up
-        </a>
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface-warm)]">
+        <p class="text-sm text-[var(--color-text)] leading-snug">
+          <span class="font-medium">Track your progress.</span>
+          <span class="text-[var(--color-text-muted)]"> Log in to sync your course progress, notes, and chat history across devices.</span>
+        </p>
+        <div class="flex items-center gap-2 shrink-0">
+          <a
+            href="/learn/login"
+            class="inline-block px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+          >
+            Log in
+          </a>
+          <a
+            href="/learn/signup"
+            class="inline-block px-3 py-1.5 rounded-md border border-[var(--color-border-strong)] text-[var(--color-text)] text-sm font-medium hover:bg-[var(--color-surface)] no-underline"
+          >
+            Sign up
+          </a>
+        </div>
       </div>
     )}
     {user && (
