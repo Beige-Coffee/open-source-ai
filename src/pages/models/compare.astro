@@ -1,0 +1,241 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  loadModels,
+  loadModelBySlug,
+  BENCHMARK_GROUPS,
+  BENCHMARK_LABEL,
+  OPENNESS_LABEL,
+  formatParams,
+  formatTokens,
+  formatContext,
+  type Model,
+  type BenchmarkSlug,
+} from "../../lib/models";
+
+const params = Astro.url.searchParams;
+const aSlug = params.get("a");
+const bSlug = params.get("b");
+
+const all = loadModels();
+const a = aSlug ? loadModelBySlug(aSlug) : null;
+const b = bSlug ? loadModelBySlug(bSlug) : null;
+
+function fmtBool(v: boolean | undefined): string {
+  if (v === undefined) return "—";
+  return v ? "yes" : "no";
+}
+
+function diffClass(av: unknown, bv: unknown): string {
+  if (av === bv) return "";
+  return "compare-diff";
+}
+
+function opennessClass(o: Model["openness"]): string {
+  return `openness-${o}`;
+}
+
+const rows: Array<{ label: string; a: string; b: string; differs: boolean }> = [];
+
+if (a && b) {
+  function add(label: string, av: string, bv: string) {
+    rows.push({ label, a: av, b: bv, differs: av !== bv });
+  }
+
+  add("Released", a.released_date, b.released_date);
+  add("Developer", a.developer, b.developer);
+  add("Openness", OPENNESS_LABEL[a.openness], OPENNESS_LABEL[b.openness]);
+  add("License", a.license, b.license);
+  add("OSI-approved", fmtBool(a.osi_approved), fmtBool(b.osi_approved));
+  add("Data released", fmtBool(a.data_released), fmtBool(b.data_released));
+  add("Training code", fmtBool(a.training_code_released), fmtBool(b.training_code_released));
+  add("Architecture", a.architecture, b.architecture);
+  add("Total params", a.params_total > 0 ? formatParams(a.params_total) : "—", b.params_total > 0 ? formatParams(b.params_total) : "—");
+  add("Active params", a.params_active > 0 ? formatParams(a.params_active) : "—", b.params_active > 0 ? formatParams(b.params_active) : "—");
+  add("Experts", a.experts ? `${a.experts} (${a.experts_active ?? "?"} active)` : "—", b.experts ? `${b.experts} (${b.experts_active ?? "?"} active)` : "—");
+  add("Context window", formatContext(a.context_window), formatContext(b.context_window));
+  add("Attention", a.attention_variant, b.attention_variant);
+  add("Position enc.", a.position_encoding, b.position_encoding);
+  add("Pretraining tokens", formatTokens(a.pretraining_tokens), formatTokens(b.pretraining_tokens));
+  add("Post-training", (a.post_training ?? []).join(", "), (b.post_training ?? []).join(", "));
+  add("Training hardware", a.training_hardware ?? "—", b.training_hardware ?? "—");
+}
+
+const benchmarkGroupOrder = ["general", "code", "math", "arena"] as const;
+const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = {
+  general: "General reasoning",
+  code: "Code",
+  math: "Math",
+  arena: "Held-out / arena",
+};
+---
+
+<BaseLayout
+  title={a && b ? `${a.display_name} vs ${b.display_name} · Models` : "Compare models"}
+  description="Side-by-side model comparison."
+>
+  <section class="max-w-4xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider mb-2">
+      <a href="/models" class="no-underline hover:underline text-[var(--color-text-subtle)]">Models</a>
+      <span class="text-[var(--color-text-subtle)]">·</span>
+      <span class="text-[var(--color-text-subtle)]">Compare</span>
+    </p>
+
+    {!a || !b ? (
+      <div>
+        <h1 class="font-serif text-3xl text-[var(--color-text)] mb-4">Pick two models</h1>
+        <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-6">
+          Use <code class="font-mono text-sm">?a=&lt;slug&gt;&amp;b=&lt;slug&gt;</code> or pick below.
+        </p>
+        <form method="GET" class="flex flex-wrap items-center gap-3">
+          <label class="font-mono text-xs text-[var(--color-text-subtle)]">A
+            <select name="a" class="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-sm">
+              {all.map((m) => (
+                <option value={m.slug} selected={m.slug === aSlug}>{m.display_name}</option>
+              ))}
+            </select>
+          </label>
+          <label class="font-mono text-xs text-[var(--color-text-subtle)]">B
+            <select name="b" class="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-sm">
+              {all.map((m) => (
+                <option value={m.slug} selected={m.slug === bSlug}>{m.display_name}</option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" class="px-3 py-1.5 rounded-md bg-[var(--color-accent-strong)] text-white text-sm cursor-pointer">
+            Compare
+          </button>
+        </form>
+      </div>
+    ) : (
+      <div>
+        <h1 class="font-serif text-3xl md:text-4xl text-[var(--color-text)] mb-4">
+          {a.display_name} <span class="text-[var(--color-text-subtle)] font-mono text-xl">vs</span> {b.display_name}
+        </h1>
+        <p class="text-sm text-[var(--color-text-subtle)] mb-2 max-w-prose">
+          Rows in <strong>bold</strong> are where the two models differ. Numbers
+          carry their as-of date and primary source.
+        </p>
+        <form method="GET" class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="font-mono text-xs text-[var(--color-text-subtle)]">swap:</span>
+          <select name="a" class="px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs">
+            {all.map((m) => (
+              <option value={m.slug} selected={m.slug === aSlug}>{m.display_name}</option>
+            ))}
+          </select>
+          <select name="b" class="px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs">
+            {all.map((m) => (
+              <option value={m.slug} selected={m.slug === bSlug}>{m.display_name}</option>
+            ))}
+          </select>
+          <button type="submit" class="px-2 py-1 rounded-md border border-[var(--color-border)] text-xs cursor-pointer">go</button>
+        </form>
+      </div>
+    )}
+  </section>
+
+  {a && b && (
+    <div class="max-w-4xl mx-auto px-6 pb-16">
+      <!-- Specs comparison -->
+      <section class="mb-8">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Specs
+        </h2>
+        <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
+              <tr class="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                <th class="px-3 py-2 w-32">Field</th>
+                <th class="px-3 py-2">A: {a.display_name}</th>
+                <th class="px-3 py-2">B: {b.display_name}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr class={`border-t border-[var(--color-border)] ${r.differs ? "bg-[var(--color-surface-warm)]" : ""}`}>
+                  <td class="px-3 py-1.5 font-mono text-xs text-[var(--color-text-subtle)]">{r.label}</td>
+                  <td class={`px-3 py-1.5 text-xs ${r.differs ? "font-semibold text-[var(--color-text)]" : "text-[var(--color-text-muted)]"}`}>{r.a}</td>
+                  <td class={`px-3 py-1.5 text-xs ${r.differs ? "font-semibold text-[var(--color-text)]" : "text-[var(--color-text-muted)]"}`}>{r.b}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Benchmarks comparison -->
+      <section class="mb-8">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Benchmarks
+        </h2>
+        <p class="text-xs text-[var(--color-text-subtle)] mb-3">
+          Missing scores render as not reported; never inferred. Higher is better on every benchmark.
+        </p>
+        {benchmarkGroupOrder.map((g) => {
+          const slugs = BENCHMARK_GROUPS[g];
+          const reportedAny = slugs.some((s) => a.benchmarks?.[s as BenchmarkSlug] || b.benchmarks?.[s as BenchmarkSlug]);
+          if (!reportedAny) return null;
+          return (
+            <div class="mb-4">
+              <h3 class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+                {benchmarkGroupLabel[g]}
+              </h3>
+              <table class="w-full text-sm border border-[var(--color-border)] rounded">
+                <tbody>
+                  {slugs.map((bSlug) => {
+                    const av = a.benchmarks?.[bSlug as BenchmarkSlug];
+                    const bv = b.benchmarks?.[bSlug as BenchmarkSlug];
+                    if (!av && !bv) return null;
+                    const aBetter = av && bv && av.score > bv.score;
+                    const bBetter = av && bv && bv.score > av.score;
+                    return (
+                      <tr class="border-t border-[var(--color-border)] first:border-t-0">
+                        <td class="px-3 py-1.5 font-mono text-xs text-[var(--color-text-muted)]">{BENCHMARK_LABEL[bSlug as BenchmarkSlug]}</td>
+                        <td class={`px-3 py-1.5 font-mono text-xs text-right tabular-nums ${aBetter ? "font-semibold text-[var(--color-text)]" : "text-[var(--color-text-muted)]"}`}>
+                          {av ? av.score.toFixed(1) : "—"}
+                        </td>
+                        <td class="px-2 py-1.5 font-mono text-[10px] text-[var(--color-text-subtle)] text-right">{av ? `as of ${av.as_of}` : ""}</td>
+                        <td class={`px-3 py-1.5 font-mono text-xs text-right tabular-nums ${bBetter ? "font-semibold text-[var(--color-text)]" : "text-[var(--color-text-muted)]"}`}>
+                          {bv ? bv.score.toFixed(1) : "—"}
+                        </td>
+                        <td class="px-2 py-1.5 font-mono text-[10px] text-[var(--color-text-subtle)] text-right">{bv ? `as of ${bv.as_of}` : ""}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </section>
+
+      <!-- Release context side by side -->
+      <section class="mb-8 grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+            Release context · A
+          </h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{a.release_context ?? "—"}</p>
+        </div>
+        <div>
+          <h3 class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+            Release context · B
+          </h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{b.release_context ?? "—"}</p>
+        </div>
+      </section>
+
+      <p class="font-mono text-xs text-[var(--color-text-subtle)] mt-6">
+        <a href={`/models/${a.slug}`} class="hover:text-[var(--color-text)] no-underline hover:underline">{a.display_name} detail →</a>
+        <span class="mx-2">·</span>
+        <a href={`/models/${b.slug}`} class="hover:text-[var(--color-text)] no-underline hover:underline">{b.display_name} detail →</a>
+      </p>
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  .compare-diff { background: var(--color-surface-warm); }
+</style>

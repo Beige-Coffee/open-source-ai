@@ -1,0 +1,323 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  loadModels,
+  OPENNESS_LABEL,
+  formatParams,
+  formatContext,
+  formatTokens,
+  BENCHMARK_LABEL,
+  type Openness,
+} from "../../lib/models";
+
+const all = loadModels().slice().sort((a, b) => {
+  // Newest first by release date.
+  const ad = a.released_date ?? "";
+  const bd = b.released_date ?? "";
+  return bd.localeCompare(ad);
+});
+
+const openCount = all.filter((m) => m.openness === "open").length;
+const openWeightsCount = all.filter((m) => m.openness === "open-weights" || m.openness === "source-available").length;
+const closedCount = all.filter((m) => m.openness === "proprietary").length;
+
+// Timeline strip math. X axis: Feb 2023 to today. Each model is a dot.
+const TIMELINE_START = new Date("2023-02-01").getTime();
+const TIMELINE_END = Date.now();
+function xForDate(dateStr: string, width: number): number {
+  const t = new Date(dateStr).getTime();
+  if (!Number.isFinite(t)) return 0;
+  const pct = (t - TIMELINE_START) / (TIMELINE_END - TIMELINE_START);
+  return Math.max(0, Math.min(1, pct)) * width;
+}
+
+const TIMELINE_W = 1100;
+const TIMELINE_H = 180;
+const TIMELINE_PAD_X = 24;
+const TIMELINE_INNER_W = TIMELINE_W - TIMELINE_PAD_X * 2;
+
+// Y position by openness so the dots don't all overlap.
+function yForOpenness(o: Openness): number {
+  switch (o) {
+    case "open": return 40;
+    case "open-weights": return 70;
+    case "source-available": return 100;
+    case "proprietary": return 130;
+  }
+}
+
+function opennessClass(o: Openness): string {
+  switch (o) {
+    case "open": return "openness-open";
+    case "open-weights": return "openness-open-weights";
+    case "source-available": return "openness-source-available";
+    case "proprietary": return "openness-proprietary";
+  }
+}
+
+// Year tick marks: Feb 2023, 2024, 2025, 2026.
+const yearTicks = [];
+for (let y = 2023; y <= new Date().getFullYear(); y++) {
+  yearTicks.push({
+    label: String(y),
+    x: xForDate(`${y}-01-01`, TIMELINE_INNER_W),
+  });
+}
+
+// Filter facets derived from data so the UI is always in sync.
+const developers = Array.from(new Set(all.map((m) => m.developer))).sort();
+const families = Array.from(new Set(all.map((m) => m.family))).sort();
+const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort();
+---
+
+<BaseLayout
+  title="Models"
+  description="Open-source and frontier language models, side by side. Timeline, architecture, training, benchmarks. Every claim sourced."
+>
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-6">
+    <p
+      class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4"
+    >
+      Models
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-6"
+    >
+      What's actually shipped, and how it compares
+    </h1>
+    <p
+      class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose"
+    >
+      One row per checkpoint, not per family. {openCount} OSI-open, {openWeightsCount} source-available
+      open-weights, {closedCount} proprietary baselines, since Feb 2023. Every architecture parameter,
+      benchmark score, and release date is sourced. Use the timeline to see the launch
+      cadence; use the table to filter and compare.
+    </p>
+  </section>
+
+  <!-- Timeline strip -->
+  <section class="max-w-6xl mx-auto px-6 pt-2 pb-8">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      Launch timeline
+    </h2>
+    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto">
+      <svg
+        viewBox={`0 0 ${TIMELINE_W} ${TIMELINE_H}`}
+        width="100%"
+        style={`max-width: ${TIMELINE_W}px; display: block; font-family: var(--font-mono);`}
+        role="img"
+        aria-label="Launch timeline of catalogued models"
+      >
+        <!-- Lane labels -->
+        <g font-size="10" fill="var(--color-text-subtle)">
+          <text x={4} y={44}>open</text>
+          <text x={4} y={74}>open-weights</text>
+          <text x={4} y={104}>src-available</text>
+          <text x={4} y={134}>proprietary</text>
+        </g>
+
+        <!-- Lane lines -->
+        <g stroke="var(--color-border)" stroke-width="1">
+          <line x1={TIMELINE_PAD_X + 80} y1={40} x2={TIMELINE_W - TIMELINE_PAD_X} y2={40}/>
+          <line x1={TIMELINE_PAD_X + 80} y1={70} x2={TIMELINE_W - TIMELINE_PAD_X} y2={70}/>
+          <line x1={TIMELINE_PAD_X + 80} y1={100} x2={TIMELINE_W - TIMELINE_PAD_X} y2={100}/>
+          <line x1={TIMELINE_PAD_X + 80} y1={130} x2={TIMELINE_W - TIMELINE_PAD_X} y2={130}/>
+        </g>
+
+        <!-- Year ticks -->
+        <g font-size="10" fill="var(--color-text-muted)" stroke="none">
+          {yearTicks.map((t) => (
+            <>
+              <line
+                x1={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W)}
+                x2={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W)}
+                y1={20} y2={150}
+                stroke="var(--color-border)"
+              />
+              <text
+                x={TIMELINE_PAD_X + 80 + t.x * ((TIMELINE_INNER_W - 80) / TIMELINE_INNER_W) + 4}
+                y={16}
+                fill="var(--color-text-subtle)"
+              >
+                {t.label}
+              </text>
+            </>
+          ))}
+        </g>
+
+        <!-- Model dots -->
+        <g>
+          {all.map((m) => {
+            const x = TIMELINE_PAD_X + 80 + xForDate(m.released_date, TIMELINE_INNER_W - 80);
+            const y = yForOpenness(m.openness);
+            const fill =
+              m.openness === "open" ? "var(--color-focus-open)" :
+              m.openness === "open-weights" ? "var(--color-focus-open-weights)" :
+              m.openness === "source-available" ? "var(--color-focus-source-available)" :
+              "var(--color-focus-proprietary)";
+            return (
+              <g class="timeline-dot" data-slug={m.slug}>
+                <a href={`/models/${m.slug}`}>
+                  <circle cx={x} cy={y} r="5" fill={fill} stroke="var(--color-surface)" stroke-width="1.2"/>
+                  <title>{m.display_name} · {m.developer} · {m.released_date}</title>
+                </a>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    </div>
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
+      Dots ordered top to bottom by openness tier. Hover for name + date; click to open the model page.
+    </p>
+  </section>
+
+  <!-- Filter bar + table -->
+  <section class="max-w-6xl mx-auto px-6 pb-16" id="models-table-section">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      All models ({all.length})
+    </h2>
+    <div class="flex flex-wrap items-center gap-3 mb-4 text-sm">
+      <input
+        id="models-search"
+        type="search"
+        placeholder="Search by name, family, developer..."
+        class="px-3 py-1.5 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] text-sm w-64"
+      />
+      <select id="filter-openness" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm">
+        <option value="">all openness</option>
+        <option value="open">open (OSI)</option>
+        <option value="open-weights">open-weights</option>
+        <option value="source-available">source-available</option>
+        <option value="proprietary">proprietary</option>
+      </select>
+      <select id="filter-architecture" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm">
+        <option value="">all architectures</option>
+        {architectures.map((a) => (<option value={a}>{a}</option>))}
+      </select>
+      <select id="filter-developer" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm">
+        <option value="">all developers</option>
+        {developers.map((d) => (<option value={d}>{d}</option>))}
+      </select>
+      <button id="filter-reset" type="button" class="px-2 py-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer">
+        reset
+      </button>
+      <span id="filter-count" class="ml-auto font-mono text-xs text-[var(--color-text-subtle)]">
+        {all.length} models
+      </span>
+    </div>
+
+    <div class="overflow-x-auto border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
+      <table class="w-full text-sm" id="models-table">
+        <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
+          <tr class="text-left font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+            <th class="px-3 py-2">Model</th>
+            <th class="px-3 py-2">Developer</th>
+            <th class="px-3 py-2">Released</th>
+            <th class="px-3 py-2">Openness</th>
+            <th class="px-3 py-2">Architecture</th>
+            <th class="px-3 py-2 text-right">Total</th>
+            <th class="px-3 py-2 text-right">Active</th>
+            <th class="px-3 py-2 text-right">Ctx</th>
+            <th class="px-3 py-2 text-right">MMLU</th>
+            <th class="px-3 py-2 text-right">GPQA-D</th>
+            <th class="px-3 py-2 text-right">HumanEval</th>
+          </tr>
+        </thead>
+        <tbody>
+          {all.map((m) => {
+            const ar = m.benchmarks ?? {};
+            return (
+              <tr
+                class="models-row border-t border-[var(--color-border)] hover:bg-[var(--color-surface-warm)]"
+                data-name={m.display_name.toLowerCase()}
+                data-family={m.family.toLowerCase()}
+                data-developer={m.developer}
+                data-openness={m.openness}
+                data-architecture={m.architecture}
+              >
+                <td class="px-3 py-2">
+                  <a href={`/models/${m.slug}`} class="text-[var(--color-text)] no-underline hover:underline font-medium">
+                    {m.display_name}
+                  </a>
+                </td>
+                <td class="px-3 py-2 text-[var(--color-text-muted)]">{m.developer}</td>
+                <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)] tabular-nums">{m.released_date}</td>
+                <td class="px-3 py-2">
+                  <span class={`openness-badge ${opennessClass(m.openness)} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}>
+                    {OPENNESS_LABEL[m.openness]}
+                  </span>
+                </td>
+                <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)]">{m.architecture}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_total > 0 ? formatParams(m.params_total) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{m.params_active > 0 ? formatParams(m.params_active) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{formatContext(m.context_window)}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.mmlu ? ar.mmlu.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.gpqa_diamond ? ar.gpqa_diamond.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{ar.humaneval ? ar.humaneval.score.toFixed(1) : "—"}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .openness-open { background: var(--color-surface-warm); color: var(--color-focus-open); border: 1px solid var(--color-focus-open); }
+  .openness-open-weights { background: var(--color-surface-warm); color: var(--color-focus-open-weights); border: 1px solid var(--color-focus-open-weights); }
+  .openness-source-available { background: var(--color-surface-warm); color: var(--color-focus-source-available); border: 1px solid var(--color-focus-source-available); }
+  .openness-proprietary { background: var(--color-surface-warm); color: var(--color-focus-proprietary); border: 1px solid var(--color-focus-proprietary); }
+  .timeline-dot:hover circle { r: 7; cursor: pointer; }
+</style>
+
+<script is:inline>
+  // Filter the models table client-side. Resets on /reset click. No
+  // network; reads everything off data-* attrs.
+  (function () {
+    const search = document.getElementById("models-search");
+    const fOpen = document.getElementById("filter-openness");
+    const fArch = document.getElementById("filter-architecture");
+    const fDev = document.getElementById("filter-developer");
+    const reset = document.getElementById("filter-reset");
+    const count = document.getElementById("filter-count");
+    const rows = Array.from(document.querySelectorAll(".models-row"));
+    const total = rows.length;
+
+    function apply() {
+      const q = (search.value || "").toLowerCase().trim();
+      const o = fOpen.value;
+      const a = fArch.value;
+      const d = fDev.value;
+      let visible = 0;
+      for (const row of rows) {
+        const name = row.dataset.name || "";
+        const fam = row.dataset.family || "";
+        const dev = (row.dataset.developer || "").toLowerCase();
+        const open = row.dataset.openness;
+        const arch = row.dataset.architecture;
+        const matchesQuery = !q || name.includes(q) || fam.includes(q) || dev.includes(q);
+        const matchesOpen = !o || open === o;
+        const matchesArch = !a || arch === a;
+        const matchesDev = !d || row.dataset.developer === d;
+        const show = matchesQuery && matchesOpen && matchesArch && matchesDev;
+        row.style.display = show ? "" : "none";
+        if (show) visible++;
+      }
+      count.textContent = visible === total ? `${total} models` : `${visible} of ${total} models`;
+    }
+
+    for (const el of [search, fOpen, fArch, fDev]) {
+      el.addEventListener("input", apply);
+      el.addEventListener("change", apply);
+    }
+    reset.addEventListener("click", () => {
+      search.value = "";
+      fOpen.value = "";
+      fArch.value = "";
+      fDev.value = "";
+      apply();
+    });
+  })();
+</script>

@@ -9,6 +9,7 @@
  *   (Reading: Building Effective Agents)
  *   (News: 2026-05-13)
  *   (Glossary: mixture-of-experts)
+ *   (Model: deepseek-r1)
  */
 
 export type CitationKind =
@@ -18,7 +19,8 @@ export type CitationKind =
   | "project"
   | "reading"
   | "news"
-  | "glossary";
+  | "glossary"
+  | "model";
 
 export interface ParsedCitation {
   start: number;
@@ -29,7 +31,7 @@ export interface ParsedCitation {
 }
 
 const PATTERN =
-  /\((Layer|Funder|Grant|Project|Reading|News|Glossary):\s*([^)]+)\)/g;
+  /\((Layer|Funder|Grant|Project|Reading|News|Glossary|Model):\s*([^)]+)\)/g;
 
 export function parseCitations(text: string): ParsedCitation[] {
   const hits: ParsedCitation[] = [];
@@ -100,6 +102,8 @@ export function citationHref(c: ParsedCitation): string {
       return `/stack`;
     case "glossary":
       return `/glossary/${c.ref}`;
+    case "model":
+      return `/models/${c.ref}`;
   }
 }
 

@@ -1,0 +1,245 @@
+---
+/**
+ * ModelArchitecture: schema-generated SVG diagram of a model's forward
+ * pass. The diagram is the data, not an illustration — every label is
+ * read directly from the Model entry. That means it's auditable: the
+ * extractor reads the labels back out and entailment-checks them
+ * against the source model card.
+ *
+ * Layout (top to bottom):
+ *
+ *   [ tokens in ]
+ *        |
+ *   [ embedding (vocab x dim) ]
+ *        |
+ *   [ N transformer layers ] -----+
+ *     [ attention | mlp / moe ]   |  hover-readable per-layer detail
+ *        |
+ *   [ output projection ]
+ *        |
+ *   [ tokens out ]
+ *
+ * For MoE models, the MLP block shows the expert grid + active count.
+ * For dense models, it's a single rectangle. Closed models with
+ * unknown architecture render a "Not disclosed" diagram instead.
+ */
+import type { Model } from "../lib/models";
+import { formatParams, formatTokens } from "../lib/models";
+
+interface Props {
+  model: Model;
+}
+
+const { model } = Astro.props as Props;
+
+const isMoE = model.architecture === "moe";
+const isUnknown = model.architecture === "unknown";
+
+const W = 480;
+const H = 600;
+
+// Vertical band positions.
+const Y_TOKENS_IN = 36;
+const Y_EMBED = 96;
+const Y_LAYERS = 180;
+const Y_LAYERS_BOTTOM = 460;
+const Y_HEAD = 500;
+const Y_TOKENS_OUT = 564;
+
+const BLOCK_W = 320;
+const BLOCK_X = (W - BLOCK_W) / 2;
+
+function attentionLabel(): string {
+  switch (model.attention_variant) {
+    case "mha": return "Multi-head Attention";
+    case "mqa": return "Multi-Query Attention";
+    case "gqa": return "Grouped-Query Attention";
+    case "mla": return "Multi-head Latent Attention";
+    case "sliding-window": return "Sliding-window Attention";
+    case "hybrid-gqa-sliding": return "GQA + Sliding-window (interleaved)";
+    case "linear": return "Linear Attention";
+    default: return "Attention (not disclosed)";
+  }
+}
+
+function posLabel(): string {
+  switch (model.position_encoding) {
+    case "rope": return "RoPE";
+    case "rope-yarn": return "RoPE + YaRN";
+    case "rope-llama3": return "RoPE (Llama 3 scaling)";
+    case "alibi": return "ALiBi";
+    case "nope": return "NoPE";
+    case "absolute": return "Absolute";
+    default: return "Position encoding not disclosed";
+  }
+}
+
+// MoE expert grid. We render up to 32 boxes; if the model has more
+// experts, we render 32 cells and label the actual count beside.
+const MAX_EXPERT_CELLS = 32;
+const EXPERTS = isMoE ? Math.min(model.experts ?? MAX_EXPERT_CELLS, MAX_EXPERT_CELLS) : 0;
+const EXPERTS_ACTIVE = isMoE ? Math.min(model.experts_active ?? 0, EXPERTS) : 0;
+---
+
+<figure class="not-prose my-6">
+  <svg
+    viewBox={`0 0 ${W} ${H}`}
+    width="100%"
+    style="max-width: 480px; display: block; margin: 0 auto; font-family: var(--font-mono);"
+    role="img"
+    aria-label={`Architecture diagram for ${model.display_name}`}
+    data-model-slug={model.slug}
+    data-model-architecture={model.architecture}
+    data-model-attention={model.attention_variant}
+    data-model-position={model.position_encoding}
+  >
+    <!-- Tokens in -->
+    <g>
+      <rect x={BLOCK_X + 40} y={Y_TOKENS_IN} width={BLOCK_W - 80} height="32" fill="var(--color-surface-warm)" stroke="var(--color-border-strong)" stroke-width="1" rx="4"/>
+      <text x={W/2} y={Y_TOKENS_IN + 20} text-anchor="middle" font-size="11" fill="var(--color-text-muted)">tokens in</text>
+    </g>
+    <line x1={W/2} y1={Y_TOKENS_IN + 32} x2={W/2} y2={Y_EMBED} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+    <!-- Embedding -->
+    <g>
+      <rect x={BLOCK_X} y={Y_EMBED} width={BLOCK_W} height="56" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1.2" rx="4"/>
+      <text x={W/2} y={Y_EMBED + 22} text-anchor="middle" font-size="12" fill="var(--color-text)" font-weight="600">
+        Embedding
+      </text>
+      <text x={W/2} y={Y_EMBED + 40} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+        {model.vocab_size ? `vocab ${model.vocab_size.toLocaleString()}` : "vocab not disclosed"}
+        {model.tokenizer ? ` · ${model.tokenizer} tokenizer` : ""}
+      </text>
+    </g>
+    <line x1={W/2} y1={Y_EMBED + 56} x2={W/2} y2={Y_LAYERS} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+    <!-- Layer stack (transformer blocks) -->
+    <g>
+      <!-- Repeat indicator -->
+      <rect
+        x={BLOCK_X - 8}
+        y={Y_LAYERS - 8}
+        width={BLOCK_W + 16}
+        height={Y_LAYERS_BOTTOM - Y_LAYERS + 16}
+        fill="none"
+        stroke="var(--color-border)"
+        stroke-width="1"
+        stroke-dasharray="4 4"
+        rx="6"
+      />
+      <text
+        x={BLOCK_X - 14}
+        y={Y_LAYERS + (Y_LAYERS_BOTTOM - Y_LAYERS) / 2}
+        text-anchor="end"
+        font-size="10"
+        fill="var(--color-text-subtle)"
+        transform={`rotate(-90, ${BLOCK_X - 14}, ${Y_LAYERS + (Y_LAYERS_BOTTOM - Y_LAYERS) / 2})`}
+      >
+        {model.layers_count ? `× ${model.layers_count} layers` : "× N layers"}
+      </text>
+
+      {isUnknown ? (
+        <>
+          <rect x={BLOCK_X} y={Y_LAYERS + 12} width={BLOCK_W} height="240" fill="var(--color-surface-warm)" stroke="var(--color-border-strong)" stroke-width="1" rx="4"/>
+          <text x={W/2} y={Y_LAYERS + 132} text-anchor="middle" font-size="12" fill="var(--color-text-muted)">
+            Architecture not disclosed
+          </text>
+          <text x={W/2} y={Y_LAYERS + 152} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+            (proprietary or undocumented)
+          </text>
+        </>
+      ) : (
+        <>
+          <!-- Attention block -->
+          <rect x={BLOCK_X + 16} y={Y_LAYERS + 12} width={BLOCK_W - 32} height="84" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1" rx="4"/>
+          <text x={W/2} y={Y_LAYERS + 36} text-anchor="middle" font-size="12" fill="var(--color-text)" font-weight="600">
+            {attentionLabel()}
+          </text>
+          <text x={W/2} y={Y_LAYERS + 56} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+            {posLabel()}
+          </text>
+          <text x={W/2} y={Y_LAYERS + 76} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+            context {model.context_window.toLocaleString()} tokens
+          </text>
+
+          <line x1={W/2} y1={Y_LAYERS + 96} x2={W/2} y2={Y_LAYERS + 120} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+          {/* MLP / MoE block */}
+          {isMoE ? (
+            <>
+              <rect x={BLOCK_X + 16} y={Y_LAYERS + 120} width={BLOCK_W - 32} height="148" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1" rx="4"/>
+              <text x={W/2} y={Y_LAYERS + 142} text-anchor="middle" font-size="12" fill="var(--color-text)" font-weight="600">
+                MoE Router
+              </text>
+              <text x={W/2} y={Y_LAYERS + 160} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+                {model.experts ?? "?"} experts total · {model.experts_active ?? "?"} active per token
+              </text>
+              {/* Expert grid */}
+              {Array.from({ length: EXPERTS }).map((_, i) => {
+                const cols = 8;
+                const cellW = (BLOCK_W - 64) / cols;
+                const cellH = 14;
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                const x = BLOCK_X + 32 + col * cellW;
+                const y = Y_LAYERS + 178 + row * (cellH + 4);
+                const isActive = i < EXPERTS_ACTIVE;
+                return (
+                  <rect
+                    x={x}
+                    y={y}
+                    width={cellW - 4}
+                    height={cellH}
+                    fill={isActive ? "var(--color-text)" : "var(--color-surface-warm)"}
+                    stroke="var(--color-border-strong)"
+                    stroke-width="0.5"
+                    rx="2"
+                  />
+                );
+              })}
+              {model.experts && model.experts > MAX_EXPERT_CELLS && (
+                <text x={W/2} y={Y_LAYERS + 256} text-anchor="middle" font-size="9" fill="var(--color-text-subtle)" font-style="italic">
+                  shown: {MAX_EXPERT_CELLS} of {model.experts}
+                </text>
+              )}
+            </>
+          ) : (
+            <>
+              <rect x={BLOCK_X + 16} y={Y_LAYERS + 120} width={BLOCK_W - 32} height="84" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1" rx="4"/>
+              <text x={W/2} y={Y_LAYERS + 148} text-anchor="middle" font-size="12" fill="var(--color-text)" font-weight="600">
+                Dense MLP
+              </text>
+              <text x={W/2} y={Y_LAYERS + 168} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+                SwiGLU activation (standard)
+              </text>
+              <text x={W/2} y={Y_LAYERS + 188} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
+                {formatParams(model.params_active)} active params
+              </text>
+            </>
+          )}
+        </>
+      )}
+    </g>
+
+    <line x1={W/2} y1={Y_LAYERS_BOTTOM + 8} x2={W/2} y2={Y_HEAD} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+    <!-- Output projection -->
+    <g>
+      <rect x={BLOCK_X} y={Y_HEAD} width={BLOCK_W} height="40" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1.2" rx="4"/>
+      <text x={W/2} y={Y_HEAD + 24} text-anchor="middle" font-size="12" fill="var(--color-text)" font-weight="600">
+        Output projection
+      </text>
+    </g>
+    <line x1={W/2} y1={Y_HEAD + 40} x2={W/2} y2={Y_TOKENS_OUT} stroke="var(--color-border-strong)" stroke-width="1"/>
+
+    <!-- Tokens out -->
+    <g>
+      <rect x={BLOCK_X + 40} y={Y_TOKENS_OUT} width={BLOCK_W - 80} height="32" fill="var(--color-surface-warm)" stroke="var(--color-border-strong)" stroke-width="1" rx="4"/>
+      <text x={W/2} y={Y_TOKENS_OUT + 20} text-anchor="middle" font-size="11" fill="var(--color-text-muted)">tokens out</text>
+    </g>
+  </svg>
+  <figcaption class="font-mono text-[10px] text-[var(--color-text-subtle)] text-center mt-2">
+    Schema-generated from <code>data/models.yaml</code>. Every label is auditable
+    against the model's sources.
+  </figcaption>
+</figure>

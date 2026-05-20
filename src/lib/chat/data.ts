@@ -158,6 +158,73 @@ export async function getGlossary(): Promise<GlossaryEntry[]> {
   return getJson<GlossaryEntry[]>("glossary");
 }
 
+interface ModelBenchmarkScore {
+  score: number;
+  as_of: string;
+  source: string;
+  variant?: string;
+}
+
+interface ModelReceptionQuote {
+  quote: string;
+  author: string;
+  affiliation?: string;
+  url: string;
+  date: string;
+}
+
+interface ModelSource {
+  title: string;
+  url: string;
+}
+
+interface ModelEntry {
+  slug: string;
+  display_name: string;
+  family: string;
+  developer: string;
+  developer_country?: string;
+  type: string;
+  released_date: string;
+  weights_released_date?: string;
+  paper_date?: string;
+  deprecated_date?: string;
+  openness: string;
+  license: string;
+  osi_approved: boolean;
+  data_released: boolean;
+  training_code_released: boolean;
+  training_logs_released: boolean;
+  architecture: string;
+  params_total: number;
+  params_active: number;
+  experts?: number;
+  experts_active?: number;
+  context_window: number;
+  attention_variant: string;
+  position_encoding: string;
+  tokenizer?: string;
+  layers_count?: number;
+  vocab_size?: number;
+  pretraining_tokens?: number;
+  training_data_summary?: string;
+  post_training?: string[];
+  training_hardware?: string;
+  training_compute_flops?: number;
+  benchmarks?: Record<string, ModelBenchmarkScore>;
+  quantizations_available?: string[];
+  runtimes_supporting?: string[];
+  release_context?: string;
+  notable_innovations?: string[];
+  reception?: ModelReceptionQuote[];
+  sources: ModelSource[];
+}
+
+export async function getModels(): Promise<ModelEntry[]> {
+  const root = await getJson<{ models: ModelEntry[] }>("models");
+  return root.models ?? [];
+}
+
 export type {
   LayerEntry,
   Project,
@@ -166,4 +233,5 @@ export type {
   Reading,
   NewsIssue,
   GlossaryEntry,
+  ModelEntry,
 };

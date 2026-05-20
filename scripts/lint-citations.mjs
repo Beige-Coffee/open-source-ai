@@ -100,6 +100,17 @@ const TARGETS = [
     record_array: "readings",
     text_fields: ["description"],
   },
+  // Models. Numeric fields (params, tokens, context, dates, benchmark
+  // scores) are typed and carry per-field source URLs (every benchmark
+  // entry has its own `source`), so they don't appear in the prose
+  // scanned here. `release_context` and `notable_innovations` are the
+  // claim-heavy free text the linter inspects.
+  {
+    path: "data/models.yaml",
+    kind: "yaml",
+    record_array: "models",
+    text_fields: ["release_context", "notable_innovations"],
+  },
   // Layer MDX bodies.
   {
     path: "src/content/layers",

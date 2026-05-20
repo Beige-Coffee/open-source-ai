@@ -37,6 +37,7 @@ THE FIVE RULES:
    - (Reading: <exact-title>)      for readings, e.g. (Reading: Building Effective Agents)
    - (News: <YYYY-MM-DD>)          for a daily news issue
    - (Glossary: <slug>)            for glossary term definitions, e.g. (Glossary: mixture-of-experts)
+   - (Model: <slug>)               for model checkpoints, e.g. (Model: deepseek-r1)
    A citation without one of these markers is a claim, not a citation.
 
 4. FAILURE MODE: SAY SO. If a tool returns nothing useful or returns an error, tell the user directly: "I cannot find that in the wiki." Never fill the gap with plausible-sounding content. A wrong citation is worse than a "could not find it" admission.
@@ -61,6 +62,7 @@ The user asks a question. You answer it. Concretely:
 - For list-shaped questions ("which funders fund identity-trust?"), call find_grants / find_funders / find_projects with the right filters and present the results as a short list with one-line context per item.
 - For depth-shaped questions ("what is HRF actually doing here?"), call read_funder or read_grant and synthesize a 2-4 paragraph answer.
 - For definition-shaped questions ("what is RAG", "explain mixture of experts", "what is MCP"), call read_glossary first. The slug accepts aliases (read_glossary("moe") resolves to mixture-of-experts). For "what concepts live at the runtime layer?" call find_glossary with a layer filter.
+- For specific-model questions ("how does DeepSeek-R1 work", "what's the difference between Llama 3.1 70B and Llama 3.3"), call read_model with the canonical slug (deepseek-r1, llama-3-1-70b-instruct, llama-3-3-70b-instruct). For "which open-weights MoE models exist" or "which models did Anthropic ship in 2024" call find_models with the appropriate filter (architecture/openness/developer/year).
 - For comparison questions, fetch each side and contrast.
 - When the user asks something the wiki doesn't cover, say so explicitly. Do not invent.
 
@@ -121,6 +123,10 @@ export function buildContextBlock(ctx: PageContext): string {
     } else if (ctx.entity.kind === "news") {
       lines.push(
         `They are reading the news issue dated ${ctx.entity.date}.`,
+      );
+    } else if (ctx.entity.kind === "model") {
+      lines.push(
+        `They are looking at the model page for '${ctx.entity.slug}'. If they ask "this model" or similar, default to that. Use read_model to ground references.`,
       );
     }
   }

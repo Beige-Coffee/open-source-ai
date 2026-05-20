@@ -14,6 +14,7 @@ import {
   getLayerContent,
   getTodayNews,
   getGlossary,
+  getModels,
 } from "./data";
 import { searchAll } from "./retrieve";
 
@@ -160,9 +161,38 @@ export const TOOLS = [
     },
   },
   {
+    name: "find_models",
+    description:
+      "Filter the catalog of language-model checkpoints (open and closed, since Feb 2023) by family, developer, openness tier, architecture, release year, or free-text query. Returns up to 12 checkpoints with identity, release date, openness, architecture, params, context, and any reported benchmark scores. Use when the user asks about which models exist, when, or how openness/architecture options compare. Limit: 3 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        family: { type: "string", description: "Family slug, e.g. 'llama', 'qwen', 'deepseek', 'claude', 'gemini'." },
+        developer: { type: "string", description: "Developer name, e.g. 'Meta', 'OpenAI', 'Anthropic', 'DeepSeek'." },
+        openness: { type: "string", enum: ["open", "open-weights", "source-available", "proprietary"], description: "Openness tier." },
+        architecture: { type: "string", enum: ["dense", "moe", "hybrid", "ssm", "unknown"] },
+        type: { type: "string", enum: ["base", "instruct", "chat", "reasoning", "code", "vision-language"] },
+        year: { type: "number", description: "Release year (4 digits)." },
+        query: { type: "string", description: "Free-text query against display_name, release_context, notable_innovations." },
+      },
+    },
+  },
+  {
+    name: "read_model",
+    description:
+      "Fetch the full record for one model checkpoint by canonical slug. Returns identity, timeline, openness, license, architecture (params, attention variant, position encoding, MoE experts when applicable), training (tokens, hardware, post-training stages), every reported benchmark with its as-of date and source URL, quantizations and runtimes that support it, release_context, notable_innovations, reception quotes with author + URL, full sources list, and the family siblings (other checkpoints by the same family). Use this when the user asks about a specific named model; prefer it over find_models when you already know the slug. Limit: 4 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slug: { type: "string", description: "Canonical model slug, e.g. 'deepseek-r1', 'llama-3-1-405b-instruct', 'claude-3-5-sonnet'." },
+      },
+      required: ["slug"],
+    },
+  },
+  {
     name: "search",
     description:
-      "Full-text search across grants, funders, projects, readings, and layer overviews. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
+      "Full-text search across grants, funders, projects, readings, layer overviews, and models. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
     input_schema: {
       type: "object",
       properties: {
@@ -183,11 +213,13 @@ const LIMITS: Record<string, number> = {
   find_projects: 3,
   find_readings: 3,
   find_glossary: 3,
+  find_models: 3,
   read_layer: 3,
   read_funder: 3,
   read_grant: 3,
   read_project: 4,
   read_glossary: 4,
+  read_model: 4,
   today_news: 1,
   search: 2,
 };
@@ -559,6 +591,86 @@ export async function executeTool(
           };
         } else {
           result = g;
+        }
+        break;
+      }
+
+      case "find_models": {
+        const args = call.input as {
+          family?: string;
+          developer?: string;
+          openness?: string;
+          architecture?: string;
+          type?: string;
+          year?: number;
+          query?: string;
+        };
+        const models = await getModels();
+        const hits = models.filter((m) => {
+          if (args.family && m.family !== args.family) return false;
+          if (args.developer && m.developer !== args.developer) return false;
+          if (args.openness && m.openness !== args.openness) return false;
+          if (args.architecture && m.architecture !== args.architecture) return false;
+          if (args.type && m.type !== args.type) return false;
+          if (args.year) {
+            const year = parseInt(String(m.released_date).slice(0, 4), 10);
+            if (year !== args.year) return false;
+          }
+          if (args.query) {
+            const blob = `${m.display_name} ${m.family} ${m.developer} ${m.release_context ?? ""} ${(m.notable_innovations ?? []).join(" ")}`;
+            if (!fuzzyMatch(blob, args.query)) return false;
+          }
+          return true;
+        });
+        // Most recent first.
+        hits.sort((a, b) => (b.released_date ?? "").localeCompare(a.released_date ?? ""));
+        result = {
+          count: hits.length,
+          models: hits.slice(0, 12).map((m) => ({
+            slug: m.slug,
+            display_name: m.display_name,
+            family: m.family,
+            developer: m.developer,
+            released_date: m.released_date,
+            openness: m.openness,
+            license: m.license,
+            architecture: m.architecture,
+            params_total: m.params_total,
+            params_active: m.params_active,
+            context_window: m.context_window,
+            attention_variant: m.attention_variant,
+            benchmarks: m.benchmarks,
+          })),
+        };
+        break;
+      }
+
+      case "read_model": {
+        const slug = String(call.input.slug ?? "").trim();
+        const models = await getModels();
+        const m = models.find((x) => x.slug === slug);
+        if (!m) {
+          const close = models
+            .filter((x) =>
+              x.slug.includes(slug.toLowerCase()) ||
+              x.display_name.toLowerCase().includes(slug.toLowerCase()),
+            )
+            .slice(0, 5)
+            .map((x) => `${x.slug} (${x.display_name})`);
+          result = {
+            error: `No model with slug '${slug}'.`,
+            suggestions: close,
+          };
+        } else {
+          const siblings = models
+            .filter((x) => x.slug !== m.slug && x.family === m.family)
+            .map((x) => ({
+              slug: x.slug,
+              display_name: x.display_name,
+              released_date: x.released_date,
+              openness: x.openness,
+            }));
+          result = { ...m, siblings };
         }
         break;
       }

@@ -616,6 +616,109 @@ Same five-rule pattern from meaning-crisis:
    factual claim? Are all my citations from this-turn results? Are
    any banned words in the reply?
 
+## Models hub
+
+The Models hub at `/models` catalogs every individual model checkpoint
+since Feb 2023, open and closed mixed, with the closed ones flagged
+`openness: proprietary` so the timeline and comparison views can place
+them next to each other. The hub is one row per checkpoint, not per
+family. Llama 3.1 8B Instruct and Llama 3.1 70B Instruct are separate
+entries.
+
+### Schema
+
+`data/models.yaml`. TypeScript types in `src/lib/models.ts`. Each
+checkpoint carries identity, timeline (released_date, weights_released
+_date, paper_date), openness (license, OSI-approved, data/training-
+code/training-logs released bools), architecture (params_total,
+params_active, experts, context_window, attention_variant, position_
+encoding, tokenizer, layers_count, vocab_size), training (pretraining_
+tokens, post_training stages, training_hardware), benchmarks (per-
+benchmark `{ score, as_of, source }` records on the standardized set
+of MMLU / MMLU-Pro / GPQA-Diamond / HumanEval / SWE-Bench Verified /
+LiveCodeBench / MATH / AIME 2024 / AIME 2025 / FrontierMath /
+LMArena Elo / LiveBench / IFEval), quantizations_available, runtimes_
+supporting, release_context (1-3 sentences), notable_innovations
+(short labels), reception (curated quotes with author + URL + date),
+and `sources: [{ title, url }]`.
+
+Missing benchmark scores render as "not reported". We never infer or
+interpolate; if a lab did not publish a number, it isn't here.
+
+### Routes
+
+- `/models` — timeline strip (Feb 2023 -> today) by openness lane,
+  plus filterable / sortable table (developer, openness,
+  architecture, family, benchmarks). Search.
+- `/models/<slug>` — per-checkpoint page: identity card,
+  schema-generated architecture SVG, specs grid, benchmark panel
+  grouped (general / code / math / arena) each with as_of stamp +
+  source link, notable innovations, reception quotes, sources,
+  family siblings, nearest counterpart link (open for closed and vice
+  versa) and a compare-side-by-side link.
+- `/models/compare?a=<slug>&b=<slug>` — vertical side-by-side, with
+  per-row diff highlighting and benchmark deltas.
+
+### Architecture diagram component
+
+`src/components/ModelArchitecture.astro`. One SVG template
+instantiated from schema fields. Every label (attention variant,
+position encoding, context window, expert grid, dense vs MoE
+indicator) is read directly from the model entry. The diagram is the
+data, which means the audit extractor can read the labels back out of
+the SVG and entailment-check them against the source model card. For
+`architecture: unknown` (most proprietary closed models) the diagram
+renders a single "Not disclosed" block instead.
+
+### Chat agent integration
+
+- New tools `find_models(filters)` and `read_model(slug)` registered
+  in `src/lib/chat/tools.ts`.
+- New citation marker `(Model: <slug>)` parsed in
+  `src/lib/chat/citations.ts`; renders as a clickable pill to
+  `/models/<slug>`.
+- Page-context detection in ChatBubble routes
+  `/models/<slug>` to a `{ kind: "model", slug }` entity so "this
+  model" defaults correctly.
+
+### Editorial rules specific to this section
+
+- Closed-model entries are visually muted in lists (lightest-value
+  badge), full data in the schema, no editorial favoritism.
+- Benchmark scores are always shown with their `as_of` date and
+  primary `source` URL. No score without a date.
+- `release_context` is at most 3 sentences and stays neutral
+  observational. It explains why people cared at release, not
+  whether the model is good.
+- Notable innovations are short labels, not paragraphs. Long-form
+  framing belongs in the layer pages, not on per-model pages.
+
+### Audit
+
+`audit/extract-models.mjs` generates one CLAIMS_LEDGER.md row per
+checkable claim (released_date, params_total, params_active,
+context_window, experts, pretraining_tokens, every benchmark, every
+notable_innovation, every reception quote). All rows start as
+`needs_verification`; the existing `audit:verify:batch` pipeline
+takes them through entailment checks against the snapshot store.
+
+Run after adding new model entries:
+
+```bash
+npm run audit:extract:models
+```
+
+The script is idempotent: re-running only appends rows for IDs not
+already present.
+
+### Weekly routine
+
+`scripts/models-watch.md` describes the
+`oss-ai-stack-weekly-models-watch` scheduled task (Mon 10:00 PT):
+fetches HuggingFace trending + lab blog RSS + arXiv cs.CL, dedupes,
+routes candidates to `data/inbox/models-needs-review.jsonl`. Never
+auto-publishes; promotion to `data/models.yaml` is manual.
+
 ## Deployment
 
 Deployed to Vercel from `main`. Domain: open-source-ai.tech (managed

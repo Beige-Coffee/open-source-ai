@@ -31,6 +31,7 @@ const YAML_FILES = [
   "grants.yaml",
   "underfunded.yaml",
   "reading-lists.yaml",
+  "models.yaml",
 ];
 
 let total = 0;
@@ -46,7 +47,15 @@ for (const file of YAML_FILES) {
   const parsed = yaml.load(text);
   const outName = basename(file, ".yaml") + ".json";
   const outPath = resolve(OUT_DIR, outName);
-  writeFileSync(outPath, JSON.stringify(parsed, null, 0));
+  // Custom Date serializer: YAML 1.1 auto-parses YYYY-MM-DD as Date;
+  // we want ISO short form on the wire so consumers can string-compare.
+  writeFileSync(
+    outPath,
+    JSON.stringify(parsed, (_k, v) => {
+      if (v instanceof Date) return v.toISOString().slice(0, 10);
+      return v;
+    }, 0),
+  );
   console.log(`[build-data] ${file} -> public/data/${outName}`);
   total++;
 }
@@ -164,6 +173,11 @@ try {
   const fundersRaw = yaml.load(readFileSync(resolve(DATA_DIR, "funders.yaml"), "utf8"));
   const grantsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "grants.yaml"), "utf8"));
   const readingsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "reading-lists.yaml"), "utf8"));
+  // models.yaml may not exist yet during transitional builds; tolerate absence.
+  let modelsRaw = { models: [] };
+  try {
+    modelsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "models.yaml"), "utf8")) ?? { models: [] };
+  } catch (_e) { /* no models.yaml yet */ }
 
   // Build a slug -> body map from the parsed layer MDXs.
   const layerBodyBySlug = Object.fromEntries(
@@ -210,6 +224,30 @@ try {
       url,
       layers: p.layers ?? [],
       meta: { focus: p.focus, maturity: p.maturity, license: p.license },
+    });
+  }
+
+  // Models: each checkpoint indexed as its own search doc. Title is
+  // the human display name; body folds in release_context and
+  // notable_innovations so substring matches surface relevant ones.
+  for (const m of modelsRaw.models ?? []) {
+    search.push({
+      id: `model:${m.slug}`,
+      type: "model",
+      title: m.display_name,
+      summary: m.release_context ?? "",
+      body: clip(
+        `${m.release_context ?? ""} ${(m.notable_innovations ?? []).join(" ")} ${m.architecture ?? ""} ${m.developer ?? ""}`,
+        600,
+      ),
+      url: `/models/${m.slug}`,
+      layers: ["weights"],
+      meta: {
+        family: m.family,
+        developer: m.developer,
+        openness: m.openness,
+        released_date: m.released_date,
+      },
     });
   }
 

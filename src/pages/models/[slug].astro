@@ -1,0 +1,348 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ModelArchitecture from "../../components/ModelArchitecture.astro";
+import {
+  loadModels,
+  loadModelsByFamily,
+  BENCHMARK_GROUPS,
+  BENCHMARK_LABEL,
+  OPENNESS_LABEL,
+  formatParams,
+  formatTokens,
+  formatContext,
+  type Model,
+  type BenchmarkSlug,
+} from "../../lib/models";
+
+export async function getStaticPaths() {
+  return loadModels().map((m) => ({
+    params: { slug: m.slug },
+    props: { model: m },
+  }));
+}
+
+const { model } = Astro.props as { model: Model };
+
+const siblings = loadModelsByFamily(model.family)
+  .filter((m) => m.slug !== model.slug)
+  .sort((a, b) => (a.released_date ?? "").localeCompare(b.released_date ?? ""));
+
+// Closed-model nearest neighbor for comparison. For open models we
+// surface the proprietary model released closest in time; for closed
+// models we surface the open one released closest in time. Lets a
+// reader jump straight to a side-by-side without thinking.
+const ALL = loadModels();
+const counterpartPool = ALL.filter((m) =>
+  model.openness === "proprietary"
+    ? m.openness !== "proprietary"
+    : m.openness === "proprietary",
+);
+function dayDelta(a: string, b: string): number {
+  const at = new Date(a).getTime();
+  const bt = new Date(b).getTime();
+  return Math.abs(at - bt);
+}
+const counterpart = counterpartPool
+  .slice()
+  .sort((a, b) => dayDelta(a.released_date, model.released_date) - dayDelta(b.released_date, model.released_date))[0];
+
+const opennessClass =
+  model.openness === "open" ? "openness-open" :
+  model.openness === "open-weights" ? "openness-open-weights" :
+  model.openness === "source-available" ? "openness-source-available" :
+  "openness-proprietary";
+
+const benchmarkGroupOrder = ["general", "code", "math", "arena"] as const;
+const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = {
+  general: "General reasoning",
+  code: "Code",
+  math: "Math",
+  arena: "Held-out / arena",
+};
+---
+
+<BaseLayout
+  title={`${model.display_name} · Models`}
+  description={model.release_context ?? `${model.display_name} architecture, training, benchmarks, sources.`}
+>
+  <section class="max-w-4xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider mb-2">
+      <a href="/models" class="no-underline hover:underline text-[var(--color-text-subtle)]">
+        Models
+      </a>
+      <span class="text-[var(--color-text-subtle)]">·</span>
+      <span class="text-[var(--color-text-subtle)]">{model.family}</span>
+    </p>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-2">
+      {model.display_name}
+    </h1>
+    <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
+      <span class={`openness-badge ${opennessClass} font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded`}>
+        {OPENNESS_LABEL[model.openness]}
+      </span>
+      <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.developer}</span>
+      <span class="text-[var(--color-text-subtle)]">·</span>
+      <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.released_date}</span>
+      <span class="text-[var(--color-text-subtle)]">·</span>
+      <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.license}</span>
+    </div>
+    {model.release_context && (
+      <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+        {model.release_context}
+      </p>
+    )}
+  </section>
+
+  <div class="max-w-4xl mx-auto px-6 grid gap-10 md:grid-cols-[1fr_320px] mt-4 pb-16">
+    <article>
+      <!-- Architecture diagram -->
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Architecture
+        </h2>
+        <ModelArchitecture model={model} />
+      </section>
+
+      <!-- Architecture facts table -->
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Specs
+        </h2>
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Architecture</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.architecture}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Total params</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.params_total > 0 ? formatParams(model.params_total) : "not disclosed"}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Active params</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.params_active > 0 ? formatParams(model.params_active) : "not disclosed"}</dd>
+
+          {model.experts && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Experts</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{model.experts} total · {model.experts_active ?? "?"} active</dd>
+            </>
+          )}
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Context window</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{formatContext(model.context_window)} tokens</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Attention</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.attention_variant}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Position encoding</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.position_encoding}</dd>
+
+          {model.pretraining_tokens && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Pretraining tokens</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{formatTokens(model.pretraining_tokens)}</dd>
+            </>
+          )}
+
+          {model.training_hardware && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Training hardware</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{model.training_hardware}</dd>
+            </>
+          )}
+
+          {model.post_training && model.post_training.length > 0 && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Post-training</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{model.post_training.join(", ")}</dd>
+            </>
+          )}
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">OSI-approved</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.osi_approved ? "yes" : "no"}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Data released</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.data_released ? "yes" : "no"}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Training code</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{model.training_code_released ? "released" : "not released"}</dd>
+        </dl>
+      </section>
+
+      <!-- Benchmarks -->
+      {model.benchmarks && Object.keys(model.benchmarks).length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Benchmarks
+          </h2>
+          <p class="text-xs text-[var(--color-text-subtle)] mb-3">
+            Each score carries the date it was published; we never infer or
+            interpolate missing scores.
+          </p>
+          {benchmarkGroupOrder.map((g) => {
+            const slugs = BENCHMARK_GROUPS[g];
+            const reported = slugs.filter((s) => model.benchmarks?.[s as BenchmarkSlug]);
+            if (reported.length === 0) return null;
+            return (
+              <div class="mb-4">
+                <h3 class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+                  {benchmarkGroupLabel[g]}
+                </h3>
+                <table class="w-full text-sm border border-[var(--color-border)] rounded">
+                  <tbody>
+                    {reported.map((bSlug) => {
+                      const b = model.benchmarks![bSlug as BenchmarkSlug]!;
+                      return (
+                        <tr class="border-t border-[var(--color-border)] first:border-t-0">
+                          <td class="px-3 py-1.5 font-mono text-xs text-[var(--color-text-muted)]">{BENCHMARK_LABEL[bSlug as BenchmarkSlug]}</td>
+                          <td class="px-3 py-1.5 font-mono text-sm text-[var(--color-text)] text-right tabular-nums">{b.score.toFixed(1)}</td>
+                          <td class="px-3 py-1.5 font-mono text-[10px] text-[var(--color-text-subtle)] text-right">as of {b.as_of}</td>
+                          <td class="px-3 py-1.5 text-right">
+                            <a href={b.source} target="_blank" rel="noopener" class="font-mono text-[10px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+                              source ↗
+                            </a>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
+        </section>
+      )}
+
+      <!-- Notable innovations -->
+      {model.notable_innovations && model.notable_innovations.length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Notable innovations
+          </h2>
+          <ul class="space-y-1 text-sm">
+            {model.notable_innovations.map((i) => (
+              <li class="text-[var(--color-text-muted)]">· {i}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Reception -->
+      {model.reception && model.reception.length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+            Reception
+          </h2>
+          <ul class="space-y-3">
+            {model.reception.map((r) => (
+              <li class="border-l-2 border-[var(--color-border-strong)] pl-4 py-1">
+                <p class="text-sm text-[var(--color-text)] italic mb-1">"{r.quote}"</p>
+                <p class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+                  — <a href={r.url} target="_blank" rel="noopener" class="hover:text-[var(--color-text)] no-underline hover:underline">{r.author}</a>
+                  {r.affiliation ? `, ${r.affiliation}` : ""} · {r.date}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Sources -->
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Sources
+        </h2>
+        <ul class="space-y-1 text-sm">
+          {model.sources.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+                {s.title} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </article>
+
+    <!-- Right rail -->
+    <aside class="text-sm space-y-6 md:sticky md:top-20 md:self-start">
+      <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+          Family
+        </p>
+        <a href={`/models?family=${model.family}`} class="font-mono text-sm text-[var(--color-text)] no-underline hover:underline mb-3 block">
+          {model.family}
+        </a>
+
+        {siblings.length > 0 && (
+          <>
+            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+              Siblings
+            </p>
+            <ul class="space-y-1 mb-3">
+              {siblings.map((s) => (
+                <li>
+                  <a href={`/models/${s.slug}`} class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+                    {s.display_name}
+                    <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{s.released_date}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {counterpart && (
+          <>
+            <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2 mt-3 pt-3 border-t border-[var(--color-border)]">
+              Nearest counterpart
+            </p>
+            <p class="text-xs text-[var(--color-text-subtle)] mb-1">
+              {model.openness === "proprietary" ? "Open model released near this date:" : "Closed model released near this date:"}
+            </p>
+            <a href={`/models/${counterpart.slug}`} class="text-sm text-[var(--color-text)] no-underline hover:underline">
+              {counterpart.display_name}
+            </a>
+            <p class="mt-2">
+              <a href={`/models/compare?a=${model.slug}&b=${counterpart.slug}`} class="font-mono text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+                compare side-by-side →
+              </a>
+            </p>
+          </>
+        )}
+      </div>
+
+      <button
+        type="button"
+        class="w-full px-3 py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-text)] hover:text-[var(--color-text)] cursor-pointer transition-colors text-sm text-[var(--color-text-muted)]"
+        data-ask-model={model.slug}
+        data-ask-model-name={model.display_name}
+      >
+        Ask chat about this model →
+      </button>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .openness-open { background: var(--color-surface-warm); color: var(--color-focus-open); border: 1px solid var(--color-focus-open); }
+  .openness-open-weights { background: var(--color-surface-warm); color: var(--color-focus-open-weights); border: 1px solid var(--color-focus-open-weights); }
+  .openness-source-available { background: var(--color-surface-warm); color: var(--color-focus-source-available); border: 1px solid var(--color-focus-source-available); }
+  .openness-proprietary { background: var(--color-surface-warm); color: var(--color-focus-proprietary); border: 1px solid var(--color-focus-proprietary); }
+</style>
+
+<script is:inline>
+  // Wire the "Ask chat about this model" button to dispatch a chat-trigger event.
+  // ChatBubble listens for this and opens with a pre-filled prompt.
+  (function () {
+    const btn = document.querySelector("[data-ask-model]");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const slug = btn.getAttribute("data-ask-model");
+      const name = btn.getAttribute("data-ask-model-name");
+      const prompt =
+        `Tell me about ${name} (slug: ${slug}). Use the read_model tool to ground the answer. ` +
+        `Cover: what's distinctive architecturally, how it compares to its family siblings, ` +
+        `whether it's competitive with closed frontier models on benchmarks, and what people ` +
+        `said about it at release. Keep it tight: 3-5 short paragraphs.`;
+      window.dispatchEvent(new CustomEvent("chat-trigger", { detail: { prompt } }));
+    });
+  })();
+</script>
