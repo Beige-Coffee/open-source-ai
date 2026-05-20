@@ -12,7 +12,7 @@ import {
   typeLabel,
   type ReadingType,
 } from "../../lib/reading-lists";
-import { loadGrants, formatUsd } from "../../lib/grants";
+import { loadGrants, loadFunders, formatUsd } from "../../lib/grants";
 
 export async function getStaticPaths() {
   const entries = await getCollection("layers");
@@ -37,6 +37,23 @@ const tierColor =
     : "var(--color-tier-meta)";
 
 const projects = loadProjectsForLayer(entry.data.slug);
+
+// Sidebar quick-glance: openness breakdown across projects at this
+// layer, and a funder count. Order focus categories deterministically
+// (most-common first) so "5 open, 1 proprietary" reads naturally.
+const FOCUS_ORDER = ["open", "open-weights", "source-available", "proprietary", "standard"] as const;
+const focusCounts: Record<string, number> = {};
+for (const p of projects) {
+  focusCounts[p.focus] = (focusCounts[p.focus] ?? 0) + 1;
+}
+const focusBreakdown = FOCUS_ORDER
+  .filter((f) => (focusCounts[f] ?? 0) > 0)
+  .sort((a, b) => (focusCounts[b] ?? 0) - (focusCounts[a] ?? 0))
+  .map((f) => `${focusCounts[f]} ${f}`)
+  .join(", ");
+const funderCount = loadFunders().filter((f) =>
+  (f.focus_layers ?? []).includes(entry.data.slug),
+).length;
 
 // Reading list: group by type, recent-first within each group.
 // /stack/<slug> is the canonical destination for the layer's reading
@@ -435,17 +452,37 @@ const orderedProjects = [...projects].sort(
         <p
           class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
         >
-          Lock-in vector
+          Projects tracked
         </p>
-        <p class="text-sm mb-3">{entry.data.lock_in_vector}</p>
+        <p class="font-mono text-sm mb-3">
+          {projects.length > 0 ? (
+            <>
+              {projects.length}
+              {focusBreakdown && (
+                <span class="text-[var(--color-text-muted)]"> · {focusBreakdown}</span>
+              )}
+            </>
+          ) : (
+            <span class="text-[var(--color-text-muted)]">none yet</span>
+          )}
+        </p>
 
         <p
           class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1"
         >
-          Sovereignty relevance
+          Funders focused here
         </p>
         <p class="font-mono text-sm mb-3">
-          {entry.data.sovereignty_relevance} / 5
+          {funderCount > 0 ? (
+            <a
+              href={`/grants?layer=${entry.data.slug}`}
+              class="no-underline hover:underline"
+            >
+              {funderCount} {funderCount === 1 ? "funder" : "funders"}
+            </a>
+          ) : (
+            <span class="text-[var(--color-text-muted)]">none tracked</span>
+          )}
         </p>
 
         <p
