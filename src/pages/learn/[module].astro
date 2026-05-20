@@ -297,15 +297,14 @@ const prev = prevModule(moduleSlug);
            The ModuleSidebar lives below the chat and flows naturally;
            on long Read content the user scrolls the page to reach it. -->
       <aside class="md:self-start">
-        {/* Chat container: shrinks to its content (so an empty
-            'Begin Probe' state isn't a huge white box) and caps
-            at viewport-minus-nav so long chats scroll internally
-            rather than growing the page. Sticky at top:20 follows
-            the user as they scroll the Read content. Mobile keeps
-            a small min-height so the panel doesn't collapse on
-            tap. */}
+        {/* Chat container: always visible (min-h-[480px] on desktop)
+            so the panel is recognizable even before the React island
+            hydrates or before the learner has started Probe. Caps at
+            viewport-minus-nav so long chats scroll internally rather
+            than growing the page. Sticky at top:20 follows the user
+            as they scroll the Read content. */}
         <div
-          class="md:sticky md:top-20 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[40vh] md:min-h-0 md:max-h-[calc(100vh-6rem)] flex flex-col overflow-hidden"
+          class="md:sticky md:top-20 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[40vh] md:min-h-[480px] md:max-h-[calc(100vh-6rem)] flex flex-col overflow-hidden"
         >
           <CoursePanel
             client:load
