@@ -56,37 +56,86 @@ for (let y = 2023; y <= new Date().getFullYear(); y++) {
 const developers = Array.from(new Set(all.map((m) => m.developer))).sort();
 const architectures = Array.from(new Set(all.map((m) => m.architecture))).sort();
 
-// Scatter plot math. X = input $/M tok (log scale), Y = GPQA-Diamond
-// score (or MMLU-Pro fallback). Only models with both a cost and a
-// quality score plotted.
-const scatterPoints = all
-  .map((m) => {
-    const cost = m.cost?.input_per_mtok_usd;
-    const quality = m.benchmarks?.gpqa_diamond?.score ?? m.benchmarks?.mmlu_pro?.score;
-    if (!cost || cost <= 0 || !quality) return null;
-    const usingFallback = !m.benchmarks?.gpqa_diamond?.score;
-    return { m, cost, quality, usingFallback };
-  })
-  .filter((p): p is { m: typeof all[number]; cost: number; quality: number; usingFallback: boolean } => !!p);
+// Scatter plot: axes are user-selectable client-side. Server emits a
+// JSON payload of every metric for every model, and the inline JS
+// rerenders the dots whenever the user picks new X/Y metrics. Models
+// missing either metric drop off the chart silently with a "shown N of
+// M" counter so the omission is visible. Default axes are GPQA-Diamond
+// (Y) vs input cost (X) because that's the cost/quality frontier most
+// readers come here to see.
+const scatterRows = all.map((m) => ({
+  slug: m.slug,
+  display_name: m.display_name,
+  openness: m.openness,
+  released_date: m.released_date,
+  // Flattened, picker-friendly metric map. Only fields with a number
+  // get a non-null value so the JS filter is uniform.
+  metrics: {
+    input_per_mtok_usd: m.cost?.input_per_mtok_usd ?? null,
+    output_per_mtok_usd: m.cost?.output_per_mtok_usd ?? null,
+    tokens_per_sec_output: m.speed?.tokens_per_sec_output ?? null,
+    ttft_ms: m.speed?.ttft_ms ?? null,
+    context_window: m.context_window || null,
+    params_total: m.params_total > 0 ? m.params_total : null,
+    params_active: m.params_active > 0 ? m.params_active : null,
+    pretraining_tokens: m.pretraining_tokens ?? null,
+    mmlu: m.benchmarks?.mmlu?.score ?? null,
+    mmlu_pro: m.benchmarks?.mmlu_pro?.score ?? null,
+    gpqa_diamond: m.benchmarks?.gpqa_diamond?.score ?? null,
+    humaneval: m.benchmarks?.humaneval?.score ?? null,
+    swe_bench_verified: m.benchmarks?.swe_bench_verified?.score ?? null,
+    livecodebench: m.benchmarks?.livecodebench?.score ?? null,
+    math: m.benchmarks?.math?.score ?? null,
+    aime_2024: m.benchmarks?.aime_2024?.score ?? null,
+    aime_2025: m.benchmarks?.aime_2025?.score ?? null,
+    frontiermath: m.benchmarks?.frontiermath?.score ?? null,
+    lmarena_elo: m.benchmarks?.lmarena_elo?.score ?? null,
+    livebench: m.benchmarks?.livebench?.score ?? null,
+    ifeval: m.benchmarks?.ifeval?.score ?? null,
+    released_year: new Date(m.released_date).getTime() / (365.25 * 24 * 3600 * 1000) + 1970,
+  },
+}));
 
-const SCAT_W = 720;
-const SCAT_H = 320;
-const SCAT_PAD = 40;
-const minLogCost = Math.log10(Math.min(...scatterPoints.map((p) => p.cost)));
-const maxLogCost = Math.log10(Math.max(...scatterPoints.map((p) => p.cost)));
-const minQ = Math.min(...scatterPoints.map((p) => p.quality));
-const maxQ = Math.max(...scatterPoints.map((p) => p.quality));
-function scatterX(cost: number): number {
-  const lc = Math.log10(cost);
-  const range = Math.max(0.1, maxLogCost - minLogCost);
-  return SCAT_PAD + ((lc - minLogCost) / range) * (SCAT_W - SCAT_PAD * 2);
-}
-function scatterY(quality: number): number {
-  const range = Math.max(1, maxQ - minQ);
-  return SCAT_H - SCAT_PAD - ((quality - minQ) / range) * (SCAT_H - SCAT_PAD * 2);
-}
-// X-axis tick marks at meaningful cost milestones.
-const scatterXTicks = [0.1, 1, 10, 100].filter((v) => v >= 10 ** minLogCost / 1.5 && v <= 10 ** maxLogCost * 1.5);
+// Metric metadata table. `log` flags axes that span orders of
+// magnitude (cost, params, tokens); the renderer switches to log
+// scale automatically when picked. `label` is what the axis shows.
+const SCATTER_METRICS: Array<{
+  key: string;
+  label: string;
+  short_label: string;
+  log: boolean;
+  group: "cost" | "speed" | "scale" | "benchmark";
+}> = [
+  { key: "input_per_mtok_usd", label: "Input cost ($/M tokens)", short_label: "Input $/M", log: true, group: "cost" },
+  { key: "output_per_mtok_usd", label: "Output cost ($/M tokens)", short_label: "Output $/M", log: true, group: "cost" },
+  { key: "tokens_per_sec_output", label: "Output throughput (tokens/sec)", short_label: "tok/sec", log: false, group: "speed" },
+  { key: "ttft_ms", label: "Time to first token (ms)", short_label: "TTFT ms", log: false, group: "speed" },
+  { key: "context_window", label: "Context window (tokens)", short_label: "Context", log: true, group: "scale" },
+  { key: "params_total", label: "Total parameters", short_label: "Total params", log: true, group: "scale" },
+  { key: "params_active", label: "Active parameters", short_label: "Active params", log: true, group: "scale" },
+  { key: "pretraining_tokens", label: "Pretraining tokens", short_label: "Pretrain tokens", log: true, group: "scale" },
+  { key: "released_year", label: "Release year", short_label: "Year", log: false, group: "scale" },
+  { key: "mmlu", label: "MMLU", short_label: "MMLU", log: false, group: "benchmark" },
+  { key: "mmlu_pro", label: "MMLU-Pro", short_label: "MMLU-Pro", log: false, group: "benchmark" },
+  { key: "gpqa_diamond", label: "GPQA-Diamond", short_label: "GPQA-D", log: false, group: "benchmark" },
+  { key: "humaneval", label: "HumanEval", short_label: "HumanEval", log: false, group: "benchmark" },
+  { key: "swe_bench_verified", label: "SWE-Bench Verified", short_label: "SWE-Bench V", log: false, group: "benchmark" },
+  { key: "livecodebench", label: "LiveCodeBench", short_label: "LiveCodeBench", log: false, group: "benchmark" },
+  { key: "math", label: "MATH", short_label: "MATH", log: false, group: "benchmark" },
+  { key: "aime_2024", label: "AIME 2024", short_label: "AIME 2024", log: false, group: "benchmark" },
+  { key: "aime_2025", label: "AIME 2025", short_label: "AIME 2025", log: false, group: "benchmark" },
+  { key: "frontiermath", label: "FrontierMath", short_label: "FrontierMath", log: false, group: "benchmark" },
+  { key: "lmarena_elo", label: "LMArena Elo", short_label: "Elo", log: false, group: "benchmark" },
+  { key: "livebench", label: "LiveBench", short_label: "LiveBench", log: false, group: "benchmark" },
+  { key: "ifeval", label: "IFEval", short_label: "IFEval", log: false, group: "benchmark" },
+];
+
+// Drop metrics no model in the catalog has data for (keeps the
+// dropdowns from including dead options like FrontierMath when zero
+// models have reported it).
+const populatedMetrics = SCATTER_METRICS.filter((meta) =>
+  scatterRows.some((r) => r.metrics[meta.key as keyof typeof r.metrics] != null),
+);
 
 // Column tooltips: short blurb shown on hover via title attribute.
 const COL_HELP = {
@@ -304,79 +353,73 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
     </p>
   </section>
 
-  <!-- Scatter plot: quality vs cost -->
-  {scatterPoints.length > 4 && (
-    <section class="max-w-6xl mx-auto px-6 pb-8">
-      <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
-        Quality vs cost
-      </h2>
-      <p class="text-xs text-[var(--color-text-subtle)] mb-3">
-        Each dot is a model. X axis is input $/M tokens, log scale. Y axis is GPQA-Diamond
-        (or MMLU-Pro for models that didn't report GPQA). Open as filled dot, closed as ring.
-        Cheap-and-strong is bottom-left to top-left. Costs via Artificial Analysis.
-      </p>
-      <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto relative">
-        <svg
-          viewBox={`0 0 ${SCAT_W} ${SCAT_H}`}
-          width="100%"
-          style={`max-width: ${SCAT_W}px; display: block; font-family: var(--font-mono);`}
-          role="img"
-          aria-label="Quality vs cost scatter"
-        >
-          <!-- Axes -->
-          <line x1={SCAT_PAD} y1={SCAT_H - SCAT_PAD} x2={SCAT_W - SCAT_PAD} y2={SCAT_H - SCAT_PAD} stroke="var(--color-border-strong)" stroke-width="1"/>
-          <line x1={SCAT_PAD} y1={SCAT_PAD} x2={SCAT_PAD} y2={SCAT_H - SCAT_PAD} stroke="var(--color-border-strong)" stroke-width="1"/>
-
-          <!-- X ticks -->
-          <g font-size="10" fill="var(--color-text-subtle)">
-            {scatterXTicks.map((v) => (
-              <>
-                <line x1={scatterX(v)} y1={SCAT_H - SCAT_PAD} x2={scatterX(v)} y2={SCAT_H - SCAT_PAD + 4} stroke="var(--color-border-strong)"/>
-                <text x={scatterX(v)} y={SCAT_H - SCAT_PAD + 16} text-anchor="middle">${v}</text>
-              </>
-            ))}
-            <text x={SCAT_W / 2} y={SCAT_H - 6} text-anchor="middle" fill="var(--color-text-muted)">input $/M tokens (log)</text>
-          </g>
-
-          <!-- Y ticks at 25/50/75 if in range -->
-          <g font-size="10" fill="var(--color-text-subtle)">
-            {[25, 50, 75].filter((y) => y >= minQ && y <= maxQ).map((q) => (
-              <>
-                <line x1={SCAT_PAD - 4} y1={scatterY(q)} x2={SCAT_W - SCAT_PAD} y2={scatterY(q)} stroke="var(--color-border)" stroke-dasharray="2 4"/>
-                <text x={SCAT_PAD - 6} y={scatterY(q) + 3} text-anchor="end">{q}</text>
-              </>
-            ))}
-            <text x={6} y={SCAT_PAD + 4} text-anchor="start" fill="var(--color-text-muted)" font-size="10">quality →</text>
-          </g>
-
-          <!-- Points -->
-          <g>
-            {scatterPoints.map((p) => {
-              const cx = scatterX(p.cost);
-              const cy = scatterY(p.quality);
-              const isClosed = p.m.openness === "proprietary";
-              const color =
-                p.m.openness === "open" ? "var(--color-focus-open)" :
-                p.m.openness === "open-weights" ? "var(--color-focus-open-weights)" :
-                p.m.openness === "source-available" ? "var(--color-focus-source-available)" :
-                "var(--color-focus-proprietary)";
-              return (
-                <a href={`/models/${p.m.slug}`} class="scatter-dot">
-                  <circle
-                    cx={cx} cy={cy} r="5"
-                    fill={isClosed ? "transparent" : color}
-                    stroke={color}
-                    stroke-width="1.5"
-                  />
-                  <title>{p.m.display_name} · ${p.cost.toFixed(2)}/M in · {p.usingFallback ? "MMLU-Pro" : "GPQA-D"} {p.quality.toFixed(1)}</title>
-                </a>
-              );
-            })}
-          </g>
-        </svg>
-      </div>
-    </section>
-  )}
+  <!-- Configurable scatter plot. Server emits the data + metric
+       metadata as JSON; client JS renders the axes and dots and
+       redraws when either axis selector changes. Models missing the
+       picked X or Y metric drop off silently; the counter tells the
+       reader how many are plotted vs hidden. -->
+  <section class="max-w-6xl mx-auto px-6 pb-8" id="scatter-section">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+      Compare any two metrics
+    </h2>
+    <p class="text-xs text-[var(--color-text-subtle)] mb-3 max-w-prose leading-relaxed">
+      Pick an X and Y metric; one dot per model. Cost and parameter axes use log scale
+      automatically. Open as filled dot, closed as ring. Models that did not publish the
+      picked metric drop off the chart. Costs and speeds via <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener" class="hover:text-[var(--color-text)] no-underline hover:underline">Artificial Analysis ↗</a>;
+      benchmark scores from each model's primary source.
+    </p>
+    <div class="flex flex-wrap items-center gap-3 mb-3 text-sm">
+      <label class="font-mono text-xs text-[var(--color-text-subtle)] flex items-center gap-2">
+        Y axis
+        <select id="scatter-y" class="px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-sm font-sans">
+          {(["benchmark", "speed", "scale", "cost"] as const).map((g) => {
+            const opts = populatedMetrics.filter((m) => m.group === g);
+            if (opts.length === 0) return null;
+            const groupLabel = { benchmark: "Benchmarks", speed: "Speed", scale: "Scale", cost: "Cost" }[g];
+            return (
+              <optgroup label={groupLabel}>
+                {opts.map((m) => (
+                  <option value={m.key} selected={m.key === "gpqa_diamond"}>{m.label}</option>
+                ))}
+              </optgroup>
+            );
+          })}
+        </select>
+      </label>
+      <label class="font-mono text-xs text-[var(--color-text-subtle)] flex items-center gap-2">
+        X axis
+        <select id="scatter-x" class="px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-sm font-sans">
+          {(["cost", "speed", "scale", "benchmark"] as const).map((g) => {
+            const opts = populatedMetrics.filter((m) => m.group === g);
+            if (opts.length === 0) return null;
+            const groupLabel = { cost: "Cost", speed: "Speed", scale: "Scale", benchmark: "Benchmarks" }[g];
+            return (
+              <optgroup label={groupLabel}>
+                {opts.map((m) => (
+                  <option value={m.key} selected={m.key === "input_per_mtok_usd"}>{m.label}</option>
+                ))}
+              </optgroup>
+            );
+          })}
+        </select>
+      </label>
+      <button id="scatter-swap" type="button" class="px-2 py-1 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer">
+        swap axes
+      </button>
+      <span id="scatter-count" class="ml-auto font-mono text-xs text-[var(--color-text-subtle)]"></span>
+    </div>
+    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto relative">
+      <svg
+        id="scatter-svg"
+        viewBox="0 0 720 320"
+        width="100%"
+        style="max-width: 720px; display: block; font-family: var(--font-mono);"
+        role="img"
+        aria-label="Configurable metric scatter"
+      ></svg>
+    </div>
+    <script type="application/json" id="scatter-data" set:html={JSON.stringify({ rows: scatterRows, metrics: populatedMetrics })}></script>
+  </section>
 
   <!-- Filter bar + table -->
   <section class="max-w-6xl mx-auto px-6 pb-16" id="models-table-section">
@@ -588,6 +631,145 @@ const OPENNESS_EXPLAINER: Record<Openness, string> = {
       }
     }
     for (const c of cbs) c.addEventListener("change", update);
+  })();
+
+  // Configurable scatter plot. Reads the JSON payload embedded by the
+  // server, then re-renders the SVG body whenever the user picks new
+  // axes. Auto log-scale for metrics flagged `log` (cost + scale
+  // groups). Models missing either picked metric drop off the chart.
+  (function () {
+    const svg = document.getElementById("scatter-svg");
+    const xSel = document.getElementById("scatter-x");
+    const ySel = document.getElementById("scatter-y");
+    const swap = document.getElementById("scatter-swap");
+    const count = document.getElementById("scatter-count");
+    const payloadEl = document.getElementById("scatter-data");
+    if (!svg || !xSel || !ySel || !payloadEl) return;
+    const data = JSON.parse(payloadEl.textContent || "{}");
+    const rows = data.rows || [];
+    const metrics = data.metrics || [];
+    const metricByKey = Object.fromEntries(metrics.map((m) => [m.key, m]));
+    const W = 720, H = 320, PAD = 56;
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    function color(openness) {
+      switch (openness) {
+        case "open": return "var(--color-focus-open)";
+        case "open-weights": return "var(--color-focus-open-weights)";
+        case "source-available": return "var(--color-focus-source-available)";
+        default: return "var(--color-focus-proprietary)";
+      }
+    }
+    function fmtTick(meta, v) {
+      if (meta.log) {
+        if (meta.group === "cost") return "$" + v.toFixed(v < 1 ? 2 : 0);
+        if (meta.key === "context_window") return v >= 1e6 ? (v / 1e6).toFixed(1) + "M" : (v / 1000).toFixed(0) + "K";
+        if (meta.key.includes("params")) return v >= 1e12 ? (v / 1e12).toFixed(0) + "T" : v >= 1e9 ? (v / 1e9).toFixed(0) + "B" : (v / 1e6).toFixed(0) + "M";
+        if (meta.key === "pretraining_tokens") return v >= 1e12 ? (v / 1e12).toFixed(0) + "T" : (v / 1e9).toFixed(0) + "B";
+        return String(v);
+      }
+      if (meta.key === "released_year") return v.toFixed(0);
+      return v.toFixed(0);
+    }
+
+    function logTicks(min, max) {
+      const ticks = [];
+      const lo = Math.floor(Math.log10(min));
+      const hi = Math.ceil(Math.log10(max));
+      for (let p = lo; p <= hi; p++) {
+        for (const m of [1, 3]) {
+          const v = m * Math.pow(10, p);
+          if (v >= min / 1.2 && v <= max * 1.2) ticks.push(v);
+        }
+      }
+      return ticks.slice(0, 6);
+    }
+    function linearTicks(min, max) {
+      const span = max - min;
+      const step = span / 5;
+      const niceStep = Math.pow(10, Math.floor(Math.log10(step)));
+      const scaled = step / niceStep;
+      const nice = scaled < 1.5 ? 1 : scaled < 3 ? 2 : scaled < 7 ? 5 : 10;
+      const tickStep = nice * niceStep;
+      const ticks = [];
+      const start = Math.ceil(min / tickStep) * tickStep;
+      for (let v = start; v <= max; v += tickStep) ticks.push(v);
+      return ticks;
+    }
+
+    function render() {
+      const xKey = xSel.value;
+      const yKey = ySel.value;
+      const xMeta = metricByKey[xKey];
+      const yMeta = metricByKey[yKey];
+      if (!xMeta || !yMeta) return;
+
+      // Filter to rows that have both picked metrics.
+      const points = rows.filter((r) => r.metrics[xKey] != null && r.metrics[yKey] != null);
+      count.textContent = `${points.length} of ${rows.length} models plotted`;
+
+      // Compute ranges.
+      const xs = points.map((p) => p.metrics[xKey]);
+      const ys = points.map((p) => p.metrics[yKey]);
+      let xMin = Math.min(...xs), xMax = Math.max(...xs);
+      let yMin = Math.min(...ys), yMax = Math.max(...ys);
+      if (xMin === xMax) { xMin -= 1; xMax += 1; }
+      if (yMin === yMax) { yMin -= 1; yMax += 1; }
+
+      const xLog = xMeta.log && xMin > 0;
+      const yLog = yMeta.log && yMin > 0;
+      const xLo = xLog ? Math.log10(xMin) : xMin;
+      const xHi = xLog ? Math.log10(xMax) : xMax;
+      const yLo = yLog ? Math.log10(yMin) : yMin;
+      const yHi = yLog ? Math.log10(yMax) : yMax;
+      const xToPx = (v) => PAD + ((xLog ? Math.log10(v) : v) - xLo) / (xHi - xLo) * (W - PAD * 2);
+      const yToPx = (v) => H - PAD - ((yLog ? Math.log10(v) : v) - yLo) / (yHi - yLo) * (H - PAD * 2);
+
+      const xTicks = xLog ? logTicks(xMin, xMax) : linearTicks(xMin, xMax);
+      const yTicks = yLog ? logTicks(yMin, yMax) : linearTicks(yMin, yMax);
+
+      // Build SVG content.
+      let html = "";
+      // Axes.
+      html += `<line x1="${PAD}" y1="${H - PAD}" x2="${W - PAD}" y2="${H - PAD}" stroke="var(--color-border-strong)" stroke-width="1"/>`;
+      html += `<line x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H - PAD}" stroke="var(--color-border-strong)" stroke-width="1"/>`;
+      // Grid + ticks.
+      for (const t of xTicks) {
+        const x = xToPx(t);
+        html += `<line x1="${x}" y1="${PAD}" x2="${x}" y2="${H - PAD}" stroke="var(--color-border)" stroke-dasharray="2 4"/>`;
+        html += `<text x="${x}" y="${H - PAD + 14}" text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">${fmtTick(xMeta, t)}</text>`;
+      }
+      for (const t of yTicks) {
+        const y = yToPx(t);
+        html += `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="var(--color-border)" stroke-dasharray="2 4"/>`;
+        html += `<text x="${PAD - 6}" y="${y + 3}" text-anchor="end" font-size="10" fill="var(--color-text-subtle)">${fmtTick(yMeta, t)}</text>`;
+      }
+      // Axis labels.
+      html += `<text x="${W / 2}" y="${H - 12}" text-anchor="middle" font-size="11" fill="var(--color-text-muted)">${xMeta.label}${xLog ? " (log)" : ""}</text>`;
+      html += `<text x="${PAD - 36}" y="${H / 2}" text-anchor="middle" font-size="11" fill="var(--color-text-muted)" transform="rotate(-90, ${PAD - 36}, ${H / 2})">${yMeta.label}${yLog ? " (log)" : ""}</text>`;
+
+      // Points.
+      for (const p of points) {
+        const cx = xToPx(p.metrics[xKey]);
+        const cy = yToPx(p.metrics[yKey]);
+        const isClosed = p.openness === "proprietary";
+        const c = color(p.openness);
+        const title = `${p.display_name} · ${xMeta.short_label}: ${fmtTick(xMeta, p.metrics[xKey])} · ${yMeta.short_label}: ${fmtTick(yMeta, p.metrics[yKey])}`;
+        html += `<a href="/models/${p.slug}" class="scatter-dot"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"><title>${title}</title></circle></a>`;
+      }
+
+      svg.innerHTML = html;
+    }
+
+    xSel.addEventListener("change", render);
+    ySel.addEventListener("change", render);
+    swap.addEventListener("click", () => {
+      const x = xSel.value, y = ySel.value;
+      xSel.value = y;
+      ySel.value = x;
+      render();
+    });
+    render();
   })();
 
   // Rich timeline tooltip. On hover over a dot, position a small panel
