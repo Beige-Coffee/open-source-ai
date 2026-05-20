@@ -112,14 +112,6 @@ function routeSuggestions(pathname: string): string[] | null {
       "Grants over $1M, in any layer?",
     ];
   }
-  if (pathname === "/predictions") {
-    return [
-      "Which predictions are most likely to resolve in the next year?",
-      "What's our most contentious prediction?",
-      "Show me only high-confidence claims.",
-      "What predictions sit at the silicon layer?",
-    ];
-  }
   if (pathname === "/news" || pathname === "/today") {
     return [
       "Summarize the most recent news issue.",

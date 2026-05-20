@@ -2,18 +2,16 @@
 /**
  * Cross-reference sidebar for /learn/<module> pages.
  *
- * Surfaces the same data the rest of the site indexes, filtered to the
- * module's primary layer slug: active predictions, recent news days
- * that mentioned the layer, top funders whose focus_layers include
- * the layer, and the curated reading list for the layer.
+ * Surfaces the same data the rest of the site indexes, filtered to
+ * the module's primary layer slug: recent news days that mentioned
+ * the layer, top funders whose focus_layers include the layer, and
+ * the curated reading list for the layer.
  *
  * Per locked design (decision #10 in COURSE.md): every module is a
  * hub onto the broader site data.
  */
-import type { Prediction } from "../lib/predictions";
 import type { Funder } from "../lib/grants";
 import type { Reading } from "../lib/reading-lists";
-import { confidenceLabel } from "../lib/predictions";
 import { typeLabel } from "../lib/reading-lists";
 
 interface NewsItem {
@@ -22,59 +20,19 @@ interface NewsItem {
 }
 
 interface Props {
-  predictions: Prediction[];
   funders: Funder[];
   news: NewsItem[];
   readings: Reading[];
   layerSlug: string;
 }
 
-const { predictions, funders, news, readings, layerSlug } = Astro.props;
-
-/** YAML's unquoted date scalars get parsed into JS Date objects; the
- *  Prediction.horizon type says string but the value at runtime can
- *  be either. Coerce both to a YYYY-MM-DD slice. */
-function formatHorizon(horizon: unknown): string {
-  if (horizon instanceof Date) return horizon.toISOString().slice(0, 10);
-  if (typeof horizon === "string") {
-    const d = new Date(horizon);
-    if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
-    return horizon;
-  }
-  return String(horizon);
-}
+const { funders, news, readings, layerSlug } = Astro.props;
 ---
 
 <aside class="space-y-4 text-sm">
   <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
     From the rest of the stack
   </h2>
-
-  {
-    predictions.length > 0 && (
-      <details open class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
-        <summary class="px-3 py-2 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] cursor-pointer flex items-baseline justify-between">
-          <span>Predictions ({predictions.length})</span>
-          <a
-            href={`/predictions#${layerSlug}`}
-            class="text-[10px] hover:text-[var(--color-text)] no-underline"
-          >
-            all →
-          </a>
-        </summary>
-        <ul class="px-3 py-2 border-t border-[var(--color-border)] space-y-2">
-          {predictions.slice(0, 3).map((p) => (
-            <li class="text-xs leading-relaxed">
-              <p class="text-[var(--color-text)]">{p.claim}</p>
-              <p class="text-[var(--color-text-subtle)] mt-0.5">
-                by {formatHorizon(p.horizon)} · confidence {confidenceLabel(p.confidence)}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </details>
-    )
-  }
 
   {
     news.length > 0 && (
@@ -173,8 +131,7 @@ function formatHorizon(horizon: unknown): string {
   }
 
   {
-    predictions.length === 0 &&
-      news.length === 0 &&
+    news.length === 0 &&
       funders.length === 0 &&
       readings.length === 0 && (
         <p class="text-xs text-[var(--color-text-subtle)] italic px-1">

@@ -19,7 +19,6 @@ export type SearchType =
   | "grant"
   | "glossary"
   | "news"
-  | "prediction"
   | "reading";
 
 export interface SearchDoc {
@@ -62,7 +61,6 @@ const TYPE_ORDER: SearchType[] = [
   "grant",
   "funder",
   "news",
-  "prediction",
   "reading",
 ];
 
@@ -73,7 +71,6 @@ export const TYPE_LABEL: Record<SearchType, string> = {
   grant: "Grant",
   glossary: "Glossary",
   news: "News",
-  prediction: "Prediction",
   reading: "Reading",
 };
 
@@ -84,7 +81,6 @@ export const TYPE_LABEL_PLURAL: Record<SearchType, string> = {
   grant: "Grants",
   glossary: "Glossary",
   news: "News",
-  prediction: "Predictions",
   reading: "Readings",
 };
 

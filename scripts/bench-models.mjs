@@ -133,7 +133,7 @@ const JUDGE_ANTHROPIC_SUBSET = {
 // SYSTEM PROMPT + TOOL DEFINITIONS (inlined from src/lib/chat/*)
 // ---------------------------------------------------------------------------
 
-const COMMON_HEADER = `You are the in-site chat agent for open-source-ai.tech, a curated reference on the open AI stack (10 production-pipeline layers + 5 cross-cutting meta-layers, plus projects, grants, funders, readings, predictions, and a daily news log).
+const COMMON_HEADER = `You are the in-site chat agent for open-source-ai.tech, a curated reference on the open AI stack (10 production-pipeline layers + 5 cross-cutting meta-layers, plus projects, grants, funders, readings, and a daily news log).
 
 The 10 core layers from foundation up: infrastructure (data centers, power, cooling, grid; the physical substrate; added May 2026), silicon (chips and ISAs), compute (scheduling and access control plane), data (corpora), training (pretrain and fine-tune tools), weights (model artifacts and licenses), runtime (inference engines), retrieval-memory (RAG, vector DBs, embeddings, agent memory), agents (frameworks and agent products), protocols (MCP, A2A, agentic payments). The 5 meta-layers observe or constrain the pipeline: evaluation, governance, identity-trust, safety-guardrails, sovereignty-decentralization.
 
@@ -280,15 +280,6 @@ const TOOLS = [
     },
   },
   {
-    name: "read_predictions",
-    description: "Fetch predictions for a layer. Limit: 2 calls/turn.",
-    input_schema: {
-      type: "object",
-      properties: { layer: { type: "string" } },
-      required: ["layer"],
-    },
-  },
-  {
     name: "read_glossary",
     description: "Fetch a glossary entry by canonical slug or any alias (resolves 'moe' -> mixture-of-experts). Limit: 4 calls/turn.",
     input_schema: {
@@ -316,7 +307,7 @@ const TOOLS = [
 const TOOL_LIMITS = {
   find_grants: 3, find_funders: 2, find_projects: 3, find_readings: 3,
   find_glossary: 3, read_layer: 3, read_funder: 3, read_grant: 3,
-  read_project: 4, read_predictions: 2, read_glossary: 4, today_news: 1,
+  read_project: 4, read_glossary: 4, today_news: 1,
   search: 2,
 };
 
@@ -344,7 +335,6 @@ function loadData() {
     funders: (read("funders.json") ?? { funders: [] }).funders,
     grants: (read("grants.json") ?? { grants: [] }).grants,
     readings: (read("reading-lists.json") ?? { readings: [] }).readings,
-    predictions: (read("predictions.json") ?? { predictions: [] }).predictions,
     glossary: read("glossary.json") ?? [],
     todayNews: read("today-news.json"),
   };
@@ -539,12 +529,6 @@ function executeTool(name, args, budget) {
           }));
         result = { ...p, primary_layer: primary, siblings_at_primary_layer: siblings };
       }
-      break;
-    }
-    case "read_predictions": {
-      const layer = String(args.layer ?? "").trim();
-      const hits = data.predictions.filter((p) => p.layer === layer);
-      result = { layer, count: hits.length, predictions: hits };
       break;
     }
     case "read_glossary": {

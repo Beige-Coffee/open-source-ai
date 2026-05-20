@@ -25,7 +25,6 @@ const ALL_TYPES: SearchType[] = [
   "grant",
   "funder",
   "news",
-  "prediction",
   "reading",
 ];
 
@@ -136,7 +135,7 @@ export default function SearchPage({ initialQuery = "" }: Props) {
         <h1 className="font-serif text-3xl font-semibold mb-1">Search</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Search across layers, glossary, projects, grants, funders, news,
-          predictions, and readings.
+          and readings.
         </p>
       </div>
 
@@ -296,9 +295,6 @@ function MetaLine({ hit }: { hit: SearchHit }) {
   } else if (hit.type === "project") {
     if (m.focus) bits.push(String(m.focus));
     if (m.maturity) bits.push(String(m.maturity));
-  } else if (hit.type === "prediction") {
-    if (m.horizon) bits.push(`Resolves ${m.horizon}`);
-    if (m.confidence) bits.push(`Confidence ${m.confidence}/5`);
   } else if (hit.type === "reading") {
     if (m.source) bits.push(String(m.source));
     if (m.year) bits.push(String(m.year));
@@ -331,7 +327,7 @@ function EmptyState() {
     { q: "vLLM", note: "project + grants + news" },
     { q: "OpenSats", note: "funder + grants" },
     { q: "sovereignty", note: "layer + funders + readings" },
-    { q: "RISC-V", note: "silicon + predictions" },
+    { q: "RISC-V", note: "silicon + readings" },
     { q: "MCP", note: "protocol + glossary" },
   ];
   return (

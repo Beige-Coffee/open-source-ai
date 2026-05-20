@@ -205,7 +205,6 @@ function priorityFiles() {
     "data/grants.yaml",
     "data/projects.yaml",
     "data/reading-lists.yaml",
-    "data/predictions.yaml",
   ];
   const layersDir = resolve(ROOT, "src/content/layers");
   for (const f of readdirSync(layersDir)) {

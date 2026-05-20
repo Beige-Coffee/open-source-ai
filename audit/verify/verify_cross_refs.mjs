@@ -53,8 +53,6 @@ const projectSlugs = new Set(projects.map((p) => p.slug));
 const readings = loadYaml("data/reading-lists.yaml").readings;
 const readingTitles = new Set(readings.map((r) => r.title));
 
-const predictions = loadYaml("data/predictions.yaml").predictions;
-
 const newsDir = resolve(ROOT, "src/content/news");
 const newsDates = new Set(
   readdirSync(newsDir)
@@ -100,13 +98,6 @@ for (const r of readings) {
     if (!layerSlugs.has(l)) {
       errors.push(`reading-lists.yaml reading "${r.title}": layer "${l}" not in layers.yaml`);
     }
-  }
-}
-
-// Prediction layer refs.
-for (const pr of predictions) {
-  if (!layerSlugs.has(pr.layer)) {
-    errors.push(`predictions.yaml prediction "${pr.claim.slice(0, 60)}...": layer "${pr.layer}" not in layers.yaml`);
   }
 }
 

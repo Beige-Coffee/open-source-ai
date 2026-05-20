@@ -10,7 +10,7 @@ const initialQuery = Astro.url.searchParams.get("q") ?? "";
 
 <BaseLayout
   title={initialQuery ? `Search: ${initialQuery}` : "Search"}
-  description="Search across stack layers, glossary terms, projects, grants, funders, news issues, predictions, and readings."
+  description="Search across stack layers, glossary terms, projects, grants, funders, news issues, and readings."
 >
   <SearchPage initialQuery={initialQuery} client:load />
 </BaseLayout>

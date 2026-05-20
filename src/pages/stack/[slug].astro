@@ -12,10 +12,6 @@ import {
   typeLabel,
   type ReadingType,
 } from "../../lib/reading-lists";
-import {
-  loadPredictionsForLayer,
-  confidenceLabel,
-} from "../../lib/predictions";
 import { loadGrants, formatUsd } from "../../lib/grants";
 
 export async function getStaticPaths() {
@@ -66,8 +62,6 @@ for (const t of Object.keys(readingsByType)) {
 const readingTypeKeys = readingTypeOrder.filter(
   (t) => readingsByType[t] && readingsByType[t].length > 0,
 );
-
-const predictions = loadPredictionsForLayer(entry.data.slug);
 
 // Pull latest news bucket count for this layer from the most recent
 // daily issue. Falls back to zero if the issue does not bucket this
@@ -192,18 +186,6 @@ const orderedProjects = [...projects].sort(
             >
               Grants
               <span class="font-mono text-xs ml-1 opacity-70">{layerGrantsCount}</span>
-            </button>
-          )}
-          {predictions.length > 0 && (
-            <button
-              type="button"
-              role="tab"
-              data-layer-tab="predictions"
-              aria-selected="false"
-              class="px-3 py-1.5 rounded-md font-medium text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-warm)] cursor-pointer"
-            >
-              Predictions
-              <span class="font-mono text-xs ml-1 opacity-70">{predictions.length}</span>
             </button>
           )}
           {allReadings.length > 0 && (
@@ -385,38 +367,6 @@ const orderedProjects = [...projects].sort(
             <p class="mt-3 text-xs font-mono">
               <a href="/grants" class="no-underline hover:underline">
                 See all grants &rarr;
-              </a>
-            </p>
-          </div>
-        )
-      }
-
-      <!-- Predictions panel. -->
-      {
-        predictions.length > 0 && (
-          <div data-layer-panel="predictions" class="mb-8 hidden">
-            <h2 class="font-sans text-xl font-semibold mb-1">
-              Predictions baseline
-            </h2>
-            <p class="text-sm text-[var(--color-text-subtle)] mb-4 font-mono">
-              Filed 2026-05-13 &middot; we track our own calls
-            </p>
-            <ul class="space-y-3">
-              {predictions.map((p) => (
-                <li class="border-l-2 border-[var(--color-accent-soft)] pl-4">
-                  <p class="text-sm text-[var(--color-text)] mb-1">
-                    {p.claim}
-                  </p>
-                  <p class="text-xs font-mono text-[var(--color-text-subtle)]">
-                    resolves by {p.horizon} &middot; confidence{" "}
-                    {confidenceLabel(p.confidence)} ({p.confidence}/5)
-                  </p>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-3 text-xs font-mono">
-              <a href="/predictions" class="no-underline hover:underline">
-                See all predictions &rarr;
               </a>
             </p>
           </div>

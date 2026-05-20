@@ -34,8 +34,8 @@ import G from "../components/G.astro";
         <ul>
           <li>
             <strong>Reference site</strong> (the stack pages, grants, news,
-            predictions, glossary): static HTML. No server-side state, no
-            cookies needed to read.
+            glossary): static HTML. No server-side state, no cookies needed
+            to read.
           </li>
           <li>
             <strong>In-site chat agent</strong> (the floating bubble): pure
@@ -92,9 +92,7 @@ import G from "../components/G.astro";
           <strong>Latest news</strong>: the count of items at this layer in
           today's daily issue, with a link out. <strong>Grants flowing in</strong>:
           the most recent grants tagged to this layer, sourced from
-          <code>data/grants.yaml</code>. <strong>Predictions baseline</strong>:
-          falsifiable predictions we've filed at this layer, with horizons and
-          resolution criteria. <strong>Learn more</strong>: a curated reading
+          <code>data/grants.yaml</code>. <strong>Learn more</strong>: a curated reading
           list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
           A sidebar carries quick-glance metadata: lock-in vector, sovereignty
           relevance, related layers.
@@ -115,20 +113,6 @@ import G from "../components/G.astro";
           "Chat about this" button that opens the in-site chat with the
           term as context. The chat agent's <code>read_glossary</code>
           tool fetches a term's full body by canonical slug or any alias.
-        </p>
-      </div>
-    </details>
-
-    <details class="about-section">
-      <summary>Predictions tracker</summary>
-      <div class="about-section-body">
-        <p>
-          Every prediction filed on this site is public, dated, and falsifiable.
-          Confidence is on a 1-5 scale (1 is vibes, 5 is market-priced); each
-          prediction names a horizon and a resolution criterion. When a prediction
-          resolves the original text stays in place and the outcome gets noted in
-          the news log on the resolution date. The full ledger is at
-          <a href="/predictions">/predictions</a>.
         </p>
       </div>
     </details>

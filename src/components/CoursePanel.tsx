@@ -92,8 +92,6 @@ function humanizeTool(name: string, input: Record<string, unknown>): string {
       return `Reading grant "${arg("title")}"`;
     case "read_project":
       return `Reading project ${arg("slug")}`;
-    case "read_prediction":
-      return `Reading predictions for ${arg("layer")}`;
     case "read_glossary":
       return `Reading glossary entry ${arg("slug")}`;
     case "find_grants":

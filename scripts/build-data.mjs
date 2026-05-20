@@ -31,7 +31,6 @@ const YAML_FILES = [
   "grants.yaml",
   "underfunded.yaml",
   "reading-lists.yaml",
-  "predictions.yaml",
 ];
 
 let total = 0;
@@ -165,7 +164,6 @@ try {
   const fundersRaw = yaml.load(readFileSync(resolve(DATA_DIR, "funders.yaml"), "utf8"));
   const grantsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "grants.yaml"), "utf8"));
   const readingsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "reading-lists.yaml"), "utf8"));
-  const predictionsRaw = yaml.load(readFileSync(resolve(DATA_DIR, "predictions.yaml"), "utf8"));
 
   // Build a slug -> body map from the parsed layer MDXs.
   const layerBodyBySlug = Object.fromEntries(
@@ -291,22 +289,6 @@ try {
       });
     }
   } catch (_e) { /* news dir may be empty */ }
-
-  // Predictions: each claim is one doc.
-  let predIdx = 0;
-  for (const p of predictionsRaw.predictions ?? []) {
-    predIdx++;
-    search.push({
-      id: `prediction:${predIdx}`,
-      type: "prediction",
-      title: clip(p.claim ?? "", 80),
-      summary: p.claim ?? "",
-      body: clip(`${p.claim ?? ""} ${p.resolves_when ?? ""}`, 600),
-      url: `/predictions#${p.layer}`,
-      layers: p.layer ? [p.layer] : [],
-      meta: { horizon: p.horizon, confidence: p.confidence, filed: p.filed },
-    });
-  }
 
   // Readings: each item is one doc; url is the reading itself.
   let readIdx = 0;

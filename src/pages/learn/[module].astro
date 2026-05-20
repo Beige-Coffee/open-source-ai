@@ -14,7 +14,6 @@ import {
   phaseLabel,
   type ProgressPhase,
 } from "../../lib/course/modules";
-import { loadPredictionsForLayer } from "../../lib/predictions";
 import { loadFunders } from "../../lib/grants";
 import { loadReadingsForLayer } from "../../lib/reading-lists";
 
@@ -45,7 +44,6 @@ const relatedGlossary = glossaryEntries
   .slice(0, 5);
 
 // Cross-reference sidebar data (per locked design decision #10).
-const sidebarPredictions = loadPredictionsForLayer(primaryLayerSlug);
 const sidebarFunders = loadFunders()
   .filter((f) => f.focus_layers.includes(primaryLayerSlug))
   .slice(0, 5);
@@ -321,7 +319,6 @@ const prev = prevModule(moduleSlug);
         </div>
         <div class="mt-6">
           <ModuleSidebar
-            predictions={sidebarPredictions}
             funders={sidebarFunders}
             news={sidebarNews}
             readings={sidebarReadings}

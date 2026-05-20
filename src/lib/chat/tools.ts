@@ -10,7 +10,6 @@ import {
   getFunders,
   getProjects,
   getReadings,
-  getPredictions,
   getLayers,
   getLayerContent,
   getTodayNews,
@@ -131,18 +130,6 @@ export const TOOLS = [
     },
   },
   {
-    name: "read_predictions",
-    description:
-      "Fetch the predictions filed at a given layer. Returns claim, horizon, confidence, resolves_when, filed-on date. Use when the user asks 'what are we predicting about X'. Limit: 2 calls per turn.",
-    input_schema: {
-      type: "object",
-      properties: {
-        layer: { type: "string", description: "Layer slug." },
-      },
-      required: ["layer"],
-    },
-  },
-  {
     name: "today_news",
     description:
       "Fetch today's daily news roundup. Returns date, editorial letter, layer buckets (which layers had items), and the body. Use when user asks about recent news. Limit: 1 call per turn.",
@@ -201,7 +188,6 @@ const LIMITS: Record<string, number> = {
   read_grant: 3,
   read_project: 4,
   read_glossary: 4,
-  read_predictions: 2,
   today_news: 1,
   search: 2,
 };
@@ -505,14 +491,6 @@ export async function executeTool(
         } else {
           result = g;
         }
-        break;
-      }
-
-      case "read_predictions": {
-        const layer = String(call.input.layer ?? "").trim();
-        const all = await getPredictions();
-        const hits = all.filter((p) => p.layer === layer);
-        result = { layer, count: hits.length, predictions: hits };
         break;
       }
 

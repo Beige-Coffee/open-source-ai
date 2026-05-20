@@ -84,14 +84,6 @@ interface Reading {
   description: string;
 }
 
-interface Prediction {
-  layer: string;
-  claim: string;
-  horizon: string;
-  confidence: number;
-  resolves_when: string;
-  filed: string;
-}
 
 interface NewsIssue {
   date: string;
@@ -158,11 +150,6 @@ export async function getReadings(): Promise<Reading[]> {
   return root.readings;
 }
 
-export async function getPredictions(): Promise<Prediction[]> {
-  const root = await getJson<{ predictions: Prediction[] }>("predictions");
-  return root.predictions;
-}
-
 export async function getTodayNews(): Promise<NewsIssue | null> {
   return getJson<NewsIssue | null>("today-news");
 }
@@ -177,7 +164,6 @@ export type {
   Funder,
   Grant,
   Reading,
-  Prediction,
   NewsIssue,
   GlossaryEntry,
 };
