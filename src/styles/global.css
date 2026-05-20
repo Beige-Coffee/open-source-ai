@@ -268,15 +268,24 @@ body[data-chat-open="true"] .stack-diagram-grid {
   font-weight: 600;
 }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-}
+/* Anchor default color + underline. Wrapped in @layer base so that
+   Tailwind utility classes (.text-white, .text-[var(--color-...)],
+   etc.) layered into @layer utilities still win when applied
+   directly to an <a>. Without the layer, this unlayered rule
+   outranked utility classes despite lower selector specificity,
+   which made buttons styled as <a class="bg-black text-white ..."> *
+   render with invisible text. */
+@layer base {
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
 
-a:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
 }
 
 ::selection {
