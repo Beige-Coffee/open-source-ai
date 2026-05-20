@@ -6,17 +6,41 @@ import { loadLayers } from "../../lib/layers";
 
 const { user, supabase } = Astro.locals;
 
-// If logged in, prefill the depth picker with their saved choice so the
-// inline form on /learn matches what they'd see at /learn/profile.
+// If logged in, prefill the depth picker with their saved choice and
+// load progress so we can show a "continue" CTA and per-module
+// completion badges. Falls through to anonymous defaults if any of
+// the queries error (e.g. migration not applied yet).
 let currentPassChoice: "fast" | "deep" = "fast";
+let displayName: string | null = null;
+type ProgressRow = {
+  module_slug: string;
+  phase: string;
+  jumped: boolean;
+};
+const progressBySlug = new Map<string, ProgressRow>();
+let totalComplete = 0;
+let nextSlug: string | null = null;
+let inProgressSlug: string | null = null;
+
 if (user && supabase) {
-  const { data } = await supabase
-    .from("profiles")
-    .select("pass_choice")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (data?.pass_choice === "fast" || data?.pass_choice === "deep") {
-    currentPassChoice = data.pass_choice;
+  const [{ data: profile }, { data: progressRows }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("display_name, pass_choice")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("module_progress")
+      .select("module_slug, phase, jumped")
+      .eq("user_id", user.id),
+  ]);
+  if (profile?.pass_choice === "fast" || profile?.pass_choice === "deep") {
+    currentPassChoice = profile.pass_choice;
+  }
+  displayName = profile?.display_name ?? (user.email ? user.email.split("@")[0] : null);
+  for (const r of progressRows ?? []) {
+    progressBySlug.set(r.module_slug, r as ProgressRow);
+    if (r.phase === "complete") totalComplete++;
   }
 }
 
@@ -36,6 +60,7 @@ interface Module {
   one_liner: string;
 }
 
+// Module list (also used for nextSlug computation below).
 const MODULES: Module[] = [
   { order: 1, slug: "infrastructure", layer_slugs: ["infrastructure"], type: "core", title: "Infrastructure", one_liner: "Data centers, power, cooling, and the grid that runs the rest of the stack." },
   { order: 2, slug: "silicon", layer_slugs: ["silicon"], type: "core", title: "Silicon", one_liner: "Chips and ISAs that execute the math." },
@@ -53,6 +78,38 @@ const MODULES: Module[] = [
   { order: 14, slug: "protocols", layer_slugs: ["protocols"], type: "core", title: "Protocols", one_liner: "MCP, A2A, agentic payments, the integration wire." },
   { order: 15, slug: "sovereignty-decentralization", layer_slugs: ["sovereignty-decentralization"], type: "capstone", title: "Sovereignty and Decentralization (Capstone)", one_liner: "The synthesis: assemble your own theory of why open AI matters." },
 ];
+
+// Compute "next module" for the logged-in resume CTA. First look for
+// an in-progress module (any phase that's not complete and not read);
+// if none, find the first not-yet-completed module in sequence.
+if (user) {
+  for (const m of MODULES) {
+    const p = progressBySlug.get(m.slug);
+    if (p && p.phase !== "complete" && p.phase !== "read") {
+      inProgressSlug = m.slug;
+      break;
+    }
+  }
+  for (const m of MODULES) {
+    const p = progressBySlug.get(m.slug);
+    if (!p || p.phase !== "complete") {
+      nextSlug = m.slug;
+      break;
+    }
+  }
+}
+
+const progressPercent = Math.round((totalComplete / MODULES.length) * 100);
+const resumeSlug = inProgressSlug ?? nextSlug ?? MODULES[0].slug;
+const resumeModule = MODULES.find((m) => m.slug === resumeSlug) ?? MODULES[0];
+
+function progressBadge(slug: string): { label: string; cls: string } | null {
+  const p = progressBySlug.get(slug);
+  if (!p) return null;
+  if (p.phase === "complete") return { label: "complete", cls: "bg-[var(--color-status-fresh)] text-white" };
+  if (p.phase === "read") return null;
+  return { label: p.phase.replace("_", " "), cls: "bg-[var(--color-accent-soft)] text-[var(--color-accent)] border border-[var(--color-border)]" };
+}
 ---
 
 <BaseLayout
@@ -60,6 +117,33 @@ const MODULES: Module[] = [
   description="Self-paced Socratic course on the open-source AI stack: a guided path from infrastructure up to protocols, building your own theory of why openness matters at each layer."
 >
   <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
+    {!user && (
+      <div class="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs text-[var(--color-text-subtle)]">
+        <span>Want to track progress and sync across devices?</span>
+        <a href="/learn/login" class="text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:underline">
+          Log in
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/learn/signup" class="text-[var(--color-text)] hover:text-[var(--color-accent)] no-underline hover:underline">
+          Sign up
+        </a>
+      </div>
+    )}
+    {user && (
+      <div class="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs text-[var(--color-text-subtle)]">
+        <span>Signed in as <span class="text-[var(--color-text)]">{displayName}</span></span>
+        <span aria-hidden="true">·</span>
+        <a href="/learn/profile" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">
+          Profile
+        </a>
+        <span aria-hidden="true">·</span>
+        <form method="POST" action="/api/auth/logout" class="inline">
+          <button type="submit" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline bg-transparent border-0 p-0 font-mono text-xs cursor-pointer">
+            Log out
+          </button>
+        </form>
+      </div>
+    )}
     <h1
       class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
     >
@@ -146,57 +230,104 @@ const MODULES: Module[] = [
     )
   }
   <section class="max-w-3xl mx-auto px-6 mt-8 mb-10">
-    <form
-      method="POST"
-      action={`/api/course/start?next=/learn/${MODULES[0].slug}`}
-      class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]"
-    >
-      <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
-        <span class="font-serif text-xl text-[var(--color-text)]">
-          Start the course
-        </span>
-        <a
-          href="/learn/start"
-          class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
-        >
-          How does this work? →
-        </a>
-      </div>
-      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 mb-4 text-sm">
-        <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-          <input
-            type="radio"
-            name="pass_choice"
-            value="fast"
-            checked={currentPassChoice === "fast"}
-            class="accent-[var(--color-accent)]"
-          />
-          <span>
-            <span class="text-[var(--color-text)] font-medium">Fast pass</span>
-            <span class="text-[var(--color-text-subtle)]"> · a day or two, paragraph per layer</span>
+    {user && progressBySlug.size > 0 ? (
+      // Logged-in with progress: surface "continue from module X" plus
+      // a progress bar so the user sees where they are at a glance.
+      <div class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]">
+        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+          <span class="font-serif text-xl text-[var(--color-text)]">
+            {totalComplete === MODULES.length ? "Course complete" : "Continue the course"}
           </span>
-        </label>
-        <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-          <input
-            type="radio"
-            name="pass_choice"
-            value="deep"
-            checked={currentPassChoice === "deep"}
-            class="accent-[var(--color-accent)]"
-          />
-          <span>
-            <span class="text-[var(--color-text)] font-medium">Deep pass</span>
-            <span class="text-[var(--color-text-subtle)]"> · about a week, multi-paragraph with sources</span>
-          </span>
-        </label>
+          <a
+            href="/learn/profile"
+            class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
+          >
+            Your profile →
+          </a>
+        </div>
+        <p class="text-sm text-[var(--color-text-muted)] mb-4">
+          {totalComplete} of {MODULES.length} modules complete
+          <span class="text-[var(--color-text-subtle)]"> · {progressPercent}%</span>
+          <span class="text-[var(--color-text-subtle)]"> · {currentPassChoice} pass</span>
+        </p>
+        <div class="h-1.5 w-full rounded-full bg-[var(--color-surface-warm)] mb-4 overflow-hidden">
+          <div
+            class="h-full bg-[var(--color-text)]"
+            style={`width: ${progressPercent}%`}
+            aria-label={`${progressPercent}% complete`}
+          ></div>
+        </div>
+        {totalComplete < MODULES.length && (
+          <a
+            href={`/learn/${resumeSlug}`}
+            class="inline-block w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+          >
+            {inProgressSlug ? "Resume" : "Begin"} module {String(resumeModule.order).padStart(2, "0")} · {resumeModule.title} →
+          </a>
+        )}
+        {totalComplete === MODULES.length && (
+          <a
+            href="/learn/profile/notes"
+            class="inline-block w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+          >
+            View your Personal Notes →
+          </a>
+        )}
       </div>
-      <button
-        type="submit"
-        class="w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+    ) : (
+      // Anonymous OR logged-in with no progress yet: depth picker.
+      <form
+        method="POST"
+        action={`/api/course/start?next=/learn/${MODULES[0].slug}`}
+        class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]"
       >
-        Begin module 01 · {MODULES[0].title} →
-      </button>
-    </form>
+        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+          <span class="font-serif text-xl text-[var(--color-text)]">
+            Start the course
+          </span>
+          <a
+            href="/learn/start"
+            class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
+          >
+            How does this work? →
+          </a>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 mb-4 text-sm">
+          <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+            <input
+              type="radio"
+              name="pass_choice"
+              value="fast"
+              checked={currentPassChoice === "fast"}
+              class="accent-[var(--color-accent)]"
+            />
+            <span>
+              <span class="text-[var(--color-text)] font-medium">Fast pass</span>
+              <span class="text-[var(--color-text-subtle)]"> · a day or two, paragraph per layer</span>
+            </span>
+          </label>
+          <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+            <input
+              type="radio"
+              name="pass_choice"
+              value="deep"
+              checked={currentPassChoice === "deep"}
+              class="accent-[var(--color-accent)]"
+            />
+            <span>
+              <span class="text-[var(--color-text)] font-medium">Deep pass</span>
+              <span class="text-[var(--color-text-subtle)]"> · about a week, multi-paragraph with sources</span>
+            </span>
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+        >
+          Begin module 01 · {MODULES[0].title} →
+        </button>
+      </form>
+    )}
   </section>
 
   <section class="max-w-3xl mx-auto px-6 mb-16">
@@ -220,25 +351,33 @@ const MODULES: Module[] = [
         </a>
       </li>
       {
-        MODULES.map((m) => (
-          <li>
-            <a
-              href={`/learn/${m.slug}`}
-              title={m.one_liner}
-              class="flex items-baseline gap-3 py-2 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
-            >
-              <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6">
-                {String(m.order).padStart(2, "0")}
-              </span>
-              <span class="flex-1 font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
-                {m.title}
-              </span>
-              <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-                {m.type}
-              </span>
-            </a>
-          </li>
-        ))
+        MODULES.map((m) => {
+          const badge = user ? progressBadge(m.slug) : null;
+          return (
+            <li>
+              <a
+                href={`/learn/${m.slug}`}
+                title={m.one_liner}
+                class="flex items-baseline gap-3 py-2 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              >
+                <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6">
+                  {String(m.order).padStart(2, "0")}
+                </span>
+                <span class="flex-1 font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)]">
+                  {m.title}
+                </span>
+                {badge && (
+                  <span class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded ${badge.cls}`}>
+                    {badge.label}
+                  </span>
+                )}
+                <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                  {m.type}
+                </span>
+              </a>
+            </li>
+          );
+        })
       }
     </ol>
     <p class="text-xs text-[var(--color-text-subtle)] italic mt-3">
