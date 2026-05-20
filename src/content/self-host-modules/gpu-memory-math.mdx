@@ -17,11 +17,11 @@ import G from "../../components/G.astro";
 
 Every "will this model fit in my GPU?" question reduces to one formula:
 VRAM in bytes is roughly parameters multiplied by bits-per-weight
-divided by eight. A 7B model at FP16 needs about 14 GB of weight memory.
-The same model at FP8 needs about 7 GB. At 4-bit, about 3.5 GB. That
+divided by eight. A 7B model at <G term="fp16">FP16</G> needs about 14 GB of weight memory.
+The same model at <G term="fp8">FP8</G> needs about 7 GB. At 4-bit, about 3.5 GB. That
 single relation, plus a handful of overhead terms, predicts whether a
 checkpoint will load on a given card. It is the prerequisite for every
-other self-hosting decision (Osman, 2026).
+other self-hosting decision.
 
 The per-format heuristics fall out of the formula. FP16 weights take
 roughly two bytes per parameter, so model size in GB is approximately
@@ -39,8 +39,7 @@ Q5_K near 0.69 GB, Q4_K near 0.56 GB, Q3_K near 0.43 GB, and Q2_K near
 0.33 GB. A 70B model at Q4_K is about 39 GB on disk; the same model at
 Q5_K is about 48 GB. These are the numbers behind the "fits in 48 GB"
 claims that float around community boards. The compression is real, but
-runtime memory will exceed the on-disk number, sometimes substantially
-(Osman, 2026).
+runtime memory will exceed the on-disk number, sometimes substantially.
 
 A worked fit table makes the point. A 7B model needs roughly 14 GB at
 FP16, 7 GB at FP8, and 4 GB at 4-bit. A 13B model needs 26 / 13 / 7 GB.
@@ -70,7 +69,7 @@ total parameter memory to fit (every expert weight must be loaded), but
 active parameters determine the per-token compute and bandwidth cost.
 DeepSeek-V3 needs 671B worth of memory to load but moves about 37B per
 token at <G term="decode">decode</G>, so it feels much faster than its size
-suggests while still requiring a small cluster to host (Osman, 2026).
+suggests while still requiring a small cluster to host.
 
 <G term="gguf">GGUF</G> is not magic. The numbers above are runtime-specific. The same
 weights at the same nominal bit count can have very different memory

@@ -17,7 +17,7 @@ updated: 2026-05-20
 
 import G from "../../components/G.astro";
 
-<G term="quantization">Quantization</G> compresses model weights from their native FP16 or BF16
+<G term="quantization">Quantization</G> compresses model weights from their native <G term="fp16">FP16</G> or <G term="bf16">BF16</G>
 training precision down to lower-bit formats so they take less memory
 and stream faster from HBM or unified memory to compute units. The
 arithmetic is the same idea every time (map a continuous weight range
@@ -25,7 +25,7 @@ to a discrete grid of values, store the grid index plus a scale), but
 the file formats and the kernels that consume them are not
 interchangeable. A model quantized for one engine usually cannot be
 loaded by another without conversion, and the conversion may not be
-exact (Osman, 2026).
+exact.
 
 <G term="gguf">GGUF</G> is the llama.cpp container. It packages weights, tokenizer, prompt
 template, and metadata into one file, then layers a family of
@@ -69,7 +69,7 @@ kernel paths and tighter integration with <G term="flash-attention">flash attent
 Both formats are the typical choice for single-RTX-card workstations
 running 30B to 70B models.
 
-<G term="fp8">FP8</G> and FP4 are native hardware formats on H100 and B200 class GPUs.
+<G term="fp8">FP8</G> and <G term="fp4">FP4</G> are native hardware formats on H100 and B200 class GPUs.
 Unlike post-training quantization formats above, FP8 and FP4 are
 floating-point types with their own exponent and mantissa bits, and the
 hardware multiplies them natively. Models trained in FP8 (DeepSeek-V3

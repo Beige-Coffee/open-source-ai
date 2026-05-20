@@ -185,18 +185,17 @@ const prev = prevModule(moduleSlug);
       </p>
     </header>
 
-    <!-- Phase indicator ribbon. "read" is no longer rendered as a
-         tab: the layer content is always visible to the left, so
-         calling it a phase the learner navigates to is misleading.
-         The initial state shows the four real phases with none
-         highlighted; once the learner moves into Probe the tab
-         lights up. -->
+    <!-- Phase indicator ribbon. The current phase always shows
+         highlighted so a fresh learner sees Read lit up the moment
+         they land on the page; once they advance to Probe, Read
+         becomes "done" and Probe lights up. "complete" is excluded
+         since it isn't a phase the learner navigates to. -->
     <nav
       aria-label="Module phases"
       class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
     >
       {
-        PHASE_ORDER.filter((p) => p !== "complete" && p !== "read").map((phase) => {
+        PHASE_ORDER.filter((p) => p !== "complete").map((phase) => {
           const isCurrent = phase === currentPhase;
           const isDone =
             PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);

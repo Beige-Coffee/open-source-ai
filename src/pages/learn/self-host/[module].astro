@@ -150,7 +150,7 @@ const prev = prevModule(moduleSlug);
       class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
     >
       {
-        PHASE_ORDER.filter((p) => p !== "complete" && p !== "read").map((phase) => {
+        PHASE_ORDER.filter((p) => p !== "complete").map((phase) => {
           const isCurrent = phase === currentPhase;
           const isDone =
             PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);

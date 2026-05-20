@@ -19,13 +19,12 @@ Memory capacity tells you whether a model will load. Memory bandwidth
 tells you how fast the loaded model will run. The two are independent
 specs, and people who treat them as one number consistently buy boxes
 that disappoint them. The framework most practitioners reach for is
-simple: capacity is for fitting, bandwidth is for serving (Osman,
-2026).
+simple: capacity is for fitting, bandwidth is for serving.
 
 The reason bandwidth matters so much for LLM <G term="decode">decode</G> is that
 generating each new token requires streaming the entire model's
 activated weights through the compute units once. On a 70B dense model
-at FP16, that is 140 GB of data per token. A card with 1.8 TB/s of
+at <G term="fp16">FP16</G>, that is 140 GB of data per token. A card with 1.8 TB/s of
 bandwidth caps out at about 12 tokens per second on raw memory motion
 alone; a card with 250 GB/s caps out closer to 1.7 tokens per second on
 the same workload. The compute units may be idle waiting for memory in
@@ -43,7 +42,7 @@ Radeon AI PRO R9700, and Tenstorrent's Blackhole p150. The 250 to 300
 GB/s unified-memory tier is the DGX Spark, Mac mini M4 Pro, and Ryzen
 AI Max / Strix Halo. The thin-and-light tier (MacBook Air M5, Snapdragon
 X Elite, Intel Lunar Lake, Snapdragon X2 Elite) sits around 100 to 220
-GB/s (Osman, 2026).
+GB/s.
 
 Bigger boxes feel slow even when the model fits because the bandwidth
 math is unforgiving. A Mac Studio with 192 GB of <G term="unified-memory">unified memory</G>
@@ -64,7 +63,7 @@ capacity superpower. The tradeoff is that the bandwidth lags top-end
 discrete GPUs by a factor of two to four, depending on the part. For
 "can I run a 70B model at all?" the Mac wins; for "how many tokens per
 second does it sustain at production load?" the discrete GPU usually
-wins (Osman, 2026).
+wins.
 
 The "fit" versus "serve" distinction is the most useful framing for
 hardware choices. A model fits when its weights, <G term="kv-cache">KV cache</G> at

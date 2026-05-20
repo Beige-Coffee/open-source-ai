@@ -199,17 +199,43 @@ function comparePrompt({ module, passChoice }: PhaseContext): string {
     passChoice === "fast"
       ? "Two axes per anchor is enough. Accept reasonable answers."
       : "Four axes per anchor. Demand the learner cite specific evidence (license, performance number, dependency on closed components) before accepting a cell.";
+
+  const isSelfHost = module.track === "self-host";
+  const layerSlug = module.layer_slugs[0];
+
+  // Tool guidance branches by track. Stack-walk modules map 1:1 to a
+  // layer slug, so find_projects(layer=...) is the right surface. Self-
+  // host modules do NOT correspond to a layer (gpu-memory-math is a
+  // module slug, not a layer), so calling find_projects(layer=...) with
+  // the module slug always returns empty. For self-host, anchors are
+  // project or model slugs; the agent should read them directly with
+  // read_project(slug) and read_model(slug), falling back to find_models
+  // / find_projects with relevant filters when broadening the comparison.
+  const toolGuidance = isSelfHost
+    ? `Tools: the anchors above are project slugs or model slugs from this site's catalog. Call read_project(slug) and read_model(slug) on each anchor to surface real data; use find_models and find_projects with filters (e.g. by openness, family, or runtime) only when broadening the comparison beyond the anchors. read_glossary(slug) is useful for format names like FP8, NF4, GGUF. Do NOT call find_projects(layer="${module.slug}"); ${module.slug} is a self-host module, not a layer.`
+    : `Tools: use find_projects(layer="${layerSlug}") and read_project(slug) to surface real project data at this layer.`;
+
+  const anchorGuidance =
+    module.compare_anchors.length > 0
+      ? `Anchor projects/concepts: ${module.compare_anchors.join(", ")}.`
+      : `Anchors: this module does not have a fixed anchor list. Open by asking the learner which two or three options (projects, formats, hardware tiers, whatever fits the axis) they want to put side by side, then dig in from there.`;
+
   return `
 
-PHASE: COMPARE. Current module: ${module.title}.
+PHASE: COMPARE. Current module: ${module.title} (track: ${module.track ?? "stack-walk"}).
 
 Axis prompt: ${module.compare_axis_label}.
-Anchor projects/concepts: ${module.compare_anchors.join(", ") || "(no anchored projects; ask the learner what projects they consider canonical at this layer)"}.
+${anchorGuidance}
 
 YOUR JOB:
-Walk the learner through comparing the anchors above. Ask them to fill in axes (openness posture, performance characteristics, deployment context, lock-in vector, etc.). Use find_projects(layer="${module.slug}") and read_project(slug) to surface real project data when needed. Refuse to fill cells for the learner. Probe their reasoning when they fill a cell; ask "why" twice before accepting.
+Walk the learner through comparing the anchors above. Ask them to fill in axes (openness posture, performance characteristics, deployment context, lock-in vector, etc.). Refuse to fill cells for the learner. Probe their reasoning when they fill a cell; ask "why" twice before accepting.
+
+${toolGuidance}
 
 ${depthRule}
+
+OPENING:
+Open with the axis prompt above, framed as a question the learner can start answering. Don't recap the module content; the learner has it visible beside this chat. Don't dump all anchors at once; pick the first one and ask the learner to characterize it on one axis.
 
 When the comparison feels substantive (at least the anchor list has been worked through with the learner's reasoning), end with <COMPARE_COMPLETE/> on its own line.`;
 }

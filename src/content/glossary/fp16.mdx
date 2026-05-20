@@ -1,0 +1,39 @@
+---
+term: FP16
+aliases: [fp16, 16-bit floating point, half precision, float16]
+primary_layer: silicon
+secondary_layers: [runtime, weights, training]
+summary: A 16-bit floating-point format used as the default precision for deep learning training and inference, halving memory versus FP32 with small quality cost on most workloads.
+sources:
+  - title: "IEEE 754-2008 binary16 format"
+    url: "https://en.wikipedia.org/wiki/Half-precision_floating-point_format"
+  - title: "Mixed Precision Training (Micikevicius et al., 2017)"
+    url: "https://arxiv.org/abs/1710.03740"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A 16-bit floating-point number with 1 sign bit, 5 exponent bits, and
+10 mantissa bits. The format was standardized in IEEE 754-2008 as
+binary16 and adopted broadly in deep learning starting with the NVIDIA
+Pascal generation in 2016. FP16 occupies half the bytes of FP32 (4
+bytes per parameter) and twice the bytes of <G term="fp8">FP8</G> (1
+byte per parameter).
+
+For most of the past decade, FP16 was the default precision for both
+LLM weights and activations. The Mixed Precision Training paper
+(Micikevicius et al., 2017) showed that combining FP16 storage with
+FP32 master weights and a loss scaler could match FP32 final quality
+while doubling training throughput. By 2023, FP16 had become the
+shipping precision for most open-weights models: Llama 2, Mistral,
+Qwen, and the earlier DeepSeek releases all used it as the base
+format.
+
+By 2026 the precision frontier has shifted lower. FP8 and FP4 are
+preferred for inference on hardware that supports them, and many
+training runs use mixed FP8 with <G term="bf16">BF16</G>. FP16 remains
+the fallback when the target accelerator lacks FP8 kernels, the
+reference precision against which lower-bit formats are
+quality-tested, and a common upload format for community fine-tunes on
+Hugging Face.

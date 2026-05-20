@@ -293,7 +293,7 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
   <section class="max-w-5xl mx-auto px-6 mt-8 mb-10">
     <div class="grid gap-5 md:grid-cols-2">
       {/* Track 1: Walk the stack (Socratic 15-module course) */}
-      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col">
+      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col relative group">
         <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
           <span class="font-serif text-xl text-[var(--color-text)]">
             Walk the stack
@@ -336,6 +336,12 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
                 View your Personal Notes →
               </a>
             )}
+            <a
+              href="/learn/walk"
+              class="block mt-3 text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+            >
+              See all {MODULES.length} modules →
+            </a>
           </div>
         ) : (
           <form
@@ -359,12 +365,60 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
             >
               Begin module 01 · {MODULES[0].title} →
             </button>
+            <a
+              href="/learn/walk"
+              class="block mt-3 text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+            >
+              See all {MODULES.length} modules →
+            </a>
           </form>
         )}
+        {/* Desktop hover popover: module index */}
+        <div
+          aria-hidden="true"
+          class="hidden md:block absolute left-0 right-0 top-full z-30 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-150 ease-out"
+        >
+          <div class="p-4 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] shadow-lg max-h-[24rem] overflow-y-auto">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+              Modules
+            </p>
+            <ol class="space-y-2.5">
+              {MODULES.map((m) => {
+                const progress = progressBySlug.get(m.slug);
+                const isComplete = progress?.phase === "complete";
+                const isStarted = !!progress && !isComplete;
+                return (
+                  <li>
+                    <a
+                      href={`/learn/${m.slug}`}
+                      class="grid grid-cols-[20px_1fr] gap-2.5 items-baseline no-underline group/row"
+                    >
+                      <span
+                        class={`font-mono text-[10px] tabular-nums ${isComplete ? "text-[var(--color-status-fresh)]" : isStarted ? "text-[var(--color-accent-strong)]" : "text-[var(--color-text-subtle)]"}`}
+                      >
+                        {isComplete ? "✓" : String(m.order).padStart(2, "0")}
+                      </span>
+                      <div class="min-w-0">
+                        <div
+                          class={`text-[12px] leading-tight ${isComplete ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)]"} group-hover/row:text-[var(--color-accent-strong)] transition-colors`}
+                        >
+                          {m.title}
+                        </div>
+                        <div class="text-[11px] text-[var(--color-text-muted)] leading-snug truncate font-mono mt-0.5">
+                          {m.one_liner}
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </div>
       </div>
 
       {/* Track 2: Self-host the stack */}
-      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col">
+      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col relative group">
         <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
           <span class="font-serif text-xl text-[var(--color-text)]">
             Self-host the stack
@@ -412,6 +466,54 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
               Open the track →
             </a>
           )}
+          <a
+            href="/learn/self-host"
+            class="block mt-3 text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            See all {SELF_HOST_MODULES.length} modules →
+          </a>
+        </div>
+        {/* Desktop hover popover: module index */}
+        <div
+          aria-hidden="true"
+          class="hidden md:block absolute left-0 right-0 top-full z-30 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-150 ease-out"
+        >
+          <div class="p-4 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] shadow-lg max-h-[24rem] overflow-y-auto">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+              Modules
+            </p>
+            <ol class="space-y-2.5">
+              {SELF_HOST_MODULES.map((m) => {
+                const progress = progressBySlug.get(m.slug);
+                const isComplete = progress?.phase === "complete";
+                const isStarted = !!progress && !isComplete;
+                return (
+                  <li>
+                    <a
+                      href={`/learn/self-host/${m.slug}`}
+                      class="grid grid-cols-[20px_1fr] gap-2.5 items-baseline no-underline group/row"
+                    >
+                      <span
+                        class={`font-mono text-[10px] tabular-nums ${isComplete ? "text-[var(--color-status-fresh)]" : isStarted ? "text-[var(--color-accent-strong)]" : "text-[var(--color-text-subtle)]"}`}
+                      >
+                        {isComplete ? "✓" : String(m.order).padStart(2, "0")}
+                      </span>
+                      <div class="min-w-0">
+                        <div
+                          class={`text-[12px] leading-tight ${isComplete ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)]"} group-hover/row:text-[var(--color-accent-strong)] transition-colors`}
+                        >
+                          {m.title}
+                        </div>
+                        <div class="text-[11px] text-[var(--color-text-muted)] leading-snug truncate font-mono mt-0.5">
+                          {m.one_liner}
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
       </div>
     </div>

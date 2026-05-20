@@ -19,12 +19,11 @@ A single tokens-per-second number on a Twitter screenshot is rarely
 useful. Production benchmarks need workload shape, hardware identity,
 software identity, and the metrics that actually predict user
 experience. Without those, two benchmark results that look like the
-same number can come from completely different setups (Osman,
-2026).
+same number can come from completely different setups.
 
 A good benchmark records every variable that moves the result. Model
 identity (Llama 3.1 70B Instruct, DeepSeek-V3, Qwen3 32B), weights
-dtype plus quant plus group size plus calibration (FP16, AWQ-4bit
+dtype plus quant plus group size plus calibration (<G term="fp16">FP16</G>, AWQ-4bit
 group-128 calibrated on WikiText), engine version plus commit plus
 backend plus flags (vLLM 0.6.3, CUDA 12.6, FlashAttention 3 enabled,
 chunked prefill on), hardware SKU plus memory plus bandwidth plus
@@ -62,7 +61,7 @@ Benchmark structured output (JSON mode, function calling) separately,
 because constraint decoding has different performance characteristics
 than free generation. Benchmark LoRA loading separately if you serve
 adapters. Re-test after every driver, CUDA, model, or engine upgrade,
-because regressions are common (Osman, 2026).
+because regressions are common.
 
 Common mistakes that send benchmarks in the wrong direction. Choosing
 hardware by VRAM alone without checking bandwidth tier; a Mac Studio
@@ -94,4 +93,4 @@ to operate? Engines that look identical on a benchmark chart diverge
 sharply when you score them against these ten. The engine choice is
 downstream of the workload shape, not upstream of it. Pick the
 workload, then pick the hardware, then pick the engine, then benchmark
-the configuration end-to-end, then iterate (Osman, 2026).
+the configuration end-to-end, then iterate.

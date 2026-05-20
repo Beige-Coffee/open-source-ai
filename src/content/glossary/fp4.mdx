@@ -1,0 +1,41 @@
+---
+term: FP4
+aliases: [fp4, 4-bit floating point, mxfp4, nvfp4]
+primary_layer: silicon
+secondary_layers: [runtime, weights]
+summary: A 4-bit floating-point format with hardware-native multiplication on Blackwell-generation accelerators. NVFP4 and MXFP4 variants target large-model inference and post-training quantization.
+sources:
+  - title: "OCP Microscaling Formats (MX) Specification v1.0"
+    url: "https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf"
+  - title: "NVIDIA Blackwell architecture"
+    url: "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A 4-bit floating-point number, half the width of <G term="fp8">FP8</G>
+and one quarter the width of <G term="fp16">FP16</G>. Two variants
+matter in practice. MXFP4 is defined by the Open Compute Project's
+Microscaling Formats spec: E2M1 elements (2 exponent bits, 1 mantissa
+bit) with a shared block-level scale, hardware-neutral. NVFP4 is
+NVIDIA's variant of the same E2M1 element with a different block
+scaling scheme, targeting the Blackwell generation's native FP4
+tensor cores.
+
+The motivation is the same as every other precision drop. FP16
+weights cost 2 bytes per parameter; FP4 costs 0.5. A 70B-parameter
+model goes from 140 GB at FP16 to roughly 35 GB at FP4, fitting on a
+single 48 GB card. Decode bandwidth (the binding constraint on
+<G term="decode">decode</G> throughput) drops by a factor of 4 versus
+FP16 because each token must stream a quarter as much weight data.
+
+FP4 in 2026 is mostly an inference format. NVIDIA's B200 and B300
+parts have native FP4 tensor cores; the DGX Spark developer appliance
+also supports NVFP4. Pretrained models are typically quantized to FP4
+after training with calibration to limit quality loss. FP4 training
+is an active research area but not standard practice; the precision
+is low enough that gradient noise compounds quickly. Models served at
+FP4 commonly use FP8 or <G term="bf16">BF16</G> for sensitive layers
+(attention scores, layer norm parameters) while keeping the bulk of
+the weight matrix at FP4.

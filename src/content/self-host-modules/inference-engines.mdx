@@ -22,7 +22,7 @@ on whatever accelerator is present, samples the next token, maintains
 the <G term="kv-cache">KV cache</G> across steps, and streams output back to the
 client. Everything that determines how fast a given model serves on
 given hardware (memory layout, scheduler, batching, kernel selection,
-attention implementation) lives in this layer (Osman, 2026).
+attention implementation) lives in this layer.
 
 The workload has two phases with very different characteristics.
 <G term="prefill">Prefill</G> processes the entire input prompt in parallel and
@@ -47,7 +47,7 @@ and tight single-stream <G term="decode">decode</G>. Production serving engines
 concurrent requests, with <G term="paged-attention">PagedAttention</G>-style
 <G term="kv-cache">KV cache</G> management, <G term="continuous-batching">continuous batching</G>,
 and the operational features (metrics, structured output, multi-LoRA)
-that production deployments demand (Osman, 2026).
+that production deployments demand.
 
 A new orchestration tier sits above engines. NVIDIA Dynamo coordinates
 fleets of inference workers across multiple nodes, doing
@@ -80,7 +80,7 @@ quality (how the engine picks which requests to batch, how it manages
 preemption and chunked prefill) determines whether the engine
 gracefully degrades under load or thrashes. Runtime overhead (Python
 hot paths, framework dispatch, CUDA Graph use) sets the floor on
-small-model latency (Osman, 2026).
+small-model latency.
 
 The reason engines do not converge is that these bottlenecks pull in
 different directions. An engine optimized for single-stream interactive

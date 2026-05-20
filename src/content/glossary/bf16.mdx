@@ -1,0 +1,38 @@
+---
+term: BF16
+aliases: [bf16, bfloat16, brain floating point]
+primary_layer: silicon
+secondary_layers: [training, weights, runtime]
+summary: A 16-bit floating-point format with FP32's exponent range and only 7 mantissa bits. Designed for neural-network training; standard across 2026 accelerators alongside FP16.
+sources:
+  - title: "BFloat16 format reference"
+    url: "https://en.wikipedia.org/wiki/Bfloat16_floating-point_format"
+  - title: "A Study of BFLOAT16 for Deep Learning Training (Kalamkar et al., 2019)"
+    url: "https://arxiv.org/abs/1905.12322"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A 16-bit floating-point format with 1 sign bit, 8 exponent bits, and
+7 mantissa bits, designed by Google Brain (the name is short for brain
+floating point). The crucial design choice is matching FP32's exponent
+range while sacrificing mantissa precision. Numbers that would
+overflow or underflow in <G term="fp16">FP16</G> stay in range under
+BF16, which removes the loss-scaling gymnastics that FP16 training
+requires.
+
+NVIDIA added native BF16 support in the Ampere generation (A100, 2020)
+and AMD, Intel, Apple, and most newer accelerators followed. The
+format is the default for transformer training on every major 2026
+platform. Llama, Mistral, Qwen, Gemma, OLMo, and most other
+open-weights releases ship BF16 base weights with <G term="fp16">FP16</G>
+or <G term="fp8">FP8</G> quantizations layered on for inference.
+
+BF16 and FP16 use the same 16-bit width but trade precision for range
+in opposite directions. FP16 has more mantissa precision (10 bits vs
+7), so single arithmetic operations are slightly more accurate; BF16
+has the full FP32 exponent range, so training is much more numerically
+stable. For inference of pretrained weights the two formats are
+roughly interchangeable on quality; the choice is typically a
+hardware-support question.

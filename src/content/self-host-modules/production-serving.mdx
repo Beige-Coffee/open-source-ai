@@ -22,7 +22,7 @@ checkpoint into a service. Six concerns recur: phase separation, KV
 cache management, batching, parallelism, speculative decoding, and
 disaggregation. Each is implemented differently by each serving
 engine; together they determine whether a deployment hits its SLA at
-target concurrency, or thrashes under load (Osman, 2026).
+target concurrency, or thrashes under load.
 
 <G term="prefill">Prefill</G> and <G term="decode">decode</G> are different workloads
 that share a model. Prefill processes the entire input prompt in one
@@ -68,8 +68,7 @@ all-to-all routing each step; it scales <G term="mixture-of-experts">MoE</G>
 serving but demands fast interconnect. Data parallelism replicates the
 full model on each GPU and partitions the request stream; it works
 when the model fits on one GPU and the bottleneck is throughput. Context
-parallelism splits very long sequences across GPUs at attention time
-(Osman, 2026).
+parallelism splits very long sequences across GPUs at attention time.
 
 <G term="speculative-decoding">Speculative decoding</G> (Leviathan et al., 2023) attacks the
 decode bandwidth bound directly. A small draft model proposes several

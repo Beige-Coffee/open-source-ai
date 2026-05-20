@@ -23,8 +23,14 @@ const HOVER_OPEN_DELAY = 120;
 const HOVER_CLOSE_DELAY = 160;
 
 function positionCard(trigger: HTMLElement, card: HTMLElement): CleanupFn {
+  // The card is `position: fixed` (and in the top layer once
+  // showPopover() runs), so Floating UI must use the matching `fixed`
+  // strategy. The default `absolute` strategy returns document-relative
+  // coords, which land scrollY below the trigger when applied to a
+  // fixed-positioned element.
   const update = () => {
     computePosition(trigger, card, {
+      strategy: "fixed",
       placement: "bottom-start",
       middleware: [offset(6), flip({ padding: 12 }), shift({ padding: 12 })],
     }).then(({ x, y }) => {
@@ -33,7 +39,7 @@ function positionCard(trigger: HTMLElement, card: HTMLElement): CleanupFn {
     });
   };
   update();
-  return autoUpdate(trigger, card, update);
+  return autoUpdate(trigger, card, update, { animationFrame: false });
 }
 
 function wireTrigger(trigger: HTMLButtonElement): void {

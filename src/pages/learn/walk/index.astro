@@ -1,0 +1,127 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { MODULES } from "../../../lib/course/modules";
+
+const { user, supabase } = Astro.locals;
+
+type ProgressRow = { module_slug: string; phase: string };
+const progressBySlug = new Map<string, ProgressRow>();
+let totalComplete = 0;
+
+if (user && supabase) {
+  const slugs = MODULES.map((m) => m.slug);
+  const { data } = await supabase
+    .from("module_progress")
+    .select("module_slug, phase")
+    .eq("user_id", user.id)
+    .in("module_slug", slugs);
+  for (const r of data ?? []) {
+    progressBySlug.set(r.module_slug, r as ProgressRow);
+    if (r.phase === "complete") totalComplete++;
+  }
+}
+
+// Next-to-resume target: first module that isn't complete.
+let resumeSlug: string | null = null;
+let resumeModule = MODULES[0];
+for (const m of MODULES) {
+  const p = progressBySlug.get(m.slug);
+  if (!p || p.phase !== "complete") {
+    resumeSlug = m.slug;
+    resumeModule = m;
+    break;
+  }
+}
+
+function progressBadge(slug: string): { label: string; cls: string } | null {
+  const p = progressBySlug.get(slug);
+  if (!p) return null;
+  if (p.phase === "complete") return { label: "complete", cls: "bg-[var(--color-status-fresh)] text-white" };
+  if (p.phase === "read") return null;
+  return { label: p.phase.replace("_", " "), cls: "bg-[var(--color-accent-soft)] text-[var(--color-accent)] border border-[var(--color-border)]" };
+}
+---
+
+<BaseLayout
+  title="Walk the stack · Learn"
+  description="A 15-module Socratic course on the open-source AI stack, bottom-up from infrastructure to protocols. Each module ends with a Probe dialog and the learner's own synthesis."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
+    <a
+      href="/learn"
+      class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4"
+    >
+      ← All learn tracks
+    </a>
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4">
+      Walk the stack
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
+    >
+      Walk the stack
+    </h1>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+      Bottom-up through the 10 core layers and 5 meta-layers, infrastructure to
+      protocols. Each module ends with a Probe dialog, a Compare phase, a Why-Open
+      question, and you writing your own synthesis. Sovereignty and Decentralization
+      is the capstone where everything from prior modules comes together.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 mt-6 mb-4">
+    <a
+      href={`/learn/${resumeSlug ?? MODULES[0].slug}`}
+      class="inline-block w-full sm:w-auto px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+    >
+      {user && totalComplete >= MODULES.length
+        ? "Review the track"
+        : user && totalComplete > 0
+          ? `Continue module ${String(resumeModule.order).padStart(2, "0")} · ${resumeModule.title} →`
+          : `Begin module 01 · ${MODULES[0].title} →`}
+    </a>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 mt-6 mb-16">
+    {user && (
+      <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-3">
+        {totalComplete} of {MODULES.length} complete
+      </p>
+    )}
+    <ol class="border-t border-[var(--color-border)]">
+      {
+        MODULES.map((m) => {
+          const badge = user ? progressBadge(m.slug) : null;
+          return (
+            <li>
+              <a
+                href={`/learn/${m.slug}`}
+                title={m.one_liner}
+                class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              >
+                <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
+                  {String(m.order).padStart(2, "0")}
+                </span>
+                <span class="flex-1">
+                  <span class="block font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-0.5">
+                    {m.title}
+                  </span>
+                  <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
+                    {m.one_liner}
+                  </span>
+                </span>
+                {badge && (
+                  <span class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${badge.cls}`}>
+                    {badge.label}
+                  </span>
+                )}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+</BaseLayout>
