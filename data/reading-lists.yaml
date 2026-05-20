@@ -1,24 +1,24 @@
 readings:
-  - title: "LLM Inference Engines (Maarten Grootendorst, 2026)"
-    source: Maarten Grootendorst's newsletter
-    url: https://newsletter.maartengrootendorst.com/p/llm-inference-engines-part-3
+  - title: "LLM Inference Engines (Ahmad Osman, 2026)"
+    source: "@TheAhmadOsman on X"
+    url: https://x.com/TheAhmadOsman/status/2057183854444843202
     type: post
     year: 2026
     layers:
       - runtime
     description: "Decision-framework piece on inference engines. The four engine families (portable, Apple, consumer CUDA, production serving), the one-page decision guide, the bottleneck taxonomy. Anchors the self-host learn track's inference-engines module."
-  - title: "Memory Bandwidth for Local AI Hardware 2026"
-    source: Maarten Grootendorst's newsletter
-    url: https://newsletter.maartengrootendorst.com/p/memory-bandwidth-2026
+  - title: "Memory Bandwidth for Local AI Hardware (Ahmad Osman, 2026)"
+    source: "@TheAhmadOsman on X"
+    url: https://x.com/TheAhmadOsman/status/2040103488714068245
     type: post
     year: 2026
     layers:
       - silicon
       - infrastructure
     description: "Capacity vs bandwidth distinction, the 2026 hardware tiers (RTX 5090 at 1.8 TB/s through Snapdragon X Elite at 135 GB/s), why bigger boxes still feel slow."
-  - title: "GPU Memory Math for LLMs 2026"
-    source: Maarten Grootendorst's newsletter
-    url: https://newsletter.maartengrootendorst.com/p/gpu-memory-math-2026
+  - title: "GPU Memory Math for LLMs (Ahmad Osman, 2026)"
+    source: "@TheAhmadOsman on X"
+    url: https://x.com/TheAhmadOsman/status/2041331757329285589
     type: post
     year: 2026
     layers:

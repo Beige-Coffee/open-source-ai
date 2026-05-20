@@ -27,14 +27,23 @@ const modules = all
     >
       Self-host the stack
     </h1>
-    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
       A practical companion to the stack walk. The stack-walk track teaches what each layer is;
       this one teaches how to actually run the stack on hardware you control. Read in order or
       pick the module that answers the question you have right now.
     </p>
+    <p class="text-sm text-[var(--color-text-subtle)] max-w-prose">
+      Inspired by the
+      <a href="https://x.com/TheAhmadOsman" target="_blank" rel="noopener" class="text-[var(--color-text)] hover:underline">@TheAhmadOsman</a>
+      "Self-hosted LLMs / Local AI" series:
+      <a href="https://x.com/TheAhmadOsman/status/2041331757329285589" target="_blank" rel="noopener" class="hover:underline">GPU Memory Math</a>,
+      <a href="https://x.com/TheAhmadOsman/status/2040103488714068245" target="_blank" rel="noopener" class="hover:underline">Memory Bandwidth</a>, and
+      <a href="https://x.com/TheAhmadOsman/status/2057183854444843202" target="_blank" rel="noopener" class="hover:underline">LLM Inference Engines</a>.
+    </p>
   </section>
 
   <section class="max-w-3xl mx-auto px-6 mt-8 mb-16">
+    <div id="self-host-progress-summary" class="font-mono text-xs text-[var(--color-text-subtle)] mb-3" data-total={modules.length}></div>
     <ol class="border-t border-[var(--color-border)]">
       {
         modules.map((m) => (
@@ -42,7 +51,8 @@ const modules = all
             <a
               href={`/learn/self-host/${m.slug}`}
               title={m.one_liner}
-              class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              class="self-host-module-row flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              data-slug={m.slug}
             >
               <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
                 {String(m.order).padStart(2, "0")}
@@ -55,10 +65,53 @@ const modules = all
                   {m.one_liner}
                 </span>
               </span>
+              <span class="self-host-status font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] shrink-0"></span>
             </a>
           </li>
         ))
       }
     </ol>
   </section>
+
+  <script>
+    // Hydrate per-module completion badges + a summary count from
+    // module_progress. Anonymous visitors see no badges (and no
+    // summary line); the section still works as a plain list.
+    import { browserSupabase } from "../../../lib/course/supabase";
+
+    (async () => {
+      const sb = browserSupabase();
+      if (!sb) return;
+      const { data: u } = await sb.auth.getUser();
+      const userId = u?.user?.id;
+      if (!userId) return;
+
+      const rows = Array.from(document.querySelectorAll<HTMLAnchorElement>(".self-host-module-row"));
+      const slugs = rows.map((r) => r.dataset.slug!).filter(Boolean);
+      const { data } = await sb.from("module_progress")
+        .select("module_slug, phase")
+        .eq("user_id", userId)
+        .in("module_slug", slugs);
+      const byModule = new Map<string, string>((data ?? []).map((r) => [r.module_slug, r.phase]));
+
+      let complete = 0;
+      for (const r of rows) {
+        const slug = r.dataset.slug!;
+        const phase = byModule.get(slug);
+        const status = r.querySelector(".self-host-status");
+        if (!status) continue;
+        if (phase === "complete") {
+          status.textContent = "✓ read";
+          status.classList.add("text-[var(--color-status-fresh)]");
+          complete++;
+        }
+      }
+
+      const summary = document.getElementById("self-host-progress-summary");
+      const total = summary?.dataset.total;
+      if (summary && total) {
+        summary.textContent = `${complete} of ${total} read`;
+      }
+    })();
+  </script>
 </BaseLayout>

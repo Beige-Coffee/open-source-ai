@@ -3,8 +3,16 @@ export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadLayers } from "../../lib/layers";
+import { getCollection } from "astro:content";
 
 const { user, supabase } = Astro.locals;
+
+// Load self-host modules so the track card can show count + progress.
+const selfHostRaw = await getCollection("self_host_modules");
+const SELF_HOST_MODULES = selfHostRaw
+  .map((m) => ({ ...m.data }))
+  .sort((a, b) => a.order - b.order);
+const SELF_HOST_SLUGS = new Set(SELF_HOST_MODULES.map((m) => m.slug));
 
 // If logged in, prefill the depth picker with their saved choice and
 // load progress so we can show a "continue" CTA and per-module
@@ -79,29 +87,65 @@ const MODULES: Module[] = [
   { order: 15, slug: "sovereignty-decentralization", layer_slugs: ["sovereignty-decentralization"], type: "capstone", title: "Sovereignty and Decentralization (Capstone)", one_liner: "The synthesis: assemble your own theory of why open AI matters." },
 ];
 
-// Compute "next module" for the logged-in resume CTA. First look for
-// an in-progress module (any phase that's not complete and not read);
-// if none, find the first not-yet-completed module in sequence.
+// Stack-walk progress: only count rows whose slug belongs to the
+// 15-module track (self-host module slugs share the same table but
+// are different identifiers).
+const STACK_SLUGS = new Set(MODULES.map((m) => m.slug));
+let stackComplete = 0;
+let stackInProgressSlug: string | null = null;
+let stackNextSlug: string | null = null;
+let selfHostComplete = 0;
+let selfHostNextSlug: string | null = null;
+
 if (user) {
+  for (const [slug, p] of progressBySlug.entries()) {
+    if (STACK_SLUGS.has(slug) && p.phase === "complete") stackComplete++;
+    if (SELF_HOST_SLUGS.has(slug) && p.phase === "complete") selfHostComplete++;
+  }
+  // Re-derive totalComplete from the stack-walk only (the earlier
+  // counter was per-row regardless of track).
+  totalComplete = stackComplete;
   for (const m of MODULES) {
     const p = progressBySlug.get(m.slug);
     if (p && p.phase !== "complete" && p.phase !== "read") {
-      inProgressSlug = m.slug;
+      stackInProgressSlug = m.slug;
       break;
     }
   }
   for (const m of MODULES) {
     const p = progressBySlug.get(m.slug);
     if (!p || p.phase !== "complete") {
-      nextSlug = m.slug;
+      stackNextSlug = m.slug;
+      break;
+    }
+  }
+  for (const m of SELF_HOST_MODULES) {
+    const p = progressBySlug.get(m.slug);
+    if (!p || p.phase !== "complete") {
+      selfHostNextSlug = m.slug;
       break;
     }
   }
 }
 
-const progressPercent = Math.round((totalComplete / MODULES.length) * 100);
-const resumeSlug = inProgressSlug ?? nextSlug ?? MODULES[0].slug;
-const resumeModule = MODULES.find((m) => m.slug === resumeSlug) ?? MODULES[0];
+// Stack-walk resume target.
+inProgressSlug = stackInProgressSlug;
+nextSlug = stackNextSlug;
+const stackPercent = Math.round((stackComplete / MODULES.length) * 100);
+const stackResumeSlug = stackInProgressSlug ?? stackNextSlug ?? MODULES[0].slug;
+const stackResumeModule = MODULES.find((m) => m.slug === stackResumeSlug) ?? MODULES[0];
+
+// Self-host resume target.
+const selfHostPercent = SELF_HOST_MODULES.length > 0
+  ? Math.round((selfHostComplete / SELF_HOST_MODULES.length) * 100)
+  : 0;
+const selfHostResumeSlug = selfHostNextSlug ?? SELF_HOST_MODULES[0]?.slug;
+const selfHostResumeModule = SELF_HOST_MODULES.find((m) => m.slug === selfHostResumeSlug) ?? SELF_HOST_MODULES[0];
+
+// Backward-compat: existing JSX below still references these names.
+const progressPercent = stackPercent;
+const resumeSlug = stackResumeSlug;
+const resumeModule = stackResumeModule;
 
 function progressBadge(slug: string): { label: string; cls: string } | null {
   const p = progressBySlug.get(slug);
@@ -157,10 +201,12 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
     <h1
       class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
     >
-      Walk the open-source AI stack
+      Learn
     </h1>
     <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">
-      15 self-paced Socratic modules, bottom-up from infrastructure to protocols. Each module ends with you writing your own summary; the course produces your personal map as a downloadable doc.
+      Two self-paced tracks. The first teaches what each layer of the open-source AI stack is and
+      why openness matters at each one. The second teaches how to actually run the stack on
+      hardware you control. Pick either; do both, in any order.
     </p>
   </section>
 
@@ -239,129 +285,136 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
       </script>
     )
   }
-  <section class="max-w-3xl mx-auto px-6 mt-8 mb-10">
-    {user && progressBySlug.size > 0 ? (
-      // Logged-in with progress: surface "continue from module X" plus
-      // a progress bar so the user sees where they are at a glance.
-      <div class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]">
-        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+  {/* Two parallel track cards. Each is independently navigable and
+      shows its own progress + CTA for logged-in users. Stack-walk has
+      both progress and a depth-picker form (because the form's POST
+      action is what initializes a brand-new course); self-host is a
+      simpler standalone-content track and links straight in. */}
+  <section class="max-w-5xl mx-auto px-6 mt-8 mb-10">
+    <div class="grid gap-5 md:grid-cols-2">
+      {/* Track 1: Walk the stack (Socratic 15-module course) */}
+      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col">
+        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
           <span class="font-serif text-xl text-[var(--color-text)]">
-            {totalComplete === MODULES.length ? "Course complete" : "Continue the course"}
+            Walk the stack
           </span>
-          <a
-            href="/learn/profile"
-            class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
-          >
-            Your profile →
-          </a>
+          <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+            15 modules · Socratic
+          </span>
         </div>
-        <p class="text-sm text-[var(--color-text-muted)] mb-4">
-          {totalComplete} of {MODULES.length} modules complete
-          <span class="text-[var(--color-text-subtle)]"> · {progressPercent}%</span>
-          <span class="text-[var(--color-text-subtle)]"> · {currentPassChoice} pass</span>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
+          Bottom-up from infrastructure to protocols. Each module ends with a Probe dialog and you
+          writing your own summary; the course produces a downloadable map of what you learned.
         </p>
-        <div class="h-1.5 w-full rounded-full bg-[var(--color-surface-warm)] mb-4 overflow-hidden">
-          <div
-            class="h-full bg-[var(--color-text)]"
-            style={`width: ${progressPercent}%`}
-            aria-label={`${progressPercent}% complete`}
-          ></div>
-        </div>
-        {totalComplete < MODULES.length && (
-          <a
-            href={`/learn/${resumeSlug}`}
-            class="inline-block w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+        {user ? (
+          <div class="mt-auto">
+            <p class="text-xs text-[var(--color-text-muted)] mb-2 font-mono">
+              {stackComplete} of {MODULES.length} complete
+              <span class="text-[var(--color-text-subtle)]"> · {stackPercent}%</span>
+              <span class="text-[var(--color-text-subtle)]"> · {currentPassChoice} pass</span>
+            </p>
+            <div class="h-1.5 w-full rounded-full bg-[var(--color-surface-warm)] mb-4 overflow-hidden">
+              <div
+                class="h-full bg-[var(--color-text)]"
+                style={`width: ${stackPercent}%`}
+                aria-label={`${stackPercent}% complete`}
+              ></div>
+            </div>
+            {stackComplete < MODULES.length ? (
+              <a
+                href={`/learn/${stackResumeSlug}`}
+                class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+              >
+                {stackInProgressSlug ? "Resume" : (stackComplete > 0 ? "Continue" : "Begin")}
+                {" module "}{String(stackResumeModule.order).padStart(2, "0")} →
+              </a>
+            ) : (
+              <a
+                href="/learn/profile/notes"
+                class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+              >
+                View your Personal Notes →
+              </a>
+            )}
+          </div>
+        ) : (
+          <form
+            method="POST"
+            action={`/api/course/start?next=/learn/${MODULES[0].slug}`}
+            class="mt-auto"
           >
-            {inProgressSlug ? "Resume" : "Begin"} module {String(resumeModule.order).padStart(2, "0")} · {resumeModule.title} →
-          </a>
-        )}
-        {totalComplete === MODULES.length && (
-          <a
-            href="/learn/profile/notes"
-            class="inline-block w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
-          >
-            View your Personal Notes →
-          </a>
+            <div class="flex flex-col gap-2 mb-3 text-sm">
+              <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                <input type="radio" name="pass_choice" value="fast" checked={currentPassChoice === "fast"} class="accent-[var(--color-accent)]"/>
+                <span><span class="text-[var(--color-text)] font-medium">Fast pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · a day or two</span></span>
+              </label>
+              <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+                <input type="radio" name="pass_choice" value="deep" checked={currentPassChoice === "deep"} class="accent-[var(--color-accent)]"/>
+                <span><span class="text-[var(--color-text)] font-medium">Deep pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · about a week</span></span>
+              </label>
+            </div>
+            <button
+              type="submit"
+              class="w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
+            >
+              Begin module 01 · {MODULES[0].title} →
+            </button>
+          </form>
         )}
       </div>
-    ) : (
-      // Anonymous OR logged-in with no progress yet: depth picker.
-      <form
-        method="POST"
-        action={`/api/course/start?next=/learn/${MODULES[0].slug}`}
-        class="p-5 rounded-md border-2 border-[var(--color-text)] bg-[var(--color-surface)]"
-      >
-        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
-          <span class="font-serif text-xl text-[var(--color-text)]">
-            Start the course
-          </span>
-          <a
-            href="/learn/start"
-            class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline"
-          >
-            How does this work? →
-          </a>
-        </div>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 mb-4 text-sm">
-          <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-            <input
-              type="radio"
-              name="pass_choice"
-              value="fast"
-              checked={currentPassChoice === "fast"}
-              class="accent-[var(--color-accent)]"
-            />
-            <span>
-              <span class="text-[var(--color-text)] font-medium">Fast pass</span>
-              <span class="text-[var(--color-text-subtle)]"> · a day or two, paragraph per layer</span>
-            </span>
-          </label>
-          <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-            <input
-              type="radio"
-              name="pass_choice"
-              value="deep"
-              checked={currentPassChoice === "deep"}
-              class="accent-[var(--color-accent)]"
-            />
-            <span>
-              <span class="text-[var(--color-text)] font-medium">Deep pass</span>
-              <span class="text-[var(--color-text-subtle)]"> · about a week, multi-paragraph with sources</span>
-            </span>
-          </label>
-        </div>
-        <button
-          type="submit"
-          class="w-full sm:w-auto px-5 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer"
-        >
-          Begin module 01 · {MODULES[0].title} →
-        </button>
-      </form>
-    )}
-  </section>
 
-  {/* Self-host track card: parallel learn-track surface so the
-      practical "how do I run this?" content is discoverable from the
-      same landing page as the stack walk. */}
-  <section class="max-w-3xl mx-auto px-6 mb-10">
-    <a
-      href="/learn/self-host"
-      class="block p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:border-[var(--color-text)] hover:bg-[var(--color-surface-warm)] no-underline transition-colors"
-    >
-      <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
-        <span class="font-serif text-xl text-[var(--color-text)]">
-          Self-host the stack
-        </span>
-        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
-          companion track · 7 modules
-        </span>
+      {/* Track 2: Self-host the stack */}
+      <div class="p-5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] flex flex-col">
+        <div class="flex items-baseline justify-between gap-3 flex-wrap mb-1">
+          <span class="font-serif text-xl text-[var(--color-text)]">
+            Self-host the stack
+          </span>
+          <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+            {SELF_HOST_MODULES.length} modules · practical
+          </span>
+        </div>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
+          VRAM math, memory bandwidth tiers, quantization formats, inference engines, hardware
+          strategy, production serving, benchmarking. Skim or read in order.
+        </p>
+        <div class="mt-auto">
+          {user && (
+            <>
+              <p class="text-xs text-[var(--color-text-muted)] mb-2 font-mono">
+                {selfHostComplete} of {SELF_HOST_MODULES.length} complete
+                <span class="text-[var(--color-text-subtle)]"> · {selfHostPercent}%</span>
+              </p>
+              <div class="h-1.5 w-full rounded-full bg-[var(--color-surface-warm)] mb-4 overflow-hidden">
+                <div
+                  class="h-full bg-[var(--color-text)]"
+                  style={`width: ${selfHostPercent}%`}
+                  aria-label={`${selfHostPercent}% complete`}
+                ></div>
+              </div>
+            </>
+          )}
+          {selfHostResumeModule ? (
+            <a
+              href={`/learn/self-host/${selfHostResumeSlug}`}
+              class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+            >
+              {user && selfHostComplete === SELF_HOST_MODULES.length
+                ? "Review the track"
+                : user && selfHostComplete > 0
+                  ? `Continue module ${String(selfHostResumeModule.order).padStart(2, "0")} →`
+                  : `Begin module 01 · ${selfHostResumeModule.title} →`}
+            </a>
+          ) : (
+            <a
+              href="/learn/self-host"
+              class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
+            >
+              Open the track →
+            </a>
+          )}
+        </div>
       </div>
-      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-        The practical companion. VRAM math, memory bandwidth tiers, quantization formats,
-        inference engines, hardware strategy, production serving, benchmarking. Skim or
-        read in order.
-      </p>
-    </a>
+    </div>
   </section>
 
   <section class="max-w-3xl mx-auto px-6 mb-16">

@@ -53,6 +53,27 @@ const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
       <Content />
     </div>
 
+    {/* Mark-as-read widget. Hydrates client-side because the page is
+        prerendered. Only renders the button when there's an active
+        Supabase session; anonymous visitors see nothing.
+
+        Note: this writes to the same module_progress table used by the
+        stack-walk Socratic course, with phase=complete. Self-host slugs
+        and stack-walk slugs are disjoint, so they share the table
+        without collision. */}
+    <div
+      id="self-host-mark-read"
+      data-module-slug={entry.data.slug}
+      class="mt-12 pt-6 border-t border-[var(--color-border)]"
+    >
+      <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+        Progress
+      </p>
+      <div id="mark-read-state" class="text-sm text-[var(--color-text-subtle)]">
+        Loading...
+      </div>
+    </div>
+
     {entry.data.sources && entry.data.sources.length > 0 && (
       <section class="mt-12 pt-6 border-t border-[var(--color-border)]">
         <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
@@ -100,4 +121,76 @@ const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
       )}
     </nav>
   </article>
+
+  <script>
+    // Self-host mark-as-read widget. Reads + writes to the
+    // module_progress table directly with the browser Supabase client.
+    // No-op for anonymous visitors.
+    import { browserSupabase } from "../../../lib/course/supabase";
+
+    (async () => {
+      const root = document.getElementById("self-host-mark-read");
+      const state = document.getElementById("mark-read-state");
+      if (!root || !state) return;
+      const moduleSlug = root.getAttribute("data-module-slug");
+      if (!moduleSlug) return;
+
+      const sb = browserSupabase();
+      if (!sb) {
+        state.innerHTML = `<a href="/learn/login" class="text-[var(--color-text)] hover:underline">Log in</a> <span class="text-[var(--color-text-subtle)]">to track progress on this track.</span>`;
+        return;
+      }
+      const { data: u } = await sb.auth.getUser();
+      const userId = u?.user?.id;
+      if (!userId) {
+        state.innerHTML = `<a href="/learn/login" class="text-[var(--color-text)] hover:underline">Log in</a> <span class="text-[var(--color-text-subtle)]">to track progress on this track.</span>`;
+        return;
+      }
+
+      function renderComplete() {
+        state.innerHTML = `
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded bg-[var(--color-status-fresh)] text-white">✓ Read</span>
+            <button id="undo-read" class="font-mono text-xs text-[var(--color-text-subtle)] hover:text-[var(--color-text)] underline bg-transparent border-0 p-0 cursor-pointer">undo</button>
+          </div>
+        `;
+        document.getElementById("undo-read")?.addEventListener("click", undo);
+      }
+      function renderUnread() {
+        state.innerHTML = `
+          <button id="mark-read-btn" class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] cursor-pointer border-0">
+            Mark module as read →
+          </button>
+        `;
+        document.getElementById("mark-read-btn")?.addEventListener("click", markRead);
+      }
+
+      async function markRead() {
+        const btn = document.getElementById("mark-read-btn");
+        if (btn) btn.textContent = "Saving...";
+        await sb!.from("module_progress").upsert({
+          user_id: userId,
+          module_slug: moduleSlug,
+          phase: "complete",
+          phase_started_at: new Date().toISOString(),
+          phase_completed_at: new Date().toISOString(),
+        });
+        renderComplete();
+      }
+      async function undo() {
+        await sb!.from("module_progress").delete()
+          .eq("user_id", userId)
+          .eq("module_slug", moduleSlug);
+        renderUnread();
+      }
+
+      const { data } = await sb.from("module_progress")
+        .select("phase")
+        .eq("user_id", userId)
+        .eq("module_slug", moduleSlug)
+        .maybeSingle();
+      if (data?.phase === "complete") renderComplete();
+      else renderUnread();
+    })();
+  </script>
 </BaseLayout>
