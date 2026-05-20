@@ -38,7 +38,7 @@ Five things to keep in mind as you read:
 - **<G term="llama-cpp">llama.cpp</G> is the local-first default.** <G term="ollama">Ollama</G> wraps it;
   <G term="mlx">MLX</G> is the Apple-native variant.
 - **The open side leads on runtime research.** <G term="paged-attention">PagedAttention</G>,
-  <G term="radix-attention">RadixAttention</G>, speculative decoding all emerged here first.
+  <G term="radix-attention">RadixAttention</G>, <G term="speculative-decoding">speculative decoding</G> all emerged here first.
 
 The rest of this page walks the two ecosystems and then arrives
 at the asymmetry between technical merits and enterprise
@@ -57,8 +57,8 @@ treats the KV cache as paged memory the way operating systems
 treat process memory. The result is significantly higher GPU
 utilization on concurrent inference than the naive
 implementation. The vLLM project has since grown into a broader
-serving framework with continuous batching, speculative
-decoding, and multi-LoRA inference. Most open serving today
+serving framework with <G term="continuous-batching">continuous batching</G>, speculative
+decoding, and <G term="multi-lora">multi-LoRA inference</G>. Most open serving today
 runs on vLLM under the hood
 ([vLLM repository](https://github.com/vllm-project/vllm)).
 

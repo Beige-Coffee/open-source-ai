@@ -1,0 +1,39 @@
+---
+term: Multi-LoRA inference
+aliases: [multi-lora, multi-lora serving, lora serving, multi-adapter inference]
+primary_layer: runtime
+secondary_layers: [training, weights]
+summary: Serving many LoRA adapters concurrently on a single base model, with the runtime swapping the right adapter in per request rather than loading separate fine-tuned copies.
+sources:
+  - title: "S-LoRA: Serving Thousands of Concurrent LoRA Adapters (Sheng et al., 2023)"
+    url: "https://arxiv.org/abs/2311.03285"
+  - title: "vLLM multi-LoRA serving docs"
+    url: "https://docs.vllm.ai/en/latest/models/lora.html"
+updated: 2026-05-20
+---
+
+import G from "../../components/G.astro";
+
+A serving pattern where a single base model in GPU memory is paired
+with many small <G term="lora">LoRA</G> adapters that the runtime
+swaps in per request. The base weights load once; each adapter is a
+small pair of low-rank matrices (often a few tens of MB each), so
+serving N fine-tuned variants costs roughly the same memory as one
+base model plus N small deltas, instead of N full model copies.
+
+The mechanism matters for two production patterns. Tenant-specific
+fine-tunes: an API serves one base model plus one LoRA per customer,
+routing each request to the right adapter; the alternative (a
+separate full model per tenant) does not fit in any reasonable GPU
+budget once tenants pass single digits. Task-specific adapters: one
+base, multiple adapters specialized for code, summarization, or
+domain knowledge, selected per call.
+
+<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and TensorRT-LLM
+all support multi-LoRA inference. The S-LoRA paper (Sheng et al.,
+2023) showed a serving system handling thousands of concurrent
+adapters with throughput within a small factor of plain-base serving
+when batched well; the technique is now standard in open production
+runtimes. The tradeoff is small: per-token decode latency rises by
+single-digit percentage points because each step does a few extra
+small matmuls against the active adapter.
