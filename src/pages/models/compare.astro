@@ -2,6 +2,8 @@
 export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   loadModels,
   loadModelBySlug,
@@ -14,6 +16,21 @@ import {
   type Model,
   type BenchmarkSlug,
 } from "../../lib/models";
+
+// Per-cell verification gate. See /models/index.astro for the design.
+const VERIFICATION_PATH = resolve("public/data/models-verification.json");
+const VERIFICATION: Record<string, Record<string, string>> = existsSync(VERIFICATION_PATH)
+  ? JSON.parse(readFileSync(VERIFICATION_PATH, "utf8"))
+  : {};
+const VERIFIED_VERDICTS = new Set([
+  "supported",
+  "consistent",
+  "still_supported",
+  "pending_horizon",
+]);
+function verified(slug: string, field: string): boolean {
+  return VERIFIED_VERDICTS.has(VERIFICATION[slug]?.[field] ?? "");
+}
 
 const params = Astro.url.searchParams;
 const all = loadModels();
@@ -61,7 +78,7 @@ if (models.length >= 2) {
     const differs = vals.some((v, i) => i > 0 && v !== vals[0]);
     rows.push({ label, values: vals, differs });
   }
-  add("Released", models.map((m) => m.released_date));
+  add("Released", models.map((m) => verified(m.slug, "released_date") ? m.released_date : "—"));
   add("Developer", models.map((m) => m.developer));
   add("Openness", models.map((m) => OPENNESS_LABEL[m.openness]));
   add("License", models.map((m) => m.license));
@@ -69,18 +86,18 @@ if (models.length >= 2) {
   add("Data released", models.map((m) => fmtBool(m.data_released)));
   add("Training code", models.map((m) => fmtBool(m.training_code_released)));
   add("Architecture", models.map((m) => m.architecture));
-  add("Total params", models.map((m) => m.params_total > 0 ? formatParams(m.params_total) : "—"));
-  add("Active params", models.map((m) => m.params_active > 0 ? formatParams(m.params_active) : "—"));
-  add("Experts", models.map((m) => m.experts ? `${m.experts} (${m.experts_active ?? "?"} active)` : "—"));
-  add("Context window", models.map((m) => formatContext(m.context_window)));
+  add("Total params", models.map((m) => verified(m.slug, "params_total") && m.params_total > 0 ? formatParams(m.params_total) : "—"));
+  add("Active params", models.map((m) => verified(m.slug, "params_active") && m.params_active > 0 ? formatParams(m.params_active) : "—"));
+  add("Experts", models.map((m) => verified(m.slug, "experts") && m.experts ? `${m.experts} (${m.experts_active ?? "?"} active)` : "—"));
+  add("Context window", models.map((m) => verified(m.slug, "context_window") ? formatContext(m.context_window) : "—"));
   add("Attention", models.map((m) => m.attention_variant));
   add("Position enc.", models.map((m) => m.position_encoding));
-  add("Pretraining tokens", models.map((m) => formatTokens(m.pretraining_tokens)));
+  add("Pretraining tokens", models.map((m) => verified(m.slug, "pretraining_tokens") ? formatTokens(m.pretraining_tokens) : "—"));
   add("Post-training", models.map((m) => (m.post_training ?? []).join(", ") || "—"));
   add("Training hardware", models.map((m) => m.training_hardware ?? "—"));
-  add("$/M input", models.map((m) => m.cost?.input_per_mtok_usd !== undefined ? `$${m.cost.input_per_mtok_usd.toFixed(2)}` : "—"));
-  add("$/M output", models.map((m) => m.cost?.output_per_mtok_usd !== undefined ? `$${m.cost.output_per_mtok_usd.toFixed(2)}` : "—"));
-  add("Output tok/sec", models.map((m) => m.speed?.tokens_per_sec_output !== undefined ? String(m.speed.tokens_per_sec_output) : "—"));
+  add("$/M input", models.map((m) => verified(m.slug, "cost.input") && m.cost?.input_per_mtok_usd !== undefined ? `$${m.cost.input_per_mtok_usd.toFixed(2)}` : "—"));
+  add("$/M output", models.map((m) => verified(m.slug, "cost.output") && m.cost?.output_per_mtok_usd !== undefined ? `$${m.cost.output_per_mtok_usd.toFixed(2)}` : "—"));
+  add("Output tok/sec", models.map((m) => verified(m.slug, "speed.output_tps") && m.speed?.tokens_per_sec_output !== undefined ? String(m.speed.tokens_per_sec_output) : "—"));
 }
 ---
 
@@ -185,7 +202,11 @@ if (models.length >= 2) {
                 <table class="w-full text-sm border border-[var(--color-border)] rounded">
                   <tbody>
                     {slugs.map((bSlug) => {
-                      const vals = models.map((m) => m.benchmarks?.[bSlug as BenchmarkSlug]);
+                      // Hide unverified scores: only count rows whose
+                      // bench.<slug> ledger row is in the verified set.
+                      const vals = models.map((m) =>
+                        verified(m.slug, `bench.${bSlug}`) ? m.benchmarks?.[bSlug as BenchmarkSlug] : undefined,
+                      );
                       if (!vals.some(Boolean)) return null;
                       const scores = vals.map((v) => v?.score ?? -Infinity);
                       const max = Math.max(...scores);

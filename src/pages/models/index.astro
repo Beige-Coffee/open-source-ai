@@ -372,12 +372,12 @@ const OPENNESS_RANK: Record<Openness, number> = {
         </g>
 
         <g>
-          {all.map((m) => {
+          {all.filter((m) => verified(m.slug, "released_date")).map((m) => {
             const x = TIMELINE_PAD_X + 110 + xForDate(m.released_date, TIMELINE_INNER_W - 110);
             const y = yForOpenness(m.openness);
             const fill = familyColor(m.family);
-            const gpqa = m.benchmarks?.gpqa_diamond?.score;
-            const mmluPro = m.benchmarks?.mmlu_pro?.score;
+            const gpqa = verified(m.slug, "bench.gpqa_diamond") ? m.benchmarks?.gpqa_diamond?.score : null;
+            const mmluPro = verified(m.slug, "bench.mmlu_pro") ? m.benchmarks?.mmlu_pro?.score : null;
             return (
               <g
                 class="timeline-dot"
@@ -389,13 +389,13 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 data-openness={m.openness}
                 data-license={m.license}
                 data-arch={m.architecture}
-                data-params-total={m.params_total > 0 ? formatParams(m.params_total) : "—"}
-                data-params-active={m.params_active > 0 ? formatParams(m.params_active) : "—"}
-                data-context={formatContext(m.context_window)}
-                data-gpqa={gpqa !== undefined ? gpqa.toFixed(1) : ""}
-                data-mmlu-pro={mmluPro !== undefined ? mmluPro.toFixed(1) : ""}
-                data-cost-in={m.cost?.input_per_mtok_usd !== undefined ? m.cost.input_per_mtok_usd.toFixed(2) : ""}
-                data-cost-out={m.cost?.output_per_mtok_usd !== undefined ? m.cost.output_per_mtok_usd.toFixed(2) : ""}
+                data-params-total={verified(m.slug, "params_total") && m.params_total > 0 ? formatParams(m.params_total) : "—"}
+                data-params-active={verified(m.slug, "params_active") && m.params_active > 0 ? formatParams(m.params_active) : "—"}
+                data-context={verified(m.slug, "context_window") ? formatContext(m.context_window) : "—"}
+                data-gpqa={gpqa != null ? gpqa.toFixed(1) : ""}
+                data-mmlu-pro={mmluPro != null ? mmluPro.toFixed(1) : ""}
+                data-cost-in={verified(m.slug, "cost.input") && m.cost?.input_per_mtok_usd != null ? m.cost.input_per_mtok_usd.toFixed(2) : ""}
+                data-cost-out={verified(m.slug, "cost.output") && m.cost?.output_per_mtok_usd != null ? m.cost.output_per_mtok_usd.toFixed(2) : ""}
               >
                 <a href={`/models/${m.slug}`}>
                   <circle cx={x} cy={y} r="5" fill={fill} stroke="var(--color-surface)" stroke-width="1.2"/>
