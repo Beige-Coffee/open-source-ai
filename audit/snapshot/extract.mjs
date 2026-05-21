@@ -52,7 +52,10 @@ const ENTITY_MAP = {
   "&reg;": "(r)",
 };
 
-const MAX_TEXT_BYTES = 32 * 1024;
+// Bumped from 32 KB to 96 KB so HF model card READMEs (which often
+// run 40-70 KB and place benchmark / training-data tables near the
+// bottom) get captured in full. Verifier prompt slice raised to match.
+const MAX_TEXT_BYTES = 96 * 1024;
 
 function decodeEntities(text) {
   let out = text;

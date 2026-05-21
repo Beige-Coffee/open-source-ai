@@ -1130,7 +1130,7 @@ models:
       - rlhf
     benchmarks:
       mmlu:
-        score: 78.5
+        score: 78.4
         as_of: '2024-05-07'
         source: https://arxiv.org/abs/2405.04434
       humaneval:
@@ -2951,8 +2951,7 @@ models:
       - title: DeepSeek-Coder-V2-Instruct model card
         url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
     lineage:
-      parent: deepseek-v2-chat
-      note: Coder branch of the V2 line; later folded into V2.5.
+      note: Coder branch of the V2 line, derived from DeepSeek-V2 base (not from the V2-Chat sibling); later folded into V2.5.
     recommended_use_cases:
       - repo-scale code generation
       - multi-language code assistance
@@ -6548,10 +6547,9 @@ models:
       - title: DeepSeek-V3.2 model card
         url: https://huggingface.co/deepseek-ai/DeepSeek-V3.2
     lineage:
-      parent: deepseek-v3-1
       children:
         - deepseek-v4-pro
-      note: Introduces DeepSeek Sparse Attention; Speciale variant aimed at math olympiads.
+      note: Successor to the V3.2-Exp checkpoint (not catalogued; production V3.2 released 2025-12-01). Introduces DeepSeek Sparse Attention; Speciale variant aimed at math olympiads.
     cost:
       input_per_mtok_usd: 0.5
       source: https://artificialanalysis.ai/models/deepseek-v3-2
@@ -6955,8 +6953,7 @@ models:
       - title: Qwen3.5 release coverage (VentureBeat, Feb 2026)
         url: https://venturebeat.com/technology/alibabas-qwen-3-5-397b-a17-beats-its-larger-trillion-parameter-model-at-a
     lineage:
-      parent: qwen3-235b-a22b-instruct
-      note: 397B MoE flagship of the 3.5 line, replacing the dense Qwen3 235B as the open headliner.
+      note: Qwen3.5-Plus is the hosted API variant of Qwen3.5-397B-A17B (not catalogued); the 397B MoE flagship of the 3.5 line, replacing the dense Qwen3 235B as the open headliner.
   - slug: mistral-medium-3
     display_name: Mistral Medium 3
     family: mistral-medium

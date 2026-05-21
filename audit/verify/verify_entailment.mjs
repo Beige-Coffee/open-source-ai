@@ -192,7 +192,7 @@ Source fetched at: ${snapshot.fetched_at}
 
 Source content (extracted main text):
 """
-${(snapshot.extracted_text || "").slice(0, 16000)}
+${(snapshot.extracted_text || "").slice(0, 96000)}
 """
 
 === TASK ===
