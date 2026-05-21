@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ModelArchitecture from "../../components/ModelArchitecture.astro";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   loadModels,
   loadModelsByFamily,
@@ -14,6 +16,23 @@ import {
   type Model,
   type BenchmarkSlug,
 } from "../../lib/models";
+
+// Per-cell verification gate. See /models/index.astro for the design.
+// Cells whose ledger row is not supported/consistent/still_supported/
+// pending_horizon render as "—" or "not verified" instead of the value.
+const VERIFICATION_PATH = resolve("public/data/models-verification.json");
+const VERIFICATION: Record<string, Record<string, string>> = existsSync(VERIFICATION_PATH)
+  ? JSON.parse(readFileSync(VERIFICATION_PATH, "utf8"))
+  : {};
+const VERIFIED_VERDICTS = new Set([
+  "supported",
+  "consistent",
+  "still_supported",
+  "pending_horizon",
+]);
+function verified(slug: string, field: string): boolean {
+  return VERIFIED_VERDICTS.has(VERIFICATION[slug]?.[field] ?? "");
+}
 
 export async function getStaticPaths() {
   return loadModels().map((m) => ({
@@ -112,7 +131,7 @@ function fmtCurrency(n: number | undefined): string {
       </span>
       <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.developer}</span>
       <span class="text-[var(--color-text-subtle)]">·</span>
-      <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.released_date}</span>
+      <span class="font-mono text-xs text-[var(--color-text-subtle)]">{verified(model.slug, "released_date") ? model.released_date : "—"}</span>
       <span class="text-[var(--color-text-subtle)]">·</span>
       <span class="font-mono text-xs text-[var(--color-text-subtle)]">{model.license}</span>
     </div>
@@ -135,7 +154,7 @@ function fmtCurrency(n: number | undefined): string {
               </p>
               <div class="flex items-baseline gap-3 mb-1">
                 <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
-                  {model.cost.input_per_mtok_usd !== undefined ? `$${model.cost.input_per_mtok_usd.toFixed(2)}` : "—"}
+                  {verified(model.slug, "cost.input") && model.cost.input_per_mtok_usd !== undefined ? `$${model.cost.input_per_mtok_usd.toFixed(2)}` : "—"}
                 </span>
                 <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
                   / Mtok input
@@ -143,7 +162,7 @@ function fmtCurrency(n: number | undefined): string {
               </div>
               <div class="flex items-baseline gap-3 mb-3">
                 <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
-                  {model.cost.output_per_mtok_usd !== undefined ? `$${model.cost.output_per_mtok_usd.toFixed(2)}` : "—"}
+                  {verified(model.slug, "cost.output") && model.cost.output_per_mtok_usd !== undefined ? `$${model.cost.output_per_mtok_usd.toFixed(2)}` : "—"}
                 </span>
                 <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
                   / Mtok output
@@ -166,13 +185,13 @@ function fmtCurrency(n: number | undefined): string {
               </p>
               <div class="flex items-baseline gap-3 mb-1">
                 <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
-                  {model.speed.tokens_per_sec_output ?? "—"}
+                  {verified(model.slug, "speed.output_tps") ? (model.speed.tokens_per_sec_output ?? "—") : "—"}
                 </span>
                 <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
                   tok/sec output
                 </span>
               </div>
-              {model.speed.ttft_ms !== undefined && (
+              {model.speed.ttft_ms !== undefined && verified(model.slug, "speed.ttft") && (
                 <div class="flex items-baseline gap-3 mb-3">
                   <span class="font-mono text-2xl text-[var(--color-text)] tabular-nums">
                     {model.speed.ttft_ms}
@@ -225,7 +244,7 @@ function fmtCurrency(n: number | undefined): string {
           <dd class="text-[var(--color-text)] font-mono text-xs">{model.architecture}</dd>
 
           <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Total params</dt>
-          <dd class="text-[var(--color-text)] font-mono text-xs">{model.params_total > 0 ? formatParams(model.params_total) : "not disclosed"}</dd>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{verified(model.slug, "params_total") && model.params_total > 0 ? formatParams(model.params_total) : "not disclosed"}</dd>
 
           <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Active params</dt>
           <dd class="text-[var(--color-text)] font-mono text-xs">{model.params_active > 0 ? formatParams(model.params_active) : "not disclosed"}</dd>
@@ -238,7 +257,7 @@ function fmtCurrency(n: number | undefined): string {
           )}
 
           <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Context window</dt>
-          <dd class="text-[var(--color-text)] font-mono text-xs">{formatContext(model.context_window)} tokens</dd>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{verified(model.slug, "context_window") ? `${formatContext(model.context_window)} tokens` : "not verified"}</dd>
 
           <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Attention</dt>
           <dd class="text-[var(--color-text)] font-mono text-xs">{model.attention_variant}</dd>
@@ -288,7 +307,10 @@ function fmtCurrency(n: number | undefined): string {
           </p>
           {benchmarkGroupOrder.map((g) => {
             const slugs = BENCHMARK_GROUPS[g];
-            const reported = slugs.filter((s) => model.benchmarks?.[s as BenchmarkSlug]);
+            // Only list benchmarks the catalog has AND that are verified.
+            const reported = slugs.filter((s) =>
+              model.benchmarks?.[s as BenchmarkSlug] && verified(model.slug, `bench.${s}`)
+            );
             if (reported.length === 0) return null;
             return (
               <div class="mb-4">

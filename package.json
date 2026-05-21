@@ -6,13 +6,13 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "predev": "node scripts/build-data.mjs",
-    "prebuild": "bash audit/check.sh && node scripts/build-data.mjs",
+    "predev": "node scripts/build-data.mjs && node scripts/build-verification-map.mjs",
+    "prebuild": "bash audit/check.sh && node scripts/build-data.mjs && node scripts/build-verification-map.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build-data": "node scripts/build-data.mjs",
+    "build-data": "node scripts/build-data.mjs && node scripts/build-verification-map.mjs",
     "lint": "node scripts/lint-citations.mjs && node scripts/lint-glossary.mjs",
     "lint:glossary": "node scripts/lint-glossary.mjs",
     "bench": "node scripts/bench-models.mjs",
@@ -34,7 +34,10 @@
     "audit:extract:models": "node audit/extract-models.mjs",
     "audit:score-layer": "node audit/score_layer.mjs prompt",
     "audit:score-all-layers": "node audit/score_layer.mjs prompt --all",
-    "audit:layer-scores": "node audit/score_layer.mjs summary"
+    "audit:layer-scores": "node audit/score_layer.mjs summary",
+    "audit:verify:aa-chunk-2": "node audit/verify/run-aa-chunk-2.mjs",
+    "audit:verify:aa-chunk-3": "node audit/verify/run-aa-chunk-3.mjs",
+    "audit:verify:aa-chunk-4": "node audit/verify/run-aa-chunk-4.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

@@ -60,6 +60,45 @@ function canonicalize(url) {
   }
 }
 
+// Pivot URLs to a form that produces better trafilatura-style extraction.
+//
+// - HuggingFace model card pages (huggingface.co/<org>/<model>) render
+//   as a React shell that often dumps the README into a JSON blob
+//   inside <script type="application/json">, which our extractor
+//   strips. Pivot to /raw/main/README.md so we get the plain markdown.
+// - arXiv abstract pages (arxiv.org/abs/<id>) extract as the abstract
+//   only (no paper body, no tables). Pivot to /html/<id> which is the
+//   LaTeXML-rendered full paper with tables preserved as text.
+//
+// The snapshot is still keyed by the ORIGINAL canonical URL, so
+// existing citations resolve. Only the fetch target changes.
+function pivotFetchUrl(canonUrl) {
+  try {
+    const u = new URL(canonUrl);
+    if (u.hostname === "huggingface.co") {
+      const parts = u.pathname.split("/").filter(Boolean);
+      // Pivot only for `/<org>/<model>` shape, not /api/, /docs/, /papers/,
+      // /datasets/, /spaces/, /raw/, etc.
+      const RESERVED = new Set([
+        "api", "docs", "papers", "datasets", "spaces", "raw", "blog",
+        "settings", "pricing", "join", "login", "logout", "models",
+      ]);
+      if (parts.length === 2 && !RESERVED.has(parts[0])) {
+        return `https://huggingface.co/${parts[0]}/${parts[1]}/raw/main/README.md`;
+      }
+    }
+    if (u.hostname === "arxiv.org") {
+      const m = u.pathname.match(/^\/abs\/([\d.]+)(v\d+)?$/);
+      if (m) {
+        return `https://arxiv.org/html/${m[1]}${m[2] || "v1"}`;
+      }
+    }
+    return canonUrl;
+  } catch {
+    return canonUrl;
+  }
+}
+
 function urlHash(url) {
   return createHash("sha256").update(url).digest("hex");
 }
@@ -129,10 +168,15 @@ export async function snapshotOne(url) {
   const dir = urlDir(canon);
   mkdirSync(dir, { recursive: true });
 
+  // Pivot to a friendlier fetch target for HF and arxiv. Storage key
+  // and the snapshot record's `url` stay as the original canonical
+  // URL so citations resolve unchanged.
+  const fetchTarget = pivotFetchUrl(canon);
+
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   let record;
   try {
-    const page = await fetchPage(canon);
+    const page = await fetchPage(fetchTarget);
     if (page.status >= 400) {
       record = {
         url: canon,
@@ -222,6 +266,23 @@ function listAllUrls() {
     // Reception quotes carry primary-source URLs too.
     for (const q of m.reception || []) {
       if (q && q.url) urls.add(q.url);
+    }
+  }
+  // Glossary MDX frontmatter sources. Each src/content/glossary/<slug>.mdx
+  // has a `sources: [{title, url}]` array we should snapshot too — the
+  // claims-ledger row IDs `glossary.<slug>.source.<N>` cite them.
+  const glossaryDir = resolve(ROOT, "src/content/glossary");
+  if (existsSync(glossaryDir)) {
+    for (const fn of readdirSync(glossaryDir)) {
+      if (!fn.endsWith(".mdx")) continue;
+      const text = readFileSync(resolve(glossaryDir, fn), "utf8");
+      const fmMatch = text.match(/^---\n([\s\S]*?)\n---\n/);
+      if (!fmMatch) continue;
+      let fm;
+      try { fm = yaml.load(fmMatch[1]); } catch { continue; }
+      for (const s of fm?.sources || []) {
+        if (s && s.url && /^https?:\/\//.test(s.url)) urls.add(s.url);
+      }
     }
   }
   return Array.from(urls);
