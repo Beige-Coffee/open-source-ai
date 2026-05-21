@@ -496,17 +496,34 @@ const OPENNESS_RANK: Record<Openness, number> = {
         swap axes
       </button>
       <span id="scatter-count" class="ml-auto font-mono text-xs text-[var(--color-text-subtle)]"></span>
+      <button id="scatter-reset" type="button" class="px-2 py-1 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer" title="Reset zoom/pan to fit all points">
+        reset view
+      </button>
     </div>
-    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 overflow-x-auto relative">
+    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 relative" id="scatter-frame">
       <svg
         id="scatter-svg"
         viewBox="0 0 720 320"
         width="100%"
-        style="max-width: 720px; display: block; font-family: var(--font-mono);"
+        style="max-width: 720px; display: block; font-family: var(--font-mono); cursor: grab; touch-action: none;"
         role="img"
         aria-label="Configurable metric scatter"
       ></svg>
+      <div
+        id="scatter-tooltip"
+        class="absolute hidden pointer-events-none z-10 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] shadow-lg p-3 text-xs"
+        style="min-width: 220px; max-width: 320px;"
+      ></div>
     </div>
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
+      Drag to pan. Scroll to zoom. Shift + drag to box-zoom. Click a dot to open the model page.
+    </p>
+    <details class="mt-2">
+      <summary class="font-mono text-xs text-[var(--color-text-subtle)] hover:text-[var(--color-text)] cursor-pointer">
+        Why some models are missing from the plot
+      </summary>
+      <div id="scatter-hidden" class="font-mono text-xs text-[var(--color-text-muted)] mt-2 pl-3 border-l border-[var(--color-border)]"></div>
+    </details>
     <script type="application/json" id="scatter-data" set:html={JSON.stringify({ rows: scatterRows, metrics: populatedMetrics })}></script>
   </section>
 
@@ -741,12 +758,18 @@ const OPENNESS_RANK: Record<Openness, number> = {
   // server, then re-renders the SVG body whenever the user picks new
   // axes. Auto log-scale for metrics flagged `log` (cost + scale
   // groups). Models missing either picked metric drop off the chart.
+  // Pan via drag, zoom via wheel, box-zoom via shift+drag, reset via
+  // the "reset view" button. Rich hover tooltip via custom DOM element.
   (function () {
     const svg = document.getElementById("scatter-svg");
     const xSel = document.getElementById("scatter-x");
     const ySel = document.getElementById("scatter-y");
     const swap = document.getElementById("scatter-swap");
     const count = document.getElementById("scatter-count");
+    const reset = document.getElementById("scatter-reset");
+    const tooltip = document.getElementById("scatter-tooltip");
+    const frame = document.getElementById("scatter-frame");
+    const hiddenList = document.getElementById("scatter-hidden");
     const payloadEl = document.getElementById("scatter-data");
     if (!svg || !xSel || !ySel || !payloadEl) return;
     const data = JSON.parse(payloadEl.textContent || "{}");
@@ -754,7 +777,13 @@ const OPENNESS_RANK: Record<Openness, number> = {
     const metrics = data.metrics || [];
     const metricByKey = Object.fromEntries(metrics.map((m) => [m.key, m]));
     const W = 720, H = 320, PAD = 56;
-    const SVG_NS = "http://www.w3.org/2000/svg";
+    const PLOT_W = W - PAD * 2;
+    const PLOT_H = H - PAD * 2;
+
+    // Viewport. When null, auto-fit to the data extent. Set by zoom /
+    // pan interactions; reset button clears it.
+    let viewport = null;
+    let lastFitExtent = null;  // remembered for the wheel-zoom anchor
 
     // Each point carries its family color in the JSON payload; we read
     // it directly. The openness tier still distinguishes filled vs
@@ -797,6 +826,30 @@ const OPENNESS_RANK: Record<Openness, number> = {
       return ticks;
     }
 
+    // Auto-fit extent for points: simple min/max, no outlier trimming.
+    function dataExtent(points, key) {
+      const vs = points.map((p) => p.metrics[key]);
+      let lo = Math.min(...vs), hi = Math.max(...vs);
+      if (lo === hi) { lo -= 1; hi += 1; }
+      return [lo, hi];
+    }
+
+    // Active extent: viewport (if zoomed/panned) or auto-fit.
+    function activeExtent(points, key, dim) {
+      if (viewport) return viewport[dim];
+      return dataExtent(points, key);
+    }
+
+    // Inverse helpers: pixel -> data value, accounting for log scale.
+    function pxToData(meta, px, [lo, hi], extentMin, extentMax) {
+      const log = meta.log && extentMin > 0;
+      const dLo = log ? Math.log10(extentMin) : extentMin;
+      const dHi = log ? Math.log10(extentMax) : extentMax;
+      const frac = (px - lo) / (hi - lo);
+      const d = dLo + frac * (dHi - dLo);
+      return log ? Math.pow(10, d) : d;
+    }
+
     function render() {
       const xKey = xSel.value;
       const yKey = ySel.value;
@@ -806,15 +859,32 @@ const OPENNESS_RANK: Record<Openness, number> = {
 
       // Filter to rows that have both picked metrics.
       const points = rows.filter((r) => r.metrics[xKey] != null && r.metrics[yKey] != null);
+      const hidden = rows.filter((r) => r.metrics[xKey] == null || r.metrics[yKey] == null);
       count.textContent = `${points.length} of ${rows.length} models plotted`;
 
-      // Compute ranges.
-      const xs = points.map((p) => p.metrics[xKey]);
-      const ys = points.map((p) => p.metrics[yKey]);
-      let xMin = Math.min(...xs), xMax = Math.max(...xs);
-      let yMin = Math.min(...ys), yMax = Math.max(...ys);
-      if (xMin === xMax) { xMin -= 1; xMax += 1; }
-      if (yMin === yMax) { yMin -= 1; yMax += 1; }
+      // Hidden-models list (the <details> drawer below the chart).
+      if (hiddenList) {
+        if (hidden.length === 0) {
+          hiddenList.textContent = "No hidden models.";
+        } else {
+          const xLabel = xMeta.short_label, yLabel = yMeta.short_label;
+          const items = hidden.map((p) => {
+            const missX = p.metrics[xKey] == null;
+            const missY = p.metrics[yKey] == null;
+            const reason = missX && missY ? `${xLabel} and ${yLabel}` : missX ? xLabel : yLabel;
+            return `<li><a href="/models/${p.slug}" class="hover:text-[var(--color-text)] no-underline hover:underline">${p.display_name}</a> <span class="text-[var(--color-text-subtle)]">(${reason} not verified)</span></li>`;
+          }).sort();
+          hiddenList.innerHTML = `<p class="mb-1">${hidden.length} models are hidden because at least one of the selected metrics has no verified value. They reappear when you pick metrics they do have.</p><ul class="list-disc list-inside space-y-0.5 max-h-48 overflow-y-auto">${items.join("")}</ul>`;
+        }
+      }
+
+      // Auto-fit extents from the unfiltered point set (so the dataset
+      // extent is stable across pan/zoom; viewport overrides if set).
+      const [autoXmin, autoXmax] = dataExtent(points, xKey);
+      const [autoYmin, autoYmax] = dataExtent(points, yKey);
+      lastFitExtent = { x: [autoXmin, autoXmax], y: [autoYmin, autoYmax] };
+      const [xMin, xMax] = viewport ? viewport.x : [autoXmin, autoXmax];
+      const [yMin, yMax] = viewport ? viewport.y : [autoYmin, autoYmax];
 
       const xLog = xMeta.log && xMin > 0;
       const yLog = yMeta.log && yMin > 0;
@@ -822,25 +892,29 @@ const OPENNESS_RANK: Record<Openness, number> = {
       const xHi = xLog ? Math.log10(xMax) : xMax;
       const yLo = yLog ? Math.log10(yMin) : yMin;
       const yHi = yLog ? Math.log10(yMax) : yMax;
-      const xToPx = (v) => PAD + ((xLog ? Math.log10(v) : v) - xLo) / (xHi - xLo) * (W - PAD * 2);
-      const yToPx = (v) => H - PAD - ((yLog ? Math.log10(v) : v) - yLo) / (yHi - yLo) * (H - PAD * 2);
+      const xToPx = (v) => PAD + ((xLog ? Math.log10(v) : v) - xLo) / (xHi - xLo) * PLOT_W;
+      const yToPx = (v) => H - PAD - ((yLog ? Math.log10(v) : v) - yLo) / (yHi - yLo) * PLOT_H;
 
       const xTicks = xLog ? logTicks(xMin, xMax) : linearTicks(xMin, xMax);
       const yTicks = yLog ? logTicks(yMin, yMax) : linearTicks(yMin, yMax);
 
       // Build SVG content.
       let html = "";
+      // Clip path so dots get clipped when panned/zoomed outside.
+      html += `<defs><clipPath id="scatter-clip"><rect x="${PAD}" y="${PAD}" width="${PLOT_W}" height="${PLOT_H}"/></clipPath></defs>`;
       // Axes.
       html += `<line x1="${PAD}" y1="${H - PAD}" x2="${W - PAD}" y2="${H - PAD}" stroke="var(--color-border-strong)" stroke-width="1"/>`;
       html += `<line x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H - PAD}" stroke="var(--color-border-strong)" stroke-width="1"/>`;
       // Grid + ticks.
       for (const t of xTicks) {
         const x = xToPx(t);
+        if (x < PAD - 0.5 || x > W - PAD + 0.5) continue;
         html += `<line x1="${x}" y1="${PAD}" x2="${x}" y2="${H - PAD}" stroke="var(--color-border)" stroke-dasharray="2 4"/>`;
         html += `<text x="${x}" y="${H - PAD + 14}" text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">${fmtTick(xMeta, t)}</text>`;
       }
       for (const t of yTicks) {
         const y = yToPx(t);
+        if (y < PAD - 0.5 || y > H - PAD + 0.5) continue;
         html += `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="var(--color-border)" stroke-dasharray="2 4"/>`;
         html += `<text x="${PAD - 6}" y="${y + 3}" text-anchor="end" font-size="10" fill="var(--color-text-subtle)">${fmtTick(yMeta, t)}</text>`;
       }
@@ -850,27 +924,234 @@ const OPENNESS_RANK: Record<Openness, number> = {
 
       // Points. Color by family; ring (no fill) for proprietary so the
       // closed-vs-open distinction is still visible even with the
-      // family palette taking the primary color slot.
+      // family palette taking the primary color slot. data-* attrs
+      // carry the info the tooltip needs.
+      html += `<g clip-path="url(#scatter-clip)">`;
       for (const p of points) {
         const cx = xToPx(p.metrics[xKey]);
         const cy = yToPx(p.metrics[yKey]);
         const isClosed = p.openness === "proprietary";
         const c = p.family_color || "#737373";
-        const title = `${p.display_name} (${p.family}) · ${xMeta.short_label}: ${fmtTick(xMeta, p.metrics[xKey])} · ${yMeta.short_label}: ${fmtTick(yMeta, p.metrics[yKey])}`;
-        html += `<a href="/models/${p.slug}" class="scatter-dot" data-family="${p.family}"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"><title>${title}</title></circle></a>`;
+        const xVal = fmtTick(xMeta, p.metrics[xKey]).replace(/"/g, "&quot;");
+        const yVal = fmtTick(yMeta, p.metrics[yKey]).replace(/"/g, "&quot;");
+        const name = p.display_name.replace(/"/g, "&quot;");
+        html += `<a href="/models/${p.slug}" class="scatter-dot" data-family="${p.family}" data-slug="${p.slug}" data-name="${name}" data-fam-label="${p.family}" data-openness="${p.openness}" data-x-label="${xMeta.short_label}" data-x-val="${xVal}" data-y-label="${yMeta.short_label}" data-y-val="${yVal}"><circle cx="${cx}" cy="${cy}" r="5" fill="${isClosed ? "transparent" : c}" stroke="${c}" stroke-width="1.5"/></a>`;
       }
+      html += `</g>`;
+
+      // Box-zoom selection rect (rendered by drag handlers).
+      html += `<rect id="scatter-box" x="0" y="0" width="0" height="0" fill="rgba(0,0,0,0.06)" stroke="var(--color-text-muted)" stroke-dasharray="3 3" pointer-events="none" style="display:none;"/>`;
 
       svg.innerHTML = html;
     }
 
-    xSel.addEventListener("change", render);
-    ySel.addEventListener("change", render);
+    xSel.addEventListener("change", () => { viewport = null; render(); });
+    ySel.addEventListener("change", () => { viewport = null; render(); });
     swap.addEventListener("click", () => {
       const x = xSel.value, y = ySel.value;
       xSel.value = y;
       ySel.value = x;
+      viewport = null;
       render();
     });
+    if (reset) {
+      reset.addEventListener("click", () => { viewport = null; render(); });
+    }
+
+    // Hover tooltip. Uses event delegation so dynamically-rendered
+    // dots all hook in. Tooltip is positioned relative to the
+    // scatter-frame container.
+    function showTooltip(target, clientX, clientY) {
+      if (!tooltip || !frame) return;
+      const ds = target.dataset;
+      const isClosed = ds.openness === "proprietary";
+      const opennessLabel = {
+        open: "Open",
+        "open-weights": "Open-weights",
+        "source-available": "Source-available",
+        proprietary: "Proprietary",
+      }[ds.openness] || ds.openness;
+      tooltip.innerHTML = `
+        <p class="font-serif text-sm text-[var(--color-text)] mb-1">${ds.name}</p>
+        <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mb-2">
+          ${ds.famLabel} family · ${opennessLabel}
+        </p>
+        <p class="font-mono text-xs text-[var(--color-text-muted)] mb-0.5">
+          <span class="text-[var(--color-text-subtle)]">${ds.xLabel}:</span> <span class="text-[var(--color-text)] tabular-nums">${ds.xVal}</span>
+        </p>
+        <p class="font-mono text-xs text-[var(--color-text-muted)] mb-2">
+          <span class="text-[var(--color-text-subtle)]">${ds.yLabel}:</span> <span class="text-[var(--color-text)] tabular-nums">${ds.yVal}</span>
+        </p>
+        <p class="font-mono text-[10px] text-[var(--color-text-subtle)]">Click for full page →</p>
+      `;
+      tooltip.classList.remove("hidden");
+      // Position: prefer right of cursor, flip left if it would clip
+      const frameRect = frame.getBoundingClientRect();
+      const tipRect = tooltip.getBoundingClientRect();
+      const margin = 8;
+      let left = clientX - frameRect.left + 12;
+      let top = clientY - frameRect.top + 12;
+      if (left + tipRect.width > frameRect.width - margin) {
+        left = clientX - frameRect.left - tipRect.width - 12;
+      }
+      if (top + tipRect.height > frameRect.height - margin) {
+        top = clientY - frameRect.top - tipRect.height - 12;
+      }
+      tooltip.style.left = `${Math.max(margin, left)}px`;
+      tooltip.style.top = `${Math.max(margin, top)}px`;
+    }
+    function hideTooltip() {
+      if (tooltip) tooltip.classList.add("hidden");
+    }
+
+    svg.addEventListener("mousemove", (e) => {
+      const target = e.target.closest(".scatter-dot");
+      if (target) {
+        showTooltip(target, e.clientX, e.clientY);
+      } else {
+        hideTooltip();
+      }
+    });
+    svg.addEventListener("mouseleave", hideTooltip);
+
+    // Pan + zoom. svgPoint(e) converts a mouse event into chart-area
+    // coordinates (PAD..PAD+PLOT_W).
+    function svgPoint(e) {
+      const rect = svg.getBoundingClientRect();
+      const scale = W / rect.width;
+      return {
+        x: (e.clientX - rect.left) * scale,
+        y: (e.clientY - rect.top) * scale,
+      };
+    }
+    function currentExtent() {
+      // Read the current x/y range from active state. Returns log-aware bounds.
+      const xKey = xSel.value, yKey = ySel.value;
+      const xMeta = metricByKey[xKey], yMeta = metricByKey[yKey];
+      const xs = rows.filter((r) => r.metrics[xKey] != null && r.metrics[yKey] != null).map((r) => r.metrics[xKey]);
+      const ys = rows.filter((r) => r.metrics[xKey] != null && r.metrics[yKey] != null).map((r) => r.metrics[yKey]);
+      const ax = viewport ? viewport.x : [Math.min(...xs), Math.max(...xs)];
+      const ay = viewport ? viewport.y : [Math.min(...ys), Math.max(...ys)];
+      return { xMeta, yMeta, ax, ay };
+    }
+    function pxToValue(meta, px, lo, hi, pxLo, pxHi) {
+      const log = meta.log && lo > 0;
+      const dLo = log ? Math.log10(lo) : lo;
+      const dHi = log ? Math.log10(hi) : hi;
+      const frac = (px - pxLo) / (pxHi - pxLo);
+      const d = dLo + frac * (dHi - dLo);
+      return log ? Math.pow(10, d) : d;
+    }
+
+    // Drag: pan (no modifier) or box-zoom (shift). Mousedown captures
+    // start; mousemove updates either viewport or selection box;
+    // mouseup commits.
+    let drag = null;
+    svg.addEventListener("mousedown", (e) => {
+      if (e.button !== 0) return;
+      // Don't start drag on a dot — let click navigate
+      if (e.target.closest(".scatter-dot")) return;
+      const pt = svgPoint(e);
+      if (pt.x < PAD || pt.x > W - PAD || pt.y < PAD || pt.y > H - PAD) return;
+      drag = {
+        startPt: pt,
+        lastPt: pt,
+        mode: e.shiftKey ? "box" : "pan",
+        startExtent: currentExtent(),
+      };
+      svg.style.cursor = e.shiftKey ? "crosshair" : "grabbing";
+      hideTooltip();
+      e.preventDefault();
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (!drag) return;
+      const pt = svgPoint(e);
+      if (drag.mode === "pan") {
+        // Translate viewport by the difference between last and current pt.
+        const { xMeta, yMeta, ax, ay } = drag.startExtent;
+        const dx = drag.startPt.x - pt.x;
+        const dy = pt.y - drag.startPt.y;
+        // Convert pixel-deltas into data-deltas (in data space, log-aware).
+        const xLog = xMeta.log && ax[0] > 0;
+        const yLog = yMeta.log && ay[0] > 0;
+        const dataDx = (xLog ? (Math.log10(ax[1]) - Math.log10(ax[0])) : (ax[1] - ax[0])) * (dx / PLOT_W);
+        const dataDy = (yLog ? (Math.log10(ay[1]) - Math.log10(ay[0])) : (ay[1] - ay[0])) * (dy / PLOT_H);
+        const newXLo = xLog ? Math.pow(10, Math.log10(ax[0]) + dataDx) : ax[0] + dataDx;
+        const newXHi = xLog ? Math.pow(10, Math.log10(ax[1]) + dataDx) : ax[1] + dataDx;
+        const newYLo = yLog ? Math.pow(10, Math.log10(ay[0]) + dataDy) : ay[0] + dataDy;
+        const newYHi = yLog ? Math.pow(10, Math.log10(ay[1]) + dataDy) : ay[1] + dataDy;
+        viewport = { x: [newXLo, newXHi], y: [newYLo, newYHi] };
+        render();
+      } else if (drag.mode === "box") {
+        // Update the dashed selection box.
+        const box = svg.querySelector("#scatter-box");
+        if (box) {
+          const x = Math.min(drag.startPt.x, pt.x);
+          const y = Math.min(drag.startPt.y, pt.y);
+          const w = Math.abs(pt.x - drag.startPt.x);
+          const h = Math.abs(pt.y - drag.startPt.y);
+          box.setAttribute("x", x);
+          box.setAttribute("y", y);
+          box.setAttribute("width", w);
+          box.setAttribute("height", h);
+          box.style.display = "block";
+        }
+      }
+      drag.lastPt = pt;
+    });
+    window.addEventListener("mouseup", (e) => {
+      if (!drag) return;
+      if (drag.mode === "box") {
+        // Commit box-zoom: convert pixel rect to data-space viewport.
+        const pt = svgPoint(e);
+        const x0 = Math.min(drag.startPt.x, pt.x);
+        const x1 = Math.max(drag.startPt.x, pt.x);
+        const y0 = Math.min(drag.startPt.y, pt.y);
+        const y1 = Math.max(drag.startPt.y, pt.y);
+        const { xMeta, yMeta, ax, ay } = drag.startExtent;
+        if (x1 - x0 > 6 && y1 - y0 > 6) {
+          const newXLo = pxToValue(xMeta, x0, ax[0], ax[1], PAD, W - PAD);
+          const newXHi = pxToValue(xMeta, x1, ax[0], ax[1], PAD, W - PAD);
+          // Y is inverted in pixels — top of box = higher y value.
+          const newYHi = pxToValue(yMeta, y0, ay[0], ay[1], H - PAD, PAD);
+          const newYLo = pxToValue(yMeta, y1, ay[0], ay[1], H - PAD, PAD);
+          viewport = { x: [newXLo, newXHi], y: [newYLo, newYHi] };
+          render();
+        } else {
+          // Tiny drag = treated as click; re-render to clear the box.
+          render();
+        }
+      }
+      svg.style.cursor = "grab";
+      drag = null;
+    });
+
+    // Wheel = zoom centered on cursor. Positive deltaY = zoom out.
+    svg.addEventListener("wheel", (e) => {
+      const pt = svgPoint(e);
+      if (pt.x < PAD || pt.x > W - PAD || pt.y < PAD || pt.y > H - PAD) return;
+      e.preventDefault();
+      const { xMeta, yMeta, ax, ay } = currentExtent();
+      const zoom = e.deltaY > 0 ? 1.25 : 0.8;
+      // Cursor in data space:
+      const xCursor = pxToValue(xMeta, pt.x, ax[0], ax[1], PAD, W - PAD);
+      const yCursor = pxToValue(yMeta, pt.y, ay[0], ay[1], H - PAD, PAD);
+      function rescale(meta, cursor, [lo, hi]) {
+        const log = meta.log && lo > 0;
+        const dCursor = log ? Math.log10(cursor) : cursor;
+        const dLo = log ? Math.log10(lo) : lo;
+        const dHi = log ? Math.log10(hi) : hi;
+        const newLo = dCursor - (dCursor - dLo) * zoom;
+        const newHi = dCursor + (dHi - dCursor) * zoom;
+        return [log ? Math.pow(10, newLo) : newLo, log ? Math.pow(10, newHi) : newHi];
+      }
+      viewport = {
+        x: rescale(xMeta, xCursor, ax),
+        y: rescale(yMeta, yCursor, ay),
+      };
+      render();
+    }, { passive: false });
+
     render();
   })();
 
