@@ -33,7 +33,7 @@
  * bias, route the row through a separate Gemini / GPT session and
  * write back via this same `update` command.
  */
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
@@ -42,6 +42,40 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 const LEDGER_PATH = resolve(ROOT, "audit/CLAIMS_LEDGER.md");
 const STORE = resolve(ROOT, "sources");
+const LOCK_PATH = resolve(ROOT, "audit/.ledger-update.lock");
+
+// Synchronous file lock around ledger updates. Multiple agents running
+// `update` in parallel would otherwise race: each does read-modify-
+// write on the same markdown file, and the agent that reads first
+// loses its update when a later agent's write overwrites it. The lock
+// serializes the critical section while letting agents' reasoning run
+// in parallel.
+function syncSleep(ms) {
+  const view = new Int32Array(new SharedArrayBuffer(4));
+  Atomics.wait(view, 0, 0, ms);
+}
+function withLedgerLock(fn, timeoutMs = 60000) {
+  const start = Date.now();
+  let fd;
+  while (true) {
+    try {
+      fd = openSync(LOCK_PATH, "wx");
+      break;
+    } catch (e) {
+      if (e.code !== "EEXIST") throw e;
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(`ledger lock timeout after ${timeoutMs}ms; stale lock at ${LOCK_PATH}?`);
+      }
+      syncSleep(50 + Math.floor(Math.random() * 100));
+    }
+  }
+  try {
+    return fn();
+  } finally {
+    try { closeSync(fd); } catch {}
+    try { unlinkSync(LOCK_PATH); } catch {}
+  }
+}
 
 function canonicalize(url) {
   try {
@@ -86,9 +120,13 @@ function loadLedger() {
   }
   if (headerLine === -1) return { lines, headerLine: -1, rows: [] };
   const rows = [];
+  // The ledger has grown over time and now contains mid-file section
+  // markers ("## --- Parallel verification pass... ---") between row
+  // blocks. Skip non-pipe lines instead of breaking so every row gets
+  // parsed regardless of what's interleaved.
   for (let i = headerLine + 2; i < lines.length; i++) {
     const line = lines[i];
-    if (!line.startsWith("|")) break;
+    if (!line.startsWith("|")) continue;
     const cells = line.split("|").slice(1, -1).map((c) => c.trim());
     if (cells.length < 10) continue;
     const [id, surface, location, claim, lane, type, citedSources, verdict, lastVerified, notes] = cells;
@@ -236,10 +274,19 @@ function emitForRow(row) {
   return false;
 }
 
+function getId(args) {
+  // Accept --id <id> form (so callers whose harness treats dotted
+  // positional args as file paths can still pass row IDs) or
+  // positional <id>.
+  const idx = args.indexOf("--id");
+  if (idx >= 0 && args[idx + 1]) return args[idx + 1];
+  return args.find((a) => !a.startsWith("--"));
+}
+
 function cmdShow(args) {
-  const id = args.find((a) => !a.startsWith("--"));
+  const id = getId(args);
   if (!id) {
-    console.error("usage: verify_entailment.mjs show <row-id>");
+    console.error("usage: verify_entailment.mjs show <row-id>  (or --id <row-id>)");
     process.exit(1);
   }
   const { rows } = loadLedger();
@@ -272,12 +319,12 @@ function flag(args, name) {
 }
 
 function cmdUpdate(args) {
-  const id = args.find((a) => !a.startsWith("--"));
+  const id = getId(args);
   const verdict = flag(args, "--verdict");
   const evidence = flag(args, "--evidence") || "";
   const notes = flag(args, "--notes") || "";
   if (!id || !verdict) {
-    console.error('usage: verify_entailment.mjs update <row-id> --verdict X [--evidence "..."] [--notes "..."]');
+    console.error('usage: verify_entailment.mjs update <row-id> --verdict X [--evidence "..."] [--notes "..."]  (row-id may also be passed as --id <row-id>)');
     process.exit(1);
   }
   const allowed = new Set([
@@ -290,24 +337,26 @@ function cmdUpdate(args) {
     console.error(`[verify] unknown verdict: ${verdict}`);
     process.exit(1);
   }
-  const state = loadLedger();
-  const row = state.rows.find((r) => r.id === id);
-  if (!row) {
-    console.error(`[verify] row not found: ${id}`);
-    process.exit(1);
-  }
-  const today = new Date().toISOString().slice(0, 10);
-  const combined = (
-    (evidence ? `evidence: ${esc(evidence).slice(0, 80)}... ` : "") +
-    esc(notes)
-  ).slice(0, 200);
-  writeLedgerWithUpdates(state, [{
-    ...row,
-    verdict,
-    lastVerified: today,
-    notes: combined,
-  }]);
-  console.log(`[verify] ${id}: ${verdict}`);
+  withLedgerLock(() => {
+    const state = loadLedger();
+    const row = state.rows.find((r) => r.id === id);
+    if (!row) {
+      console.error(`[verify] row not found: ${id}`);
+      process.exit(1);
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    const combined = (
+      (evidence ? `evidence: ${esc(evidence).slice(0, 80)}... ` : "") +
+      esc(notes)
+    ).slice(0, 200);
+    writeLedgerWithUpdates(state, [{
+      ...row,
+      verdict,
+      lastVerified: today,
+      notes: combined,
+    }]);
+    console.log(`[verify] ${id}: ${verdict}`);
+  });
 }
 
 function esc(s) {

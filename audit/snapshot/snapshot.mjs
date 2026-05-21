@@ -211,6 +211,19 @@ function listAllUrls() {
   for (const r of loadYaml("data/reading-lists.yaml").readings) {
     if (r.url.startsWith("http")) urls.add(r.url);
   }
+  for (const m of loadYaml("data/models.yaml").models) {
+    for (const s of m.sources || []) {
+      if (s.url) urls.add(s.url);
+    }
+    // Benchmark entries can each carry a source URL.
+    for (const [, bench] of Object.entries(m.benchmarks || {})) {
+      if (bench && bench.source) urls.add(bench.source);
+    }
+    // Reception quotes carry primary-source URLs too.
+    for (const q of m.reception || []) {
+      if (q && q.url) urls.add(q.url);
+    }
+  }
   return Array.from(urls);
 }
 

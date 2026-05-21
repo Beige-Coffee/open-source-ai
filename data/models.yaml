@@ -103,7 +103,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 8030000000
+    params_total: 8000000000
     params_active: 8030000000
     context_window: 8192
     attention_variant: gqa
@@ -185,7 +185,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70600000000
+    params_total: 70B
     params_active: 70600000000
     context_window: 8192
     attention_variant: gqa
@@ -358,7 +358,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70600000000
+    params_total: 70000000000
     params_active: 70600000000
     context_window: 131072
     attention_variant: gqa
@@ -545,7 +545,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 70600000000
+    params_total: 70000000000
     params_active: 70600000000
     context_window: 131072
     attention_variant: gqa
@@ -734,7 +734,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 7240000000
+    params_total: 7000000000
     params_active: 7240000000
     context_window: 8192
     attention_variant: hybrid-gqa-sliding
@@ -1080,8 +1080,8 @@ models:
     developer: DeepSeek
     developer_country: CN
     type: chat
-    released_date: "2024-05-06"
-    weights_released_date: "2024-05-06"
+    released_date: "2024-05-07"
+    weights_released_date: "2024-05-07"
     paper_date: "2024-05-07"
     openness: open
     license: DeepSeek License
@@ -1455,13 +1455,13 @@ models:
     training_code_released: true
     training_logs_released: true
     architecture: dense
-    params_total: 7300000000
+    params_total: 7000000000
     params_active: 7300000000
     context_window: 4096
     attention_variant: mha
     position_encoding: rope
     tokenizer: olmo
-    pretraining_tokens: 5000000000000
+    pretraining_tokens: 4050000000000
     post_training:
       - sft
       - dpo
@@ -1611,7 +1611,7 @@ models:
     training_code_released: false
     training_logs_released: false
     architecture: dense
-    params_total: 14700000000
+    params_total: 14000000000
     params_active: 14700000000
     context_window: 16384
     attention_variant: gqa
@@ -1685,8 +1685,8 @@ models:
     developer: Moonshot AI
     developer_country: CN
     type: instruct
-    released_date: "2025-07-15"
-    weights_released_date: "2025-07-15"
+    released_date: "2025-07-11"
+    weights_released_date: "2025-07-11"
     openness: open
     license: Modified MIT
     osi_approved: false
@@ -3405,8 +3405,8 @@ models:
     developer: OpenAI
     developer_country: US
     type: chat
-    released_date: "2022-11-30"
-    weights_released_date: "2022-11-30"
+    released_date: "2023-03-01"
+    weights_released_date: "2023-03-01"
     openness: proprietary
     license: Proprietary
     osi_approved: false
@@ -3841,8 +3841,8 @@ models:
     developer: Technology Innovation Institute
     developer_country: AE
     type: chat
-    released_date: "2023-09-06"
-    weights_released_date: "2023-09-06"
+    released_date: "2023-09-04"
+    weights_released_date: "2023-09-04"
     openness: source-available
     license: Falcon-180B TII License
     osi_approved: false
@@ -3929,7 +3929,7 @@ models:
         as_of: "2025-03-12"
         source: https://huggingface.co/google/gemma-3-27b-it
       humaneval:
-        score: 48.8
+        score: 87.8
         as_of: "2025-03-12"
         source: https://huggingface.co/google/gemma-3-27b-it
     quantizations_available:
@@ -4030,8 +4030,8 @@ models:
     developer: Alibaba
     developer_country: CN
     type: reasoning
-    released_date: "2024-11-28"
-    weights_released_date: "2024-11-28"
+    released_date: "2024-11-27"
+    weights_released_date: "2024-11-27"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -4370,7 +4370,7 @@ models:
       - title: Llama-3.1-Tulu-3-70B model card
         url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-70B
     lineage:
-      parent: llama-3-1-70b-instruct
+      parent: llama-3-1-70b
       note: >-
         Post-trained from Llama 3.1 70B base; fully open recipe (SFT + DPO + RLVR). Weights inherit the Llama 3.1
         Community License from the base.
@@ -4697,8 +4697,8 @@ models:
     developer: BigCode
     developer_country: FR
     type: code
-    released_date: "2024-02-29"
-    weights_released_date: "2024-02-29"
+    released_date: "2024-02-28"
+    weights_released_date: "2024-02-28"
     paper_date: "2024-02-29"
     openness: source-available
     license: BigCode OpenRAIL-M v1
@@ -4769,8 +4769,8 @@ models:
     developer: Alibaba
     developer_country: CN
     type: instruct
-    released_date: "2024-06-07"
-    weights_released_date: "2024-06-07"
+    released_date: "2024-06-06"
+    weights_released_date: "2024-06-06"
     openness: source-available
     license: Tongyi Qianwen License
     osi_approved: false
@@ -4848,8 +4848,8 @@ models:
     developer: Alibaba
     developer_country: CN
     type: instruct
-    released_date: "2025-04-29"
-    weights_released_date: "2025-04-29"
+    released_date: "2025-04-28"
+    weights_released_date: "2025-04-28"
     openness: open
     license: Apache-2.0
     osi_approved: true
@@ -4891,3 +4891,2329 @@ models:
       as_of: "2026-05-19"
       source: https://artificialanalysis.ai/models
       via_artificial_analysis: true
+  - slug: claude-haiku-4-5
+    display_name: Claude Haiku 4.5
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2025-10-15"
+    weights_released_date: "2025-10-15"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 200000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    benchmarks:
+      swe_bench_verified:
+        score: 73.3
+        as_of: "2025-10-15"
+        source: https://www.anthropic.com/news/claude-haiku-4-5
+      terminal_bench:
+        score: 41.75
+        as_of: "2025-10-15"
+        source: https://www.anthropic.com/news/claude-haiku-4-5
+        variant: with 32K thinking budget
+    release_context: >-
+      Small-tier 4.5 model released October 15 2025 at $1 / $5 per million tokens, one-third the Sonnet 4 price.
+      Anthropic positioned it as matching Sonnet 4 on coding and computer use while running 4-5x faster than Sonnet 4.5.
+      First Haiku to include extended thinking, computer use, and explicit context awareness.
+    notable_innovations:
+      - First Haiku with extended thinking
+      - First Haiku with computer use
+      - Explicit context-window awareness
+    sources:
+      - title: Introducing Claude Haiku 4.5 (Anthropic, Oct 15 2025)
+        url: https://www.anthropic.com/news/claude-haiku-4-5
+      - title: Claude Haiku 4.5 product page
+        url: https://www.anthropic.com/claude/haiku
+    cost:
+      input_per_mtok_usd: 1
+      output_per_mtok_usd: 5
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-haiku-4-5
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-3-5-haiku
+      note: First Haiku-tier model in the 4.5 generation.
+  - slug: claude-opus-4-1
+    display_name: Claude Opus 4.1
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2025-08-05"
+    weights_released_date: "2025-08-05"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 200000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    benchmarks:
+      swe_bench_verified:
+        score: 74.5
+        as_of: "2025-08-05"
+        source: https://www.anthropic.com/news/claude-opus-4-1
+    release_context: >-
+      Drop-in upgrade for Opus 4 released August 5 2025, same pricing and API surface. Anthropic flagged multi-file code
+      refactoring and agentic search as the main improvements. Extended thinking budget of up to 64K tokens carries over
+      from Opus 4.
+    notable_innovations:
+      - Multi-file refactoring gains over Opus 4
+      - Drop-in API replacement at same pricing
+    sources:
+      - title: Claude Opus 4.1 (Anthropic, Aug 5 2025)
+        url: https://www.anthropic.com/news/claude-opus-4-1
+    cost:
+      input_per_mtok_usd: 15
+      output_per_mtok_usd: 75
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-opus-4-1
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-4-opus
+      children:
+        - claude-opus-4-5
+      note: Minor Opus refresh, same pricing and capabilities envelope.
+  - slug: claude-opus-4-5
+    display_name: Claude Opus 4.5
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2025-11-24"
+    weights_released_date: "2025-11-24"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 200000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    release_context: >-
+      Anthropic's first Opus to cross 80 percent on SWE-Bench Verified per the lab's own numbers, released November 24
+      2025 at a two-thirds price cut versus Opus 4.1 ($5 / $25 per Mtok). Added an effort parameter for adjustable
+      reasoning intensity, with medium-effort runs matching Sonnet 4.5 using 76 percent fewer output tokens.
+    notable_innovations:
+      - Adjustable effort parameter for reasoning intensity
+      - Two-thirds price cut versus Opus 4.1
+      - Plan Mode with clarifying questions in Claude Code
+    sources:
+      - title: Introducing Claude Opus 4.5 (Anthropic, Nov 24 2025)
+        url: https://www.anthropic.com/news/claude-opus-4-5
+    cost:
+      input_per_mtok_usd: 5
+      output_per_mtok_usd: 25
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-opus-4-5
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-opus-4-1
+      children:
+        - claude-opus-4-6
+      note: Two-thirds price cut versus Opus 4.1; first Opus over 80% SWE-Bench Verified per Anthropic.
+  - slug: claude-opus-4-6
+    display_name: Claude Opus 4.6
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2026-02-05"
+    weights_released_date: "2026-02-05"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    benchmarks:
+      mrcr_v2_8needle_1m:
+        score: 76
+        as_of: "2026-02-05"
+        source: https://www.anthropic.com/news/claude-opus-4-6
+        variant: 8-needle, 1M context
+    release_context: >-
+      First Opus-class model with a 1M-token context window (in beta), released February 5 2026. Headline feature was
+      agent teams in Claude Code, letting multiple agents work in parallel and coordinate autonomously. Long-context
+      pricing premium kicks in above 200K input tokens ($10 / $37.50 per Mtok).
+    notable_innovations:
+      - 1M context window (beta) for Opus-tier
+      - Agent teams in Claude Code (parallel agents with autonomous coordination)
+      - Adaptive thinking and context compaction
+    sources:
+      - title: Introducing Claude Opus 4.6 (Anthropic, Feb 5 2026)
+        url: https://www.anthropic.com/news/claude-opus-4-6
+    cost:
+      input_per_mtok_usd: 5
+      output_per_mtok_usd: 25
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-opus-4-6
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-opus-4-5
+      children:
+        - claude-opus-4-7
+      note: First Opus with 1M context; agent teams feature in Claude Code.
+  - slug: claude-sonnet-4-6
+    display_name: Claude Sonnet 4.6
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2026-02-17"
+    weights_released_date: "2026-02-17"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    benchmarks:
+      swe_bench_verified:
+        score: 80.2
+        as_of: "2026-02-17"
+        source: https://www.anthropic.com/news/claude-sonnet-4-6
+        variant: with prompt modification
+    release_context: >-
+      Mid-tier Sonnet refresh shipped February 17 2026 at the same $3 / $15 pricing as Sonnet 4.5, with a 1M context
+      window in beta. Default model for Free and Pro plans on Claude.ai at launch. Anthropic reported Claude Code users
+      preferred Sonnet 4.6 over Sonnet 4.5 roughly 70 percent of the time.
+    notable_innovations:
+      - 1M context window (beta) at Sonnet-tier
+      - Adaptive thinking and context compaction
+      - Major OSWorld computer-use gains
+    sources:
+      - title: Introducing Claude Sonnet 4.6 (Anthropic, Feb 17 2026)
+        url: https://www.anthropic.com/news/claude-sonnet-4-6
+    cost:
+      input_per_mtok_usd: 3
+      output_per_mtok_usd: 15
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-sonnet-4-6
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-4-5-sonnet
+      note: Incremental Sonnet refresh with 1M context beta.
+  - slug: claude-opus-4-7
+    display_name: Claude Opus 4.7
+    family: claude
+    developer: Anthropic
+    developer_country: US
+    type: reasoning
+    released_date: "2026-04-16"
+    weights_released_date: "2026-04-16"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+      - constitutional
+    release_context: >-
+      First Claude with high-resolution image input, accepting up to 2576 pixels on the long edge (about 3.75
+      megapixels, more than triple prior Claudes). Released April 16 2026 at unchanged Opus 4.6 pricing of $5 / $25 per
+      Mtok with the 1M context standard. Adds a new xhigh effort level for finer reasoning-versus-latency control.
+    notable_innovations:
+      - High-resolution image input (2576 px / 3.75 MP long edge)
+      - New xhigh effort level
+      - 1M context at standard pricing (no long-context premium)
+    sources:
+      - title: Introducing Claude Opus 4.7 (Anthropic, Apr 16 2026)
+        url: https://www.anthropic.com/news/claude-opus-4-7
+      - title: Claude Opus 4.7 on Amazon Bedrock (AWS, Apr 16 2026)
+        url: https://aws.amazon.com/blogs/aws/introducing-anthropics-claude-opus-4-7-model-in-amazon-bedrock/
+    cost:
+      input_per_mtok_usd: 5
+      output_per_mtok_usd: 25
+      vendor: Anthropic API
+      as_of: "2026-05-20"
+      source: https://www.anthropic.com/news/claude-opus-4-7
+      via_artificial_analysis: false
+    lineage:
+      parent: claude-opus-4-6
+      note: High-res vision is the headline change; pricing unchanged from Opus 4.6.
+  - slug: gpt-5
+    display_name: GPT-5
+    family: gpt-5
+    developer: OpenAI
+    developer_country: US
+    type: reasoning
+    released_date: "2025-08-07"
+    weights_released_date: "2025-08-07"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 400000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      aime_2025:
+        score: 94.6
+        as_of: "2025-08-07"
+        source: https://openai.com/index/introducing-gpt-5/
+        variant: without tools
+      swe_bench_verified:
+        score: 74.9
+        as_of: "2025-08-07"
+        source: https://openai.com/index/introducing-gpt-5/
+      aider_polyglot:
+        score: 88
+        as_of: "2025-08-07"
+        source: https://openai.com/index/introducing-gpt-5/
+    release_context: >-
+      OpenAI's first unified model, fusing the fast GPT-series with the deeper o-series reasoning track behind a
+      real-time router that picks per-turn. Launched August 7 2025 via livestream; immediately default in ChatGPT,
+      available in API and on the GitHub Models Playground. Ships in main, mini, nano, thinking, and thinking-mini
+      variants with low/medium/high/minimal effort settings.
+    notable_innovations:
+      - Unified router across fast and reasoning paths
+      - Effort and verbosity controls in the API
+      - Native multimodal pretraining
+    sources:
+      - title: Introducing GPT-5 (OpenAI, Aug 7 2025)
+        url: https://openai.com/index/introducing-gpt-5/
+      - title: GPT-5 (Wikipedia)
+        url: https://en.wikipedia.org/wiki/GPT-5
+    cost:
+      input_per_mtok_usd: 1.25
+      output_per_mtok_usd: 10
+      vendor: OpenAI API
+      as_of: "2026-05-20"
+      source: https://openai.com/api/pricing/
+      via_artificial_analysis: false
+    lineage:
+      parent: o3
+      children:
+        - gpt-5-1
+      note: First OpenAI model to fuse the GPT and o-series tracks via a real-time router.
+  - slug: gpt-5-1
+    display_name: GPT-5.1
+    family: gpt-5
+    developer: OpenAI
+    developer_country: US
+    type: reasoning
+    released_date: "2025-11-12"
+    weights_released_date: "2025-11-12"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 400000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    release_context: >-
+      Released November 12 2025 with three initial models; two more (Codex-Mini, Codex-Max) followed November 19.
+      Headline change is a warmer default tone plus eight selectable personalities. GPT-5.1 Instant gained adaptive
+      reasoning, deciding per-turn whether to think before responding.
+    notable_innovations:
+      - Eight selectable personality presets
+      - Adaptive reasoning in Instant mode
+      - GPT-5.1-Codex-Max for long-horizon agentic coding
+    sources:
+      - title: GPT-5.1 a smarter, more conversational ChatGPT (OpenAI, Nov 12 2025)
+        url: https://openai.com/index/gpt-5-1/
+      - title: GPT-5.1 (Wikipedia)
+        url: https://en.wikipedia.org/wiki/GPT-5.1
+    lineage:
+      parent: gpt-5
+      children:
+        - gpt-5-5
+      note: Tone and personality update, plus the Codex-Max agentic-coding variant.
+  - slug: gpt-5-5
+    display_name: GPT-5.5
+    family: gpt-5
+    developer: OpenAI
+    developer_country: US
+    type: reasoning
+    released_date: "2026-04-23"
+    weights_released_date: "2026-04-23"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      swe_bench_verified:
+        score: 88.7
+        as_of: "2026-04-23"
+        source: https://openai.com/index/introducing-gpt-5-5/
+      mmlu:
+        score: 92.4
+        as_of: "2026-04-23"
+        source: https://openai.com/index/introducing-gpt-5-5/
+      terminal_bench:
+        score: 82.7
+        as_of: "2026-04-23"
+        source: https://openai.com/index/introducing-gpt-5-5/
+        variant: Terminal-Bench 2.0
+      swe_bench_pro:
+        score: 58.6
+        as_of: "2026-04-23"
+        source: https://openai.com/index/introducing-gpt-5-5/
+    release_context: >-
+      Released April 23 2026, with GPT-5.5 and GPT-5.5 Pro hitting the API the next day. GPT-5.5 Instant replaced
+      GPT-5.3 Instant as the ChatGPT default May 5 2026. Expanded context to 1M tokens; pricing above 272K input doubles
+      input and 1.5x's output for the session.
+    notable_innovations:
+      - 1M context window in the API
+      - 60 percent hallucination-rate reduction reported by OpenAI
+      - GPT-5.5 Pro tier alongside the main model
+    sources:
+      - title: Introducing GPT-5.5 (OpenAI, Apr 23 2026)
+        url: https://openai.com/index/introducing-gpt-5-5/
+      - title: GPT-5.5 Instant smarter, clearer, more personalized (OpenAI, May 5 2026)
+        url: https://openai.com/index/gpt-5-5-instant/
+    lineage:
+      parent: gpt-5-1
+      note: 1M-token context and the SWE-Bench Verified jump are the headline changes.
+  - slug: gemini-3-pro
+    display_name: Gemini 3 Pro
+    family: gemini-3
+    developer: Google DeepMind
+    developer_country: US
+    type: reasoning
+    released_date: "2025-11-18"
+    weights_released_date: "2025-11-18"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      gpqa_diamond:
+        score: 91.9
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+      humanitys_last_exam:
+        score: 37.5
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+        variant: without tools
+      swe_bench_verified:
+        score: 76.2
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+      arc_agi_2:
+        score: 45.1
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+        variant: Deep Think with code execution
+      mmmu_pro:
+        score: 81
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+      lmarena:
+        score: 1501
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+        variant: Text Arena Elo
+      terminal_bench:
+        score: 54.2
+        as_of: "2025-11-18"
+        source: https://blog.google/products/gemini/gemini-3/
+        variant: Terminal-Bench 2.0
+    release_context: >-
+      DeepMind's flagship Gemini 3, announced by Sundar Pichai November 18 2025 with broader rollout on November 20.
+      Shipped with a Deep Think mode and an agentic Gemini Agent surface, plus the new Antigravity platform for
+      agent-first development.
+    notable_innovations:
+      - Deep Think reasoning mode
+      - Antigravity agent-development platform
+      - Integration across Search AI Mode, Gemini app, Vertex AI on day one
+    sources:
+      - title: A new era of intelligence with Gemini 3 (Google, Nov 18 2025)
+        url: https://blog.google/products/gemini/gemini-3/
+      - title: Gemini 3 Pro model card (Vertex AI)
+        url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/gemini/3-pro
+    lineage:
+      parent: gemini-2-5-pro
+      children:
+        - gemini-3-flash
+        - gemini-3-1-pro
+      note: Flagship of the Gemini 3 generation; ships with the new Deep Think mode.
+  - slug: gemini-3-flash
+    display_name: Gemini 3 Flash
+    family: gemini-3
+    developer: Google DeepMind
+    developer_country: US
+    type: reasoning
+    released_date: "2025-12-17"
+    weights_released_date: "2025-12-17"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      gpqa_diamond:
+        score: 90.4
+        as_of: "2025-12-17"
+        source: https://blog.google/products/gemini/gemini-3-flash/
+      humanitys_last_exam:
+        score: 33.7
+        as_of: "2025-12-17"
+        source: https://blog.google/products/gemini/gemini-3-flash/
+        variant: without tools
+      mmmu_pro:
+        score: 81.2
+        as_of: "2025-12-17"
+        source: https://blog.google/products/gemini/gemini-3-flash/
+      swe_bench_verified:
+        score: 78
+        as_of: "2025-12-17"
+        source: https://blog.google/products/gemini/gemini-3-flash/
+    release_context: >-
+      Speed tier of the Gemini 3 family, released December 17 2025. Google reported 3x the speed of Gemini 2.5 Pro while
+      outperforming it on coding and reasoning, with 30 percent fewer tokens on average for everyday tasks. Became the
+      default in the Gemini app and rolled into Search AI Mode at launch.
+    notable_innovations:
+      - Pro-grade reasoning at Flash latency
+      - 30 percent token reduction on average tasks
+      - Day-one default in Gemini app and Search AI Mode
+    sources:
+      - title: Gemini 3 Flash (Google, Dec 17 2025)
+        url: https://blog.google/products/gemini/gemini-3-flash/
+      - title: Gemini 3 Flash model card (Vertex AI)
+        url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-flash
+    cost:
+      input_per_mtok_usd: 0.5
+      output_per_mtok_usd: 3
+      vendor: Google Gemini API
+      as_of: "2026-05-20"
+      source: https://blog.google/products/gemini/gemini-3-flash/
+      via_artificial_analysis: false
+    lineage:
+      parent: gemini-3-pro
+      note: Speed-optimized Gemini 3 sibling at one-tenth Pro pricing.
+  - slug: gemini-3-1-pro
+    display_name: Gemini 3.1 Pro
+    family: gemini-3
+    developer: Google DeepMind
+    developer_country: US
+    type: reasoning
+    released_date: "2026-02-19"
+    weights_released_date: "2026-02-19"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      arc_agi_2:
+        score: 77.1
+        as_of: "2026-02-19"
+        source: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
+        variant: verified score
+    release_context: >-
+      Preview release of the Gemini 3.1 line, three months after Gemini 3 Pro. DeepMind highlighted complex reasoning
+      and code generation that can ship animated SVGs and synthesize entire dashboards from a prompt. Broader rollout to
+      Pro and Ultra subscribers followed May 4 2026.
+    notable_innovations:
+      - Double the ARC-AGI-2 score of Gemini 3 Pro per Google
+      - Direct SVG and dashboard generation from prompts
+    sources:
+      - title: Introducing Gemini 3.1 Pro (Google, Feb 19 2026)
+        url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
+      - title: Gemini 3.1 Pro model card (DeepMind)
+        url: https://deepmind.google/models/model-cards/gemini-3-1-pro/
+    lineage:
+      parent: gemini-3-pro
+      note: 3.1 line preview, three months after Gemini 3 Pro.
+  - slug: gemma-4-31b
+    display_name: Gemma 4 31B
+    family: gemma
+    developer: Google DeepMind
+    developer_country: US
+    type: instruct
+    released_date: "2026-04-02"
+    weights_released_date: "2026-04-02"
+    openness: open-weights
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 31000000000
+    params_active: 31000000000
+    context_window: 262144
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Flagship of the Gemma 4 open-weights family, released April 2 2026 under Apache 2.0 alongside a 26B MoE (activates
+      3.8B per token), an E4B effective-4B edge model, and an E2B. Built off Gemini 3 with native vision and audio,
+      140-plus language support, and up to 256K context. Google reported the 31B as the #3 open model on Arena AI's text
+      leaderboard at launch.
+    notable_innovations:
+      - Apache 2.0 across the full Gemma 4 size ladder
+      - Native audio input on edge variants
+      - 256K context on the larger sizes
+      - Built off the Gemini 3 line
+    sources:
+      - title: Gemma 4 (Google, Apr 2 2026)
+        url: https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/
+      - title: Gemma releases (Google AI)
+        url: https://ai.google.dev/gemma/docs/releases
+    lineage:
+      parent: gemma-3-27b-it
+      note: 31B dense flagship of the Gemma 4 family, sibling to a 26B MoE.
+  - slug: deepseek-v3-1
+    display_name: DeepSeek-V3.1
+    family: deepseek
+    developer: DeepSeek
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-08-21"
+    weights_released_date: "2025-08-21"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 671000000000
+    params_active: 37000000000
+    context_window: 128000
+    attention_variant: mla
+    position_encoding: rope-yarn
+    tokenizer: deepseek
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Hybrid V3.1 with one model serving both thinking and non-thinking modes, released August 21 2025. DeepSeek added
+      840B tokens of continued pretraining for long-context extension (32K and 128K phases) and shipped under MIT.
+      Pricing update took effect September 5 2025.
+    notable_innovations:
+      - Single checkpoint with hybrid thinking and non-thinking modes
+      - UE8M0 FP8 scale format for microscaling-compatible weights
+      - 840B-token long-context extension on top of V3 base
+    sources:
+      - title: DeepSeek-V3.1 release notes (Aug 21 2025)
+        url: https://api-docs.deepseek.com/news/news250821
+      - title: DeepSeek-V3.1 model card
+        url: https://huggingface.co/deepseek-ai/DeepSeek-V3.1
+    lineage:
+      parent: deepseek-v3
+      children:
+        - deepseek-v3-2
+      note: Hybrid V3.1 merges DeepSeek's chat and reasoning tracks behind one model.
+  - slug: deepseek-v3-2
+    display_name: DeepSeek-V3.2
+    family: deepseek
+    developer: DeepSeek
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-12-01"
+    weights_released_date: "2025-12-01"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 685000000000
+    params_active: 37000000000
+    attention_variant: dsa
+    position_encoding: rope-yarn
+    tokenizer: deepseek
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Successor to V3.2-Exp, released December 1 2025 with DeepSeek Sparse Attention for long-context efficiency.
+      Integrated reasoning with tool use through a new chat template, and a Speciale variant claimed gold-level
+      finishes on IMO, CMO, ICPC, and IOI 2025.
+    notable_innovations:
+      - DeepSeek Sparse Attention (DSA)
+      - Thinking with tools via new chat template
+      - V3.2-Speciale gold-level math and coding olympiad results
+    sources:
+      - title: DeepSeek-V3.2 release notes (Dec 1 2025)
+        url: https://api-docs.deepseek.com/news/news251201
+      - title: DeepSeek-V3.2 model card
+        url: https://huggingface.co/deepseek-ai/DeepSeek-V3.2
+    lineage:
+      parent: deepseek-v3-1
+      children:
+        - deepseek-v4-pro
+      note: Introduces DeepSeek Sparse Attention; Speciale variant aimed at math olympiads.
+  - slug: deepseek-v4-pro
+    display_name: DeepSeek-V4 Pro
+    family: deepseek-v4
+    developer: DeepSeek
+    developer_country: CN
+    type: reasoning
+    released_date: "2026-04-24"
+    weights_released_date: "2026-04-24"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 1600000000000
+    params_active: 49000000000
+    context_window: 1000000
+    attention_variant: hybrid-csa-hca
+    position_encoding: unknown
+    tokenizer: deepseek
+    pretraining_tokens: 32000000000000
+    post_training:
+      - sft
+      - grpo
+      - distillation
+    benchmarks:
+      livecodebench:
+        score: 93.5
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max, pass@1
+      codeforces:
+        score: 3206
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: rating, DeepSeek-V4-Pro-Max
+      mmlu_pro:
+        score: 87.5
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max
+      gsm8k:
+        score: 92.6
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max
+      humaneval:
+        score: 76.8
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max, pass@1
+      swe_bench_verified:
+        score: 80.6
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max
+      simpleqa_verified:
+        score: 57.9
+        as_of: "2026-04-24"
+        source: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+        variant: DeepSeek-V4-Pro-Max
+    release_context: >-
+      First V4-generation flagship, released April 24 2026 with a 1.6T-parameter MoE activating 49B per token. Combines
+      Compressed Sparse Attention and Heavily Compressed Attention to cut single-token inference FLOPs to 27 percent of
+      V3.2 and KV cache to 10 percent. 1M context is now the DeepSeek default. V4-Flash (284B / 13B active) shipped
+      alongside.
+    notable_innovations:
+      - Hybrid CSA + HCA attention
+      - Manifold-Constrained Hyper-Connections (mHC)
+      - Muon optimizer at this scale
+      - FP4 + FP8 mixed-precision MoE training
+      - 1M context as default
+    sources:
+      - title: DeepSeek-V4 release notes (Apr 24 2026)
+        url: https://api-docs.deepseek.com/news/news260424
+      - title: DeepSeek-V4-Pro model card
+        url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+    lineage:
+      parent: deepseek-v3-2
+      note: First V4 flagship; new hybrid attention and FP4 training stack.
+  - slug: qwen3-max
+    display_name: Qwen3 Max
+    family: qwen3
+    developer: Alibaba
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-09-23"
+    weights_released_date: "2025-09-23"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 1000000000000
+    params_active: 0
+    pretraining_tokens: 36000000000000
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      super_gpqa:
+        score: 65.1
+        as_of: "2025-09-23"
+        source: https://venturebeat.com/ai/qwen3-max-arrives-in-preview-with-1-trillion-parameters-blazing-fast
+        variant: Qwen3-Max-Instruct
+      aime_2025:
+        score: 81.6
+        as_of: "2025-09-23"
+        source: https://venturebeat.com/ai/qwen3-max-arrives-in-preview-with-1-trillion-parameters-blazing-fast
+      livecodebench:
+        score: 74.8
+        as_of: "2025-09-23"
+        source: https://venturebeat.com/ai/qwen3-max-arrives-in-preview-with-1-trillion-parameters-blazing-fast
+        variant: v6
+    release_context: >-
+      Trillion-parameter MoE, API-only via Qwen Chat and Alibaba Cloud at release. Pretrained on roughly 36T tokens.
+      Alibaba's first proprietary Qwen flagship at this scale, breaking the open-weights pattern. Supports more than
+      100 languages.
+    notable_innovations:
+      - First trillion-parameter Qwen
+      - 36T-token pretraining run
+      - Proprietary tier of the Qwen line
+    sources:
+      - title: Qwen3-Max preview announcement (Alibaba Qwen, Sep 23 2025)
+        url: https://x.com/Alibaba_Qwen/status/1963991502440562976
+      - title: Qwen3-Max-Preview release coverage (VentureBeat, Sep 2025)
+        url: https://venturebeat.com/ai/qwen3-max-arrives-in-preview-with-1-trillion-parameters-blazing-fast
+    lineage:
+      parent: qwen3-235b-a22b-instruct
+      note: Proprietary trillion-parameter Qwen variant.
+  - slug: qwen3-next-80b-a3b
+    display_name: Qwen3 Next 80B-A3B Instruct
+    family: qwen3
+    developer: Alibaba
+    developer_country: CN
+    type: instruct
+    released_date: "2025-09-11"
+    weights_released_date: "2025-09-11"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 80000000000
+    params_active: 3000000000
+    experts: 512
+    experts_active: 10
+    context_window: 262144
+    attention_variant: hybrid-gated-deltanet
+    position_encoding: rope-yarn
+    tokenizer: qwen
+    layers_count: 48
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      mmlu_pro:
+        score: 80.6
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      mmlu_redux:
+        score: 90.9
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      gpqa:
+        score: 72.9
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      aime_2025:
+        score: 69.5
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      livecodebench:
+        score: 56.6
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+        variant: v6
+      ifeval:
+        score: 87.6
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      arena_hard:
+        score: 82.7
+        as_of: "2025-09-11"
+        source: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+        variant: v2
+    release_context: >-
+      Preview of a new ultra-sparse Qwen architecture: 80B total, 3B active per token (3.75 percent of params), 512
+      experts with 10 routed plus 1 shared. Hybrid layout alternates Gated DeltaNet and gated attention. Alibaba
+      reported 10 percent of the training cost of Qwen3-32B and 10x the inference throughput beyond 32K context.
+    notable_innovations:
+      - Hybrid Gated DeltaNet + gated-attention layout
+      - 3.75 percent active-param fraction (80B / 3B)
+      - 1M-token extensibility via YaRN
+      - 10x inference throughput beyond 32K vs Qwen3-32B per Alibaba
+    sources:
+      - title: Qwen3-Next-80B-A3B-Instruct model card
+        url: https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct
+      - title: Qwen3-Next architecture overview (Alibaba Cloud, Sep 2025)
+        url: https://www.alibabacloud.com/blog/602536
+    lineage:
+      parent: qwen3-235b-a22b-instruct
+      note: New ultra-sparse Qwen architecture preview.
+  - slug: qwen3-vl-235b-a22b-instruct
+    display_name: Qwen3-VL 235B-A22B Instruct
+    family: qwen3
+    developer: Alibaba
+    developer_country: CN
+    type: instruct
+    released_date: "2025-09-23"
+    weights_released_date: "2025-09-23"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 235000000000
+    params_active: 22000000000
+    context_window: 262144
+    attention_variant: mrope-interleaved
+    position_encoding: rope-interleaved
+    tokenizer: qwen
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Vision-language flagship of the Qwen3 line, 235B total weights (about 471 GB). Adds Interleaved-MRoPE for video
+      reasoning, DeepStack multi-level ViT feature fusion, and Text-Timestamp Alignment for grounded event
+      localization. Shipped with both Instruct and Thinking variants under Apache 2.0; native context to 256K,
+      extensible to 1M.
+    notable_innovations:
+      - Interleaved-MRoPE for video reasoning
+      - DeepStack multi-level ViT fusion
+      - Text-Timestamp Alignment for grounded events
+      - 1M-token vision-language context
+    sources:
+      - title: Qwen3-VL repository (GitHub, Sep 2025)
+        url: https://github.com/QwenLM/Qwen3-VL
+      - title: Qwen3-VL-235B-A22B-Instruct model card
+        url: https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct
+    lineage:
+      parent: qwen3-235b-a22b-instruct
+      note: Vision-language flagship sibling to the text Qwen3 235B MoE.
+  - slug: qwen3-5-plus
+    display_name: Qwen3.5 Plus
+    family: qwen3-5
+    developer: Alibaba
+    developer_country: CN
+    type: reasoning
+    released_date: "2026-02-16"
+    weights_released_date: "2026-02-16"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 397000000000
+    params_active: 17000000000
+    experts: 512
+    context_window: 1000000
+    attention_variant: unknown
+    position_encoding: rope-yarn
+    tokenizer: qwen
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      mmlu_pro:
+        score: 87.8
+        as_of: "2026-02-16"
+        source: https://artificialanalysis.ai/articles/qwen3-5-397b-a17b-everything-you-need-to-know
+      gpqa_diamond:
+        score: 88.4
+        as_of: "2026-02-16"
+        source: https://artificialanalysis.ai/articles/qwen3-5-397b-a17b-everything-you-need-to-know
+      swe_bench_verified:
+        score: 80
+        as_of: "2026-02-16"
+        source: https://artificialanalysis.ai/articles/qwen3-5-397b-a17b-everything-you-need-to-know
+      terminal_bench:
+        score: 54
+        as_of: "2026-02-16"
+        source: https://artificialanalysis.ai/articles/qwen3-5-397b-a17b-everything-you-need-to-know
+        variant: Terminal-Bench 2.0
+    release_context: >-
+      Flagship of the Qwen 3.5 generation. 397B MoE activating 17B per token with 512 experts. First Qwen open-weights
+      model with native vision input. Per Alibaba's evals, the 397B-A17B outperforms the trillion-parameter Qwen3 Max on
+      several reasoning and coding benchmarks while running roughly 19x faster at 256K context.
+    notable_innovations:
+      - 397B / 17B-active MoE with 512 experts
+      - First open-weights Qwen with native vision
+      - 1M-context hosted variant
+    sources:
+      - title: Qwen3.5 397B-A17B everything you need to know (Artificial Analysis)
+        url: https://artificialanalysis.ai/articles/qwen3-5-397b-a17b-everything-you-need-to-know
+      - title: Qwen3.5 release coverage (VentureBeat, Feb 2026)
+        url: https://venturebeat.com/technology/alibabas-qwen-3-5-397b-a17-beats-its-larger-trillion-parameter-model-at-a
+    lineage:
+      parent: qwen3-235b-a22b-instruct
+      note: 397B MoE flagship of the 3.5 line, replacing the dense Qwen3 235B as the open headliner.
+  - slug: mistral-medium-3
+    display_name: Mistral Medium 3
+    family: mistral-medium
+    developer: Mistral AI
+    developer_country: EU
+    type: chat
+    released_date: "2025-05-07"
+    weights_released_date: "2025-05-07"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 128000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Mid-tier flagship released May 7 2025 at $0.40 / $2.00 per Mtok with a 128K context window. Mistral positioned it
+      as roughly 90 percent of Claude Sonnet 3.7 performance at a fraction of the cost, with deployment supported on
+      self-hosted setups starting at four GPUs.
+    notable_innovations:
+      - Hybrid, on-premises, and in-VPC deployment options
+      - Coding and STEM focus
+    sources:
+      - title: Mistral Medium 3 announcement (May 7 2025)
+        url: https://mistral.ai/news/mistral-medium-3
+      - title: Mistral Medium 3 model documentation
+        url: https://docs.mistral.ai/models/mistral-medium-3-25-05
+    cost:
+      input_per_mtok_usd: 0.4
+      output_per_mtok_usd: 2
+      vendor: Mistral La Plateforme
+      as_of: "2026-05-20"
+      source: https://mistral.ai/news/mistral-medium-3
+      via_artificial_analysis: false
+    lineage:
+      note: New mid-tier slot between Mistral Small and Large; proprietary, not weights-released.
+  - slug: mistral-large-3
+    display_name: Mistral Large 3
+    family: mistral-large
+    developer: Mistral AI
+    developer_country: EU
+    type: instruct
+    released_date: "2025-12-02"
+    weights_released_date: "2025-12-02"
+    openness: open-weights
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 675000000000
+    params_active: 41000000000
+    context_window: 256000
+    attention_variant: unknown
+    position_encoding: unknown
+    tokenizer: mistral
+    post_training:
+      - sft
+      - rlhf
+    training_hardware: H200
+    release_context: >-
+      Mistral's first MoE since the Mixtral series, released December 2 2025 as base and instruct under Apache 2.0.
+      675B total / 41B active, trained from scratch on 3000 NVIDIA H200 GPUs. Multimodal with a 256K context, distributed
+      day one on Amazon Bedrock, Azure Foundry, and Hugging Face.
+    notable_innovations:
+      - Mistral's first MoE since Mixtral
+      - Trained on 3000 H200 GPUs from scratch
+      - Apache 2.0 at 675B scale
+      - Native image understanding
+    sources:
+      - title: Introducing Mistral 3 (Dec 2 2025)
+        url: https://mistral.ai/news/mistral-3
+      - title: Mistral Large 3 governance card
+        url: https://legal.mistral.ai/ai-governance/models/mistral-large-3
+      - title: Mistral-Large-3-675B-Instruct-2512 model card
+        url: https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512
+    lineage:
+      parent: mistral-large-2
+      note: First Mistral MoE since the Mixtral series; 675B / 41B active under Apache 2.0.
+  - slug: grok-4
+    display_name: Grok 4
+    family: grok
+    developer: xAI
+    developer_country: US
+    type: reasoning
+    released_date: "2025-07-09"
+    weights_released_date: "2025-07-09"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 256000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      humanitys_last_exam:
+        score: 25.4
+        as_of: "2025-07-09"
+        source: https://x.ai/news/grok-4
+        variant: text-only, no tools
+      arc_agi_2:
+        score: 15.9
+        as_of: "2025-07-09"
+        source: https://x.ai/news/grok-4
+    release_context: >-
+      xAI's flagship after Grok 3, released July 9 2025 and formally announced the next day. Grok 4 Heavy variant
+      reported 50.7 percent on the text-only Humanity's Last Exam subset, a first for any model per xAI. A specialized
+      coding variant followed shortly after.
+    notable_innovations:
+      - Grok 4 Heavy variant with parallel agents
+      - 256K context window
+      - First model over 50 percent on HLE text-only per xAI
+    sources:
+      - title: Grok 4 launch (xAI, Jul 9 2025)
+        url: https://x.ai/news/grok-4
+      - title: xAI developer docs (models)
+        url: https://docs.x.ai/developers/models
+    lineage:
+      parent: grok-3
+      children:
+        - grok-4-1
+      note: xAI's first model to crack 50 percent on HLE text-only per the lab.
+  - slug: grok-4-1
+    display_name: Grok 4.1
+    family: grok
+    developer: xAI
+    developer_country: US
+    type: reasoning
+    released_date: "2025-11-17"
+    weights_released_date: "2025-11-17"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 2000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    benchmarks:
+      lmarena:
+        score: 1483
+        as_of: "2025-11-17"
+        source: https://x.com/xai/status/1990530499752980638
+        variant: Text Arena Elo, Grok 4.1 Thinking
+    release_context: >-
+      Incremental Grok 4 update released November 17 2025 after a two-week silent rollout where xAI ran live blind
+      evaluations and reported users picked 4.1 responses 64.78 percent of the time. Headline gains were emotional
+      intelligence and reduced hallucinations. Shipped alongside Grok 4.1 Fast with a 2M-token context window.
+    notable_innovations:
+      - 2M context window on Grok 4.1 Fast
+      - Live silent-rollout evaluation methodology
+      - Reduced hallucination via uncertainty signaling
+    sources:
+      - title: Grok 4.1 launch tweet (xAI, Nov 17 2025)
+        url: https://x.com/xai/status/1990530499752980638
+      - title: Grok 4.1 (xAI)
+        url: https://x.ai/news/grok-4-1
+    lineage:
+      parent: grok-4
+      children:
+        - grok-4-3
+      note: Conversational and reliability update; companion Grok 4.1 Fast adds 2M context.
+  - slug: grok-4-3
+    display_name: Grok 4.3
+    family: grok
+    developer: xAI
+    developer_country: US
+    type: reasoning
+    released_date: "2026-04-30"
+    weights_released_date: "2026-04-30"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: unknown
+    params_total: 0
+    params_active: 0
+    context_window: 2000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - rlhf
+    release_context: >-
+      xAI's most-intelligent-and-fastest model per the lab, released April 30 2026 after a Grok 4.3 Beta drop on April
+      17 for SuperGrok Heavy users. Native multimodal video understanding and direct PDF, spreadsheet, and PowerPoint
+      generation from chat. Reasoning is now always-on rather than toggleable.
+    notable_innovations:
+      - Always-on reasoning
+      - Native video understanding
+      - Direct PDF/XLSX/PPTX generation from chat
+    sources:
+      - title: Grok release notes (xAI)
+        url: https://grok.com/release-notes
+      - title: xAI launches Grok 4.3 (Artificial Analysis)
+        url: https://artificialanalysis.ai/articles/xai-launches-grok-4-3-with-improved-agentic-performance-and-lower-pricing
+    cost:
+      input_per_mtok_usd: 1.25
+      output_per_mtok_usd: 2.5
+      vendor: xAI API
+      as_of: "2026-05-20"
+      source: https://artificialanalysis.ai/articles/xai-launches-grok-4-3-with-improved-agentic-performance-and-lower-pricing
+      via_artificial_analysis: false
+    lineage:
+      parent: grok-4-1
+      note: Successor to Grok 4.2; always-on reasoning is the architectural shift.
+  - slug: command-a
+    display_name: Command A
+    family: command
+    developer: Cohere
+    developer_country: US
+    type: instruct
+    released_date: "2025-03-13"
+    weights_released_date: "2025-03-13"
+    openness: open-weights
+    license: CC-BY-NC-4.0
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 111000000000
+    params_active: 111000000000
+    context_window: 256000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      Cohere's most-performant model at release, replacing Command R+ as the enterprise flagship. 111B parameters,
+      256K context, 23-language support, and 150 percent throughput vs Command R+ on two A100s or H100s. Released
+      March 13 2025.
+    notable_innovations:
+      - Two-GPU inference (A100 or H100) for 111B
+      - 150 percent throughput vs Command R+
+      - 23-language enterprise focus
+    sources:
+      - title: Command A changelog (Cohere)
+        url: https://docs.cohere.com/v2/changelog/command-a
+      - title: Cohere Command A coverage (MarkTechPost, Mar 16 2025)
+        url: https://www.marktechpost.com/2025/03/16/cohere-released-command-a-a-111b-parameter-ai-model-with-256k-context-length-23-language-support-and-50-cost-reduction-for-enterprises/
+    lineage:
+      parent: command-r-plus
+      children:
+        - command-a-plus
+      note: Replaces Command R+ as Cohere's enterprise flagship.
+  - slug: command-a-plus
+    display_name: Command A+
+    family: command
+    developer: Cohere
+    developer_country: US
+    type: instruct
+    released_date: "2026-05-20"
+    weights_released_date: "2026-05-20"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 218000000000
+    params_active: 25000000000
+    context_window: 128000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    quantizations_available:
+      - bf16
+      - fp8
+      - w4a4
+    release_context: >-
+      Cohere's first full Apache 2.0 model, released May 20 2026 as a 218B MoE activating 25B per token. Aimed at
+      sovereign critical infrastructure deployments; fine-tuneable on classified data and runnable air-gapped.
+      Distributed in BF16, FP8, and a W4A4 4-bit format. Multimodal and multilingual across 48 languages.
+    notable_innovations:
+      - First Apache 2.0 Cohere model
+      - W4A4 4-bit native distribution
+      - Native citations via lossless quantization claim
+      - Sovereign-deployment focus (air-gapped, on-prem)
+    sources:
+      - title: Introducing Command A+ (Cohere, May 20 2026)
+        url: https://cohere.com/blog/command-a-plus
+      - title: Cohere releases Command A+ (Yahoo Finance, May 20 2026)
+        url: https://finance.yahoo.com/sectors/technology/articles/cohere-releases-command-open-source-153000207.html
+    lineage:
+      parent: command-a
+      note: First Apache 2.0 Cohere model; targets sovereign / air-gapped enterprise.
+  - slug: olmo-3-32b-instruct
+    display_name: OLMo 3 32B Instruct
+    family: olmo
+    developer: AI2
+    developer_country: US
+    type: instruct
+    released_date: "2025-11-20"
+    weights_released_date: "2025-11-20"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: true
+    training_code_released: true
+    training_logs_released: true
+    architecture: dense
+    params_total: 32000000000
+    params_active: 32000000000
+    context_window: 65536
+    attention_variant: gqa
+    position_encoding: rope
+    pretraining_tokens: 6000000000000
+    post_training:
+      - sft
+      - dpo
+      - rlvr
+    benchmarks:
+      math:
+        score: 96.1
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+      aime_2024:
+        score: 76.8
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+      humaneval_plus:
+        score: 91.4
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+      ifeval:
+        score: 89
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+      bigbenchhard:
+        score: 89.8
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+      mmlu:
+        score: 85.4
+        as_of: "2025-11-20"
+        source: https://allenai.org/blog/olmo3
+        variant: OLMo 3-Think 32B
+    release_context: >-
+      AI2's first 32B fully open frontier model, released November 20 2025 alongside a 7B and Base, Think, Instruct, and
+      RL-Zero variants. Built on the Dolma 3 9.3T-token corpus (5.9T used for pretraining) and the Dolci post-training
+      suite. All weights, data descriptions, intermediate checkpoints, and code released.
+    notable_innovations:
+      - Fully open: weights + data + code + intermediate checkpoints
+      - Four variant tracks (Base, Think, Instruct, RL-Zero)
+      - RL-Zero pathway openly released
+      - Dolma 3 and Dolci stacks public
+    sources:
+      - title: OLMo 3 (AI2, Nov 20 2025)
+        url: https://allenai.org/blog/olmo3
+      - title: OLMo-3-32B-Instruct model card
+        url: https://huggingface.co/allenai/OLMo-3-32B-Instruct
+    lineage:
+      parent: olmo-2-13b-instruct
+      note: AI2's first fully open 32B frontier model.
+  - slug: phi-4-mini-instruct
+    display_name: Phi-4-mini Instruct
+    family: phi-4
+    developer: Microsoft
+    developer_country: US
+    type: instruct
+    released_date: "2025-02-26"
+    weights_released_date: "2025-02-26"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 3800000000
+    params_active: 3800000000
+    context_window: 128000
+    attention_variant: gqa
+    position_encoding: rope
+    tokenizer: phi
+    vocab_size: 200064
+    pretraining_tokens: 5000000000000
+    training_hardware: A100
+    post_training:
+      - sft
+      - dpo
+    benchmarks:
+      mmlu:
+        score: 67.3
+        as_of: "2025-02-26"
+        source: https://huggingface.co/microsoft/Phi-4-mini-instruct
+        variant: 5-shot
+      gsm8k:
+        score: 88.6
+        as_of: "2025-02-26"
+        source: https://huggingface.co/microsoft/Phi-4-mini-instruct
+        variant: 8-shot CoT
+      math:
+        score: 64
+        as_of: "2025-02-26"
+        source: https://huggingface.co/microsoft/Phi-4-mini-instruct
+        variant: 0-shot CoT
+      bigbenchhard:
+        score: 70.4
+        as_of: "2025-02-26"
+        source: https://huggingface.co/microsoft/Phi-4-mini-instruct
+    release_context: >-
+      Small-tier Phi 4 released February 2025: 3.8B dense decoder-only with 128K context, 200K vocab, and grouped-query
+      attention. Trained on 5T tokens for 21 days on 512 A100-80G GPUs, with a data cutoff of June 2024. Supports 22
+      languages.
+    notable_innovations:
+      - 200K vocab for multilingual coverage
+      - 128K context at 3.8B
+      - MIT-licensed Phi entry
+    sources:
+      - title: Phi-4-mini and Phi-4-multimodal announcement (Microsoft, Feb 26 2025)
+        url: https://techcommunity.microsoft.com/blog/educatordeveloperblog/welcome-to-the-new-phi-4-models---microsoft-phi-4-mini--phi-4-multimodal/4386037
+      - title: Phi-4-mini-instruct model card
+        url: https://huggingface.co/microsoft/Phi-4-mini-instruct
+    lineage:
+      parent: phi-4
+      note: Small dense Phi-4 sibling; 200K vocab is the key tokenizer change.
+  - slug: phi-4-reasoning
+    display_name: Phi-4 Reasoning
+    family: phi-4
+    developer: Microsoft
+    developer_country: US
+    type: reasoning
+    released_date: "2025-04-30"
+    weights_released_date: "2025-04-30"
+    paper_date: "2025-04-30"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 14000000000
+    params_active: 14000000000
+    context_window: 32000
+    attention_variant: unknown
+    position_encoding: unknown
+    pretraining_tokens: 16000000000
+    training_hardware: H100
+    post_training:
+      - sft
+      - rl
+    benchmarks:
+      aime_2024:
+        score: 75.3
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      aime_2025:
+        score: 62.9
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      gpqa_diamond:
+        score: 65.8
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      livecodebench:
+        score: 53.8
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      humaneval_plus:
+        score: 92.9
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      mmlu_pro:
+        score: 74.3
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+      arena_hard:
+        score: 73.3
+        as_of: "2025-04-30"
+        source: https://huggingface.co/microsoft/Phi-4-reasoning
+    release_context: >-
+      14B reasoning-tuned Phi-4 derivative, SFT-only on curated reasoning traces and synthetic prompts. Trained in 2.5
+      days on 32 H100-80G GPUs over 16B tokens, with the Plus variant adding an RL stage. Microsoft positioned it as
+      DeepSeek R1 territory at much smaller scale.
+    notable_innovations:
+      - SFT-only reasoning recipe at 14B
+      - 16B-token reasoning post-training corpus
+      - Phi-4-reasoning-plus variant adds RL stage
+    sources:
+      - title: Phi-4 reasoning technical report (Microsoft Research, Apr 30 2025)
+        url: https://www.microsoft.com/en-us/research/publication/phi-4-reasoning-technical-report/
+      - title: Phi-4-reasoning model card
+        url: https://huggingface.co/microsoft/Phi-4-reasoning
+    lineage:
+      parent: phi-4
+      note: SFT-only reasoning derivative of Phi-4 at 14B.
+  - slug: apple-foundation-on-device-2025
+    display_name: Apple On-Device Foundation Model (2025)
+    family: apple-foundation
+    developer: Apple
+    developer_country: US
+    type: chat
+    released_date: "2025-06-09"
+    weights_released_date: "2025-06-09"
+    paper_date: "2025-07-17"
+    openness: proprietary
+    license: Proprietary
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 3000000000
+    params_active: 3000000000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    quantizations_available:
+      - 2bit
+    release_context: >-
+      Apple Intelligence's on-device foundation model, announced WWDC 2025 on June 9 and shipped in iOS 26. About 3B
+      parameters with KV-cache sharing across blocks (37.5 percent KV cache reduction) and 2-bit
+      quantization-aware training, paired with a server-side Parallel-Track Mixture-of-Experts model on Private Cloud
+      Compute. Foundation Models framework opened direct model access to developers.
+    notable_innovations:
+      - 2-bit quantization-aware training for on-device
+      - KV-cache sharing between blocks (37.5 percent reduction)
+      - Foundation Models framework for app developers
+      - Parallel-Track MoE server companion
+    sources:
+      - title: Apple Foundation Models 2025 updates (Apple, Jun 9 2025)
+        url: https://machinelearning.apple.com/research/apple-foundation-models-2025-updates
+      - title: Apple Intelligence Foundation Language Models Tech Report 2025 (arXiv)
+        url: https://arxiv.org/abs/2507.13575
+    lineage:
+      note: Apple's first developer-accessible foundation model; ships with iOS 26.
+  - slug: kimi-k2-thinking
+    display_name: Kimi K2 Thinking
+    family: kimi-k2
+    developer: Moonshot AI
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-11-06"
+    weights_released_date: "2025-11-06"
+    openness: open
+    license: Modified MIT
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 1000000000000
+    params_active: 32000000000
+    experts: 384
+    experts_active: 8
+    context_window: 256000
+    attention_variant: mla
+    position_encoding: rope
+    tokenizer: kimi
+    layers_count: 61
+    vocab_size: 160000
+    post_training:
+      - sft
+      - rlhf
+    quantizations_available:
+      - int4
+    benchmarks:
+      humanitys_last_exam:
+        score: 44.9
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+        variant: text-only, with tools
+      aime_2025:
+        score: 99.1
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+        variant: with tools
+      hmmt_2025:
+        score: 95.1
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+        variant: with tools
+      gpqa_diamond:
+        score: 84.5
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+      mmlu_pro:
+        score: 84.6
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+      mmlu_redux:
+        score: 94.4
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+      swe_bench_verified:
+        score: 71.3
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+        variant: with tools
+      browsecomp:
+        score: 60.2
+        as_of: "2025-11-06"
+        source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+        variant: agent search
+    release_context: >-
+      Moonshot's first reasoning model with native thinking interleaved with tool calls, released November 6 2025.
+      Sustains coherence across 200-300 tool invocations per the lab. Ships with native INT4 quantization-aware training
+      and a Modified MIT license.
+    notable_innovations:
+      - Native interleaved thinking and tool use
+      - Native INT4 quantization-aware training
+      - 200-300 tool-call agentic horizon
+    sources:
+      - title: Kimi K2 Thinking release notes (Moonshot, Nov 6 2025)
+        url: https://kimi-k2.org/blog/15-kimi-k2-thinking-en
+      - title: Kimi K2 Thinking model card
+        url: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+    lineage:
+      parent: kimi-k2-instruct
+      children:
+        - kimi-k2-5
+      note: First Moonshot reasoning model; native thinking interleaved with tools.
+  - slug: kimi-k2-5
+    display_name: Kimi K2.5
+    family: kimi-k2
+    developer: Moonshot AI
+    developer_country: CN
+    type: reasoning
+    released_date: "2026-01-27"
+    weights_released_date: "2026-01-27"
+    openness: open
+    license: Modified MIT
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 1000000000000
+    params_active: 32000000000
+    experts: 384
+    experts_active: 8
+    context_window: 256000
+    attention_variant: mla
+    position_encoding: rope
+    tokenizer: kimi
+    layers_count: 61
+    vocab_size: 160000
+    pretraining_tokens: 15000000000000
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      humanitys_last_exam:
+        score: 50.2
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+        variant: with tools
+      aime_2025:
+        score: 96.1
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+        variant: avg@32
+      gpqa_diamond:
+        score: 87.6
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+        variant: avg@8
+      mmmu_pro:
+        score: 78.5
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+      videommmu:
+        score: 86.6
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+      swe_bench_verified:
+        score: 76.8
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+      swe_bench_pro:
+        score: 50.7
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+      livecodebench:
+        score: 85
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+        variant: v6
+      browsecomp:
+        score: 78.4
+        as_of: "2026-01-27"
+        source: https://huggingface.co/moonshotai/Kimi-K2.5
+        variant: Agent Swarm
+    release_context: >-
+      Native multimodal Kimi at 1T total / 32B active with MoonViT (400M-parameter vision encoder), trained on roughly
+      15T mixed visual and text tokens. 256K context, Modified MIT license, January 27 2026 release. Adds visual
+      reasoning, video understanding, and UI-to-code workflows.
+    notable_innovations:
+      - Native multimodal Kimi (image, video, text)
+      - 400M-parameter MoonViT vision encoder
+      - Continual pretraining on ~15T mixed-modality tokens
+    sources:
+      - title: Kimi K2.5 product page
+        url: https://www.kimi.com/ai-models/kimi-k2-5
+      - title: Kimi K2.5 model card
+        url: https://huggingface.co/moonshotai/Kimi-K2.5
+    lineage:
+      parent: kimi-k2-thinking
+      children:
+        - kimi-k2-6
+      note: First multimodal Kimi; adds MoonViT vision and video understanding.
+  - slug: kimi-k2-6
+    display_name: Kimi K2.6
+    family: kimi-k2
+    developer: Moonshot AI
+    developer_country: CN
+    type: reasoning
+    released_date: "2026-04-21"
+    weights_released_date: "2026-04-21"
+    openness: open
+    license: Modified MIT
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 1000000000000
+    params_active: 32000000000
+    experts: 384
+    experts_active: 8
+    context_window: 262144
+    attention_variant: mla
+    position_encoding: rope
+    tokenizer: kimi
+    layers_count: 61
+    vocab_size: 160000
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      swe_bench_pro:
+        score: 58.6
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+      swe_bench_verified:
+        score: 80.2
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+      terminal_bench:
+        score: 66.7
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+        variant: Terminal-Bench 2.0
+      livecodebench:
+        score: 89.6
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+        variant: v6
+      aime_2026:
+        score: 96.4
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+      gpqa_diamond:
+        score: 90.5
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+      mmmu_pro:
+        score: 79.4
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+      osworld:
+        score: 73.1
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+        variant: OSWorld-Verified
+      browsecomp:
+        score: 86.3
+        as_of: "2026-04-21"
+        source: https://huggingface.co/moonshotai/Kimi-K2.6
+        variant: Agent Swarm
+    release_context: >-
+      April 21 2026 K2 refresh. Headline is Agent Swarm scaling to 300 sub-agents over 4000 coordinated steps, plus
+      native video input and 262K context. Moonshot reports SWE-Bench Pro 58.6, narrowly ahead of GPT-5.4's 57.7 at
+      release per the lab.
+    notable_innovations:
+      - Agent Swarm up to 300 sub-agents / 4000 steps
+      - Native video input
+      - Preserve Thinking Mode across multi-turn
+    sources:
+      - title: Kimi K2.6 release blog (Moonshot, Apr 21 2026)
+        url: https://kimi-k2.org/blog/24-kimi-k2-6-release
+      - title: Kimi K2.6 model card
+        url: https://huggingface.co/moonshotai/Kimi-K2.6
+    lineage:
+      parent: kimi-k2-5
+      note: Agent Swarm scale-out is the headline; SWE-Bench Pro topped GPT-5.4 per Moonshot.
+  - slug: llama-3-3-nemotron-super-49b
+    display_name: Llama-3.3-Nemotron Super 49B v1
+    family: nemotron
+    developer: NVIDIA
+    developer_country: US
+    type: reasoning
+    released_date: "2025-03-18"
+    weights_released_date: "2025-03-18"
+    openness: open-weights
+    license: NVIDIA Open Model License
+    osi_approved: false
+    data_released: true
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 49000000000
+    params_active: 49000000000
+    context_window: 131072
+    attention_variant: skip-attention
+    position_encoding: rope
+    tokenizer: llama3
+    pretraining_tokens: 40000000000
+    training_hardware: H100
+    post_training:
+      - sft
+      - grpo
+    benchmarks:
+      arena_hard:
+        score: 88.3
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: reasoning off
+      math:
+        score: 96.6
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: MATH500, reasoning on, pass@1
+      aime_2025:
+        score: 58.4
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: reasoning on, pass@1
+      gpqa_diamond:
+        score: 66.67
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: reasoning on, pass@1
+      ifeval:
+        score: 89.21
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: reasoning off, strict instruction
+      mbpp:
+        score: 91.3
+        as_of: "2025-03-18"
+        source: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+        variant: reasoning on, 0-shot pass@1
+    release_context: >-
+      NVIDIA's NAS-distilled Llama 3.3 70B aimed at single-data-center-GPU throughput. Uses skip-attention and
+      variable-FFN blocks selected per layer for the quality-versus-FLOPs tradeoff. Released March 18 2025 with the
+      Llama-Nemotron-Post-Training-Dataset-v1 (30M samples) public.
+    notable_innovations:
+      - Neural Architecture Search distillation from Llama 3.3 70B
+      - Skip-attention and variable-FFN blocks
+      - Toggleable reasoning mode
+      - 30M-sample post-training dataset released
+    sources:
+      - title: Llama-3.3-Nemotron-Super-49B-v1 model card
+        url: https://huggingface.co/nvidia/Llama-3_3-Nemotron-Super-49B-v1
+    lineage:
+      note: NAS-distilled Llama 3.3 70B for single-node deployment.
+  - slug: llama-3-1-nemotron-ultra-253b
+    display_name: Llama-3.1-Nemotron Ultra 253B v1
+    family: nemotron
+    developer: NVIDIA
+    developer_country: US
+    type: reasoning
+    released_date: "2025-04-11"
+    weights_released_date: "2025-04-11"
+    openness: open-weights
+    license: NVIDIA Open Model License
+    osi_approved: false
+    data_released: true
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 253000000000
+    params_active: 253000000000
+    context_window: 131072
+    attention_variant: skip-attention
+    position_encoding: rope
+    tokenizer: llama3
+    pretraining_tokens: 65000000000
+    training_hardware: H100
+    post_training:
+      - sft
+      - grpo
+    benchmarks:
+      gpqa_diamond:
+        score: 76.01
+        as_of: "2025-04-11"
+        source: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+        variant: reasoning on
+      aime_2025:
+        score: 72.5
+        as_of: "2025-04-11"
+        source: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+        variant: reasoning on
+      math:
+        score: 97
+        as_of: "2025-04-11"
+        source: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+        variant: MATH500, reasoning on
+      livecodebench:
+        score: 66.31
+        as_of: "2025-04-11"
+        source: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+        variant: reasoning on
+      ifeval:
+        score: 88.85
+        as_of: "2025-04-11"
+        source: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+        variant: reasoning off, strict
+    release_context: >-
+      Top of NVIDIA's Llama-Nemotron family, distilled from Llama 3.1 405B via Neural Architecture Search with skip
+      attention, variable FFN, and FFN fusion. Released April 11 2025; single-node 8x H100 BF16 inference, 4x H100 FP8.
+      Post-trained through SFT and GRPO RL stages.
+    notable_innovations:
+      - 405B distilled to 253B via NAS
+      - FFN fusion alongside skip attention
+      - Single-node 8x H100 inference
+    sources:
+      - title: Llama-3.1-Nemotron-Ultra-253B-v1 model card
+        url: https://huggingface.co/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1
+      - title: NVIDIA Nemotron Ultra coverage (MarkTechPost, Apr 11 2025)
+        url: https://www.marktechpost.com/2025/04/11/nvidia-released-llama-3-1-nemotron-ultra-253b-v1-a-state-of-the-art-ai-model-balancing-massive-scale-reasoning-power-and-efficient-deployment-for-enterprise-innovation/
+    lineage:
+      note: NAS-distilled Llama 3.1 405B at 253B for enterprise single-node deployment.
+  - slug: nemotron-3-nano
+    display_name: Nemotron 3 Nano
+    family: nemotron
+    developer: NVIDIA
+    developer_country: US
+    type: reasoning
+    released_date: "2025-12-15"
+    weights_released_date: "2025-12-15"
+    openness: open-weights
+    license: NVIDIA Open Model License
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: hybrid-mamba-transformer-moe
+    params_total: 30000000000
+    params_active: 3500000000
+    experts: 128
+    experts_active: 6
+    context_window: 1000000
+    attention_variant: hybrid-mamba2-gqa
+    position_encoding: unknown
+    layers_count: 52
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      First Nemotron 3 family member, a 31.6B-total / 3.2B-active hybrid Mamba-Transformer MoE. 52 layers (23 MoE, 23
+      Mamba-2, 6 GQA), 128 routed plus 1 shared expert with 6 activated per token. NVIDIA reports 3.3x Qwen3-30B-A3B
+      throughput on a single H200 at 8K input / 16K output, with 1M-context support. Super and Ultra variants planned
+      for H1 2026.
+    notable_innovations:
+      - Hybrid Mamba-2 + Transformer + MoE in one stack
+      - 1M context with single-H200 throughput claim
+      - 23:23:6 layer split (MoE / Mamba-2 / GQA)
+    sources:
+      - title: NVIDIA Nemotron 3 family announcement (NVIDIA, Dec 15 2025)
+        url: https://nvidianews.nvidia.com/news/nvidia-debuts-nemotron-3-family-of-open-models
+      - title: NVIDIA Nemotron 3 family page
+        url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+      - title: Nemotron 3 Nano technical report (PDF)
+        url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Nano-Technical-Report.pdf
+    lineage:
+      note: First Nemotron 3; hybrid Mamba-Transformer-MoE stack for agentic workloads.
+  - slug: granite-4-0-small
+    display_name: Granite 4.0 Small
+    family: granite
+    developer: IBM
+    developer_country: US
+    type: instruct
+    released_date: "2025-10-02"
+    weights_released_date: "2025-10-02"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: hybrid-mamba-transformer-moe
+    params_total: 32000000000
+    params_active: 9000000000
+    context_window: 131072
+    attention_variant: hybrid-mamba2-transformer
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      IBM's first hybrid Mamba/Transformer release, October 29 2025. Granite-4.0-H-Small is a 32B MoE activating 9B per
+      token, with Mamba-2 and conventional transformer blocks layered 9:1. Shipped alongside H-Tiny (7B / 1B) and
+      H-Micro (3B dense), all base + instruct, all Apache 2.0.
+    notable_innovations:
+      - First IBM hybrid Mamba-2 / Transformer stack
+      - 9:1 Mamba-to-Transformer layer ratio
+      - Single-H100 throughput for 32B MoE per IBM
+    sources:
+      - title: IBM Granite 4.0 announcement (IBM, Oct 2 2025)
+        url: https://www.ibm.com/new/announcements/ibm-granite-4-0-hyper-efficient-high-performance-hybrid-models
+      - title: Granite-4.0-Small base model card
+        url: https://huggingface.co/ibm-granite/granite-4.0-small-base
+    lineage:
+      parent: granite-3-8b-instruct
+      children:
+        - granite-4-1-8b-instruct
+      note: First IBM hybrid Mamba/Transformer model; flagship of the Granite 4.0 family.
+  - slug: granite-4-1-8b-instruct
+    display_name: Granite 4.1 8B Instruct
+    family: granite
+    developer: IBM
+    developer_country: US
+    type: instruct
+    released_date: "2026-04-29"
+    weights_released_date: "2026-04-29"
+    openness: open
+    license: Apache-2.0
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: dense
+    params_total: 8000000000
+    params_active: 8000000000
+    context_window: 524288
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      bfcl_v3:
+        score: 68.3
+        as_of: "2026-04-29"
+        source: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+      gsm8k:
+        score: 92.5
+        as_of: "2026-04-29"
+        source: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+      humaneval:
+        score: 87.2
+        as_of: "2026-04-29"
+        source: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+      evalplus:
+        score: 80.2
+        as_of: "2026-04-29"
+        source: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+      arena_hard:
+        score: 69
+        as_of: "2026-04-29"
+        source: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+    release_context: >-
+      Dense Granite 4.1 line released April 29 2026 at 3B, 8B, and 30B sizes under Apache 2.0. The 8B Instruct matches
+      or beats IBM's own 32B MoE Granite 4.0 Small on tool calling, math, coding, and instruction following, a 4x
+      parameter reduction. Released alongside Granite 4.1 speech, vision, embeddings, and Guardian safety models.
+    notable_innovations:
+      - 8B dense matching 32B MoE on key benchmarks
+      - 512K-context support
+      - Full Granite 4.1 model family (speech, vision, embeddings, Guardian)
+    sources:
+      - title: Granite 4.1 family announcement (IBM Research, Apr 29 2026)
+        url: https://research.ibm.com/blog/granite-4-1-ai-foundation-models
+      - title: Granite 4.1 8B model card
+        url: https://huggingface.co/ibm-granite/granite-4.1-8b
+    lineage:
+      parent: granite-4-0-small
+      note: Dense 8B matching IBM's own 32B MoE flagship; 512K context.
+  - slug: glm-4-5
+    display_name: GLM-4.5
+    family: glm-4
+    developer: Zhipu AI
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-07-28"
+    weights_released_date: "2025-07-28"
+    paper_date: "2025-08-08"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 355000000000
+    params_active: 32000000000
+    context_window: 128000
+    attention_variant: unknown
+    position_encoding: unknown
+    pretraining_tokens: 23000000000000
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      swe_bench_verified:
+        score: 64.2
+        as_of: "2025-07-28"
+        source: https://arxiv.org/abs/2508.06471
+      aime_2024:
+        score: 91
+        as_of: "2025-07-28"
+        source: https://arxiv.org/abs/2508.06471
+      tau_bench:
+        score: 70.1
+        as_of: "2025-07-28"
+        source: https://arxiv.org/abs/2508.06471
+    release_context: >-
+      Zhipu's first ARC-focused flagship (agentic, reasoning, coding), released July 28 2025 as 355B total / 32B active
+      MoE under MIT. 23T-token pretraining run. Hybrid thinking / non-thinking modes. GLM-4.5-Air (106B / 12B) released
+      alongside. Zhipu reports 90.6 percent tool-calling success vs Claude 4 Sonnet's 89.5 percent.
+    notable_innovations:
+      - MIT-licensed 355B MoE
+      - Hybrid thinking / non-thinking modes
+      - Multi-Token Prediction layers with speculative decoding
+      - 23T-token pretraining
+    sources:
+      - title: GLM-4.5 release coverage (InfoQ, Aug 2025)
+        url: https://www.infoq.com/news/2025/08/glm-4-5/
+      - title: GLM-4.5 model card
+        url: https://huggingface.co/zai-org/GLM-4.5
+      - title: GLM-4.5 ARC Foundation Models paper (arXiv:2508.06471)
+        url: https://arxiv.org/abs/2508.06471
+    lineage:
+      parent: glm-4-9b-chat
+      children:
+        - glm-4-6
+      note: First Zhipu ARC flagship; 355B MoE under MIT.
+  - slug: glm-4-6
+    display_name: GLM-4.6
+    family: glm-4
+    developer: Zhipu AI
+    developer_country: CN
+    type: reasoning
+    released_date: "2025-09-30"
+    weights_released_date: "2025-09-30"
+    openness: open
+    license: MIT
+    osi_approved: true
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 357000000000
+    params_active: 32000000000
+    context_window: 128000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    release_context: >-
+      September 30 2025 refresh, 357B MoE with 200K context (up from 128K in 4.5) and 128K maximum output. Zhipu reports
+      a 27 percent coding improvement over 4.5 and parity with Claude Sonnet 4 on 8 public benchmarks. MIT licensed.
+    notable_innovations:
+      - 200K context (up from 128K)
+      - 30 percent token efficiency gain per Zhipu
+      - Parity with Claude Sonnet 4 claimed on 8 benchmarks
+    sources:
+      - title: GLM-4.6 launch coverage
+        url: https://llm-stats.com/blog/research/glm-4-6-launch
+      - title: GLM-4.6 model card
+        url: https://huggingface.co/zai-org/GLM-4.6
+    lineage:
+      parent: glm-4-5
+      note: 200K context and a 27 percent coding bump over GLM-4.5 per Zhipu.
+  - slug: hunyuan-2-0-instruct
+    display_name: Tencent Hunyuan 2.0 Instruct
+    family: hunyuan
+    developer: Tencent
+    developer_country: CN
+    type: instruct
+    released_date: "2025-12-05"
+    weights_released_date: "2025-12-05"
+    openness: open-weights
+    license: Tencent Hunyuan Community License
+    osi_approved: false
+    data_released: false
+    training_code_released: false
+    training_logs_released: false
+    architecture: moe
+    params_total: 406000000000
+    params_active: 32000000000
+    context_window: 256000
+    attention_variant: unknown
+    position_encoding: unknown
+    post_training:
+      - sft
+      - rlhf
+    benchmarks:
+      imo_answerbench:
+        score: 73.4
+        as_of: "2025-12-05"
+        source: https://technode.com/2025/12/08/tencent-releases-hunyuan-2-0-its-next-generation-ai-model/
+      swe_bench_verified:
+        score: 53
+        as_of: "2025-12-05"
+        source: https://technode.com/2025/12/08/tencent-releases-hunyuan-2-0-its-next-generation-ai-model/
+      tau_bench:
+        score: 72.4
+        as_of: "2025-12-05"
+        source: https://technode.com/2025/12/08/tencent-releases-hunyuan-2-0-its-next-generation-ai-model/
+    release_context: >-
+      Tencent's next-generation foundation model, released December 5 2025 as 406B total / 32B active MoE with a 256K
+      context. Ships in HY 2.0 Think and HY 2.0 Instruct variants, integrated into Yuanbao and ima, and exposed via
+      Tencent Cloud API. Reported sharp gains in math (IMO-AnswerBench) and coding (SWE-bench Verified) over predecessors.
+    notable_innovations:
+      - Think and Instruct dual variants
+      - 256K context
+      - Native integration with Yuanbao and ima products
+    sources:
+      - title: Tencent releases Hunyuan 2.0 (TechNode, Dec 8 2025)
+        url: https://technode.com/2025/12/08/tencent-releases-hunyuan-2-0-its-next-generation-ai-model/
+      - title: Hunyuan 2.0 model card
+        url: https://huggingface.co/tencent/Hunyuan-2.0
+    lineage:
+      note: Tencent's next-gen Hunyuan; 406B MoE first appearing in the catalog.

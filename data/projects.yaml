@@ -837,8 +837,8 @@ projects:
         url: https://ai.meta.com/llama/
       - title: Llama Community License Text
         url: https://www.llama.com/llama3/license/
-      - title: 'OSI: Meta Llama License Still Not Open Source'
-        url: https://opensource.org/blog/meta-llama-license-still-not-open-source
+      - title: "OSI: Meta's LLaMa license is still not Open Source"
+        url: https://opensource.org/blog/metas-llama-license-is-still-not-open-source
       - title: Llama 3 Herd of Models (Meta AI, 2024)
         url: https://arxiv.org/abs/2407.21783
       - title: ai.meta.com (audit-verified)
@@ -1340,14 +1340,14 @@ projects:
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: https://milvus.io/
+    url: https://github.com/milvus-io/milvus
     github: https://github.com/milvus-io/milvus
     description: Go-based open-source vector database; large-scale production deployments; Zilliz commercial offering.
     sources:
       - title: en.wikipedia.org (audit-verified)
         url: https://en.wikipedia.org/wiki/Milvus_(vector_database)
-      - title: milvus.io (audit-verified)
-        url: https://milvus.io/docs/release_notes.md
+      - title: Milvus GitHub releases
+        url: https://github.com/milvus-io/milvus/releases
   - slug: lancedb
     name: LanceDB
     layers:
@@ -1858,7 +1858,7 @@ projects:
       stablecoin alternatives.
     sources:
       - title: L402 Documentation (Lightning Labs)
-        url: https://docs.lightning.engineering/lightning-network-tools/lnd/l402
+        url: https://docs.lightning.engineering/the-lightning-network/l402
       - title: L402 on GitHub
         url: https://github.com/lightninglabs/L402
       - title: HRF AI for Individual Rights — Routstr
@@ -2374,7 +2374,7 @@ projects:
       - title: Templar (project page)
         url: https://www.tplr.ai/
       - title: Bittensor Subnet Architecture
-        url: https://docs.bittensor.com/subnets
+        url: https://docs.learnbittensor.org/subnets/understanding-subnets
   - slug: pluralis
     name: Pluralis Research
     layers:

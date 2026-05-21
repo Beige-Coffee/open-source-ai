@@ -643,9 +643,8 @@ grants:
         url: https://allenai.org/blog/olmo3
       - title: Olmo 3 announcement (Ai2)
         url: https://allenai.org/olmo
-      - title: Ai2 Releases Molmo 2 (BusinessWire, Dec 16 2025)
-        url: >-
-          https://www.businesswire.com/news/home/20251216910167/en/Ai2-Releases-Molmo-2-State-of-the-Art-Open-Multimodal-Family-for-Video-and-Multi-Image-Understanding
+      - title: "Molmo 2: State-of-the-art video understanding, pointing, and tracking (Ai2)"
+        url: https://allenai.org/blog/molmo2
       - title: Olmo 3 family coverage (MarkTechPost)
         url: >-
           https://www.marktechpost.com/2025/11/20/allen-institute-for-ai-ai2-introduces-olmo-3-an-open-source-7b-and-32b-llm-family-built-on-the-dolma-3-and-dolci-stack/
@@ -1489,8 +1488,8 @@ grants:
       - title: "The Sphere: Toward New Ecologies of Funding for the Arts (Concordia)"
         url: >-
           https://www.concordia.ca/cuevents/offices/provost/fourth-space/programming/2021/03/31/the-sphere--toward-new-ecologies-of-funding-for-the-arts.html
-      - title: Erik Bordeleau (NOVA / Academia.edu)
-        url: https://unl-pt.academia.edu/ErikBordeleau
+      - title: Erik Bordeleau (NOVA University Lisbon, research profile)
+        url: https://novaresearch.unl.pt/en/persons/erik-bordeleau/
   - title: Bio-inspired AI swarm simulation platform
     kind: project
     funder: cosmos-institute

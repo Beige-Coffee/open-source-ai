@@ -159,7 +159,7 @@ const EXPERTS_ACTIVE = isMoE ? Math.min(model.experts_active ?? 0, EXPERTS) : 0;
             {posLabel()}
           </text>
           <text x={W/2} y={Y_LAYERS + 76} text-anchor="middle" font-size="10" fill="var(--color-text-subtle)">
-            context {model.context_window.toLocaleString()} tokens
+            {model.context_window ? `context ${model.context_window.toLocaleString()} tokens` : "context not disclosed"}
           </text>
 
           <line x1={W/2} y1={Y_LAYERS + 96} x2={W/2} y2={Y_LAYERS + 120} stroke="var(--color-border-strong)" stroke-width="1"/>

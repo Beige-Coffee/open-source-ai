@@ -25,6 +25,8 @@
     "audit:snapshot:stale": "node audit/snapshot/snapshot.mjs --stale",
     "audit:verify:pending": "node audit/verify/verify_entailment.mjs pending",
     "audit:verify:batch": "node audit/verify/verify_entailment.mjs batch",
+    "audit:verify:show": "node audit/verify/verify_entailment.mjs show",
+    "audit:verify:update": "node audit/verify/verify_entailment.mjs update",
     "audit:verify:summary": "node audit/verify/verify_entailment.mjs summarize",
     "audit:coverage": "node audit/completeness/check_coverage.mjs",
     "audit:extract:pending": "node audit/extract/extract.mjs pending --all-priority",
