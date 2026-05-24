@@ -1,0 +1,45 @@
+---
+slug: fine-tuning
+order: 13
+title: "Fine-tuning"
+one_liner: "LoRA and QLoRA change behavior cheaply, but fine-tuning is the last lever, not the first. Try template, prompt, model, and RAG first."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "LoRA: Low-Rank Adaptation of Large Language Models (Hu et al., 2021)"
+    url: "https://arxiv.org/abs/2106.09685"
+  - title: "QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers et al., 2023)"
+    url: "https://arxiv.org/abs/2305.14314"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+<G term="fine-tuning">Fine-tuning</G> changes model behavior by training
+on additional data. For local users, the two methods that matter most
+are <G term="lora">LoRA</G> and <G term="qlora">QLoRA</G>. LoRA freezes
+the base model and trains small low-rank adapter weights, which reduces
+trainable parameters and lets you keep multiple lightweight adapters.
+QLoRA extends this by fine-tuning through a frozen 4-bit quantized model
+into LoRA adapters, which is what makes fine-tuning feasible on a single
+consumer GPU.
+
+Fine-tune when you need a consistent writing style, a domain-specific
+output format, repetitive classification or extraction behavior,
+tool-call format reliability, a specialized persona, domain adaptation
+that retrieval cannot solve, or better small-model performance on a
+narrow task.
+
+But do not fine-tune first. Try this order: correct chat template,
+better prompting, a better model, better decoding, <G term="rag">RAG</G>,
+reranking, few-shot examples, and only then fine-tuning. Most problems
+that look like "the model does not understand my domain" are actually a
+vague prompt, a wrong template, or broken retrieval. Fine-tuning is the
+most expensive lever and the slowest to iterate, so it should be the
+last one you reach for, not the first.
+
+When you do fine-tune, a sound plan includes clean data,
+train/validation/test splits, baseline evals, a clear target behavior, a
+safety review, overfitting and regression checks, adapter versioning,
+license review, and a rollback plan. The tooling for pretraining and
+fine-tuning lives at the [training layer](/stack/training).

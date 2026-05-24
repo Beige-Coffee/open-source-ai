@@ -17,7 +17,7 @@ export type ModulePhase =
   | "synthesize";
 export type ProgressPhase = ModulePhase | "complete";
 
-export type CourseTrack = "stack-walk" | "self-host";
+export type CourseTrack = "stack-walk" | "self-host" | "how-llms-work";
 
 export interface CourseModule {
   order: number;
@@ -344,13 +344,279 @@ export const SELF_HOST_MODULES: readonly CourseModule[] = [
   },
 ] as const;
 
+/**
+ * How-LLMs-work track: the model-side foundation for the self-host
+ * track. 14 modules adapted from Ahmad Osman's "LLMs 101: A Practical
+ * Guide (2026)" (https://x.com/TheAhmadOsman/status/2057590224729911346).
+ * Like self-host, each carries its probe_primer inline (the Read content
+ * lives in the how_llms_work_modules content collection, not the layers
+ * collection) and maps to no single layer. The final module hands off to
+ * the self-host track for the hardware and serving half.
+ */
+export const HOW_LLMS_WORK_MODULES: readonly CourseModule[] = [
+  {
+    order: 1,
+    slug: "inference-loop",
+    title: "The inference loop",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Tokens in, probabilities out, one next token at a time. Every other decision follows from this loop.",
+    compare_axis_label: "Compare the cost of a long prompt (prefill) against the cost of a long answer (decode) for the same model",
+    compare_anchors: [],
+    probe_primer: [
+      "Inference is one loop repeated: text becomes tokens, the model scores every possible next token, a decoding policy picks one, it is appended to the sequence, and the loop runs again until a stop token, the user stops it, or a token limit is reached.",
+      "The model produces one token at a time, not a whole answer at once. Each new token becomes part of the sequence that conditions the next token.",
+      "Logits are the raw per-token scores; softmax turns them into a probability distribution; decoding selects one token from that distribution. The only inputs are the weights and the running sequence.",
+      "Generation speed is measured in tokens per second because the system runs a forward pass, picks a token, updates the KV cache, and repeats. The wait for the first token is dominated by processing the prompt.",
+      "A long pasted document is felt as a pause before the first word (prompt processing), while a long answer is felt as slow streaming (token-by-token generation).",
+    ],
+  },
+  {
+    order: 2,
+    slug: "tokens",
+    title: "Tokens and tokenizers",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Models read integer token IDs, not words. Token counts, not word counts, set context limits and memory.",
+    compare_axis_label: "Compare how two tokenizer families split the same text, and what that does to the context budget and cost",
+    compare_anchors: [],
+    probe_primer: [
+      "A model does not see words; it sees tokens, small chunks of text mapped to integer IDs. A token can be a whole word, a word fragment, punctuation, a whitespace-prefixed string, a byte-level fallback, or a special control marker.",
+      "Different model families use different tokenizers (BPE-style, SentencePiece-style). The same document can be 5,000 tokens in one tokenizer and 7,500 in another, so tokens-per-second is not directly comparable across families.",
+      "Vocabulary size is a tradeoff: a larger vocabulary can compress text into fewer tokens but changes the embedding and output-projection size.",
+      "Tokens are the unit of work that determines how much text fits the context window, how large the KV cache grows, and how much latency the prompt costs.",
+      "A context window is the maximum number of tokens the model can attend to at once. Supported length is not the same as fast, cheap, or accurate at that length; test the lengths you actually use.",
+    ],
+  },
+  {
+    order: 3,
+    slug: "transformers",
+    title: "The Transformer",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Most chat models are decoder-only Transformers: embeddings, attention, feed-forward blocks, stacked and projected to logits.",
+    compare_axis_label: "Compare where a Transformer's parameters live (attention vs feed-forward) and what each block contributes",
+    compare_anchors: [],
+    probe_primer: [
+      "Most modern chat LLMs are decoder-only Transformers: they predict the next token while attending only to previous tokens.",
+      "A Transformer layer turns token IDs into vectors (embeddings), adds positional information (often RoPE, which encodes position by rotating representations), runs self-attention, then a feed-forward block, with layer normalization and residual connections around them.",
+      "A large fraction of a model's parameters live in the feed-forward blocks, not in attention.",
+      "The final hidden state is projected to logits over the vocabulary; stacking the same layer recipe dozens or hundreds of times is what makes a language model.",
+      "Positional encoding matters because attention itself is order-agnostic; the model needs an explicit signal for token order.",
+    ],
+  },
+  {
+    order: 4,
+    slug: "attention",
+    title: "Attention",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Attention decides which earlier tokens matter. The variant chosen (MHA, MQA, GQA, MLA) sets the KV-cache bill.",
+    compare_axis_label: "Compare MHA, MQA, GQA, and MLA on KV-cache size, expressiveness, and long-context cost",
+    compare_anchors: [],
+    probe_primer: [
+      "Attention is how each token decides which earlier tokens matter for the next prediction. It is also one reason long-context inference is so memory-sensitive.",
+      "Classic multi-head attention (MHA) stores separate key/value state per head, which makes the KV cache large. MQA shares one key/value head across query heads (memory-efficient, less expressive); GQA groups query heads to share key/value heads (the common middle ground); MLA is a latent-compression variant used by some recent models.",
+      "FlashAttention and SDPA-style kernels reduce attention memory traffic and keep the accelerator busier; a runtime with good kernels can be much faster on the same model and hardware.",
+      "Parameter count is not the whole story: a 7B MHA model at long context can exhaust a 24 GB card while a 7B GQA model with the same advertised context fits with room to spare.",
+      "When comparing models for long context, look at attention type, KV-head count, context length, and runtime support, not just the parameter count.",
+    ],
+  },
+  {
+    order: 5,
+    slug: "kv-cache",
+    title: "The KV cache",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "The model's working memory. It keeps generation usable and it is the hidden memory bill that grows with every token.",
+    compare_axis_label: "Compare KV-cache memory at FP16 vs FP8/INT8, and across MHA vs GQA, for a fixed context length",
+    compare_anchors: [],
+    probe_primer: [
+      "The KV cache stores key/value attention states for previous tokens so the model does not recompute the whole history on every generated token. Without it, generation would be far slower.",
+      "KV-cache memory scales as tokens times layers times kv_heads times head_dim times precision times 2 (the 2 is for keys and values). For an older Llama-like 7B MHA model in FP16 this works out to about 0.5 MiB per token, so 4K tokens is roughly 2 GiB and 32K tokens roughly 16 GiB of KV cache alone.",
+      "GQA and MQA reduce this substantially. FP8 or INT8 KV cache is the practical local compression floor; going below 8-bit is research-heavy and workload-sensitive, so it should be benchmarked, not assumed.",
+      "KV-cache quantization (shrinking live context memory) is not the same as weight quantization (shrinking the model), and neither is the same as speculative decoding (drafting future tokens to cut latency).",
+      "A model can load at an empty prompt and then run out of memory on a long document: the weights fit, the working memory did not.",
+    ],
+  },
+  {
+    order: 6,
+    slug: "prefill-and-decode",
+    title: "Prefill and decode",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Two regimes with different costs. Prefill processes the prompt (time to first token); decode generates one token at a time (streaming speed).",
+    compare_axis_label: "Compare what punishes prefill against what punishes decode, and where a long conversation pays both",
+    compare_anchors: [],
+    probe_primer: [
+      "Inference has two regimes. Prefill processes the input prompt before the first output token; it is parallelizable and relatively compute-bound. Decode generates new tokens one at a time and is sequential and memory-bandwidth-bound.",
+      "Time to first token is usually prefill time; the streaming typing effect, and whether a model feels fast, usually come from decode.",
+      "Long prompts punish prefill; long answers punish decode; long conversations punish both because the KV cache keeps growing.",
+      "In a chat session every turn adds to the cache, so a conversation that reaches 16K tokens pays the memory cost of all 16K tokens on every newly generated token. This is why chat interfaces that keep unbounded history eventually slow down or crash.",
+      "Pasting a large document is felt as a pause (prefill); a slow stream after that is decode.",
+    ],
+  },
+  {
+    order: 7,
+    slug: "decoding",
+    title: "Decoding controls",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "After logits, nothing is written yet. Decoding turns scores into one token, and the knobs change voice, determinism, and risk.",
+    compare_axis_label: "Compare greedy decoding against sampling (temperature, top-p, top-k) for evals, coding, and creative work",
+    compare_anchors: [],
+    probe_primer: [
+      "After the model produces logits it has only scored possible next tokens. Decoding is the policy that selects one, appends it, and repeats. The knobs change the model's voice, determinism, and tendency to loop without changing the weights.",
+      "The practical questions a decoding policy answers: how much randomness is allowed, how far into low-probability tokens the sampler can reach, and what boundaries (stop sequences, repetition penalties, max tokens) prevent loops or schema breaks.",
+      "For precise work, start narrow: low temperature, short token limits, explicit stop sequences, and constrained decoding when output must match a schema. For creative work, give the sampler more room and rank candidates afterward.",
+      "Greedy decoding is not always more accurate; it can get stuck in loops or produce generic answers because it never explores alternatives. Use deterministic settings, including a fixed seed, for evals.",
+      "Constrained decoding can force output to match JSON or a grammar, which is more reliable than asking politely for valid JSON.",
+    ],
+  },
+  {
+    order: 8,
+    slug: "model-packages",
+    title: "Model packages and chat templates",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Weights are not the whole model. Config, tokenizer, chat template, and generation defaults travel together, and the template is the part most often broken.",
+    compare_axis_label: "Compare what breaks when the chat template, tokenizer, or special tokens are wrong against when the weights themselves are wrong",
+    compare_anchors: [],
+    probe_primer: [
+      "A runnable model package is more than one weight file: it includes architecture/config (layer count, hidden size, attention type, RoPE settings, vocabulary, special tokens, context length), the weights, the tokenizer, the chat template, generation defaults, and a license and model card.",
+      "If the tokenizer, config, or chat template is wrong, the same weights can feel broken. The weights are the largest file, not the whole model.",
+      "A chat model was trained with a specific conversation format (system/user/assistant markers, BOS/EOS tokens, sometimes reasoning or tool-call wrappers). Using the wrong format causes gibberish, role confusion, ignored system prompts, broken tool calls, and bad benchmark results that look like the model being weak.",
+      "Best practice is to use the tokenizer's built-in chat template (for example apply_chat_template) or the model-specific template the runtime ships, and to confirm whether the model is base, instruct, chat, reasoning, or tool-tuned.",
+      "Treat the template like an API contract: if it is wrong, you are not testing the model you think you are testing.",
+    ],
+  },
+  {
+    order: 9,
+    slug: "model-types",
+    title: "Model types",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Base, instruct, chat, reasoning, tool-tuned. Starting with the wrong type is a common reason a capable model feels useless.",
+    compare_axis_label: "Compare base, instruct, chat, reasoning, and tool-tuned models on what each is good for",
+    compare_anchors: [],
+    probe_primer: [
+      "Not all LLMs are tuned for the same behavior. A base model completes your prompt rather than answering it; it is useful for pretraining research, fine-tuning, and custom pipelines, and frustrating for direct use.",
+      "Asked 'What is the capital of France?', a base model might continue with 'and what is the population of Paris?' instead of answering.",
+      "Instruct models follow direct instructions; chat models handle multi-turn dialogue with role formatting; reasoning models benefit from extra thinking tokens and verification; tool-tuned models are built for structured calls and function use.",
+      "For most users the default starting point is a recent instruct or chat model in a size that fits comfortably in memory.",
+      "Do not start with a base model unless you know why you want one.",
+    ],
+  },
+  {
+    order: 10,
+    slug: "long-context",
+    title: "Long context",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "128K, 256K, 1M tokens is useful but not free. It is expensive attention, not a free notebook, and not a replacement for retrieval.",
+    compare_axis_label: "Compare long context against retrieval for a large corpus, and where each is the right tool",
+    compare_anchors: [],
+    probe_primer: [
+      "Long context is useful but has real costs: more KV-cache memory, slower prompt processing, more attention work, harder evaluation, and more ways for irrelevant text to distract the model.",
+      "Quality can decay across distance; a model may handle the end of a long document well while missing details buried near the beginning.",
+      "Long context is a complement to retrieval, not a replacement. Use retrieval for large corpora and long context for the final selected evidence.",
+      "Practical habits help: put critical instructions near the beginning and end, use section headers and delimiters, ask for citations tied to source chunks, and use summary memory instead of unbounded chat history.",
+      "Supported context length is not the same as fast, cheap, or accurate at that length.",
+    ],
+  },
+  {
+    order: 11,
+    slug: "rag",
+    title: "RAG: retrieval-augmented generation",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Retrieve relevant chunks and give only those to the model. Most bad RAG is bad retrieval and chunking, not a bad model.",
+    compare_axis_label: "Compare where a RAG pipeline fails: parsing, chunking, retrieval, reranking, or generation",
+    compare_anchors: [],
+    probe_primer: [
+      "RAG (retrieval-augmented generation) retrieves relevant chunks from a knowledge base and gives only those to the model, instead of stuffing everything into the prompt.",
+      "A RAG pipeline has many stages (ingestion, parsing, chunking, embeddings, a vector index, retrieval, reranking, prompt construction, generation, grounding checks, evaluation) and each stage is a failure point.",
+      "Most bad RAG systems are bad because of chunking, retrieval, reranking, and evaluation, not because of the model. A good model cannot answer from evidence it never received.",
+      "Chunking strategy is the quiet failure: fixed-size chunks with no overlap can split a sentence or split an answer across boundaries. The right chunk size and overlap have to be evaluated on your actual documents.",
+      "A good reranker can rescue mediocre retrieval, but no reranker can recover an answer that was lost during ingestion.",
+    ],
+  },
+  {
+    order: 12,
+    slug: "tool-use",
+    title: "Tool use and agents",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Tools make a model useful and change the safety model. A chatbot that hallucinates is annoying; an agent with shell access is dangerous.",
+    compare_axis_label: "Compare the four guardrail layers (scope, constrained execution, hostile inputs, audit trail) for a file vs shell vs browser agent",
+    compare_anchors: [],
+    probe_primer: [
+      "Tool use (file search, shell, browser, databases, code execution, internal APIs) makes a model much more useful and changes the safety model. An agent with filesystem access can delete things; one with shell access can damage the machine.",
+      "Local agent safety has layers: scope the agent tightly (only the directories, APIs, and credentials it needs), constrain execution (sandboxes, least-privilege users, confirmations for destructive actions, schema-validated arguments), treat inputs as hostile, and keep an audit trail of tool calls and approvals.",
+      "Structured outputs (JSON schemas, constrained decoding, function signatures) make tool calls easier to validate but are not a security boundary; they do not prove the model chose a safe action or resisted injected instructions.",
+      "For serious tool use, the policy checks belong outside the model.",
+      "Retrieved documents, web pages, tickets, and emails are untrusted input and can contain prompt injection aimed at the model.",
+    ],
+  },
+  {
+    order: 13,
+    slug: "fine-tuning",
+    title: "Fine-tuning",
+    type: "core",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "LoRA and QLoRA change behavior cheaply, but fine-tuning is the last lever, not the first. Try template, prompt, model, and RAG first.",
+    compare_axis_label: "Compare the fixes in order: chat template, prompting, a better model, decoding, RAG, few-shot, then fine-tuning",
+    compare_anchors: [],
+    probe_primer: [
+      "Fine-tuning changes behavior by training on additional data. LoRA freezes the base model and trains small low-rank adapters; QLoRA fine-tunes through a frozen 4-bit quantized model into LoRA adapters.",
+      "Fine-tune for a consistent style, a domain-specific output format, repetitive classification or extraction, tool-call reliability, a specialized persona, or domain adaptation that retrieval cannot solve.",
+      "Do not fine-tune first. The order to try is: correct chat template, better prompting, a better model, better decoding, RAG, reranking, few-shot examples, then fine-tuning.",
+      "Many problems that look like 'the model does not understand my domain' are actually a vague prompt, a wrong template, or broken retrieval.",
+      "A sound fine-tuning plan includes clean data, train/validation/test splits, baseline evals, a clear target behavior, overfitting and regression checks, adapter versioning, license review, and a rollback plan.",
+    ],
+  },
+  {
+    order: 14,
+    slug: "multimodal",
+    title: "Multimodal models",
+    type: "capstone",
+    track: "how-llms-work",
+    layer_slugs: [],
+    one_liner: "Images, audio, and video become tokens too. The non-text input is a memory cost and a new way to get the template wrong.",
+    compare_axis_label: "Compare the hidden token and memory cost of text against a high-resolution image and against audio or video input",
+    compare_anchors: [],
+    probe_primer: [
+      "Multimodal models accept images, and sometimes audio or video, in addition to text. The hidden cost is that non-text input becomes tokens too: vision encoders add memory and image patches consume context.",
+      "A single high-resolution image can consume thousands of tokens, so image tokens should be counted against the same budget as text tokens.",
+      "Multimodal templates are easier to get wrong than text-only templates.",
+      "Small vision-language models can hallucinate visual details, OCR reliability varies, and charts and tables remain hard; evaluate with real samples rather than trusting a clean demo.",
+      "The through-line of the whole track still holds: the model predicts one token at a time, tokens are not words, weights are not the whole model, the chat template matters, and the KV cache is the hidden memory bill. Once the mechanics are clear, the hardware and serving choices in the self-host track become easier to reason about.",
+    ],
+  },
+] as const;
+
 export const MODULE_BY_SLUG: Record<string, CourseModule> = Object.fromEntries(
-  [...MODULES, ...SELF_HOST_MODULES].map((m) => [m.slug, m]),
+  [...MODULES, ...SELF_HOST_MODULES, ...HOW_LLMS_WORK_MODULES].map((m) => [m.slug, m]),
 );
 
 /** Returns the in-track list for a module's track. */
 function modulesForTrack(track: CourseTrack): readonly CourseModule[] {
-  return track === "self-host" ? SELF_HOST_MODULES : MODULES;
+  if (track === "self-host") return SELF_HOST_MODULES;
+  if (track === "how-llms-work") return HOW_LLMS_WORK_MODULES;
+  return MODULES;
 }
 
 export function nextModule(slug: string): CourseModule | null {

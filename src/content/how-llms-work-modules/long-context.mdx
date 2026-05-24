@@ -1,0 +1,43 @@
+---
+slug: long-context
+order: 10
+title: "Long context"
+one_liner: "128K, 256K, 1M tokens is useful but not free. It is expensive attention, not a free notebook, and not a replacement for retrieval."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "YaRN: Efficient Context Window Extension of Large Language Models (Peng et al., 2023)"
+    url: "https://arxiv.org/abs/2309.00071"
+  - title: "Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)"
+    url: "https://arxiv.org/abs/2307.03172"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+Long context sounds magical: 128K, 256K, or even 1M tokens in one
+prompt. It is useful, but it has real costs. More context means more
+<G term="kv-cache">KV cache</G> memory, slower prompt processing, more
+attention work, harder evaluation, and more ways for irrelevant text to
+distract the model. Quality can also decay across distance: a model may
+handle the end of a long document well while missing a critical detail
+buried near the beginning.
+
+Long context is good for whole-document analysis, codebase slices,
+legal or technical review, transcript summarization, multi-file
+reasoning, and as a fallback when retrieval misses context. But it is a
+complement to retrieval, not a replacement. Use
+<G term="rag">retrieval</G> for large corpora and long context for the
+final selected evidence.
+
+A few habits make long context behave. Put critical instructions near
+the beginning and near the end. Use section headers and delimiters. Ask
+for citations tied to source chunks. Compress irrelevant history, and
+use summary memory instead of unbounded chat history. Think of long
+context as expensive attention, not a free notebook.
+
+Supported context length is also not the same as fast, cheap, or
+accurate at that length, the same caution that applies to the context
+window itself. The next module, on retrieval, is the other half of this
+story: when the corpus is larger than any context window, retrieval is
+what selects the evidence the model actually sees.

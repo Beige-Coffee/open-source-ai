@@ -1,0 +1,34 @@
+---
+slug: model-types
+order: 9
+title: "Model types"
+one_liner: "Base, instruct, chat, reasoning, tool-tuned. Starting with the wrong type is a common reason a capable model feels useless."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+Not all LLMs are tuned for the same behavior, and starting with the
+wrong type is a common reason a capable model feels useless. A base
+model completes your prompt rather than answering it. Asked "What is the
+capital of France?", a base model might continue with "and what is the
+population of Paris?" instead of answering "Paris." Base models are
+useful for pretraining research, fine-tuners, and custom pipelines, and
+frustrating for everyone else.
+
+The practical split is short. A base model is good for pretraining
+research, <G term="fine-tuning">fine-tuning</G>, and custom pipelines.
+An instruct model is good for direct instruction following. A chat
+model is good for multi-turn dialogue with role formatting. A reasoning
+model is good when the task benefits from extra thinking tokens and
+verification. A tool-tuned model is good when structured calls, JSON, or
+function use matter.
+
+For most users, the default starting point is a recent instruct or chat
+model in a size that fits comfortably in memory. Do not start with a
+base model unless you know why you want one. What "fits comfortably"
+means is a memory question, and the [self-host track](/learn/self-host)
+turns it into arithmetic.

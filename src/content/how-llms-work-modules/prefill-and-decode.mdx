@@ -1,0 +1,42 @@
+---
+slug: prefill-and-decode
+order: 6
+title: "Prefill and decode"
+one_liner: "Two regimes with different costs. Prefill processes the prompt (time to first token); decode generates one token at a time (streaming speed)."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+LLM inference has two performance regimes, and they behave nothing
+alike. <G term="prefill">Prefill</G> processes the prompt you gave the
+model. If you paste a 20,000-token document, the model must process all
+20,000 tokens before it can produce the first answer token. Prefill is
+relatively parallelizable, so accelerators handle it efficiently, but
+it can still be expensive. The wait for the first token to appear is
+usually prefill time.
+
+<G term="decode">Decode</G> generates new tokens one at a time. Each new
+token depends on the sequence so far, so decode is sequential. This is
+where the streaming typing effect comes from, and it is usually the
+phase that decides whether a model feels fast or slow.
+
+The shorthand: long prompts punish prefill, long answers punish decode,
+and long conversations punish both, because the
+<G term="kv-cache">KV cache</G> grows the whole time. In a chat session,
+every turn adds to the cache. If you let a conversation run to 16,000
+tokens, you pay the memory cost of all 16,000 tokens on every new token
+generated. That is why chat interfaces that keep unbounded history
+eventually slow down or crash.
+
+This split is worth internalizing before you care about tokens per
+second, because the two regimes are bound by different hardware limits.
+Prefill leans on compute; decode leans on memory bandwidth. The
+[self-host track](/learn/self-host/memory-bandwidth) works through why
+two cards with the same memory capacity can have very different decode
+speeds.

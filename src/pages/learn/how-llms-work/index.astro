@@ -1,0 +1,110 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { HOW_LLMS_WORK_MODULES } from "../../../lib/course/modules";
+
+const { user, supabase } = Astro.locals;
+
+type ProgressRow = { module_slug: string; phase: string };
+const progressBySlug = new Map<string, ProgressRow>();
+let totalComplete = 0;
+
+if (user && supabase) {
+  const slugs = HOW_LLMS_WORK_MODULES.map((m) => m.slug);
+  const { data } = await supabase
+    .from("module_progress")
+    .select("module_slug, phase")
+    .eq("user_id", user.id)
+    .in("module_slug", slugs);
+  for (const r of data ?? []) {
+    progressBySlug.set(r.module_slug, r as ProgressRow);
+    if (r.phase === "complete") totalComplete++;
+  }
+}
+
+function progressBadge(slug: string): { label: string; cls: string } | null {
+  const p = progressBySlug.get(slug);
+  if (!p) return null;
+  if (p.phase === "complete") return { label: "complete", cls: "bg-[var(--color-status-fresh)] text-white" };
+  if (p.phase === "read") return null;
+  return { label: p.phase.replace("_", " "), cls: "bg-[var(--color-accent-soft)] text-[var(--color-accent)] border border-[var(--color-border)]" };
+}
+---
+
+<BaseLayout
+  title="How LLMs work · Learn"
+  description="A practical course on the mechanics of running a model: the inference loop, tokens, transformers, attention, KV cache, prefill and decode, decoding controls, chat templates, model types, long context, RAG, tool use, fine-tuning, and multimodal."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-2">
+    <a
+      href="/learn"
+      class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4"
+    >
+      ← All learn tracks
+    </a>
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-4">
+      How-LLMs-work track
+    </p>
+    <h1
+      class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-3"
+    >
+      How LLMs work
+    </h1>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+      The model-side foundation. Start with the loop: tokens in, probabilities out, one next
+      token at a time. Once that clicks, attention, the KV cache, chat templates, decoding,
+      long context, RAG, tool use, and fine-tuning all fall out of the same mechanics. Each
+      module follows the same Read / Probe / Compare / Why-Open / Synthesize structure as the
+      rest of the course.
+    </p>
+    <p class="text-sm text-[var(--color-text-subtle)] max-w-prose">
+      Adapted, in this site's neutral voice, from
+      <a href="https://x.com/TheAhmadOsman/status/2057590224729911346" target="_blank" rel="noopener" class="text-[var(--color-text)] hover:underline">Ahmad Osman's "LLMs 101: A Practical Guide (2026)"</a>.
+      The hardware and serving half is the
+      <a href="/learn/self-host" class="text-[var(--color-text)] hover:underline">Self-host track</a>,
+      which adapts the same author's "Self-hosted LLMs / Local AI" series.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 mt-8 mb-16">
+    {user && (
+      <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-3">
+        {totalComplete} of {HOW_LLMS_WORK_MODULES.length} complete
+      </p>
+    )}
+    <ol class="border-t border-[var(--color-border)]">
+      {
+        HOW_LLMS_WORK_MODULES.map((m) => {
+          const badge = user ? progressBadge(m.slug) : null;
+          return (
+            <li>
+              <a
+                href={`/learn/how-llms-work/${m.slug}`}
+                title={m.one_liner}
+                class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+              >
+                <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
+                  {String(m.order).padStart(2, "0")}
+                </span>
+                <span class="flex-1">
+                  <span class="block font-serif text-base text-[var(--color-text)] group-hover:text-[var(--color-accent)] mb-0.5">
+                    {m.title}
+                  </span>
+                  <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
+                    {m.one_liner}
+                  </span>
+                </span>
+                {badge && (
+                  <span class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${badge.cls}`}>
+                    {badge.label}
+                  </span>
+                )}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+</BaseLayout>

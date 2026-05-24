@@ -1,0 +1,48 @@
+---
+slug: attention
+order: 4
+title: "Attention"
+one_liner: "Attention decides which earlier tokens matter. The variant chosen (MHA, MQA, GQA, MLA) sets the KV-cache bill."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness (Dao et al., 2022)"
+    url: "https://arxiv.org/abs/2205.14135"
+  - title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints (Ainslie et al., 2023)"
+    url: "https://arxiv.org/abs/2305.13245"
+  - title: "DeepSeek-V2 Technical Report"
+    url: "https://arxiv.org/abs/2405.04434"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+<G term="attention">Attention</G> is how a token decides which earlier
+tokens matter for the next prediction. It is also one of the reasons
+local inference is so memory-sensitive.
+
+Classic <G term="mha">multi-head attention</G> stores separate
+key/value state for many heads. That gives the model flexibility, but
+it makes the <G term="kv-cache">KV cache</G> large. Modern local models
+often use more efficient designs. <G term="mqa">Multi-query
+attention</G> has many query heads share a single key/value head:
+memory-efficient, sometimes less expressive.
+<G term="gqa">Grouped-query attention</G> lets groups of query heads
+share key/value heads, which is the common middle ground in current
+local models. Some recent models use <G term="mla">multi-head latent
+attention</G>, which compresses the key/value representation instead of
+dropping heads.
+
+Kernels matter as much as the variant. <G term="flash-attention">FlashAttention</G>
+and SDPA-style implementations reduce attention memory traffic and keep
+the accelerator busier. A runtime with good attention kernels can be
+much faster than one without, on the same model and the same hardware.
+
+This is why two 7B models can behave very differently at long context.
+Parameter count is not the whole story. A 7B MHA model at 128K context
+can exhaust a 24 GB GPU, while a 7B GQA model with the same advertised
+context may fit with room to spare. When comparing models for
+long-context work, look at attention type, KV-head count, context
+length, and runtime support, not just the parameter count. The memory
+those choices drive is the KV cache, which the next module makes
+concrete.

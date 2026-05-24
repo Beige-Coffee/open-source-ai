@@ -1,0 +1,44 @@
+---
+slug: decoding
+order: 7
+title: "Decoding controls"
+one_liner: "After logits, nothing is written yet. Decoding turns scores into one token, and the knobs change voice, determinism, and risk."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+After the model produces logits, it has not written anything yet. It
+has only scored every possible next token. Decoding is the policy that
+turns those scores into one actual token, appends it to the context,
+and repeats the loop. The runtime can pick the highest-probability
+token every time, sample from a narrowed set of likely tokens, penalize
+repetition, stop at a delimiter, or use a fixed seed so the same prompt
+behaves reproducibly. None of these change the weights, but they change
+the model's voice, determinism, creativity, and tendency to loop.
+
+The important knobs answer three practical questions. How much
+randomness is allowed? How far into lower-probability tokens can the
+sampler reach? And what boundaries prevent loops, rambling, schema
+breaks, or runaway output? Temperature, top-p, and top-k govern the
+first two; stop sequences, repetition penalties, and max-token limits
+govern the third.
+
+The settings follow the task. For precise work, start narrow: low
+temperature, short token limits, explicit stop sequences, and
+constrained decoding when output must match JSON or a schema. For
+creative work, give the sampler more room with higher temperature and
+top-p, then rank several candidates afterward. For coding, keep the
+first pass conservative and sample alternatives only when you are
+intentionally exploring.
+
+Greedy decoding is not always more accurate; it is often brittle. A
+greedy decoder can get stuck in loops or produce generic answers
+because it never explores alternatives. For evals, use deterministic
+settings (including a fixed seed) so results are reproducible. For
+ideation, let the model breathe. One rule holds across tasks:
+constrained decoding, where output is forced to match a grammar or
+schema, is more reliable than asking politely for valid JSON.

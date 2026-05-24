@@ -1,0 +1,264 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import CoursePanel from "../../../components/CoursePanel.tsx";
+import {
+  MODULE_BY_SLUG,
+  HOW_LLMS_WORK_MODULES,
+  nextModule,
+  prevModule,
+  PHASE_ORDER,
+  phaseLabel,
+  type ProgressPhase,
+} from "../../../lib/course/modules";
+
+const { module: moduleSlug } = Astro.params;
+if (!moduleSlug || !MODULE_BY_SLUG[moduleSlug] || MODULE_BY_SLUG[moduleSlug].track !== "how-llms-work") {
+  return Astro.redirect("/learn/how-llms-work");
+}
+
+const courseModule = MODULE_BY_SLUG[moduleSlug];
+const { user, supabase } = Astro.locals;
+
+// Load this module's MDX from the how_llms_work_modules content collection.
+const allModules = await getCollection("how_llms_work_modules");
+const entry = allModules.find((m) => m.data.slug === moduleSlug);
+const ModuleContent = entry ? (await render(entry)).Content : null;
+const probePrimer = courseModule.probe_primer ?? [];
+
+// Look up the learner's current progress for this module.
+let currentPhase: ProgressPhase = "read";
+let jumped = false;
+let passChoice: "fast" | "deep" = "fast";
+type PriorWriting = {
+  module_slug: string;
+  module_title: string;
+  module_order: number;
+  synthesize?: string;
+  why_open?: string;
+};
+let priorWritings: PriorWriting[] = [];
+if (user && supabase) {
+  const { data } = await supabase
+    .from("module_progress")
+    .select("phase, jumped")
+    .eq("user_id", user.id)
+    .eq("module_slug", moduleSlug)
+    .maybeSingle();
+  if (data) {
+    currentPhase = data.phase as ProgressPhase;
+    jumped = data.jumped;
+  }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("pass_choice")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (profile?.pass_choice) {
+    passChoice = profile.pass_choice as "fast" | "deep";
+  }
+
+  // Earlier modules' writings, so the Probe agent can reference the
+  // learner's own arc across the track.
+  const earlierModules = HOW_LLMS_WORK_MODULES.filter((m) => m.order < courseModule.order);
+  if (earlierModules.length > 0) {
+    const earlierSlugs = earlierModules.map((m) => m.slug);
+    const [{ data: synthRows }, { data: whyOpenRows }] = await Promise.all([
+      supabase
+        .from("synthesize_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+      supabase
+        .from("why_open_notes")
+        .select("module_slug, body")
+        .eq("user_id", user.id)
+        .in("module_slug", earlierSlugs),
+    ]);
+    const synthBySlug = new Map((synthRows ?? []).map((r) => [r.module_slug, r.body]));
+    const whyOpenBySlug = new Map(
+      (whyOpenRows ?? []).map((r) => [r.module_slug, r.body]),
+    );
+    priorWritings = earlierModules
+      .filter((m) => synthBySlug.has(m.slug) || whyOpenBySlug.has(m.slug))
+      .map((m) => ({
+        module_slug: m.slug,
+        module_title: m.title,
+        module_order: m.order,
+        synthesize: synthBySlug.get(m.slug),
+        why_open: whyOpenBySlug.get(m.slug),
+      }));
+  }
+}
+
+const next = nextModule(moduleSlug);
+const prev = prevModule(moduleSlug);
+---
+
+<BaseLayout
+  title={`${courseModule.title} · How LLMs work · Learn`}
+  description={`How-LLMs-work module: ${courseModule.one_liner}`}
+>
+  <script is:inline>
+    {`
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var val = params.get("set_pass");
+          if (val !== "fast" && val !== "deep") return;
+          var KEY = "oas-course-v1";
+          var raw = window.localStorage.getItem(KEY);
+          var state = raw ? JSON.parse(raw) : { version: "v1", modules: {} };
+          state.pass_choice = val;
+          window.localStorage.setItem(KEY, JSON.stringify(state));
+          params.delete("set_pass");
+          var qs = params.toString();
+          var path = window.location.pathname + (qs ? "?" + qs : "");
+          window.history.replaceState({}, "", path);
+        } catch (e) { /* ignore */ }
+      })();
+    `}
+  </script>
+  <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+    <header class="mb-6">
+      <a
+        href="/learn/how-llms-work"
+        class="inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-3"
+      >
+        ← How LLMs work
+      </a>
+      <div class="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+        <h1 class="font-serif text-3xl md:text-4xl text-[var(--color-text)]">
+          <span class="font-mono text-base text-[var(--color-text-subtle)] mr-3">
+            {String(courseModule.order).padStart(2, "0")}
+          </span>
+          {courseModule.title}
+        </h1>
+        <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] px-2 py-1 rounded border border-[var(--color-border)]">
+          {courseModule.type}
+        </span>
+      </div>
+      <p class="text-base text-[var(--color-text-muted)] max-w-prose leading-relaxed">
+        {courseModule.one_liner}
+      </p>
+      <p class="mt-2 font-mono text-[10px] text-[var(--color-text-subtle)]">
+        Adapted from <a
+          href="https://x.com/TheAhmadOsman/status/2057590224729911346"
+          target="_blank"
+          rel="noopener"
+          class="hover:text-[var(--color-text)] hover:underline"
+        >Ahmad Osman, "LLMs 101: A Practical Guide (2026)"</a>.
+      </p>
+    </header>
+
+    <nav
+      aria-label="Module phases"
+      class="flex items-center gap-2 mb-6 py-2 border-y border-[var(--color-border)] overflow-x-auto"
+    >
+      {
+        PHASE_ORDER.filter((p) => p !== "complete").map((phase) => {
+          const isCurrent = phase === currentPhase;
+          const isDone =
+            PHASE_ORDER.indexOf(phase) < PHASE_ORDER.indexOf(currentPhase);
+          return (
+            <span
+              class={`font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded ${
+                isCurrent
+                  ? "bg-[var(--color-accent-strong)] text-white"
+                  : isDone
+                    ? "text-[var(--color-text)]"
+                    : "text-[var(--color-text-subtle)]"
+              }`}
+            >
+              {phaseLabel(phase)}
+            </span>
+          );
+        })
+      }
+      {
+        jumped && (
+          <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded text-[var(--color-text-subtle)] italic ml-auto">
+            jumped to
+          </span>
+        )
+      }
+    </nav>
+
+    <div class="grid gap-6 md:grid-cols-[3fr_2fr]">
+      <div class="prose-course min-h-[60vh] md:min-h-[calc(100vh-6rem)]">
+        {entry && ModuleContent && (
+          <Fragment>
+            <ModuleContent />
+
+            {currentPhase === "complete" && next && (
+              <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+                <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                  You've completed this module. Move on to the next, or revisit
+                  any phase from the ribbon above.
+                </p>
+                <a
+                  href={`/learn/how-llms-work/${next.slug}`}
+                  class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                >
+                  Next: {next.title} →
+                </a>
+              </div>
+            )}
+          </Fragment>
+        )}
+      </div>
+
+      <aside>
+        <div
+          class="md:sticky md:top-20 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] min-h-[40vh] md:min-h-[480px] md:max-h-[calc(100vh-6rem)] flex flex-col overflow-hidden"
+        >
+          <CoursePanel
+            client:load
+            moduleSlug={moduleSlug}
+            initialPhase={currentPhase}
+            userId={user?.id ?? null}
+            passChoice={passChoice}
+            priorWritings={priorWritings}
+            probePrimer={probePrimer}
+          />
+        </div>
+      </aside>
+    </div>
+
+    <nav
+      aria-label="Module navigation"
+      class="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center justify-between gap-3"
+    >
+      {
+        prev ? (
+          <a
+            href={`/learn/how-llms-work/${prev.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            ← {prev.title}
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (first module)
+          </span>
+        )
+      }
+      {
+        next ? (
+          <a
+            href={`/learn/how-llms-work/${next.slug}`}
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            {next.title} →
+          </a>
+        ) : (
+          <span class="text-sm text-[var(--color-text-subtle)]">
+            (final module)
+          </span>
+        )
+      }
+    </nav>
+  </div>
+</BaseLayout>

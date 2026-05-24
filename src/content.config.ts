@@ -138,9 +138,34 @@ const self_host_modules = defineCollection({
   }),
 });
 
+/**
+ * How-LLMs-work learn track. The model-side foundation for the
+ * self-host track: the inference loop, tokens, transformers, attention,
+ * KV cache, prefill and decode, decoding controls, model packages and
+ * chat templates, model types, long context, RAG, tool use, fine-tuning,
+ * and multimodal. Adapted from Ahmad Osman's "LLMs 101: A Practical
+ * Guide (2026)". Each module is a single MDX file in
+ * src/content/how-llms-work-modules/.
+ */
+const how_llms_work_modules = defineCollection({
+  loader: glob({
+    pattern: "**/*.mdx",
+    base: "./src/content/how-llms-work-modules",
+  }),
+  schema: z.object({
+    slug: z.string(),
+    order: z.number().int().min(1),
+    title: z.string(),
+    one_liner: z.string(),
+    sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
+    updated: z.coerce.date(),
+  }),
+});
+
 export const collections = {
   layers,
   news,
   glossary,
   self_host_modules,
+  how_llms_work_modules,
 };

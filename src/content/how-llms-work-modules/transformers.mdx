@@ -1,0 +1,44 @@
+---
+slug: transformers
+order: 3
+title: "The Transformer"
+one_liner: "Most chat models are decoder-only Transformers: embeddings, attention, feed-forward blocks, stacked and projected to logits."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+  - title: "RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., 2021)"
+    url: "https://arxiv.org/abs/2104.09864"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+Most modern LLMs are based on the <G term="transformer">Transformer</G>
+architecture, and most local chat models are decoder-only Transformers:
+they predict the next token while looking back only at previous tokens.
+Everything before this point (tokens, weights, config, chat templates)
+is setup. The Transformer is the engine underneath.
+
+A simplified Transformer layer has a few parts. Token embeddings turn
+token IDs into vectors. Positional information gives the model token
+order; many modern LLMs use <G term="rope">RoPE</G> (rotary position
+embeddings), which encodes position by rotating representations.
+Self-<G term="attention">attention</G> lets each token look back at
+earlier tokens and decide what matters. A feed-forward block (the MLP)
+expands and compresses each representation through a dense
+nonlinearity, and a large fraction of a model's parameters live here.
+Layer normalization and residual connections stabilize deep stacks and
+help information flow through many layers.
+
+An output projection then turns the final hidden state into logits over
+the vocabulary. Stack this recipe dozens or hundreds of times and you
+have a language model.
+
+Two points are worth holding onto. First, attention is order-agnostic
+on its own, so the positional signal (RoPE and its relatives) is what
+keeps word order straight. Second, because so many parameters sit in
+the feed-forward blocks, parameter count alone tells you little about a
+model's attention cost at long context. That cost is the subject of the
+next two modules.

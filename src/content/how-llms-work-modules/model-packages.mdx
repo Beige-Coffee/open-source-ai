@@ -1,0 +1,46 @@
+---
+slug: model-packages
+order: 8
+title: "Model packages and chat templates"
+one_liner: "Weights are not the whole model. Config, tokenizer, chat template, and generation defaults travel together, and the template is the part most often broken."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+A runnable local LLM is more than one big weight file. A model package
+usually includes the architecture and config (layer count, hidden size,
+attention type, RoPE settings, vocabulary, special tokens, context
+length), the weights themselves, the <G term="tokenizer">tokenizer</G>,
+the chat template, generation defaults (temperature, top-p, stop
+tokens, repetition penalties, max tokens), and a license and model
+card. The weights are the largest file, but they are not the whole
+model. If the tokenizer, config, or chat template is wrong, the same
+weights can feel broken.
+
+The chat template is the part people break most often. A chat model was
+trained with a specific conversation format. One model expects system,
+user, and assistant markers in a particular shape; another wraps
+instructions in bracketed tags; another uses ChatML-style markers;
+another needs special reasoning tokens or a tool-call wrapper. Using the
+wrong format can cause gibberish, role confusion, ignored system
+prompts, repeated prompts, broken tool calls, and bad benchmark
+results, all of which look like the model being weak when the template
+is the actual bug.
+
+The defenses are simple. Use the tokenizer's built-in chat template
+(for example apply_chat_template) when working through a library, or the
+model-specific template the runtime ships. Confirm whether the model is
+base, instruct, chat, reasoning, or tool-tuned. Make sure the BOS and
+EOS tokens are correct. For tool use, follow the exact schema the model
+and runtime expect. If you build an application that lets users switch
+models, you need template switching too; hardcoding one format and then
+loading a model that expects another is a common source of bad local
+evals.
+
+Treat the template like an API contract. If you get it wrong, you are
+not testing the model you think you are testing. This is the cheapest
+mistake to rule out before concluding that a model is bad.

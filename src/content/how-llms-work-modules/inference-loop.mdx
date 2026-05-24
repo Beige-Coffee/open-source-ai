@@ -1,0 +1,51 @@
+---
+slug: inference-loop
+order: 1
+title: "The inference loop"
+one_liner: "Tokens in, probabilities out, one next token at a time. Every other decision follows from this loop."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Attention Is All You Need (Vaswani et al., 2017)"
+    url: "https://arxiv.org/abs/1706.03762"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+Running a model is called inference. For a standard decoder-only LLM,
+inference is one loop repeated over and over: convert text into
+<G term="tokenization">tokens</G>, feed those tokens to the model,
+compute scores for every possible next token, choose one with a
+decoding policy, append it to the sequence, and repeat until the model
+emits a stop token, the user stops it, or a token limit is reached. The
+model is not writing a whole answer in one shot. It generates one token
+at a time, and every new token becomes part of the sequence that
+influences the next one.
+
+Stated as a function, the model maps its weights and the current
+sequence to a probability distribution over the next token. Logits are
+the raw scores; softmax normalizes them into probabilities; decoding
+turns those probabilities into one selected token. The weights encode
+what the model learned in training. The sequence (the prompt plus
+everything generated so far) is what it is looking at right now.
+
+This is why local generation speed is measured in tokens per second.
+The system repeatedly runs a forward pass, picks or samples a token,
+updates the <G term="kv-cache">KV cache</G>, and continues. Two
+different costs hide inside that loop, and a reader feels them
+differently.
+
+A long <G term="prefill">prefill</G> means a long pause before the
+first word appears: that is the time spent processing the prompt. Slow
+<G term="decode">decode</G> means the answer streams out slowly, token
+by token. Builders often watch decode speed because it is what a reader
+sees, but prefill time is what hurts when you paste a 10,000-token
+document and wait for the first token.
+
+Once the loop is clear, the rest of this track is mostly elaboration.
+Tokens set the unit of work. Attention and the KV cache explain the
+memory bill. Chat templates and decoding controls determine whether the
+model behaves at all. How fast the loop runs on a given box is the
+subject of the [self-host track](/learn/self-host), which picks up where
+the mechanics here leave off.

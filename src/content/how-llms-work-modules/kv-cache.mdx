@@ -1,0 +1,57 @@
+---
+slug: kv-cache
+order: 5
+title: "The KV cache"
+one_liner: "The model's working memory. It keeps generation usable and it is the hidden memory bill that grows with every token."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al., SOSP 2023)"
+    url: "https://arxiv.org/abs/2309.06180"
+  - title: "Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2023)"
+    url: "https://arxiv.org/abs/2211.17192"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+The <G term="kv-cache">KV cache</G> is the model's working memory during
+generation. It stores key/value <G term="attention">attention</G>
+states for previous tokens so the model does not recompute the entire
+history from scratch on every new token. Without it, generation would
+be brutally inefficient. With it, generation is usable, but the cache
+costs memory.
+
+That memory is proportional to tokens times layers times kv_heads times
+head_dim times precision times 2, where the factor of 2 covers keys and
+values. A useful rule of thumb for older Llama-like 7B
+<G term="mha">MHA</G> models is roughly 0.5 MiB per token in
+<G term="fp16">FP16</G> KV cache. (Check it: 2 times 32 layers times 32
+KV heads times 128 head_dim times 2 bytes is about 524,288 bytes, which
+is 0.5 MiB.) At that rate, 4K tokens costs about 2 GiB, and 32K tokens
+about 16 GiB of KV cache alone.
+
+Newer <G term="gqa">GQA</G> and <G term="mqa">MQA</G> models cut this
+substantially, because they store fewer key/value heads. Some runtimes
+also support <G term="fp8">FP8</G> or INT8 KV cache, which is the
+practical compression floor for most local users in 2026. Going below
+8-bit is not a default: research systems show that 2-bit to 4-bit KV
+can work with careful algorithms, calibration, and custom kernels, but
+that is not the same as flipping a low-bit KV toggle in a desktop
+runtime. Below 8-bit, benchmark hard, especially for coding, tool
+calls, JSON, and long-context retrieval where exact earlier tokens
+matter.
+
+Two distinctions prevent confusion. KV-cache
+<G term="quantization">quantization</G> shrinks the live context
+memory; weight quantization shrinks the model itself;
+<G term="speculative-decoding">speculative decoding</G> attacks decode
+latency by drafting future tokens and verifying them. They are
+different levers, and the last one does not reduce the KV-cache bill at
+all.
+
+This is why a model can fit at an empty prompt and then fail when you
+load a long document. The weights fit. The working memory did not. The
+hardware side of that math (how much memory a given card has to spend
+on weights versus cache) is worked through in the
+[self-host track's GPU memory math module](/learn/self-host/gpu-memory-math).

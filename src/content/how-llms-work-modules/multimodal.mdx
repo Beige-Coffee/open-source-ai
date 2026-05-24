@@ -1,0 +1,50 @@
+---
+slug: multimodal
+order: 14
+title: "Multimodal models"
+one_liner: "Images, audio, and video become tokens too. The non-text input is a memory cost and a new way to get the template wrong."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+Multimodal local models accept images, and sometimes audio or video, in
+addition to text. Modern open-weight families increasingly include
+them. The hidden cost is that non-text input becomes tokens too. Vision
+encoders add memory. Image patches consume context. Audio and video can
+explode the input budget. Multimodal templates are also easier to get
+wrong than text-only templates.
+
+A single high-resolution image can consume thousands of tokens in the
+context window. If you run a multimodal model locally, count image
+tokens the same way you count text tokens; they come from the same
+budget. And evaluate carefully: small vision-language models can
+hallucinate visual details, OCR reliability varies, and charts and
+tables are still hard. Do not trust a demo of a simple photo to prove
+invoice-extraction quality.
+
+That caution is really the theme of this whole track. The model scene
+changes fast, but the fundamentals do not. The model predicts one token
+at a time. Tokens are not words. Weights are not the whole model. Chat
+templates matter. The <G term="kv-cache">KV cache</G> is the hidden
+memory bill. Long context is not free. RAG quality depends on
+retrieval. Fine-tuning needs evals. Get those right and most of the
+rest follows.
+
+What this track deliberately left out is the hardware: how much memory
+a model needs, how memory bandwidth sets decode speed, which
+<G term="quantization">quantization</G> format your runtime wants, and
+how to serve the loop under real traffic. Those are the subject of the
+[self-host track](/learn/self-host), the practical companion to the
+mechanics here. Once you understand the memory, context, and formatting
+rules the model is obeying, those choices become much easier to reason
+about.
+
+This track is adapted, in the site's neutral voice, from Ahmad Osman's
+"LLMs 101: A Practical Guide (2026 Edition)"
+([@TheAhmadOsman](https://x.com/TheAhmadOsman/status/2057590224729911346)).
+The self-host track adapts the companion three-part "Self-hosted LLMs /
+Local AI" series by the same author.

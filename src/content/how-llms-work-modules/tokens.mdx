@@ -1,0 +1,51 @@
+---
+slug: tokens
+order: 2
+title: "Tokens and tokenizers"
+one_liner: "Models read integer token IDs, not words. Token counts, not word counts, set context limits and memory."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Neural Machine Translation of Rare Words with Subword Units (Sennrich et al., 2016)"
+    url: "https://arxiv.org/abs/1508.07909"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+LLMs do not see raw text as words. They see <G term="tokenization">tokens</G>:
+small chunks of text represented internally as integer IDs. A token
+might be a whole word, a word fragment (such as "inter", "national",
+"ization"), a punctuation mark, a whitespace-prefixed string, a
+byte-level fallback, or a special control marker such as a system or
+assistant tag.
+
+The <G term="tokenizer">tokenizer</G> maps text to token IDs and token
+IDs back to text. Common families include <G term="bpe">BPE</G>-style
+tokenizers and SentencePiece-style tokenizers. Different model families
+use different tokenizers, and that matters: a 4,000-word document might
+be 5,000 tokens in one tokenizer and 7,500 in another. That difference
+alone makes tokens-per-second comparisons across families imperfect.
+
+Vocabulary size is a related tradeoff. A tokenizer with a larger
+vocabulary can compress some text into fewer tokens, but it also
+changes the size of the <G term="embedding">embedding</G> table and the
+output projection. There is no free choice here; the tokenizer is a
+design decision, not an afterthought.
+
+Tokens are the unit that determines how much text fits in the
+<G term="context-window">context window</G>, how large the
+<G term="kv-cache">KV cache</G> grows, how much latency you pay during
+prompt processing, and whether multilingual or code-heavy text is
+handled efficiently. They also decide whether the model sees special
+chat markers correctly, which is its own failure mode covered later in
+this track.
+
+A context window is the maximum number of tokens a model can attend to
+at once. In 2026, locally capable models range from 8K and 32K contexts
+up to 128K, 256K, and even 1M tokens on server-class systems. But
+supported length is not the same as cheap, fast, or equally accurate. A
+model that can technically handle 128K tokens may slow to a crawl at
+64K and lose coherence past 100K. Test the lengths you actually plan to
+use. Once you treat tokens as the unit of work, long context stops
+looking magical and starts looking like a bill you can estimate.

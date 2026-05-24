@@ -1,0 +1,47 @@
+---
+slug: rag
+order: 11
+title: "RAG: retrieval-augmented generation"
+one_liner: "Retrieve relevant chunks and give only those to the model. Most bad RAG is bad retrieval and chunking, not a bad model."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al., 2020)"
+    url: "https://arxiv.org/abs/2005.11401"
+  - title: "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction (Khattab and Zaharia, 2020)"
+    url: "https://arxiv.org/abs/2004.12832"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+<G term="rag">RAG</G> means retrieval-augmented generation. Instead of
+stuffing all the information into the prompt, you retrieve relevant
+chunks from a knowledge base and give only those chunks to the model.
+It is the standard answer when the corpus is larger than the context
+window, and often the better answer even when it is not.
+
+A good local RAG system has many stages: document ingestion, parsing,
+chunking, <G term="embedding">embeddings</G>, a vector index, retrieval,
+<G term="reranking">reranking</G>, prompt construction, answer
+generation, grounding checks, and evaluation. Each stage is a failure
+point. Bad parsing turns tables into garbage. Bad chunking splits the
+answer across boundaries. Bad retrieval returns irrelevant paragraphs.
+Bad reranking buries the right answer at rank 20. A good model cannot
+reliably answer from evidence it never received.
+
+This is the key correction to a common assumption: most bad RAG systems
+are not bad because of the LLM. They are bad because of chunking,
+retrieval, reranking, and evaluation. Chunking strategy is the quiet
+failure. Fixed-size chunks with no overlap can split sentences and lose
+context. Semantic or hierarchical chunking with parent-document
+retrieval often works better, but there is no universal answer; you
+have to evaluate chunk size, overlap, and splitting rules on your
+actual documents.
+
+A good reranker can rescue mediocre retrieval. No reranker can fix
+chunks that lost the answer during ingestion. When a RAG answer is
+wrong, inspect the parsed text, the chunk boundaries, the top-k
+retrieval, and the reranker before blaming the model. The vector
+databases, embeddings, and memory this depends on are the subject of
+the [retrieval and memory layer](/stack/retrieval-memory).

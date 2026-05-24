@@ -13,8 +13,9 @@ import type { CourseModule, ModulePhase } from "./modules";
 
 const COMMON_COURSE_HEADER = `You are the course agent for the self-paced course at open-source-ai.tech/learn. Your job is to help the learner think through the open-source AI stack one module at a time.
 
-The course has two tracks:
+The course has three tracks:
 - Walk the stack: 15 Socratic modules from infrastructure (foundation) through silicon, compute, data, training, weights, evaluation, governance, runtime, identity-trust, retrieval-memory, agents, safety-guardrails, protocols, to sovereignty-decentralization (capstone). Meta-layers slot in where they first start to shape the stack.
+- How LLMs work: 14 modules on the mechanics of running a model: the inference loop, tokens, transformers, attention, KV cache, prefill and decode, decoding controls, model packages and chat templates, model types, long context, RAG, tool use, fine-tuning, and multimodal. The model-side foundation that the self-host track's hardware and serving guidance builds on.
 - Self-host the stack: 7 practical modules covering VRAM math, memory bandwidth, quantization formats, inference engines, hardware strategy, production serving, and benchmarking. Companion to the stack walk for learners who want to actually run the stack on hardware they control.
 
 Each module in either track has five phases: Read (the learner reads the module's prose), Probe (you ask Socratic questions), Compare (you walk through a comparison of relevant players or approaches), Why-Open (you probe "why does open source matter here"), and Synthesize (the learner writes their own summary).
@@ -50,7 +51,7 @@ example shapes:
   put $152M behind Ai2's open foundation models.
 
 The pill goes to the local detail page; the markdown link goes to
-the external primary source. Both are useful — the pill keeps the
+the external primary source. Both are useful: the pill keeps the
 learner inside the site, the link lets them verify.
 
 GROUNDING:
@@ -125,7 +126,7 @@ function formatPriorWritings(writings: PriorWriting[]): string {
     "\n\nEARLIER WRITINGS BY THIS LEARNER (their own words; quote, do not paraphrase as your own):",
   ];
   for (const w of recent) {
-    lines.push(`\n[Module ${String(w.module_order).padStart(2, "0")} — ${w.module_title}]`);
+    lines.push(`\n[Module ${String(w.module_order).padStart(2, "0")}: ${w.module_title}]`);
     if (w.synthesize) {
       lines.push("Synthesize:");
       lines.push(w.synthesize.trim());
@@ -200,19 +201,22 @@ function comparePrompt({ module, passChoice }: PhaseContext): string {
       ? "Two axes per anchor is enough. Accept reasonable answers."
       : "Four axes per anchor. Demand the learner cite specific evidence (license, performance number, dependency on closed components) before accepting a cell.";
 
-  const isSelfHost = module.track === "self-host";
+  // Layerless tracks (self-host, how-llms-work) do not map 1:1 to a
+  // layer slug, so find_projects(layer=...) would query a non-layer and
+  // always return empty. Layer-mapped (stack-walk) modules keep the
+  // layer-based tool path.
+  const isLayerless = (module.track ?? "stack-walk") !== "stack-walk";
   const layerSlug = module.layer_slugs[0];
 
   // Tool guidance branches by track. Stack-walk modules map 1:1 to a
   // layer slug, so find_projects(layer=...) is the right surface. Self-
-  // host modules do NOT correspond to a layer (gpu-memory-math is a
-  // module slug, not a layer), so calling find_projects(layer=...) with
-  // the module slug always returns empty. For self-host, anchors are
-  // project or model slugs; the agent should read them directly with
-  // read_project(slug) and read_model(slug), falling back to find_models
-  // / find_projects with relevant filters when broadening the comparison.
-  const toolGuidance = isSelfHost
-    ? `Tools: the anchors above are project slugs or model slugs from this site's catalog. Call read_project(slug) and read_model(slug) on each anchor to surface real data; use find_models and find_projects with filters (e.g. by openness, family, or runtime) only when broadening the comparison beyond the anchors. read_glossary(slug) is useful for format names like FP8, NF4, GGUF. Do NOT call find_projects(layer="${module.slug}"); ${module.slug} is a self-host module, not a layer.`
+  // host and how-llms-work modules do NOT correspond to a layer (the
+  // slug is a module slug, not a layer), so the agent should read named
+  // anchors directly with read_project(slug) / read_model(slug) and use
+  // read_glossary(slug) for concept and format terms, broadening with
+  // find_models / find_projects filters only when needed.
+  const toolGuidance = isLayerless
+    ? `Tools: the anchors above (if any) are project slugs or model slugs from this site's catalog. Call read_project(slug) and read_model(slug) on each named anchor to surface real data; use find_models and find_projects with filters (e.g. by openness, family, or runtime) when broadening the comparison. read_glossary(slug) is useful for concept and format names (for example FP8, GGUF, GQA, RoPE, RAG, KV cache). Do NOT call find_projects(layer="${module.slug}"); ${module.slug} is a module slug, not a layer.`
     : `Tools: use find_projects(layer="${layerSlug}") and read_project(slug) to surface real project data at this layer.`;
 
   const anchorGuidance =

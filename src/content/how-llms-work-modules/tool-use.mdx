@@ -1,0 +1,44 @@
+---
+slug: tool-use
+order: 12
+title: "Tool use and agents"
+one_liner: "Tools make a model useful and change the safety model. A chatbot that hallucinates is annoying; an agent with shell access is dangerous."
+sources:
+  - title: "LLMs 101: A Practical Guide (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2057590224729911346"
+  - title: "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)"
+    url: "https://arxiv.org/abs/2210.03629"
+  - title: "Building Effective Agents (Anthropic, 2024)"
+    url: "https://www.anthropic.com/research/building-effective-agents"
+updated: 2026-05-24
+---
+
+import G from "../../components/G.astro";
+
+A local LLM becomes much more useful when it can use tools: file
+search, shell commands, browser automation, databases, code execution,
+calendars, ticket systems, internal APIs, vector databases, even home
+automation or edge devices. <G term="tool-use">Tool use</G> is what
+turns a model from a text generator into something that can act.
+
+It also changes the safety model. A chatbot that hallucinates is
+annoying. An agent with filesystem access can delete things. An agent
+with browser access can leak secrets. An agent with shell access can
+damage the machine faster than you can read the logs.
+
+Local agent safety has four layers. Scope the agent tightly: give it
+only the directories, APIs, network access, and credentials it actually
+needs. Constrain execution: sandboxes, containers, least-privilege
+users, confirmations for destructive actions, and schema-validated tool
+arguments. Treat inputs as hostile: retrieved documents, web pages,
+tickets, and emails can all carry prompt injection. Keep an audit
+trail: log tool calls, model versions, prompts, and approvals, without
+dumping secrets into the logs.
+
+Structured outputs help but are not a security boundary. JSON schemas,
+constrained decoding, and function signatures make tool calls easier to
+validate. They do not prove the model understood the request, chose the
+safe action, or resisted injected instructions. For serious tool use,
+the policy checks belong outside the model. The frameworks and products
+where these patterns get built are the subject of the
+[agents layer](/stack/agents).
