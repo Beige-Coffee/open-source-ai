@@ -20,8 +20,8 @@ prompt. It is useful, but it has real costs. More context means more
 <G term="kv-cache">KV cache</G> memory, slower prompt processing, more
 attention work, harder evaluation, and more ways for irrelevant text to
 distract the model. Quality can also decay across distance: a model may
-handle the end of a long document well while missing a critical detail
-buried near the beginning.
+handle the start and end of a long document well while missing a critical
+detail buried in the middle.
 
 Long context is good for whole-document analysis, codebase slices,
 legal or technical review, transcript summarization, multi-file

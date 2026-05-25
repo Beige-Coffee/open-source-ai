@@ -528,7 +528,7 @@ export const HOW_LLMS_WORK_MODULES: readonly CourseModule[] = [
     compare_anchors: [],
     probe_primer: [
       "Long context is useful but has real costs: more KV-cache memory, slower prompt processing, more attention work, harder evaluation, and more ways for irrelevant text to distract the model.",
-      "Quality can decay across distance; a model may handle the end of a long document well while missing details buried near the beginning.",
+      "Quality can decay across distance; a model may handle the start and end of a long document well while missing details buried in the middle.",
       "Long context is a complement to retrieval, not a replacement. Use retrieval for large corpora and long context for the final selected evidence.",
       "Practical habits help: put critical instructions near the beginning and end, use section headers and delimiters, ask for citations tied to source chunks, and use summary memory instead of unbounded chat history.",
       "Supported context length is not the same as fast, cheap, or accurate at that length.",

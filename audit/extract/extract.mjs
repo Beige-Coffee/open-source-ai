@@ -210,6 +210,12 @@ function priorityFiles() {
   for (const f of readdirSync(layersDir)) {
     if (extname(f) === ".mdx") files.push(`src/content/layers/${f}`);
   }
+  const howDir = resolve(ROOT, "src/content/how-llms-work-modules");
+  if (existsSync(howDir)) {
+    for (const f of readdirSync(howDir)) {
+      if (extname(f) === ".mdx") files.push(`src/content/how-llms-work-modules/${f}`);
+    }
+  }
   return files;
 }
 

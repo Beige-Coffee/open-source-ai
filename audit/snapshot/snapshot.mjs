@@ -176,7 +176,15 @@ export async function snapshotOne(url) {
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   let record;
   try {
-    const page = await fetchPage(fetchTarget);
+    let page = await fetchPage(fetchTarget);
+    // Fallback: if the pivoted fetch target (e.g. arxiv /html/, which is
+    // unavailable for many papers) returns 4xx/5xx, retry the original
+    // canonical URL (e.g. the arxiv /abs/ abstract). The abstract entails
+    // most definitional / mechanism claims even when full HTML is absent.
+    if (page.status >= 400 && fetchTarget !== canon) {
+      const fallback = await fetchPage(canon);
+      if (fallback.status < 400) page = fallback;
+    }
     if (page.status >= 400) {
       record = {
         url: canon,
@@ -276,6 +284,24 @@ function listAllUrls() {
     for (const fn of readdirSync(glossaryDir)) {
       if (!fn.endsWith(".mdx")) continue;
       const text = readFileSync(resolve(glossaryDir, fn), "utf8");
+      const fmMatch = text.match(/^---\n([\s\S]*?)\n---\n/);
+      if (!fmMatch) continue;
+      let fm;
+      try { fm = yaml.load(fmMatch[1]); } catch { continue; }
+      for (const s of fm?.sources || []) {
+        if (s && s.url && /^https?:\/\//.test(s.url)) urls.add(s.url);
+      }
+    }
+  }
+  // Course-track module MDX frontmatter sources (how-llms-work + self-host),
+  // same {title, url} shape as glossary. Ledger rows for these modules cite
+  // them, so the entailment verifier needs the snapshots.
+  for (const dir of ["src/content/how-llms-work-modules", "src/content/self-host-modules"]) {
+    const moduleDir = resolve(ROOT, dir);
+    if (!existsSync(moduleDir)) continue;
+    for (const fn of readdirSync(moduleDir)) {
+      if (!fn.endsWith(".mdx")) continue;
+      const text = readFileSync(resolve(moduleDir, fn), "utf8");
       const fmMatch = text.match(/^---\n([\s\S]*?)\n---\n/);
       if (!fmMatch) continue;
       let fm;
