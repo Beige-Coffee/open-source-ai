@@ -1,7 +1,7 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-05-19T08:00:00-07:00",
+  "last_run_at": "2026-05-25T08:00:00-07:00",
   "sources": {
     "vllm-releases": {
       "last_seen_tag": "v0.21.1rc0",
@@ -9,8 +9,9 @@
       "note": "v0.21.1rc0 tagged 2026-05-15; not published as it is a release candidate. Continue to monitor for v0.21.1 stable."
     },
     "sglang-releases": {
-      "last_seen_tag": "v0.5.12",
-      "last_seen_at": "2026-05-16"
+      "last_seen_tag": "v0.5.12.post1",
+      "last_seen_at": "2026-05-23",
+      "note": "v0.5.12.post1 (2026-05-23) is a post-release patch on the v0.5.12 line; processed but not published as a minor bugfix patch below the milestone bar."
     },
     "mcp-releases": {
       "last_seen_tag": "2025-11-25",
@@ -22,24 +23,27 @@
     },
     "interconnects": {
       "last_seen_url": "https://www.interconnects.ai/p/latest-open-artifacts-21-open-model",
-      "last_seen_at": "2026-05-16"
+      "last_seen_at": "2026-05-25",
+      "note": "No new posts since the 2026-05-16 open-artifacts roundup as of 2026-05-25."
     },
     "eleutherai-blog": {
       "last_seen_url": "https://blog.eleuther.ai/reward-hacking-indicators/",
       "last_seen_at": "2026-04-15"
     },
     "semianalysis": {
-      "last_seen_url": "https://newsletter.semianalysis.com/p/cerebras-faster-tokens-please",
-      "last_seen_at": "2026-05-13"
+      "last_seen_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
+      "last_seen_at": "2026-05-21",
+      "note": "EDA Market Primer (2026-05-21) processed but not published; an EDA-tooling market analysis (Cadence, Synopsys, Siemens, China EDA), off-theme for the open-source AI stack and behind a paywall."
     },
     "chips-and-cheese": {
-      "last_seen_url": "https://chipsandcheese.com/p/evaluating-geekbench-6",
-      "last_seen_at": "2026-05-07"
+      "last_seen_url": "https://chipsandcheese.com/p/evaluating-spec-cpu2026",
+      "last_seen_at": "2026-05-23",
+      "note": "Evaluating SPEC CPU2026 (2026-05-23) processed but not published; general-purpose CPU benchmark analysis (Intel Lion Cove, AMD Zen 5), not AI-accelerator or open-stack relevant."
     },
     "latent-space": {
-      "last_seen_url": "https://www.latent.space/p/ainews-how-to-land-a-job-at-a-frontier",
-      "last_seen_at": "2026-05-19",
-      "note": "2026-05-19 post is an AINews syndication of a frontier-lab pretraining careers piece; processed but not published as it is a syndicated digest rather than a primary stack release."
+      "last_seen_url": "https://www.latent.space/p/ainews-all-model-labs-are-now-agent",
+      "last_seen_at": "2026-05-23",
+      "note": "AINews-syndicated digests 'All Model Labs are now Agent Labs' (2026-05-23) and 'New AI Infra unicorns: Exa, Modal, TurboPuffer' (2026-05-22) processed but not published per the do-not-re-syndicate-AINews-digests rule. Daytona / Ivan Burazin podcast (2026-05-21) not published; a second agent-sandbox-infra interview close behind the 2026-05-21 Railway item."
     },
     "lmarena-blog": {
       "last_seen_at": null,
@@ -62,45 +66,48 @@
       "last_seen_at": "2025-04-10"
     },
     "ollama-releases": {
-      "last_seen_tag": "v0.30.0-rc20",
-      "last_seen_at": "2026-05-18",
-      "note": "v0.30.0 RC cadence continued on 2026-05-18 with rc18, rc19, rc20 same day. Published as a single grouped runtime item in 2026-05-19.mdx. v0.24 stable line still parallel. v0.25.0-rc0 (2026-05-15) skipped as CI-only build."
+      "last_seen_tag": "v0.30.0-rc25",
+      "last_seen_at": "2026-05-25",
+      "note": "v0.30.0-rc23 (2026-05-22), rc24 (2026-05-24), rc25 (2026-05-25) processed but not published: continuation of the v0.30.0 RC line already covered in 2026-05-18/19 issues. No stable v0.30.0 yet; rc24/rc25 are version-bump and CI fixes."
     },
     "llama-cpp-releases": {
-      "last_seen_tag": "b9222",
-      "last_seen_at": "2026-05-19",
-      "note": "Nightly tag bumps continued through b9222 (2026-05-19). No milestone release identified; skipped per policy."
+      "last_seen_tag": "b9330",
+      "last_seen_at": "2026-05-25",
+      "note": "Nightlies b9266-b9330 (through 2026-05-25 PT) processed but not published; routine work without a clear milestone (fast Walsh-Hadamard CUDA transform, ffn_latent MUL_MAT buft-probe fix, tensor-parallel ggml context-size fix, parallel quant LUT init, cpp-httplib 0.45.1 bump, server checkpoint fixes, MTP kv-cache draft-type handling)."
     },
     "huggingface-blog": {
-      "last_seen_url": "https://huggingface.co/blog/ettin-reranker",
-      "last_seen_at": "2026-05-19",
-      "note": "Ettin Reranker family (2026-05-19) published as retrieval-memory item. Cosmos Predict 2.5 fine-tuning (2026-05-18, robotics) and PaddleOCR 3.5 integration (2026-05-18) processed but not published as they are integration tutorials rather than stack releases."
+      "last_seen_url": "https://huggingface.co/blog/agent-glossary",
+      "last_seen_at": "2026-05-25",
+      "note": "NVIDIA Nemotron-Labs Diffusion (nvidia/nemotron-labs-diffusion, 2026-05-23) published as weights item in 2026-05-25.mdx. 'Harness, Scaffold, and the AI Agent Terms Worth Getting Right' (agent-glossary, 2026-05-25) and 'Specialization Beats Scale' (Dharma-AI, 2026-05-22) processed but not published: a terminology essay and a community opinion post, not releases."
     },
     "anthropic-news": {
-      "last_seen_url": "https://www.anthropic.com/news/anthropic-kpmg",
-      "last_seen_at": "2026-05-19",
-      "note": "Stainless acquisition (2026-05-18) published as protocols item. KPMG integration (2026-05-19) processed but not published; classified as enterprise partnership like PwC, not a stack release."
+      "last_seen_url": "https://www.anthropic.com/news/chris-olah-pope-leo-encyclical",
+      "last_seen_at": "2026-05-25",
+      "note": "Chris Olah's remarks on Pope Leo XIV's encyclical (2026-05-25) processed but not published; co-founder commentary rather than a stack release. Project Glasswing (2026-05-22) lives under /research/ and was published from the anthropic-research source in 2026-05-25.mdx."
     },
     "anthropic-research": {
-      "last_seen_url": "https://www.anthropic.com/research/2028-ai-leadership",
-      "last_seen_at": "2026-05-14",
-      "note": "Policy essay rather than research paper; published as governance item with that framing."
+      "last_seen_url": "https://www.anthropic.com/research/glasswing-initial-update",
+      "last_seen_at": "2026-05-22",
+      "note": "Project Glasswing: An initial update (2026-05-22) published as safety-guardrails item in 2026-05-25.mdx (AI-assisted vulnerability discovery with the withheld Mythos Preview model; Claude Security public beta and a Cyber Verification Program announced)."
     },
     "ai2-blog": {
-      "last_seen_url": "https://allenai.org/blog/aimip",
-      "last_seen_at": "2026-05-13"
+      "last_seen_url": "https://allenai.org/blog/olmoearth-v1-1",
+      "last_seen_at": "2026-05-19",
+      "note": "OlmoEarth v1.1 (2026-05-19) already published in 2026-05-21.mdx via the huggingface-blog cross-post. No newer AI2 posts as of 2026-05-25."
     },
     "trl-releases": {
-      "last_seen_tag": "v1.4.0",
-      "last_seen_at": "2026-05-09"
+      "last_seen_tag": "v1.5.0",
+      "last_seen_at": "2026-05-25",
+      "note": "v1.5.0 (2026-05-25) published as training item in 2026-05-25.mdx (chat templates for Phi-3.5/Qwen3-VL/Qwen3.5, async-GRPO final logits softcapping, KTO/DPO loss alignment, opt-out telemetry)."
     },
     "lm-eval-harness-releases": {
       "last_seen_tag": "v0.5.0.dev1",
       "last_seen_at": "2026-05-11"
     },
     "openhands-releases": {
-      "last_seen_tag": "cloud-1.29.1",
-      "last_seen_at": "2026-05-12"
+      "last_seen_tag": "cloud-1.33.0",
+      "last_seen_at": "2026-05-21",
+      "note": "cloud-1.32.2 and cloud-1.33.0 (both 2026-05-21) changed the default model configuration to MiniMax-M2.7; processed but not published as minor configuration updates."
     },
     "aider-releases": {
       "last_seen_tag": "v0.86.3.dev",
@@ -111,9 +118,9 @@
       "last_seen_at": "2026-04-13"
     },
     "nvidia-dev-blog": {
-      "last_seen_url": "https://developer.nvidia.com/blog/how-the-nvidia-vera-rubin-platform-is-solving-agentic-ais-scale-up-problem/",
-      "last_seen_at": "2026-05-14",
-      "note": "Vera Rubin platform post (2026-05-14) processed but not published; opinion essay framing rather than a stack release."
+      "last_seen_url": "https://developer.nvidia.com/blog/synthesize-realistic-3d-medical-images-at-scale-to-ship-pre-trained-models/",
+      "last_seen_at": "2026-05-22",
+      "note": "Synthesize Realistic 3D Medical Images at Scale (2026-05-22) processed but not published; a synthetic-data tutorial for medical imaging, not a stack release."
     },
     "mistral-news": {
       "last_seen_url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5",
@@ -132,9 +139,32 @@
       "note": "block.github.io/goose/blog/rss.xml returned 404 on 2026-05-14; logged to fetch-errors.jsonl."
     },
     "prime-intellect-blog": {
-      "last_seen_url": "https://www.primeintellect.ai/blog/general-agent",
-      "last_seen_at": "2026-05-18",
-      "note": "General Agent (2026-05-18) published as agents item. Autonomous AI research for nanogpt speedrun (2026-05-14) processed but not published; chose General Agent over it on signal."
+      "last_seen_url": "https://www.primeintellect.ai/blog/reward-hacking",
+      "last_seen_at": "2026-05-25",
+      "note": "Systematic Reward Hacking and Prime Sprints (2026-05-20) published as safety-guardrails item in 2026-05-21.mdx. No newer posts as of 2026-05-25."
+    },
+    "nemo-guardrails-releases": {
+      "last_seen_tag": "v0.22.0",
+      "last_seen_at": "2026-05-22",
+      "note": "v0.22.0 (2026-05-22) published as safety-guardrails item in 2026-05-25.mdx (LangChain decoupling with built-in OpenAI-compatible client, IORails milestone 2 streaming/OpenTelemetry/reasoning support, opt-in anonymous usage reporting)."
+    },
+    "weaviate-blog": {
+      "last_seen_url": "https://weaviate.io/blog/coding-assistant-weaviate-mcp",
+      "last_seen_at": "2026-05-21",
+      "note": "Build a Coding Assistant with Weaviate MCP (2026-05-21) processed but not published; a how-to tutorial rather than a release."
+    },
+    "letta-blog": {
+      "last_seen_url": "https://www.letta.com/blog/red-teaming",
+      "last_seen_at": "2026-05-06",
+      "note": "Most recent post is Red-teaming the Context Constitution (2026-05-06); no new posts as of 2026-05-25."
+    },
+    "artificial-analysis-news": {
+      "last_seen_at": "2026-05-25",
+      "note": "Changelog additions 2026-05-21 through 2026-05-25 are benchmark entries for closed models (Grok 4.3 medium/low, Grok Code Fast 1, Gemini 3.5 Flash) and proprietary image models (Recraft V4.1); processed but not published, off-theme for the open-source stack."
+    },
+    "nous-research": {
+      "last_seen_at": "2026-05-25",
+      "note": "Blog scrape exposes no post dates. Most prominent listed item, Hermes 4.3, verified via Hugging Face model pages (NousResearch/Hermes-4.3-36B updated 2025-12-06; GGUF and -centralized variants 2025-12-03) to be a December 2025 release, not in this window. No verifiable new item; not published."
     },
     "grants_watch_frontier-model-forum-updates": {
       "last_seen_url": "https://www.frontiermodelforum.org/updates/fmf-announces-first-of-its-kind-information-sharing-agreement/",
@@ -222,9 +252,9 @@
       "note": "Two new funding-adjacent posts on 2026-05-18 are Anthropic Fellows research outputs, not grant announcements."
     },
     "grants_watch_eu-horizon-news": {
-      "last_seen_url": "https://digital-strategy.ec.europa.eu/en/news/eu-agrees-simplify-ai-rules-boost-innovation-and-ban-nudification-apps-protect-citizens",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13."
+      "last_seen_url": "https://digital-strategy.ec.europa.eu/en/news/eu-and-africa-strengthen-cooperation-artificial-intelligence",
+      "last_seen_at": "2026-05-21",
+      "note": "Commission opens feedback on draft high-risk AI classification guidelines (2026-05-19) published as governance item in 2026-05-21.mdx. EU-Africa AI cooperation event (2026-05-21) processed but not published; an event recap without named concrete agreements."
     },
     "grants_watch_aisi-uk-grants": {
       "last_seen_url": "https://www.aisi.gov.uk/grants",

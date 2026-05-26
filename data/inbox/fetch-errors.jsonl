@@ -6,3 +6,9 @@
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "nsf-news-ai", "url": "https://www.nsf.gov/news/index.jsp?org=NSF", "error": "HTTP 202 with empty body; fell back to https://www.nsf.gov/news/"}
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "mozilla-builders-blog", "url": "https://builders.mozilla.org/blog/", "error": "HTTP 404"}
 {"timestamp": "2026-05-13T08:00:00-07:00", "source_id": "ea-forum-grants", "url": "https://forum.effectivealtruism.org/tag/grants/feed.xml", "error": "HTTP 404"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "meta-ai-blog", "url": "https://ai.meta.com/blog/rss/", "error": "HTTP 404 (recurring since 2026-05-14)"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "hf-trending-models", "url": "https://huggingface.co/api/models?sort=trending&limit=30", "error": "HTTP 400 Bad Request; weights coverage fell back to huggingface-blog and allenai blog"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "qwen-blog", "url": "https://qwen.ai/blog", "error": "scrape returned empty page (recurring since 2026-05-14); needs human re-sourcing"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "deepseek-news", "url": "https://api-docs.deepseek.com/news", "error": "HTTP 404 (recurring); needs human re-sourcing"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "lf-ai-data-blog", "url": "https://lfaidata.foundation/blog/feed/", "error": "feed has no item entries (last build 2025-07-01); needs human investigation"}
+{"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "nous-research", "url": "https://nousresearch.com/blog/", "error": "scrape exposes post titles without dates; cannot date-verify items (Hermes 4.3 confirmed Dec 2025 via HF model pages, excluded)"}

@@ -1,0 +1,39 @@
+---
+date: 2026-05-25
+editorial_letter: "Today's issue covers items from 2026-05-22 through 2026-05-25 across three layers: training, weights, and safety-guardrails. NVIDIA released Nemotron-Labs Diffusion, a family of open-weight diffusion language models at 3B, 8B, and 14B plus an 8B vision-language model, under the NVIDIA Nemotron Open Model License with weights on Hugging Face. The training layer saw TRL 1.5.0 add chat-template and async-GRPO support, and the safety-guardrails layer logged two items: NeMo Guardrails 0.22.0 and Anthropic's first Project Glasswing update on AI-assisted vulnerability discovery."
+item_count: 4
+layer_buckets:
+  training: 1
+  weights: 1
+  safety-guardrails: 2
+---
+
+## Training
+
+### TRL v1.5.0
+
+Hugging Face tagged TRL v1.5.0 on 2026-05-25. The release adds training-compatible chat templates with generation markers for Phi-3.5, Qwen3-VL, and Qwen3.5 Think/NoThink models, enabling assistant-only loss masking, and adds final logits softcapping support in the AsyncGRPOTrainer for models such as Gemma 2. It continues aligning the KTO and DPO trainer loss paths and introduces optional anonymous usage telemetry that records the TRL version, trainer class, model architecture, PEFT use, and distributed backend, with an opt-out documented in usage_stats.md. Listed fixes include a regex backtracking issue in Qwen3 and GLM4 response parsing that could hang training, and CUDA memory leaks tied to bitsandbytes dequantization buffers.
+
+Source: [TRL GitHub Releases](https://github.com/huggingface/trl/releases/tag/v1.5.0)
+
+## Weights
+
+### NVIDIA Nemotron-Labs Diffusion
+
+NVIDIA published Nemotron-Labs Diffusion on 2026-05-23 through the Hugging Face blog, a family of diffusion language models that generate multiple tokens in parallel and refine them iteratively rather than decoding left to right. The release includes 3B, 8B, and 14B text models and an 8B vision-language model, with the 8B text model reported at 1.2% higher average accuracy than Qwen3 8B and a self-speculation mode reaching about 865 tokens per second on a B200, roughly four times the post's autoregressive baseline. Text models ship under the NVIDIA Nemotron Open Model License and the 8B vision-language model under the NVIDIA Source Code License, with weights on Hugging Face and training code in the NVIDIA Megatron Bridge repository. The post states the models were trained on 1.3T tokens from NVIDIA Nemotron pretraining datasets plus 45B tokens of post-training data.
+
+Source: [Hugging Face Blog](https://huggingface.co/blog/nvidia/nemotron-labs-diffusion)
+
+## Safety and Guardrails
+
+### Anthropic: Project Glasswing initial update
+
+Anthropic published a first update on Project Glasswing on 2026-05-22, a program in which roughly 50 partners use a withheld model called Mythos Preview to find vulnerabilities in widely used software before models can exploit them. The post reports more than ten thousand high- or critical-severity vulnerabilities found across partners in the first month, including about 2,000 bugs at Cloudflare and 271 Firefox vulnerabilities at Mozilla, which Anthropic states is over ten times the count found with Claude Opus 4.6. It also reports a scan of more than 1,000 open-source projects that surfaced an estimated 6,202 high or critical findings at a stated 90.6% validation rate, and notes the UK AI Security Institute described Mythos Preview as the first model to solve both of its cyber ranges end to end. Anthropic released Claude Security in public beta and a Cyber Verification Program alongside the update; Mythos Preview itself is withheld from public release.
+
+Source: [Anthropic Research](https://www.anthropic.com/research/glasswing-initial-update)
+
+### NeMo Guardrails v0.22.0
+
+NVIDIA tagged NeMo Guardrails v0.22.0 on 2026-05-22. The release decouples LangChain so it is now optional, adding a built-in OpenAI-compatible client in its place, and advances the IORails path with streaming, OpenTelemetry, and reasoning-model support toward parity with LLMRails. It also adds opt-in anonymous usage reporting with privacy controls.
+
+Source: [NeMo Guardrails GitHub Releases](https://github.com/NVIDIA-NeMo/Guardrails/releases/tag/v0.22.0)
