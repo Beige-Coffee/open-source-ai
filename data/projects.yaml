@@ -1694,7 +1694,38 @@ projects:
     maturity: stable
     url: https://www.langchain.com/
     github: https://github.com/langchain-ai/langchain
-    description: Most-used open agent-construction framework; LLM tools, chains, RAG primitives, multi-agent helpers.
+    description: Most-used open agent framework; LLM tools, chains, RAG primitives, and LangGraph for low-level agent orchestration. MCP via the langchain-mcp-adapters package.
+    explainer: |
+      LangChain is the most-used open framework for building LLM
+      applications: tool integrations, chains, RAG primitives, and,
+      through the LangGraph spinoff, low-level graph-based agent
+      orchestration. LangChain 1.0 and LangGraph 1.0 both reached
+      general availability in October 2025. It supports Python and
+      JavaScript/TypeScript.
+
+      Against the opinionated, batteries-included style of CrewAI,
+      LangGraph sits at the low-level end: explicit state machines and
+      graphs the developer wires together. Two facts matter for a 2026
+      comparison. MCP support is not in the core library; it is
+      provided through the separate langchain-mcp-adapters package,
+      which makes LangChain a later adopter of MCP than the vendor SDKs.
+      License: the core libraries are MIT, but the langgraph-api server
+      runtime used for hosted deployment is under the Elastic License
+      2.0, which needs a commercial key in production.
+
+      For open-source AI, LangChain is fully model-agnostic and the
+      default starting point for many teams. LangSmith, the
+      observability and evaluation product, is a separate hosted
+      service that the framework does not require.
+    sources:
+      - title: LangChain documentation
+        url: https://docs.langchain.com/oss/python/langchain/overview
+      - title: langgraph LICENSE (MIT core)
+        url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/LICENSE
+      - title: langchain-mcp-adapters (MCP via adapter package)
+        url: https://github.com/langchain-ai/langchain-mcp-adapters
+      - title: LangGraph 1.0 GA announcement
+        url: https://changelog.langchain.com/announcements/langgraph-1-0-is-now-generally-available
   - slug: llama-index
     name: LlamaIndex
     layers:
@@ -1705,17 +1736,435 @@ projects:
     maturity: stable
     url: https://www.llamaindex.ai/
     github: https://github.com/run-llama/llama_index
-    description: Open framework for data-aware LLM applications; strong on RAG and structured data integration.
+    description: Open framework for data-aware LLM applications; strong on RAG, now also an agent framework via AgentWorkflow. MCP via the llama-index-tools-mcp package.
+    explainer: |
+      LlamaIndex began as a RAG framework and is now also an agent
+      framework, with multi-agent orchestration through AgentWorkflow
+      (declaring agents and the hand-offs between them). It is
+      MIT-licensed and supports Python and TypeScript. Its strength
+      remains data: retrieval, indexing, and document workflows.
+
+      Among the independent frameworks it is the retrieval-first
+      option, where LangGraph is graph-first and CrewAI is role-first.
+      MCP support is available but, as with LangChain, through a
+      separate integration package (llama-index-tools-mcp) rather than
+      the core library. The framework is still on a 0.x version line as
+      of May 2026, though it is widely used in production. LlamaCloud is
+      an optional hosted product; the framework itself runs anywhere.
+
+      For open-source AI, LlamaIndex is fully open and model-agnostic,
+      reaching providers through its large set of integration packages
+      rather than a single built-in client.
+    sources:
+      - title: LlamaIndex documentation
+        url: https://developers.llamaindex.ai/python/framework/
+      - title: llama_index LICENSE (MIT)
+        url: https://raw.githubusercontent.com/run-llama/llama_index/main/LICENSE
+      - title: LlamaIndex MCP integration docs
+        url: https://developers.llamaindex.ai/python/framework/module_guides/mcp/llamaindex_mcp/
   - slug: autogen
     name: AutoGen
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: maintenance
+    url: https://microsoft.github.io/autogen/
+    github: https://github.com/microsoft/autogen
+    description: Microsoft's multi-agent conversation framework, now maintenance-mode; consolidated with Semantic Kernel into the Microsoft Agent Framework (1.0 GA April 2026).
+    explainer: |
+      AutoGen began as a Microsoft Research framework for multi-agent
+      conversations and role-playing agent patterns. As of 2026 it is
+      maintenance-mode. Microsoft consolidated AutoGen and Semantic
+      Kernel into the Microsoft Agent Framework, which reached 1.0 in
+      April 2026. AutoGen continues to receive critical bug and
+      security fixes but not significant new features, and new projects
+      are pointed at the Microsoft Agent Framework instead.
+
+      The relevant correction for anyone surveying the agent layer is
+      that AutoGen is no longer the current Microsoft agent framework,
+      and neither is Semantic Kernel; both fed into one successor. For
+      the build-it-yourself comparison, see the Microsoft Agent
+      Framework entry rather than this one.
+    sources:
+      - title: AutoGen repository
+        url: https://github.com/microsoft/autogen
+      - title: AutoGen LICENSE-CODE (MIT)
+        url: https://raw.githubusercontent.com/microsoft/autogen/main/LICENSE-CODE
+      - title: Introducing Microsoft Agent Framework (consolidation, 2025-10-01)
+        url: https://devblogs.microsoft.com/foundry/introducing-microsoft-agent-framework-the-open-source-engine-for-agentic-ai-apps/
+      - title: Semantic Kernel and Microsoft Agent Framework (relationship)
+        url: https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-microsoft-agent-framework/
+  - slug: openai-agents-sdk
+    name: OpenAI Agents SDK
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://openai.github.io/openai-agents-python/
+    github: https://github.com/openai/openai-agents-python
+    description: OpenAI's lightweight agent SDK and the production successor to Swarm; MIT, Python and TypeScript, provider-agnostic via LiteLLM, handoffs, native MCP.
+    explainer: |
+      The OpenAI Agents SDK is a small library for building agents: an
+      agent loop, tool calling, structured handoffs between agents,
+      guardrails, and tracing. OpenAI ships it as the production-ready
+      successor to its experimental Swarm project. The Python package
+      and a separate JavaScript/TypeScript port are both MIT-licensed.
+
+      Among the vendor SDKs it sits at the low-abstraction end: a few
+      primitives rather than an opinionated framework. It is
+      provider-agnostic in the sense that the README documents support
+      for the OpenAI Responses and Chat Completions APIs "as well as
+      100+ other LLMs" reached through LiteLLM, though OpenAI models are
+      the default and best-tested path. Multi-agent work is expressed as
+      handoffs (one agent delegating to another) and agents-as-tools.
+
+      For open-source AI the relevant facts are that the code is MIT and
+      MCP support is native (the SDK understands stdio, Streamable HTTP,
+      and SSE transports), so an agent built on it talks to the same
+      tool servers as any other MCP client. It is still pre-1.0 in
+      version numbering (0.17.x as of May 2026) but is OpenAI's
+      recommended agent-building path and is widely deployed.
+    sources:
+      - title: OpenAI Agents SDK documentation
+        url: https://openai.github.io/openai-agents-python/
+      - title: openai-agents-python LICENSE (MIT)
+        url: https://raw.githubusercontent.com/openai/openai-agents-python/main/LICENSE
+      - title: openai-agents-python README (provider-agnostic, handoffs)
+        url: https://raw.githubusercontent.com/openai/openai-agents-python/main/README.md
+      - title: OpenAI Agents SDK MCP docs
+        url: https://openai.github.io/openai-agents-python/mcp/
+      - title: openai-agents-python releases
+        url: https://github.com/openai/openai-agents-python/releases
+  - slug: claude-agent-sdk
+    name: Claude Agent SDK
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://code.claude.com/docs/en/agent-sdk/overview
+    github: https://github.com/anthropics/claude-agent-sdk-python
+    description: Anthropic's agent SDK extracted from Claude Code; the package is MIT but its use is governed by Anthropic's Commercial Terms, and it is Claude-only. Native plus in-process MCP, subagents. Renamed from the Claude Code SDK September 2025.
+    explainer: |
+      The Claude Agent SDK is the harness that runs Claude Code, made
+      available as a library in Python and TypeScript. It provides the
+      agent loop, context management, tool permissioning, subagents, and
+      MCP integration that the Claude Code product uses. It was renamed
+      from the "Claude Code SDK" on 2025-09-29 to signal use beyond
+      coding.
+
+      It is the one clear outlier in the 2026 agent-SDK comparison, on
+      two axes. License: the package source is MIT, but the README
+      states that use of the SDK is governed by Anthropic's Commercial
+      Terms of Service, so the open-source license on the code does not
+      make its use unrestricted. Model coupling: it is Claude-only, with
+      no provider-agnostic path. Serving can run through the Anthropic
+      API, Amazon Bedrock, Google Vertex AI, or Microsoft Foundry on
+      Azure, but the model is always Claude.
+
+      For open-source AI this is the example that separates open code
+      from open use: you can read and fork the SDK, but you cannot point
+      it at an open-weights model or run it outside Anthropic's
+      commercial terms. MCP support is native and includes in-process
+      SDK MCP servers for custom tools. It is pre-1.0 in versioning
+      (0.2.x as of May 2026) but powers a widely deployed product.
+    sources:
+      - title: Claude Agent SDK overview (docs)
+        url: https://code.claude.com/docs/en/agent-sdk/overview
+      - title: claude-agent-sdk-python LICENSE (MIT package)
+        url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/LICENSE
+      - title: claude-agent-sdk-python README (use governed by Commercial Terms)
+        url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/README.md
+      - title: claude-agent-sdk-python CHANGELOG (rename, subagents, in-process MCP)
+        url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/CHANGELOG.md
+      - title: Anthropic - enabling Claude to work more autonomously (rename, 2025-09-29)
+        url: https://www.anthropic.com/news/enabling-claude-code-to-work-more-autonomously
+      - title: Anthropic Commercial Terms of Service
+        url: https://www.anthropic.com/legal/commercial-terms
+  - slug: google-adk
+    name: Google ADK (Agent Development Kit)
     layers:
       - agents
     license: Apache 2.0
     focus: open
     maturity: stable
-    url: https://microsoft.github.io/autogen/
-    github: https://github.com/microsoft/autogen
-    description: Microsoft's open multi-agent framework; programmable agent conversations and tool-use orchestration.
+    url: https://adk.dev/
+    github: https://github.com/google/adk-python
+    description: Google's open agent framework; Apache-2.0, multi-language (Python, Java, Go, TypeScript, Kotlin), Gemini-optimized but model-agnostic, native bidirectional MCP. 2.0 GA May 2026.
+    explainer: |
+      Google's Agent Development Kit is an Apache-2.0 framework for
+      building and orchestrating agents. It is the most multi-language of
+      the 2026 vendor SDKs, with official quickstarts for Python, Java,
+      Go, TypeScript, and Kotlin. Multi-agent composition is expressed
+      through workflow agents: SequentialAgent, ParallelAgent, and
+      LoopAgent.
+
+      It is optimized for Gemini but model-agnostic by design; the
+      canonical docs describe the framework as designed for flexibility,
+      allowing integration with various LLMs, with other providers
+      reached through a model interface (LiteLLM is the documented
+      adapter). MCP support is native and bidirectional: ADK can consume
+      MCP servers as a client and expose its own tools through an MCP
+      server.
+
+      For open-source AI, ADK is a fully open framework from a
+      hyperscaler, which is the pattern that defines the 2026 vendor
+      SDKs: the framework code is open even when the default model
+      (Gemini) is not. ADK reached 1.0 in May 2025 and 2.0 in May 2026;
+      the 1.x line is still maintained in parallel with 2.x.
+    sources:
+      - title: Google ADK documentation
+        url: https://adk.dev/get-started/about/
+      - title: adk-python LICENSE (Apache 2.0)
+        url: https://raw.githubusercontent.com/google/adk-python/main/LICENSE
+      - title: Google ADK MCP tools docs
+        url: https://adk.dev/tools-custom/mcp-tools/
+      - title: Agent Development Kit launch (2025-04-09)
+        url: https://developers.googleblog.com/en/agent-development-kit-easy-to-build-multi-agent-applications/
+      - title: adk-python releases (1.0, 2.0)
+        url: https://github.com/google/adk-python/releases
+  - slug: vercel-ai-sdk
+    name: Vercel AI SDK
+    layers:
+      - agents
+    license: Apache 2.0
+    focus: open
+    maturity: stable
+    url: https://ai-sdk.dev/docs/agents/overview
+    github: https://github.com/vercel/ai
+    description: Vercel's TypeScript AI toolkit; Apache-2.0, model-agnostic via a unified provider API, subagents, native MCP. AI SDK 6 GA December 2025.
+    explainer: |
+      The Vercel AI SDK is a TypeScript toolkit for building AI
+      applications and agents. It is Apache-2.0 and is the
+      TypeScript-native pick among the vendor SDKs, widely used in
+      web-app contexts. Its design centers on a unified provider API:
+      you swap models by swapping a provider package, with no house
+      model of its own.
+
+      Multi-agent work is expressed through subagents, separate agent
+      instances a main agent can spawn for focused subtasks. MCP support
+      is native through a built-in client, though that client is a
+      lightweight tool-conversion client rather than a full MCP
+      implementation (it does not cover session management or resumable
+      streams). The toolkit reached version 6, generally available since
+      December 2025.
+
+      For open-source AI the relevant point is that it is fully open
+      (Apache-2.0) and genuinely model-neutral: there is no Vercel
+      model, so the provider choice is the developer's. Mastra is built
+      on top of it, which is why the two share a TypeScript,
+      model-routing lineage.
+    sources:
+      - title: Vercel AI SDK agents documentation
+        url: https://ai-sdk.dev/docs/agents/overview
+      - title: vercel/ai LICENSE (Apache 2.0)
+        url: https://raw.githubusercontent.com/vercel/ai/main/LICENSE
+      - title: Vercel AI SDK MCP tools docs
+        url: https://ai-sdk.dev/docs/ai-sdk-core/mcp-tools
+      - title: Vercel AI SDK subagents docs
+        url: https://ai-sdk.dev/docs/agents/subagents
+      - title: AI SDK 6 announcement (2025-12-22)
+        url: https://vercel.com/blog/ai-sdk-6
+  - slug: strands-agents
+    name: Strands Agents
+    layers:
+      - agents
+    license: Apache 2.0
+    focus: open
+    maturity: stable
+    url: https://strandsagents.com/
+    github: https://github.com/strands-agents/sdk-python
+    description: AWS's open agent SDK; Apache-2.0, Python (TypeScript in preview), Bedrock-default but model-agnostic, native MCP, workflow/graph/swarm multi-agent. 1.0 GA July 2025.
+    explainer: |
+      Strands Agents is AWS's Apache-2.0 agent SDK, built around a
+      model-driven loop where the model decides which tools to call. The
+      Python SDK reached 1.0 in July 2025; a TypeScript version is in
+      preview as of December 2025. Multi-agent composition supports
+      workflow, graph, and swarm patterns, with sub-agents modeled as
+      tools.
+
+      It defaults to Amazon Bedrock but is model-agnostic: the launch
+      post lists Anthropic's Claude, Llama, Ollama for local
+      development, and others such as OpenAI through LiteLLM. MCP support
+      is native; the launch framing is that an agent can draw on the
+      published catalog of MCP servers for tools.
+
+      For open-source AI, Strands is the AWS data point in the pattern of
+      fully open vendor SDKs: the framework is Apache-2.0 and runs
+      against open-weights models locally through Ollama, even though
+      Bedrock is the house default. It is one of several 2026 SDKs that
+      make the older "vendor SDK equals lock-in" assumption mostly false.
+    sources:
+      - title: Strands Agents documentation
+        url: https://strandsagents.com/
+      - title: strands-agents/sdk-python LICENSE (Apache 2.0)
+        url: https://raw.githubusercontent.com/strands-agents/sdk-python/main/LICENSE
+      - title: Introducing Strands Agents (launch, 2025-05-16)
+        url: https://aws.amazon.com/blogs/opensource/introducing-strands-agents-an-open-source-ai-agents-sdk/
+      - title: Strands Agents multi-agent patterns docs
+        url: https://strandsagents.com/docs/user-guide/concepts/multi-agent/multi-agent-patterns/
+      - title: TypeScript Strands Agents preview (2025-12-03)
+        url: https://aws.amazon.com/about-aws/whats-new/2025/12/typescript-strands-agents-preview/
+  - slug: microsoft-agent-framework
+    name: Microsoft Agent Framework
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://github.com/microsoft/agent-framework
+    github: https://github.com/microsoft/agent-framework
+    description: Microsoft's open agent framework consolidating AutoGen and Semantic Kernel; MIT, Python and .NET, model-agnostic via connectors, native MCP and A2A, graph-based orchestration. 1.0 GA April 2026.
+    explainer: |
+      The Microsoft Agent Framework is Microsoft's MIT-licensed agent
+      framework for Python and .NET. It is the consolidation of two
+      earlier Microsoft projects: AutoGen (multi-agent conversations,
+      from Microsoft Research) and Semantic Kernel (the enterprise
+      orchestration SDK). Both remain supported with bug and security
+      fixes, but Microsoft has said most new investment now goes to the
+      Agent Framework; Semantic Kernel 1.x carries a support commitment
+      of at least one year past the framework's general availability.
+
+      It reached 1.0 in April 2026. Multi-agent work uses graph-based
+      workflows that compose agents into sequential, concurrent,
+      handoff, and group-chat patterns. It is model-agnostic through
+      first-party service connectors (Microsoft Foundry, Azure OpenAI,
+      OpenAI, Anthropic Claude, Amazon Bedrock, Google Gemini, Ollama),
+      with native MCP and A2A support.
+
+      For open-source AI, the Agent Framework is the Microsoft entry in
+      the fully-open vendor-SDK pattern, and it resolves a real source of
+      confusion: AutoGen is no longer the current Microsoft agent
+      framework. Teams starting fresh are pointed here rather than at
+      AutoGen or Semantic Kernel.
+    sources:
+      - title: Microsoft Agent Framework 1.0 (GA, 2026-04-03)
+        url: https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-version-1-0/
+      - title: Introducing Microsoft Agent Framework (2025-10-01)
+        url: https://devblogs.microsoft.com/foundry/introducing-microsoft-agent-framework-the-open-source-engine-for-agentic-ai-apps/
+      - title: Semantic Kernel and Microsoft Agent Framework (relationship)
+        url: https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-microsoft-agent-framework/
+      - title: microsoft/agent-framework LICENSE (MIT)
+        url: https://raw.githubusercontent.com/microsoft/agent-framework/main/LICENSE
+  - slug: pydantic-ai
+    name: Pydantic AI
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://ai.pydantic.dev/
+    github: https://github.com/pydantic/pydantic-ai
+    description: Pydantic's MIT agent framework; Python, model-agnostic, type-safe through Pydantic models, native MCP, A2A plus graph multi-agent. 1.0 released September 2025.
+    explainer: |
+      Pydantic AI is an MIT-licensed agent framework from the team behind
+      Pydantic, the Python data-validation library. Its distinguishing
+      trait is type-safety: agent inputs and outputs are validated
+      through Pydantic models, which appeals to teams already building on
+      that stack. It is Python-only.
+
+      It is model-agnostic, with providers installed as explicit extras
+      (Bedrock, Groq, Mistral, and others). Multi-agent work and
+      interoperability are handled through A2A support and a
+      pydantic-graph control-flow library. MCP support is native, with
+      built-in client and server pieces. It reached 1.0 in September 2025
+      and is actively developed, with a 2.0 line in beta as of May 2026.
+
+      For open-source AI, Pydantic AI is one of the independent,
+      model-neutral frameworks (alongside LangChain, LlamaIndex, CrewAI,
+      and Mastra) rather than a vendor SDK; there is no house model and
+      no commercial-terms gate on its use.
+    sources:
+      - title: Pydantic AI documentation
+        url: https://ai.pydantic.dev/
+      - title: pydantic-ai LICENSE (MIT)
+        url: https://raw.githubusercontent.com/pydantic/pydantic-ai/main/LICENSE
+      - title: Pydantic AI MCP overview
+        url: https://ai.pydantic.dev/mcp/overview/
+      - title: pydantic-ai v1.0.0 release (2025-09-04)
+        url: https://github.com/pydantic/pydantic-ai/releases/tag/v1.0.0
+  - slug: crewai
+    name: CrewAI
+    layers:
+      - agents
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://docs.crewai.com/
+    github: https://github.com/crewAIInc/crewAI
+    description: Independent MIT agent framework; Python, model-agnostic via LiteLLM, role-based "crews" for multi-agent work, MCP via the crewai-tools adapter. 1.0 GA October 2025.
+    explainer: |
+      CrewAI is an independent, MIT-licensed Python framework organized
+      around the metaphor of a crew: a set of role-playing agents
+      (researcher, writer, reviewer) that collaborate on tasks, plus a
+      hierarchical process where a manager agent delegates. It is the
+      batteries-included, opinionated end of the comparison, in contrast
+      to the low-level graph style of LangGraph.
+
+      It is model-agnostic, built on LiteLLM, with OpenAI's GPT-4 as the
+      default model. MCP support is provided through an adapter in the
+      crewai-tools package (MCPServerAdapter) rather than the core
+      library. CrewAI reached 1.0 in October 2025. An optional hosted
+      product, CrewAI AMP, exists for teams that want managed execution;
+      the framework itself runs anywhere.
+
+      For open-source AI, CrewAI is fully open and model-neutral, and its
+      higher-level abstractions make it a common starting point for teams
+      that want structure out of the box rather than primitives to
+      assemble themselves.
+    sources:
+      - title: CrewAI documentation
+        url: https://docs.crewai.com/
+      - title: crewAI LICENSE (MIT)
+        url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/LICENSE
+      - title: CrewAI MCP overview (adapter)
+        url: https://docs.crewai.com/en/mcp/overview
+      - title: crewAI releases (1.0 line)
+        url: https://github.com/crewAIInc/crewAI/releases
+  - slug: mastra
+    name: Mastra
+    layers:
+      - agents
+    license: Apache 2.0
+    focus: open
+    maturity: stable
+    url: https://mastra.ai/en/docs/agents/overview
+    github: https://github.com/mastra-ai/mastra
+    description: Independent TypeScript agent framework from the Gatsby team; Apache-2.0 core (separate enterprise license for ee/ directories), built on the Vercel AI SDK, native MCP, supervisor/sub-agents. 1.0 released January 2026.
+    explainer: |
+      Mastra is a TypeScript agent framework from the team behind Gatsby.
+      It is the batteries-included TypeScript option: agents, workflows,
+      memory, evals, and a local dev playground in one framework. It is
+      built on top of the Vercel AI SDK, which is how it reaches more
+      than forty model providers through one interface, so it is fully
+      model-agnostic.
+
+      Its license is mostly Apache-2.0, with a wrinkle: code in
+      directories named ee/ is source-available under a separate Mastra
+      Enterprise License and needs a paid seat-based license for
+      production use. Multi-agent work uses a supervisor pattern, where
+      one agent coordinates sub-agents exposed to it as tools. MCP
+      support is native in both directions (consuming servers and
+      exposing Mastra tools as a server). Mastra reached 1.0 in January
+      2026.
+
+      For open-source AI, Mastra and the Vercel AI SDK are the two
+      TypeScript-native picks in a field that is otherwise Python-first.
+      The core is open; the enterprise carve-out is narrow but worth
+      knowing about before building on the ee/ pieces.
+    sources:
+      - title: Mastra agents documentation
+        url: https://mastra.ai/en/docs/agents/overview
+      - title: Mastra LICENSE (Apache 2.0 core plus ee/ carve-out)
+        url: https://raw.githubusercontent.com/mastra-ai/mastra/main/LICENSE.md
+      - title: Mastra Enterprise License (ee/)
+        url: https://raw.githubusercontent.com/mastra-ai/mastra/main/ee/LICENSE
+      - title: Mastra MCP overview
+        url: https://mastra.ai/docs/mcp/overview
+      - title: Announcing Mastra 1.0 (2026-01-20)
+        url: https://mastra.ai/blog/announcing-mastra-1
   - slug: mcp
     name: Model Context Protocol (MCP)
     layers:

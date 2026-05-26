@@ -1,0 +1,202 @@
+---
+/**
+ * Agent-SDK comparison matrix. Sortable columns + a vendor/independent
+ * filter, mirroring the /models table pattern. License and model-coupling
+ * cells that hide a material wrinkle (Claude's Commercial-Terms usage,
+ * the Mastra ee/ license, the LangGraph runtime license, Claude being
+ * model-tied) render muted with a tooltip, the way the models hub mutes
+ * proprietary entries.
+ *
+ * Facts come from loadAgentSdks(), which joins data/projects.yaml (the
+ * audited source for name/license/url) with the comparison overlay.
+ */
+import { loadAgentSdks } from "../lib/agent-sdks";
+
+const sdks = loadAgentSdks();
+const typeLabel = (c: string) => (c === "vendor" ? "Vendor" : "Independent");
+---
+
+<figure class="not-prose my-6" id="asdk-matrix">
+  <figcaption class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+    <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
+      Agent SDK comparison ({sdks.length})
+    </span>
+    <span class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+      click a column to sort &middot; <span data-asdk-count></span>
+    </span>
+  </figcaption>
+
+  <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs">
+    <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mr-1">filter</span>
+    {
+      [
+        { key: "all", label: "All" },
+        { key: "vendor", label: "Vendor SDKs" },
+        { key: "independent", label: "Independent" },
+      ].map((b) => (
+        <button
+          type="button"
+          data-asdk-filter={b.key}
+          class="px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-text)] cursor-pointer transition-colors data-[active]:bg-[var(--color-accent-soft)] data-[active]:text-[var(--color-accent)] data-[active]:border-[var(--color-accent)]"
+          data-active={b.key === "all" ? "" : undefined}
+        >
+          {b.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="overflow-x-auto border border-[var(--color-border)] rounded-md">
+    <table class="w-full text-sm border-collapse" id="asdk-table">
+      <thead class="bg-[var(--color-surface-warm)] border-b border-[var(--color-border)]">
+        <tr class="text-left">
+          <th class="px-3 py-2 cursor-pointer select-none" data-sort-key="name" data-sort-type="string">SDK <span class="asdk-chev"></span></th>
+          <th class="px-3 py-2 cursor-pointer select-none" data-sort-key="maker" data-sort-type="string">Maker <span class="asdk-chev"></span></th>
+          <th class="px-3 py-2 cursor-pointer select-none" data-sort-key="type" data-sort-type="string">Type <span class="asdk-chev"></span></th>
+          <th class="px-3 py-2">License</th>
+          <th class="px-3 py-2">Languages</th>
+          <th class="px-3 py-2 cursor-pointer select-none" data-sort-key="coupling" data-sort-type="numeric">Model coupling <span class="asdk-chev"></span></th>
+          <th class="px-3 py-2">Multi-agent</th>
+          <th class="px-3 py-2 cursor-pointer select-none" data-sort-key="mcp" data-sort-type="numeric">MCP <span class="asdk-chev"></span></th>
+          <th class="px-3 py-2">Latest</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          sdks.map((s) => (
+            <tr
+              class="border-b border-[var(--color-border)] last:border-b-0 align-top hover:bg-[var(--color-surface-warm)]"
+              data-category={s.category}
+              data-sv-name={s.name.toLowerCase()}
+              data-sv-maker={s.maker.toLowerCase()}
+              data-sv-type={s.category}
+              data-sv-coupling={String(s.coupling)}
+              data-sv-mcp={s.mcpNative ? "1" : "0"}
+            >
+              <td class="px-3 py-2 whitespace-nowrap">
+                <a
+                  href={`/projects/${s.slug}`}
+                  class="font-semibold no-underline hover:underline text-[var(--color-text)]"
+                >
+                  {s.name}
+                </a>
+              </td>
+              <td class="px-3 py-2 whitespace-nowrap text-[var(--color-text-muted)]">{s.maker}</td>
+              <td class="px-3 py-2 whitespace-nowrap">
+                <span
+                  class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border"
+                  style={
+                    s.category === "vendor"
+                      ? "color: var(--color-tier-core); border-color: var(--color-tier-core);"
+                      : "color: var(--color-tier-meta); border-color: var(--color-tier-meta);"
+                  }
+                >
+                  {typeLabel(s.category)}
+                </span>
+              </td>
+              <td class="px-3 py-2 whitespace-nowrap font-mono text-xs">
+                {s.licenseNote ? (
+                  <span class="text-[var(--color-text-subtle)] border-b border-dotted border-[var(--color-text-subtle)] cursor-help" title={s.licenseNote}>
+                    {s.license} &dagger;
+                  </span>
+                ) : (
+                  <span>{s.license}</span>
+                )}
+              </td>
+              <td class="px-3 py-2 text-xs text-[var(--color-text-muted)]">{s.languages.join(", ")}</td>
+              <td class="px-3 py-2 whitespace-nowrap text-xs">
+                {s.coupling < 0.2 ? (
+                  <span class="text-[var(--color-text-subtle)] border-b border-dotted border-[var(--color-text-subtle)] cursor-help" title="Model-tied: the one entry in this set with no provider-agnostic path.">
+                    {s.couplingLabel} &dagger;
+                  </span>
+                ) : (
+                  <span class="text-[var(--color-text-muted)]">{s.couplingLabel}</span>
+                )}
+              </td>
+              <td class="px-3 py-2 text-xs text-[var(--color-text-muted)]">{s.multiAgent}</td>
+              <td class="px-3 py-2 whitespace-nowrap text-xs">
+                {s.mcpNative ? (
+                  <span class="text-[var(--color-text)]">{s.mcpLabel}</span>
+                ) : (
+                  <span class="text-[var(--color-text-subtle)]">{s.mcpLabel}</span>
+                )}
+              </td>
+              <td class="px-3 py-2 whitespace-nowrap text-xs font-mono text-[var(--color-text-muted)]">{s.latest}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="text-xs text-[var(--color-text-subtle)] mt-2 leading-relaxed">
+    &dagger; License and coupling cells with a dagger hide a wrinkle worth knowing: hover for the note.
+    Every cell traces to the linked SDK's primary sources. Versions are as of May 2026.
+  </p>
+</figure>
+
+<script is:inline>
+  (function () {
+    const root = document.getElementById("asdk-matrix");
+    if (!root) return;
+    const table = document.getElementById("asdk-table");
+    const tbody = table.querySelector("tbody");
+    const allRows = Array.from(tbody.querySelectorAll("tr"));
+    const countEl = root.querySelector("[data-asdk-count]");
+    let filter = "all";
+    let sortKey = null;
+    let sortDir = 1;
+
+    function visibleRows() {
+      return allRows.filter((r) => filter === "all" || r.dataset.category === filter);
+    }
+    function updateCount() {
+      if (countEl) countEl.textContent = visibleRows().length + " shown";
+    }
+    function applyFilter() {
+      for (const r of allRows) {
+        const show = filter === "all" || r.dataset.category === filter;
+        r.classList.toggle("hidden", !show);
+      }
+      updateCount();
+    }
+    function applySort() {
+      if (!sortKey) return;
+      const rows = [...allRows];
+      const th = table.querySelector(`th[data-sort-key="${sortKey}"]`);
+      const numeric = th && th.dataset.sortType === "numeric";
+      rows.sort((a, b) => {
+        const av = a.getAttribute("data-sv-" + sortKey) || "";
+        const bv = b.getAttribute("data-sv-" + sortKey) || "";
+        const cmp = numeric ? Number(av) - Number(bv) : av.localeCompare(bv);
+        return cmp * sortDir;
+      });
+      for (const r of rows) tbody.appendChild(r);
+    }
+    function updateChevrons() {
+      for (const th of table.querySelectorAll("th[data-sort-key]")) {
+        const chev = th.querySelector(".asdk-chev");
+        if (!chev) continue;
+        chev.textContent = th.dataset.sortKey === sortKey ? (sortDir === 1 ? "▲" : "▼") : "";
+      }
+    }
+
+    for (const th of table.querySelectorAll("th[data-sort-key]")) {
+      th.addEventListener("click", () => {
+        const key = th.dataset.sortKey;
+        sortDir = sortKey === key ? -sortDir : 1;
+        sortKey = key;
+        applySort();
+        updateChevrons();
+      });
+    }
+    for (const btn of root.querySelectorAll("[data-asdk-filter]")) {
+      btn.addEventListener("click", () => {
+        filter = btn.dataset.asdkFilter;
+        for (const b of root.querySelectorAll("[data-asdk-filter]")) b.removeAttribute("data-active");
+        btn.setAttribute("data-active", "");
+        applyFilter();
+      });
+    }
+    updateCount();
+  })();
+</script>

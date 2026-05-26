@@ -1,0 +1,95 @@
+---
+/**
+ * Four-level ladder: raw API -> agent SDK -> agent product -> managed
+ * platform. Answers "how is an agent SDK different from an agent?"
+ * before the deep comparison. Static; brick aesthetic mirrors
+ * StackDiagram.astro. The SDK rung (level 2) is highlighted because it
+ * is the subject of this section.
+ */
+const rungs = [
+  {
+    n: 4,
+    name: "Managed / hosted agent platform",
+    blurb: "The vendor runs the agent for you. You send a task; their infrastructure executes it.",
+    examples: ["hosted agent platforms", "remote agent runners"],
+  },
+  {
+    n: 3,
+    name: "Agent product",
+    blurb: "A finished agent you install and run. The loop, prompts, and tools are decided for you.",
+    examples: ["Claude Code", "Cursor", "Goose"],
+  },
+  {
+    n: 2,
+    name: "Agent SDK / framework",
+    blurb: "A library that gives you the loop, tool registry, memory and sessions, and multi-agent orchestration. The build-it-in-code layer.",
+    examples: ["OpenAI Agents SDK", "Claude Agent SDK", "LangGraph", "CrewAI"],
+    highlight: true,
+  },
+  {
+    n: 1,
+    name: "Raw model API",
+    blurb: "You write the loop, tool dispatch, and memory yourself, on top of a chat-completions endpoint.",
+    examples: ["Anthropic API", "OpenAI API", "Gemini API"],
+  },
+];
+
+// Lightness gradient: most-packaged at the top (lighter), raw API at the
+// bottom (darker). Matches the stack-diagram reading of "more done for
+// you, higher up".
+function bg(i: number): string {
+  return `hsl(0, 0%, ${95 - i * 3}%)`;
+}
+---
+
+<figure class="not-prose my-6">
+  <figcaption class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">
+    From raw API to packaged agent &middot; where an SDK sits
+  </figcaption>
+  <div class="flex gap-3 items-stretch">
+    <div
+      class="hidden sm:flex flex-col justify-between font-mono text-[10px] text-[var(--color-text-subtle)] py-1 text-right"
+      aria-hidden="true"
+    >
+      <span>more done<br />for you</span>
+      <span>more you<br />build</span>
+    </div>
+    <div class="flex-1 border border-[var(--color-border-strong)] rounded-lg overflow-hidden shadow-sm">
+      {
+        rungs.map((r, i) => (
+          <div
+            class={`px-4 py-3 border-b border-[var(--color-border-strong)] last:border-b-0 ${r.highlight ? "bg-[var(--color-accent-soft)] border-l-4 border-l-[var(--color-accent)]" : ""}`}
+            style={r.highlight ? undefined : `background: ${bg(i)};`}
+          >
+            <div class="flex items-baseline gap-3 flex-wrap">
+              <span class="font-mono text-xs text-[var(--color-text-subtle)] w-5 flex-none tabular-nums">
+                {String(r.n).padStart(2, "0")}
+              </span>
+              <span class="font-semibold text-[var(--color-text)]">{r.name}</span>
+              {r.highlight && (
+                <span class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--color-accent)] text-white">
+                  this page
+                </span>
+              )}
+            </div>
+            <p class="text-sm text-[var(--color-text-muted)] leading-snug mt-1 ml-8">
+              {r.blurb}
+            </p>
+            <div class="flex flex-wrap gap-1.5 mt-2 ml-8">
+              {r.examples.map((e) => (
+                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-subtle)] bg-[var(--color-surface)]">
+                  {e}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <p class="text-xs text-[var(--color-text-subtle)] mt-2 leading-relaxed">
+    An agent SDK is to an agent product what a UI framework is to a finished app: the
+    build-it-in-code layer. This page compares the SDKs at level 2. The agent
+    products at level 3 are covered further down.
+  </p>
+</figure>

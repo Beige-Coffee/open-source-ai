@@ -1,0 +1,169 @@
+---
+/**
+ * Agent-SDK quadrant scatter. Fixed conceptual axes:
+ *   X = model coupling (vendor-tied on the left, model-agnostic on the right)
+ *   Y = abstraction (low-level primitives at the bottom, batteries-included at the top)
+ * Dots colored by category (vendor vs independent). One dot per SDK; the
+ * Claude Agent SDK sits alone in the shaded "model-tied" band on the left.
+ *
+ * The two axis positions are editorial placements (framing), not
+ * verifiable facts; the caption says so. The list of SDKs and their
+ * names come from loadAgentSdks() (joined to the audited projects.yaml).
+ *
+ * Visual idiom (SVG + cursor-positioned tooltip) mirrors the /models
+ * scatter; axes are fixed here, so there is no axis selector or zoom.
+ */
+import {
+  loadAgentSdks,
+  couplingDescriptor,
+  abstractionDescriptor,
+} from "../lib/agent-sdks";
+
+const sdks = loadAgentSdks();
+
+// SVG geometry.
+const W = 640;
+const H = 440;
+const M = { top: 18, right: 18, bottom: 50, left: 60 };
+const plotW = W - M.left - M.right;
+const plotH = H - M.top - M.bottom;
+const mapX = (coupling: number) => M.left + coupling * plotW;
+const mapY = (abstraction: number) => M.top + (1 - abstraction) * plotH;
+
+const VENDOR = "var(--color-tier-core)";
+const INDEPENDENT = "var(--color-tier-meta)";
+
+// Short display labels for dots (full name shows in the tooltip).
+const SHORT: Record<string, string> = {
+  "openai-agents-sdk": "OpenAI",
+  "claude-agent-sdk": "Claude",
+  "google-adk": "ADK",
+  "microsoft-agent-framework": "MS AF",
+  "vercel-ai-sdk": "Vercel",
+  "strands-agents": "Strands",
+  langchain: "LangGraph",
+  "llama-index": "LlamaIndex",
+  crewai: "CrewAI",
+  "pydantic-ai": "Pydantic",
+  mastra: "Mastra",
+};
+
+const points = sdks.map((s) => ({
+  ...s,
+  cx: mapX(s.coupling),
+  cy: mapY(s.abstraction),
+  short: SHORT[s.slug] ?? s.name,
+  color: s.category === "vendor" ? VENDOR : INDEPENDENT,
+  // Place the label to the left for right-side points so it stays on-canvas.
+  anchor: s.coupling > 0.7 ? "end" : "start",
+  dx: s.coupling > 0.7 ? -9 : 9,
+}));
+
+// Far-left "model-tied" emphasis band (coupling < 0.2).
+const bandRight = mapX(0.2);
+---
+
+<figure class="not-prose my-6" id="asdk-scatter">
+  <figcaption class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+    Coupling vs abstraction
+  </figcaption>
+  <p class="text-xs text-[var(--color-text-subtle)] mb-2 leading-relaxed">
+    Horizontal: how tied the SDK is to one vendor's model (left) versus model-agnostic (right).
+    Vertical: low-level primitives you assemble (bottom) versus opinionated, batteries-included (top).
+    Vendor SDKs in one color, independent frameworks in the other. Hover a dot for detail.
+  </p>
+  <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] p-3 relative" id="asdk-scatter-frame">
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={`max-width:${W}px; display:block; font-family: var(--font-mono);`} role="img" aria-label="Agent SDK coupling versus abstraction scatter">
+      <!-- model-tied emphasis band -->
+      <rect x={M.left} y={M.top} width={bandRight - M.left} height={plotH} fill="var(--color-accent-soft)" opacity="0.5"></rect>
+      <!-- plot border -->
+      <rect x={M.left} y={M.top} width={plotW} height={plotH} fill="none" stroke="var(--color-border)" stroke-width="1"></rect>
+      <!-- mid gridlines -->
+      <line x1={mapX(0.5)} y1={M.top} x2={mapX(0.5)} y2={M.top + plotH} stroke="var(--color-border)" stroke-dasharray="3 3" opacity="0.6"></line>
+      <line x1={M.left} y1={mapY(0.5)} x2={M.left + plotW} y2={mapY(0.5)} stroke="var(--color-border)" stroke-dasharray="3 3" opacity="0.6"></line>
+
+      <!-- axis labels -->
+      <text x={M.left} y={H - 28} font-size="11" fill="var(--color-text-subtle)" text-anchor="start">vendor-tied</text>
+      <text x={M.left + plotW} y={H - 28} font-size="11" fill="var(--color-text-subtle)" text-anchor="end">model-agnostic</text>
+      <text x={M.left + plotW / 2} y={H - 12} font-size="11" fill="var(--color-text-muted)" text-anchor="middle">model coupling &rarr;</text>
+      <text x={14} y={M.top + 6} font-size="11" fill="var(--color-text-subtle)" text-anchor="start">batteries</text>
+      <text x={14} y={M.top + plotH} font-size="11" fill="var(--color-text-subtle)" text-anchor="start">low-level</text>
+      <text x={16} y={M.top + plotH / 2} font-size="11" fill="var(--color-text-muted)" text-anchor="middle" transform={`rotate(-90 16 ${M.top + plotH / 2})`}>abstraction &uarr;</text>
+
+      <!-- dots -->
+      {
+        points.map((p) => (
+          <g
+            class="asdk-dot cursor-default"
+            data-name={p.name}
+            data-maker={p.maker}
+            data-coupling={couplingDescriptor(p.coupling)}
+            data-abstraction={abstractionDescriptor(p.abstraction)}
+            data-multi={p.multiAgent}
+            data-mcp={p.mcpLabel}
+            data-type={p.category === "vendor" ? "Vendor SDK" : "Independent framework"}
+          >
+            <circle cx={p.cx} cy={p.cy} r="6" fill={p.color} stroke="var(--color-surface)" stroke-width="1.5"></circle>
+            <text x={p.cx + p.dx} y={p.cy + 3} font-size="10" fill="var(--color-text-muted)" text-anchor={p.anchor}>
+              {p.short}
+            </text>
+          </g>
+        ))
+      }
+    </svg>
+    <div
+      id="asdk-scatter-tooltip"
+      class="absolute hidden pointer-events-none z-10 border border-[var(--color-border-strong)] rounded-md bg-[var(--color-surface)] shadow-lg p-2.5 text-xs"
+      style="min-width: 180px; max-width: 280px;"
+    ></div>
+  </div>
+  <div class="flex items-center gap-4 mt-2 font-mono text-[10px] text-[var(--color-text-subtle)]">
+    <span class="inline-flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background: var(--color-tier-core)"></span>Vendor SDK</span>
+    <span class="inline-flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background: var(--color-tier-meta)"></span>Independent framework</span>
+    <span class="ml-auto">Axis positions are editorial, not measured.</span>
+  </div>
+</figure>
+
+<script is:inline>
+  (function () {
+    const frame = document.getElementById("asdk-scatter-frame");
+    if (!frame) return;
+    const tip = document.getElementById("asdk-scatter-tooltip");
+    const dots = frame.querySelectorAll(".asdk-dot");
+
+    function show(g, e) {
+      const d = g.dataset;
+      tip.innerHTML =
+        '<div class="font-semibold text-[var(--color-text)] mb-1">' + d.name + "</div>" +
+        '<div class="text-[var(--color-text-muted)] leading-snug">' +
+        d.maker + " &middot; " + d.type + "<br/>" +
+        "coupling: " + d.coupling + "<br/>" +
+        "abstraction: " + d.abstraction + "<br/>" +
+        "multi-agent: " + d.multi + "<br/>" +
+        "MCP: " + d.mcp +
+        "</div>";
+      tip.classList.remove("hidden");
+      move(e);
+    }
+    function move(e) {
+      const r = frame.getBoundingClientRect();
+      let x = e.clientX - r.left + 12;
+      let y = e.clientY - r.top + 12;
+      // Keep the tooltip inside the frame.
+      const tw = tip.offsetWidth;
+      const th = tip.offsetHeight;
+      if (x + tw > r.width) x = e.clientX - r.left - tw - 12;
+      if (y + th > r.height) y = r.height - th - 4;
+      tip.style.left = x + "px";
+      tip.style.top = y + "px";
+    }
+    function hide() {
+      tip.classList.add("hidden");
+    }
+    for (const g of dots) {
+      g.addEventListener("mouseenter", (e) => show(g, e));
+      g.addEventListener("mousemove", move);
+      g.addEventListener("mouseleave", hide);
+    }
+  })();
+</script>
