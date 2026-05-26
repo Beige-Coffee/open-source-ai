@@ -437,7 +437,7 @@ function FindHardwareView({
         </table>
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Click a column to sort. Realistic range is the per-runtime band over the theoretical ceiling; raise units to see multi-GPU nodes hold larger models.
+        Single-stream (solo) decode estimate, calibrated to measured tokens/sec. Click a column to sort. The realistic range is a per-runtime efficiency band plus a fixed per-token overhead; raise units (GPUs) to see multi-GPU nodes hold larger models. Decode shown only where it fits.
       </p>
     </div>
   );
@@ -546,7 +546,7 @@ function WhatFitsView({
         </table>
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Click a column to sort. Ladder: FP16, FP8, Q8_0, Q6_K, Q5_K_M, Q4_K_M, Q3_K_M, Q2_K. Default order: model size, then speed. Realistic range is the per-runtime band.
+        Single-stream (solo) decode estimate, calibrated to measured tokens/sec. Click a column to sort. Ladder: FP16, FP8, Q8_0, Q6_K, Q5_K_M, Q4_K_M, Q3_K_M, Q2_K. Default order: model size, then speed.
       </p>
     </div>
   );

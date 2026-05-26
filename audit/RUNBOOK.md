@@ -93,9 +93,8 @@ script does NOT call an LLM: it loads the row + snapshot and prints a
 prompt for the agent to read. The agent judges in this session and
 writes the verdict back via the script's `update` subcommand.
 
-This is the same pattern an internal claims-ledger system uses: claims and sources
-are the persistent artifact; the model is whoever happens to be in the
-session reading the prompt.
+In this pattern, claims and sources are the persistent artifact; the
+model is whoever happens to be in the session reading the prompt.
 
 Tiers, by escalation:
 

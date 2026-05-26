@@ -152,3 +152,77 @@ test("prefillTTFT: returns null when the chip has no sourced compute", () => {
   const p = prefillTTFT(llama70b, h100sxm, { quant: "fp8", promptTokens: 4096, numUnits: 8 });
   assert.ok(p && p.ttftMs > 0);
 });
+
+// ---------------------------------------------------------------------------
+// Calibration regression: measured anchors on Strix Halo (256 GB/s).
+// ---------------------------------------------------------------------------
+
+const strixHalo = hw({ slug: "strix-halo", class: "x86-unified", memory_capacity_gb: 128, memory_bandwidth_gbs: 256, memory_type: "unified-lpddr5x", interconnect: "none" });
+const rtx4090 = hw({ slug: "rtx-4090", class: "workstation", memory_capacity_gb: 24, memory_bandwidth_gbs: 1008, memory_type: "gddr6x", interconnect: "pcie", compute: { fp16_dense_tflops: 165.2 } });
+
+const gemma26ba4b = model({ params_total: 26e9, params_active: 3.8e9, architecture: "moe", attention_variant: "gqa", layers_count: 48, head_dim: 256, kv_heads: 4, kv_bytes_per_token_fp16: 60000 });
+const dense31 = model({ params_total: 31e9, params_active: 31e9, architecture: "dense", attention_variant: "gqa", layers_count: 48, head_dim: 256, kv_heads: 4, kv_bytes_per_token_fp16: 60000 });
+const qwen35ba3b = model({ params_total: 35e9, params_active: 3e9, architecture: "moe", attention_variant: "gqa", layers_count: 48, head_dim: 128, kv_heads: 4 });
+const qwen122ba10b = model({ params_total: 122e9, params_active: 10e9, architecture: "moe", attention_variant: "gqa", layers_count: 62, head_dim: 128, kv_heads: 4 });
+const llama8b = model({ params_total: 8.03e9, params_active: 8.03e9, architecture: "dense", attention_variant: "gqa", layers_count: 32, head_dim: 128, kv_heads: 8 });
+
+test("Measured anchor: Gemma 4 26B-A4B Q8 on Strix Halo decodes mid-50s, not single digits", () => {
+  const d = decodeRoofline(gemma26ba4b, strixHalo, { quant: "q8_0", contextLength: 512, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  // measured ~57 tok/s; the optimistic end of the band must land within ~20%.
+  assert.ok(d.highTokS >= 46 && d.highTokS <= 68, `Gemma 26B-A4B high ~57, got ${d.highTokS.toFixed(1)}`);
+  assert.ok(d.lowTokS >= 35, `low end should be sane, got ${d.lowTokS.toFixed(1)}`);
+  // The headline bug: the dense 31B it was confused with is single digits.
+  const dd = decodeRoofline(dense31, strixHalo, { quant: "q8_0", contextLength: 512, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  assert.ok(dd.highTokS < 10, `dense 31B Q8 should be single digits, got ${dd.highTokS.toFixed(1)}`);
+  assert.ok(d.highTokS > 5 * dd.highTokS, "MoE must decode ~order-of-magnitude faster than the dense 31B");
+});
+
+test("Measured anchor: Qwen3.5 35B-A3B Q8 on Strix Halo decodes ~68 tok/s", () => {
+  const d = decodeRoofline(qwen35ba3b, strixHalo, { quant: "q8_0", contextLength: 512, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  assert.ok(d.highTokS >= 54 && d.highTokS <= 82, `Qwen 35B-A3B high ~68, got ${d.highTokS.toFixed(1)}`);
+});
+
+test("Anchor: Llama 3 8B Q4 on RTX 4090 band brackets the measured 127.7 tok/s", () => {
+  const d = decodeRoofline(llama8b, rtx4090, { quant: "q4_k_m", contextLength: 1024, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  assert.ok(127.7 >= d.lowTokS && 127.7 <= d.highTokS, `band should bracket 127.7, got ${d.lowTokS.toFixed(0)}-${d.highTokS.toFixed(0)}`);
+});
+
+test("fit uses TOTAL params, decode uses ACTIVE: 26B-A4B MoE vs dense 26B", () => {
+  const dense26 = model({ params_total: 26e9, params_active: 26e9, architecture: "dense", attention_variant: "gqa", layers_count: 48, head_dim: 256, kv_heads: 4, kv_bytes_per_token_fp16: 60000 });
+  const args = { quant: "q8_0", contextLength: 4096, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" } as const;
+  const fitMoE = fitCheck(gemma26ba4b, strixHalo, { ...args, concurrency: 1 });
+  const fitDense = fitCheck(dense26, strixHalo, { ...args, concurrency: 1 });
+  // Same total params -> same weight footprint -> same fit.
+  assert.ok(Math.abs(fitMoE.weightsBytes - fitDense.weightsBytes) < 1, "MoE and dense 26B have the same memory footprint");
+  assert.equal(fitMoE.fits, fitDense.fits);
+  // But decode is much faster for the MoE (3.8B vs 26B active).
+  const decMoE = decodeRoofline(gemma26ba4b, strixHalo, args);
+  const decDense = decodeRoofline(dense26, strixHalo, args);
+  assert.ok(decMoE.highTokS > 4 * decDense.highTokS, `MoE decode should be >4x dense, got ${decMoE.highTokS.toFixed(1)} vs ${decDense.highTokS.toFixed(1)}`);
+});
+
+test("monotonicity: decode falls as quant precision, context, and active params rise", () => {
+  const base = { contextLength: 4096, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" } as const;
+  // quant precision up -> slower
+  const q4 = decodeRoofline(gemma26ba4b, strixHalo, { ...base, quant: "q4_k_m" });
+  const fp16 = decodeRoofline(gemma26ba4b, strixHalo, { ...base, quant: "fp16" });
+  assert.ok(q4.highTokS > fp16.highTokS, "lower precision must be faster");
+  // context up -> slower
+  const ctxLow = decodeRoofline(gemma26ba4b, strixHalo, { quant: "q8_0", contextLength: 2048, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  const ctxHigh = decodeRoofline(gemma26ba4b, strixHalo, { quant: "q8_0", contextLength: 131072, kvPrecisionBytes: 2, numUnits: 1, runtime: "llama.cpp" });
+  assert.ok(ctxLow.highTokS > ctxHigh.highTokS, "longer context must be slower");
+  // active params up -> slower (122B-A10B slower than 35B-A3B at same quant)
+  const a10 = decodeRoofline(qwen122ba10b, strixHalo, { ...base, quant: "q4_k_m" });
+  const a3 = decodeRoofline(qwen35ba3b, strixHalo, { ...base, quant: "q4_k_m" });
+  assert.ok(a3.highTokS > a10.highTokS, "fewer active params must be faster");
+});
+
+test("compute-bound cap is computed when the chip has dense FLOPS and never below the memory bound's spirit", () => {
+  // On a high-FLOPS chip, decode stays memory-bound (compute bound is far higher).
+  const d = decodeRoofline(qwen35ba3b, h100sxm, { quant: "q2_k", contextLength: 512, kvPrecisionBytes: 1, numUnits: 1, runtime: "vllm" });
+  assert.ok(d.computeBoundTokS !== undefined, "compute bound should be defined when the chip has FLOPS");
+  assert.ok(d.ceilingTokS <= (d.computeBoundTokS as number) + 1e-6, "ceiling never exceeds the compute bound");
+  // Strix Halo has no sourced compute -> no cap.
+  const noCap = decodeRoofline(qwen35ba3b, strixHalo, { quant: "q2_k", contextLength: 512, kvPrecisionBytes: 1, numUnits: 1, runtime: "llama.cpp" });
+  assert.equal(noCap.computeBoundTokS, undefined);
+});

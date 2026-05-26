@@ -239,8 +239,9 @@ export interface Model {
   /** Per-head dimension (typically 128). */
   head_dim?: number;
   /** Optional explicit KV-cache bytes per token at FP16, overriding the
-   *  heads*head_dim formula. Used for MLA models (DeepSeek) whose
-   *  compressed latent KV does not follow the standard form. */
+   *  heads*head_dim formula. Used for MLA models (DeepSeek) and
+   *  sliding-window models (Gemma) whose KV does not follow the standard
+   *  dense-GQA form. */
   kv_bytes_per_token_fp16?: number;
 
   // ---- Training ----

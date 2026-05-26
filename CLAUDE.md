@@ -362,8 +362,8 @@ material inlined, and read structured output back from stdin or
 flags. The agent reads the printed prompt and produces the JSON in
 this session.
 
-Same pattern as an internal claims-ledger system: the ledger and snapshots are the
-persistent artifact; the model is whoever is in the session.
+The ledger and snapshots are the persistent artifact; the model is
+whoever is in the session.
 
 ### npm scripts for the audit
 
@@ -753,16 +753,25 @@ otherwise.
 
 ### The computation model
 
-Decode is memory-bandwidth-bound: ceiling tokens/sec is bandwidth
+Decode is memory-bandwidth-bound: the ceiling tokens/sec is bandwidth
 divided by bytes-streamed-per-token, where bytes-per-token is
-active-params times bytes-per-weight (MoE uses active, not total) plus
-the KV cache streamed per step. Realistic output is the ceiling times a
-per-runtime MBU band, shown as a range, with a verified empirical
-anchor overlaid when one exists (decision D6). Fit compares total params
-plus KV plus per-runtime overhead against capacity; vLLM and SGLang are
-modeled as capacity-capped (utilization 0.9), llama.cpp/MLX/ExLlama as
-additive (decision D4). Prefill/TTFT is a rough, clearly-labeled
-compute-bound secondary from dense FLOPS (decision D5). All formulas are
+active-params times bytes-per-weight (MoE uses ACTIVE params, not total;
+this is the headline correctness point) plus the KV cache streamed per
+step (which grows with context, so the context slider changes speed, not
+just fit). The realistic single-stream estimate is a two-term model
+calibrated to measured anchors: time-per-token = bytes /
+(bandwidth × eff) + a fixed per-runtime overhead, where eff and overhead
+are bands per runtime (`src/lib/hardware.ts` RUNTIME_PROFILES). The
+fixed overhead is why small/fast configs reach a lower effective
+bandwidth utilization than large/slow ones, which reconciles the
+measured Strix Halo MoE numbers (~90%+ of ceiling) with fast-GPU
+small-model numbers (~55%). A compute-bound cap (dense FLOPS) stops
+tiny-active/low-quant configs printing absurd speeds. A verified
+empirical anchor is overlaid when one exists. Fit compares TOTAL params
+(every expert resident) plus KV plus per-runtime overhead against
+capacity; vLLM and SGLang are modeled as capacity-capped (utilization
+0.9), llama.cpp/MLX/ExLlama as additive. Prefill/TTFT is a rough,
+clearly-labeled compute-bound secondary from dense FLOPS. All formulas are
 shown in the UI; estimates are labeled as estimates.
 
 ### Routes

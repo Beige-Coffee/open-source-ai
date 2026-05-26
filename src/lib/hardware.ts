@@ -164,8 +164,15 @@ export interface RuntimeProfile {
   weight_fraction: number;
   /** Capacity-capped: usable fraction of total memory (e.g. vLLM 0.9). */
   utilization: number;
-  /** Realistic decode MBU band [low, high] as a fraction of the ceiling. */
-  mbu: [number, number];
+  /** Single-stream memory-subsystem efficiency band [low, high]: the
+   *  fraction of peak bandwidth actually reached while streaming weights.
+   *  Calibrated to measured anchors (see decodeRoofline). */
+  eff: [number, number];
+  /** Fixed per-token overhead band in milliseconds [low, high]: kernel
+   *  launch, sampling, and attention compute that does not scale with the
+   *  weight bytes. This is why small/fast configs show a lower *effective*
+   *  bandwidth utilization than large/slow ones. */
+  overhead_ms: [number, number];
   note: string;
 }
 
@@ -178,7 +185,8 @@ export const RUNTIME_PROFILES: Record<Runtime, RuntimeProfile> = {
     fixed_gb: 1.5,
     weight_fraction: 0,
     utilization: 0.9,
-    mbu: [0.7, 0.85],
+    eff: [0.78, 0.92],
+    overhead_ms: [1.0, 2.0],
     note: "Pre-allocates a paged KV pool from 90% of VRAM; throughput-optimized CUDA stack.",
   },
   sglang: {
@@ -188,7 +196,8 @@ export const RUNTIME_PROFILES: Record<Runtime, RuntimeProfile> = {
     fixed_gb: 1.5,
     weight_fraction: 0,
     utilization: 0.9,
-    mbu: [0.7, 0.85],
+    eff: [0.78, 0.92],
+    overhead_ms: [1.0, 2.0],
     note: "Static KV pool at mem-fraction-static 0.9; RadixAttention prefix sharing.",
   },
   exllamav2: {
@@ -198,7 +207,8 @@ export const RUNTIME_PROFILES: Record<Runtime, RuntimeProfile> = {
     fixed_gb: 0.5,
     weight_fraction: 0.02,
     utilization: 1.0,
-    mbu: [0.55, 0.78],
+    eff: [0.80, 0.93],
+    overhead_ms: [1.5, 2.5],
     note: "Single-stream CUDA decode; KV allocated near real context.",
   },
   "llama.cpp": {
@@ -208,8 +218,9 @@ export const RUNTIME_PROFILES: Record<Runtime, RuntimeProfile> = {
     fixed_gb: 0.75,
     weight_fraction: 0.03,
     utilization: 1.0,
-    mbu: [0.5, 0.75],
-    note: "Portable GGUF runtime; CUDA context plus a compute buffer over the weights.",
+    eff: [0.80, 0.96],
+    overhead_ms: [1.5, 3.0],
+    note: "Portable GGUF runtime; near-peak weight streaming on unified-memory boxes.",
   },
   mlx: {
     id: "mlx",
@@ -220,7 +231,8 @@ export const RUNTIME_PROFILES: Record<Runtime, RuntimeProfile> = {
     // Apple unified memory must leave headroom for the OS; usable is well
     // below the nominal capacity.
     utilization: 0.75,
-    mbu: [0.45, 0.7],
+    eff: [0.55, 0.80],
+    overhead_ms: [2.0, 3.5],
     note: "Apple unified-memory runtime; leave ~25% of memory for macOS.",
   },
 };
@@ -388,9 +400,11 @@ export interface DecodeInput {
 }
 
 export interface DecodeResult {
-  /** Theoretical ceiling at 100% bandwidth utilization. */
+  /** Theoretical ceiling: min of the memory-bandwidth bound (100% eff, no
+   *  overhead) and the compute bound. */
   ceilingTokS: number;
-  /** Realistic band = ceiling * MBU range. */
+  /** Realistic single-stream band: memory time at an efficiency band plus
+   *  a fixed per-token overhead band. */
   lowTokS: number;
   highTokS: number;
   activeWeightsBytes: number;
@@ -398,6 +412,22 @@ export interface DecodeResult {
   bytesPerStep: number;
   effectiveBandwidthBytesPerS: number;
   kvEstimated: boolean;
+  /** Compute-bound ceiling when the chip has sourced dense FLOPS; the cap
+   *  that stops tiny-active / low-quant configs printing absurd speeds. */
+  computeBoundTokS?: number;
+}
+
+/** Dense FLOPS available for decode matmuls at the quant's precision tier
+ *  (FP8 if the weights are <=1 byte and the chip supports it, else FP16),
+ *  scaled by unit count. Undefined when the chip has no sourced compute. */
+function decodeDenseFlops(hw: Hardware, bytesPerParam: number, numUnits: number): number | undefined {
+  const c = hw.compute;
+  if (!c) return undefined;
+  let tflops: number | undefined;
+  if (bytesPerParam <= 1 && c.fp8_dense_tflops) tflops = c.fp8_dense_tflops;
+  else tflops = c.fp16_dense_tflops ?? c.fp8_dense_tflops;
+  if (!tflops) return undefined;
+  return tflops * 1e12 * numUnits;
 }
 
 export function effectiveBandwidthBytesPerS(hw: Hardware, numUnits: number): number {
@@ -416,18 +446,44 @@ export function decodeRoofline(model: Model, hw: Hardware, input: DecodeInput): 
   const bytesPerStep = activeWeightsBytes + kvBytesPerStep;
 
   const bw = effectiveBandwidthBytesPerS(hw, input.numUnits);
-  const ceilingTokS = bw / bytesPerStep;
-
   const profile = RUNTIME_PROFILES[input.runtime];
+
+  // Memory-bandwidth ceiling: 100% efficiency, no fixed overhead.
+  let ceilingTokS = bw / bytesPerStep;
+
+  // Compute-bound cap. Decode is normally memory-bound, but a small-active
+  // model at low quant on a high-FLOPS chip can hit the compute wall first;
+  // cap the fast end so the tool never prints physically absurd speeds.
+  // t_compute = 2 * active_params / (dense_flops * mfu); mfu ~ 0.5 for the
+  // matrix-vector products of single-stream decode.
+  let computeBoundTokS: number | undefined;
+  const denseFlops = decodeDenseFlops(hw, bpp, input.numUnits);
+  if (denseFlops && model.params_active > 0) {
+    computeBoundTokS = (denseFlops * 0.5) / (2 * model.params_active);
+    ceilingTokS = Math.min(ceilingTokS, computeBoundTokS);
+  }
+
+  // Realistic single-stream band: t = bytes/(bw * eff) + fixed_overhead.
+  // The fixed overhead is why fast/small configs reach a lower *effective*
+  // utilization than slow/large ones (see the calibration note above).
+  const realistic = (effv: number, ohMs: number): number => {
+    const t = bytesPerStep / (bw * effv) + ohMs / 1000;
+    const v = 1 / t;
+    return computeBoundTokS !== undefined ? Math.min(v, computeBoundTokS) : v;
+  };
+  const highTokS = realistic(profile.eff[1], profile.overhead_ms[0]);
+  const lowTokS = realistic(profile.eff[0], profile.overhead_ms[1]);
+
   return {
     ceilingTokS,
-    lowTokS: ceilingTokS * profile.mbu[0],
-    highTokS: ceilingTokS * profile.mbu[1],
+    lowTokS,
+    highTokS,
     activeWeightsBytes,
     kvBytesPerStep,
     bytesPerStep,
     effectiveBandwidthBytesPerS: bw,
     kvEstimated: kv.estimated,
+    computeBoundTokS,
   };
 }
 
