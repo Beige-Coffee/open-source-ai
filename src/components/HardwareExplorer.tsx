@@ -462,161 +462,158 @@ function FindHardwareView({
 // What-fits mode (one box -> every model x quant that fits)
 // ---------------------------------------------------------------------------
 
-function quantTip(id: string): string {
-  const q = QUANT_FORMATS.find((x) => x.id === id);
-  if (!q) return id;
-  return `${q.label}: ${q.bytes_per_param} bytes per parameter${q.note ? `. ${q.note}` : ""}`;
+function quantShort(id: string): string {
+  return quantLabel(id).replace(/^GGUF /, "").replace(/ \/ BF16$/, "");
 }
 
-function ModelScorecard({ m }: { m: ExModel }) {
-  const specs = `${fmtParams(m.params_total)}${m.architecture === "moe" ? ` · ${fmtParams(m.params_active)} active · MoE` : " · dense"} · ${fmtCtx(m.context_window)} ctx · ${OPENNESS_SHORT[m.openness] ?? m.openness}`;
-  const h = m.headline;
-  const benches = [
-    h?.general && { ...h.general, cat: "General" },
-    h?.code && { ...h.code, cat: "Code" },
-    h?.math && { ...h.math, cat: "Math" },
-  ].filter(Boolean) as (HeadlineBench & { cat: string })[];
-  return (
-    <div className="min-w-0">
-      <div className="font-mono text-[10px] text-[var(--color-text-subtle)]">{specs}</div>
-      {m.best_at && m.best_at.length > 0 && (
-        <div className="mt-1 flex flex-wrap gap-1 items-center">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)]">best at</span>
-          {m.best_at.map((t) => (
-            <span key={t} className="font-mono text-[9px] px-1 rounded bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)]">{t}</span>
-          ))}
-        </div>
-      )}
-      {benches.length > 0 ? (
-        <div className="mt-1 font-mono text-[10px] text-[var(--color-text-muted)] flex flex-wrap gap-x-3 gap-y-0.5">
-          {benches.map((b) => (
-            <span key={b.cat} data-popover={`${b.cat} benchmark (${b.label}); verified and dated on the model's page.`}>{b.label} <span className="text-[var(--color-text)] tabular-nums">{Math.round(b.score)}</span></span>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-1 font-mono text-[9px] text-[var(--color-text-subtle)] italic">no verified benchmarks yet</div>
-      )}
-    </div>
-  );
-}
+type FitRow = {
+  m: ExModel;
+  quants: { quant: string; dec: ReturnType<typeof decodeRoofline>; anchor: HardwareBenchmark | null }[];
+  ref: { quant: string; dec: ReturnType<typeof decodeRoofline>; anchor: HardwareBenchmark | null };
+  anchor: HardwareBenchmark | null;
+};
 
 function WhatFitsView({
   box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif,
 }: any) {
   const [family, setFamily] = useState<string>("");
+  const [arch, setArch] = useState<"" | "moe" | "dense">("");
+  const [openness, setOpenness] = useState<string>("");
   const [minTokS, setMinTokS] = useState<number>(0);
   const [query, setQuery] = useState<string>("");
-  const [groupSort, setGroupSort] = useState<"size" | "fastest" | "name">("size");
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [sort, setSort] = useState<Sort>({ key: "size", dir: -1 });
 
-  const all = useMemo(() => {
+  // One row per model: the quants that fit (ladder order) plus the reference
+  // quant whose speed we headline — Q4_K_M where it fits, otherwise the
+  // highest-precision quant that does.
+  const rows = useMemo<FitRow[]>(() => {
     if (!box || !hwOk) return [];
-    const out: { model: ExModel; quant: string; dec: ReturnType<typeof decodeRoofline>; anchor: HardwareBenchmark | null }[] = [];
+    const out: FitRow[] = [];
     for (const m of models as ExModel[]) {
       if (!isModelOk(modelVerif, m)) continue;
+      const quants: FitRow["quants"] = [];
       for (const qq of QUANT_LADDER) {
         const fit = fitCheck(m, box, { quant: qq, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime, concurrency: 1 });
         if (!fit.fits) continue;
         const dec = decodeRoofline(m, box, { quant: qq, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime });
-        out.push({ model: m, quant: qq, dec, anchor: anchorFor(benchmarks, benchVerif, m.slug, box.slug, qq) });
+        quants.push({ quant: qq, dec, anchor: anchorFor(benchmarks, benchVerif, m.slug, box.slug, qq) });
       }
+      if (quants.length === 0) continue;
+      const ref = quants.find((x) => x.quant === "q4_k_m") ?? quants[0];
+      out.push({ m, quants, ref, anchor: quants.find((x) => x.anchor)?.anchor ?? null });
     }
     return out;
   }, [box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif]);
 
-  const families = useMemo(() => Array.from(new Set(all.map((r) => r.model.family))).sort(), [all]);
+  const families = useMemo(() => Array.from(new Set(rows.map((r) => r.m.family))).sort(), [rows]);
+  const opennesses = useMemo(() => Array.from(new Set(rows.map((r) => r.m.openness))).sort(), [rows]);
+  const isMoE = (m: ExModel) => m.params_active > 0 && m.params_active < m.params_total;
+  const bench = (r: FitRow, cat: "general" | "code" | "math") => r.m.headline?.[cat]?.score ?? -1;
+
   const q = query.trim().toLowerCase();
-  const filtered = all.filter((r) =>
-    (!family || r.model.family === family) &&
-    r.dec.highTokS >= minTokS &&
-    (!q || `${r.model.display_name} ${r.model.family}`.toLowerCase().includes(q)),
+  const filtered = rows.filter((r) =>
+    (!family || r.m.family === family) &&
+    (!arch || (arch === "moe" ? isMoE(r.m) : !isMoE(r.m))) &&
+    (!openness || r.m.openness === openness) &&
+    r.ref.dec.highTokS >= minTokS &&
+    (!q || `${r.m.display_name} ${r.m.family} ${(r.m.best_at ?? []).join(" ")}`.toLowerCase().includes(q)),
   );
-
-  type Group = { model: ExModel; rows: typeof filtered };
-  const groups: Group[] = [];
-  const gIndex = new Map<string, number>();
-  for (const r of filtered) {
-    let i = gIndex.get(r.model.slug);
-    if (i === undefined) { i = groups.length; gIndex.set(r.model.slug, i); groups.push({ model: r.model, rows: [] }); }
-    groups[i].rows.push(r);
-  }
-  for (const g of groups) g.rows.sort((a, b) => b.dec.highTokS - a.dec.highTokS);
-  groups.sort((a, b) => {
-    if (groupSort === "name") return a.model.display_name.localeCompare(b.model.display_name);
-    if (groupSort === "fastest") return Math.max(...b.rows.map((r) => r.dec.highTokS)) - Math.max(...a.rows.map((r) => r.dec.highTokS));
-    return b.model.params_total - a.model.params_total;
+  const sorted = filtered.slice().sort((a, b) => {
+    const d = sort.dir;
+    switch (sort.key) {
+      case "name": return a.m.display_name.localeCompare(b.m.display_name) * d;
+      case "ctx": return (a.m.context_window - b.m.context_window) * d;
+      case "open": return a.m.openness.localeCompare(b.m.openness) * d;
+      case "speed": return (a.ref.dec.highTokS - b.ref.dec.highTokS) * d;
+      case "general": return (bench(a, "general") - bench(b, "general")) * d;
+      case "code": return (bench(a, "code") - bench(b, "code")) * d;
+      case "math": return (bench(a, "math") - bench(b, "math")) * d;
+      default: return (a.m.params_total - b.m.params_total) * d; // size
+    }
   });
-
-  const rep = (g: Group) => g.rows.find((r) => r.quant === "q4_k_m") ?? g.rows[Math.floor(g.rows.length / 2)];
-  const allOpen = groups.length > 0 && groups.every((g) => expanded.has(g.model.slug));
-  const toggleAll = () => setExpanded(allOpen ? new Set() : new Set(groups.map((g) => g.model.slug)));
-  const toggle = (slug: string) => setExpanded((s) => { const n = new Set(s); if (n.has(slug)) n.delete(slug); else n.add(slug); return n; });
+  const filteredConfigs = filtered.reduce((s, r) => s + r.quants.length, 0);
 
   if (!box) return null;
   if (!hwOk) return <div className="p-4 text-sm text-[var(--color-text-subtle)] italic">Spec unverified for this box, cannot compute.</div>;
+
+  const speedTip = (r: FitRow) =>
+    "Decode tok/s by quant — " + r.quants.map((x) => `${quantShort(x.quant)} ${formatTokS(x.dec.lowTokS)}–${formatTokS(x.dec.highTokS)}${x.anchor ? ` (measured ${x.anchor.decode_tok_s})` : ""}`).join(" · ");
+  const benchCell = (b?: HeadlineBench) =>
+    b ? <span data-popover={`${b.label}: ${Math.round(b.score)}. Verified and dated on the model's page.`}>{Math.round(b.score)}</span> : <span className="text-[var(--color-text-subtle)]">—</span>;
+  const selCls = "ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal";
 
   return (
     <div className="p-4">
       <p className="text-sm text-[var(--color-text-muted)] mb-3">
         Everything that fits on <span className="text-[var(--color-text)] font-medium">{units}× {box.name}</span> ({units * box.memory_capacity_gb} GB) at {fmtCtx(ctx)} context, across the precision ladder.
-        <span className="text-[var(--color-text)] font-medium"> {groups.length} models</span> fit ({filtered.length} configurations). Click a model for its quant-by-quant speeds.
+        <span className="text-[var(--color-text)] font-medium"> {filtered.length} models</span> fit ({filteredConfigs} configurations). Click a column to sort; hover a speed for the per-quant breakdown.
       </p>
       <div className="flex flex-wrap items-center gap-3 mb-3">
         <SearchBox value={query} onChange={setQuery} placeholder="Search models…" />
         <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Family
-          <select value={family} onChange={(e) => setFamily(e.target.value)} className="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal">
+          <select value={family} onChange={(e) => setFamily(e.target.value)} className={selCls}>
             <option value="">all</option>{families.map((f) => (<option key={f} value={f}>{f}</option>))}
+          </select>
+        </label>
+        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Arch
+          <select value={arch} onChange={(e) => setArch(e.target.value as "" | "moe" | "dense")} className={selCls}>
+            <option value="">all</option><option value="moe">MoE</option><option value="dense">dense</option>
+          </select>
+        </label>
+        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Open
+          <select value={openness} onChange={(e) => setOpenness(e.target.value)} className={selCls}>
+            <option value="">all</option>{opennesses.map((o) => (<option key={o} value={o}>{OPENNESS_SHORT[o] ?? o}</option>))}
           </select>
         </label>
         <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Min tok/s
           <input type="number" min={0} value={minTokS} onChange={(e) => setMinTokS(Number(e.target.value) || 0)} className="ml-2 w-16 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs" />
         </label>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Sort
-          <select value={groupSort} onChange={(e) => setGroupSort(e.target.value as "size" | "fastest" | "name")} className="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal">
-            <option value="size">by size</option><option value="fastest">by fastest</option><option value="name">by name</option>
-          </select>
-        </label>
-        <button onClick={toggleAll} className="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-[var(--color-border)] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] cursor-pointer">{allOpen ? "Collapse all" : "Expand all"}</button>
       </div>
-      <div className="border border-[var(--color-border)] rounded-md overflow-y-auto max-h-[640px] divide-y divide-[var(--color-border)]">
-        {groups.map((g) => {
-          const open = expanded.has(g.model.slug);
-          const r = rep(g);
-          return (
-            <div key={g.model.slug}>
-              <button onClick={() => toggle(g.model.slug)} className="w-full text-left px-3 py-2 flex items-start justify-between gap-3 hover:bg-[var(--color-surface-warm)] cursor-pointer">
-                <div className="min-w-0">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">{open ? "▾" : "▸"}</span>
-                    <span className="text-sm text-[var(--color-text)] font-medium">{g.model.display_name}</span>
-                  </div>
-                  <div className="ml-4"><ModelScorecard m={g.model} /></div>
-                </div>
-                <div className="text-right flex-none">
-                  <div className="font-mono text-xs text-[var(--color-text)] tabular-nums">{r ? `${formatTokS(r.dec.lowTokS)}–${formatTokS(r.dec.highTokS)} tok/s` : "—"}</div>
-                  <div className="font-mono text-[9px] text-[var(--color-text-subtle)]">{r ? quantLabel(r.quant) : ""} · {g.rows.length} quant{g.rows.length > 1 ? "s" : ""} fit</div>
-                  <a href={`/models/${g.model.slug}`} onClick={(e) => e.stopPropagation()} className="font-mono text-[9px] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline hover:underline">full page →</a>
-                </div>
-              </button>
-              {open && (
-                <table className="w-full text-sm mb-1">
-                  <tbody>
-                    {g.rows.map((row) => (
-                      <tr key={row.quant} className="border-t border-[var(--color-border)]">
-                        <td className="pl-8 pr-3 py-1 font-mono text-xs text-[var(--color-text-muted)]"><span data-popover={quantTip(row.quant)}>{quantLabel(row.quant)}</span></td>
-                        <td className="px-3 py-1 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{formatTokS(row.dec.lowTokS)}–{formatTokS(row.dec.highTokS)} tok/s</td>
-                        <td className="px-3 py-1 text-right font-mono text-[10px] text-[var(--color-text-muted)] tabular-nums w-28">{row.anchor ? <a href={row.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${row.anchor.decode_tok_s} tok/s (${row.anchor.runtime}, ${row.anchor.as_of}).`}>{row.anchor.decode_tok_s} measured ↗</a> : ""}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          );
-        })}
+      <div className="border border-[var(--color-border)] rounded-md overflow-x-auto max-h-[640px] overflow-y-auto">
+        <table className="w-full text-sm">
+          <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)] sticky top-0">
+            <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+              <SortTh label="Model" sortKey="name" type="text" popover={TIP.model} sort={sort} setSort={setSort} />
+              <SortTh label="Params" sortKey="size" align="text-right" popover="Total parameters. Mixture-of-experts also lists the active parameters used per token, which set decode speed." sort={sort} setSort={setSort} />
+              <SortTh label="Ctx" sortKey="ctx" align="text-right" popover="Maximum context window the model supports." sort={sort} setSort={setSort} />
+              <SortTh label="Open" sortKey="open" type="text" popover="Weight-release terms: open, open-weights, or source-available." sort={sort} setSort={setSort} />
+              <SortTh label="tok/s" sortKey="speed" align="text-right" popover={`${TIP.speed} Shown at the reference quant; hover for every quant.`} sort={sort} setSort={setSort} />
+              <SortTh label="General" sortKey="general" align="text-right" popover="Best verified general-knowledge score (MMLU-Pro, MMLU, or GPQA). Hover a cell for which benchmark." sort={sort} setSort={setSort} />
+              <SortTh label="Code" sortKey="code" align="text-right" popover="Best verified coding score (SWE-Bench, LiveCodeBench, or HumanEval)." sort={sort} setSort={setSort} />
+              <SortTh label="Math" sortKey="math" align="text-right" popover="Best verified math score (AIME or MATH)." sort={sort} setSort={setSort} />
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((r) => {
+              const m = r.m;
+              return (
+                <tr key={m.slug} className="border-t border-[var(--color-border)]">
+                  <td className="px-3 py-1.5 whitespace-nowrap">
+                    <a href={`/models/${m.slug}`} className="text-[var(--color-text)] no-underline hover:underline" data-popover={m.best_at && m.best_at.length ? `Best at: ${m.best_at.join(", ")}` : undefined}>{m.display_name}</a>
+                    <span className="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{m.family}</span>
+                  </td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums whitespace-nowrap">
+                    {fmtParams(m.params_total)}<span className="text-[var(--color-text-subtle)]"> · {isMoE(m) ? `${fmtParams(m.params_active)} act` : "dense"}</span>
+                  </td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">{fmtCtx(m.context_window)}</td>
+                  <td className="px-3 py-1.5 font-mono text-[10px] text-[var(--color-text-subtle)] whitespace-nowrap">{OPENNESS_SHORT[m.openness] ?? m.openness}</td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums whitespace-nowrap">
+                    <span data-popover={speedTip(r)}>{formatTokS(r.ref.dec.lowTokS)}–{formatTokS(r.ref.dec.highTokS)}</span>
+                    <span className="block text-[9px] text-[var(--color-text-subtle)]">
+                      {quantShort(r.ref.quant)} · {r.quants.length} fit{r.anchor && <> · <a href={r.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${r.anchor.decode_tok_s} tok/s (${r.anchor.runtime}, ${r.anchor.as_of}).`}>measured ↗</a></>}
+                    </span>
+                  </td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{benchCell(m.headline?.general)}</td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{benchCell(m.headline?.code)}</td>
+                  <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{benchCell(m.headline?.math)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Single-stream (solo) decode estimate, calibrated to measured tokens/sec. Each model shows params, architecture, context, openness, what it is best at, and verified headline benchmarks (general / code / math); expand for the per-quant speeds. Quant ladder: FP16 to Q2_K.
+        One row per model. Single-stream (solo) decode at the reference quant — Q4_K_M where it fits, otherwise the highest-precision quant that does — calibrated to measured tokens/sec; hover a speed for every quant. Benchmark columns show each model's best verified score per category; unverified values render as —. Click a column to sort.
       </p>
     </div>
   );
