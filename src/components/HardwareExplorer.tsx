@@ -20,10 +20,25 @@ import type { Model } from "../lib/models";
 type VerifMap = Record<string, Record<string, string>>;
 const PASS = new Set(["supported", "consistent", "still_supported", "pending_horizon"]);
 
+type HeadlineBench = { label: string; score: number };
+/** Model plus the scorecard fields the page attaches (best-at tags and
+ *  one verified headline benchmark per category). */
+type ExModel = Model & {
+  best_at?: string[];
+  headline?: { general?: HeadlineBench; code?: HeadlineBench; math?: HeadlineBench };
+};
+
+const OPENNESS_SHORT: Record<string, string> = {
+  open: "open",
+  "open-weights": "open-weights",
+  "source-available": "source-available",
+  proprietary: "proprietary",
+};
+
 interface Props {
   hardware: Hardware[];
   hardwareVerif: VerifMap;
-  models: Model[];
+  models: ExModel[];
   modelVerif: VerifMap;
   benchmarks: HardwareBenchmark[];
   benchVerif: VerifMap;
@@ -453,47 +468,89 @@ function quantTip(id: string): string {
   return `${q.label}: ${q.bytes_per_param} bytes per parameter${q.note ? `. ${q.note}` : ""}`;
 }
 
+function ModelScorecard({ m }: { m: ExModel }) {
+  const specs = `${fmtParams(m.params_total)}${m.architecture === "moe" ? ` · ${fmtParams(m.params_active)} active · MoE` : " · dense"} · ${fmtCtx(m.context_window)} ctx · ${OPENNESS_SHORT[m.openness] ?? m.openness}`;
+  const h = m.headline;
+  const benches = [
+    h?.general && { ...h.general, cat: "General" },
+    h?.code && { ...h.code, cat: "Code" },
+    h?.math && { ...h.math, cat: "Math" },
+  ].filter(Boolean) as (HeadlineBench & { cat: string })[];
+  return (
+    <div className="min-w-0">
+      <div className="font-mono text-[10px] text-[var(--color-text-subtle)]">{specs}</div>
+      {m.best_at && m.best_at.length > 0 && (
+        <div className="mt-1 flex flex-wrap gap-1 items-center">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)]">best at</span>
+          {m.best_at.map((t) => (
+            <span key={t} className="font-mono text-[9px] px-1 rounded bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)]">{t}</span>
+          ))}
+        </div>
+      )}
+      {benches.length > 0 ? (
+        <div className="mt-1 font-mono text-[10px] text-[var(--color-text-muted)] flex flex-wrap gap-x-3 gap-y-0.5">
+          {benches.map((b) => (
+            <span key={b.cat} data-popover={`${b.cat} benchmark (${b.label}); verified and dated on the model's page.`}>{b.label} <span className="text-[var(--color-text)] tabular-nums">{Math.round(b.score)}</span></span>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-1 font-mono text-[9px] text-[var(--color-text-subtle)] italic">no verified benchmarks yet</div>
+      )}
+    </div>
+  );
+}
+
 function WhatFitsView({
   box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif,
 }: any) {
   const [family, setFamily] = useState<string>("");
   const [minTokS, setMinTokS] = useState<number>(0);
   const [query, setQuery] = useState<string>("");
-  const [sort, setSort] = useState<Sort>({ key: "default", dir: -1 });
+  const [groupSort, setGroupSort] = useState<"size" | "fastest" | "name">("size");
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const all = useMemo(() => {
     if (!box || !hwOk) return [];
-    const out: { model: Model; quant: string; dec: ReturnType<typeof decodeRoofline>; anchor: HardwareBenchmark | null }[] = [];
-    for (const m of models as Model[]) {
+    const out: { model: ExModel; quant: string; dec: ReturnType<typeof decodeRoofline>; anchor: HardwareBenchmark | null }[] = [];
+    for (const m of models as ExModel[]) {
       if (!isModelOk(modelVerif, m)) continue;
-      for (const q of QUANT_LADDER) {
-        const fit = fitCheck(m, box, { quant: q, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime, concurrency: 1 });
+      for (const qq of QUANT_LADDER) {
+        const fit = fitCheck(m, box, { quant: qq, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime, concurrency: 1 });
         if (!fit.fits) continue;
-        const dec = decodeRoofline(m, box, { quant: q, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime });
-        out.push({ model: m, quant: q, dec, anchor: anchorFor(benchmarks, benchVerif, m.slug, box.slug, q) });
+        const dec = decodeRoofline(m, box, { quant: qq, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime });
+        out.push({ model: m, quant: qq, dec, anchor: anchorFor(benchmarks, benchVerif, m.slug, box.slug, qq) });
       }
     }
-    out.sort((a, b) => (b.model.params_total - a.model.params_total) || (b.dec.highTokS - a.dec.highTokS));
     return out;
   }, [box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif]);
 
   const families = useMemo(() => Array.from(new Set(all.map((r) => r.model.family))).sort(), [all]);
   const q = query.trim().toLowerCase();
-  const rows = all.filter((r) =>
+  const filtered = all.filter((r) =>
     (!family || r.model.family === family) &&
     r.dec.highTokS >= minTokS &&
     (!q || `${r.model.display_name} ${r.model.family}`.toLowerCase().includes(q)),
   );
-  if (sort.key !== "default") {
-    const d = sort.dir;
-    rows.sort((a, b) => {
-      if (sort.key === "model") return (a.model.params_total - b.model.params_total) * d;
-      if (sort.key === "quant") return (QUANT_LADDER.indexOf(a.quant) - QUANT_LADDER.indexOf(b.quant)) * d;
-      if (sort.key === "speed") return (a.dec.highTokS - b.dec.highTokS) * d;
-      if (sort.key === "measured") return ((a.anchor?.decode_tok_s ?? -1) - (b.anchor?.decode_tok_s ?? -1)) * d;
-      return 0;
-    });
+
+  type Group = { model: ExModel; rows: typeof filtered };
+  const groups: Group[] = [];
+  const gIndex = new Map<string, number>();
+  for (const r of filtered) {
+    let i = gIndex.get(r.model.slug);
+    if (i === undefined) { i = groups.length; gIndex.set(r.model.slug, i); groups.push({ model: r.model, rows: [] }); }
+    groups[i].rows.push(r);
   }
+  for (const g of groups) g.rows.sort((a, b) => b.dec.highTokS - a.dec.highTokS);
+  groups.sort((a, b) => {
+    if (groupSort === "name") return a.model.display_name.localeCompare(b.model.display_name);
+    if (groupSort === "fastest") return Math.max(...b.rows.map((r) => r.dec.highTokS)) - Math.max(...a.rows.map((r) => r.dec.highTokS));
+    return b.model.params_total - a.model.params_total;
+  });
+
+  const rep = (g: Group) => g.rows.find((r) => r.quant === "q4_k_m") ?? g.rows[Math.floor(g.rows.length / 2)];
+  const allOpen = groups.length > 0 && groups.every((g) => expanded.has(g.model.slug));
+  const toggleAll = () => setExpanded(allOpen ? new Set() : new Set(groups.map((g) => g.model.slug)));
+  const toggle = (slug: string) => setExpanded((s) => { const n = new Set(s); if (n.has(slug)) n.delete(slug); else n.add(slug); return n; });
 
   if (!box) return null;
   if (!hwOk) return <div className="p-4 text-sm text-[var(--color-text-subtle)] italic">Spec unverified for this box, cannot compute.</div>;
@@ -502,51 +559,64 @@ function WhatFitsView({
     <div className="p-4">
       <p className="text-sm text-[var(--color-text-muted)] mb-3">
         Everything that fits on <span className="text-[var(--color-text)] font-medium">{units}× {box.name}</span> ({units * box.memory_capacity_gb} GB) at {fmtCtx(ctx)} context, across the precision ladder.
-        <span className="text-[var(--color-text)] font-medium"> {all.length} configurations fit</span> ({rows.length} shown).
+        <span className="text-[var(--color-text)] font-medium"> {groups.length} models</span> fit ({filtered.length} configurations). Click a model for its quant-by-quant speeds.
       </p>
       <div className="flex flex-wrap items-center gap-3 mb-3">
         <SearchBox value={query} onChange={setQuery} placeholder="Search models…" />
-        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Family
+        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Family
           <select value={family} onChange={(e) => setFamily(e.target.value)} className="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal">
-            <option value="">all</option>
-            {families.map((f) => (<option key={f} value={f}>{f}</option>))}
+            <option value="">all</option>{families.map((f) => (<option key={f} value={f}>{f}</option>))}
           </select>
         </label>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Min tok/s
+        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Min tok/s
           <input type="number" min={0} value={minTokS} onChange={(e) => setMinTokS(Number(e.target.value) || 0)} className="ml-2 w-16 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs" />
         </label>
+        <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">Sort
+          <select value={groupSort} onChange={(e) => setGroupSort(e.target.value as "size" | "fastest" | "name")} className="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal">
+            <option value="size">by size</option><option value="fastest">by fastest</option><option value="name">by name</option>
+          </select>
+        </label>
+        <button onClick={toggleAll} className="font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-[var(--color-border)] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] cursor-pointer">{allOpen ? "Collapse all" : "Expand all"}</button>
       </div>
-      <div className="border border-[var(--color-border)] rounded-md overflow-x-auto max-h-[640px] overflow-y-auto">
-        <table className="w-full text-sm">
-          <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)] sticky top-0">
-            <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-              <SortTh label="Model" sortKey="model" type="num" popover={TIP.model} sort={sort} setSort={setSort} />
-              <SortTh label="Quant" sortKey="quant" align="text-right" type="num" popover={TIP.quant} sort={sort} setSort={setSort} />
-              <SortTh label="Realistic tok/s" sortKey="speed" align="text-right" popover={TIP.speed} sort={sort} setSort={setSort} />
-              <SortTh label="Measured" sortKey="measured" align="text-right" popover={TIP.measured} sort={sort} setSort={setSort} />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={`${r.model.slug}-${r.quant}`} className="border-t border-[var(--color-border)]">
-                <td className="px-3 py-1.5">
-                  <a href={`/models/${r.model.slug}`} className="text-[var(--color-text)] no-underline hover:underline">{r.model.display_name}</a>
-                  <span className="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{fmtParams(r.model.params_total)}{r.model.architecture === "moe" ? `·${fmtParams(r.model.params_active)}a` : ""}</span>
-                </td>
-                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)]"><span data-popover={quantTip(r.quant)}>{quantLabel(r.quant)}</span></td>
-                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{formatTokS(r.dec.lowTokS)}–{formatTokS(r.dec.highTokS)}</td>
-                <td className="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-muted)] tabular-nums">
-                  {r.anchor ? <a href={r.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${r.anchor.decode_tok_s} tok/s (${r.anchor.runtime}, ${r.anchor.as_of}). Click for the source.`}>{r.anchor.decode_tok_s} ↗</a> : ""}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="border border-[var(--color-border)] rounded-md overflow-y-auto max-h-[640px] divide-y divide-[var(--color-border)]">
+        {groups.map((g) => {
+          const open = expanded.has(g.model.slug);
+          const r = rep(g);
+          return (
+            <div key={g.model.slug}>
+              <button onClick={() => toggle(g.model.slug)} className="w-full text-left px-3 py-2 flex items-start justify-between gap-3 hover:bg-[var(--color-surface-warm)] cursor-pointer">
+                <div className="min-w-0">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">{open ? "▾" : "▸"}</span>
+                    <span className="text-sm text-[var(--color-text)] font-medium">{g.model.display_name}</span>
+                  </div>
+                  <div className="ml-4"><ModelScorecard m={g.model} /></div>
+                </div>
+                <div className="text-right flex-none">
+                  <div className="font-mono text-xs text-[var(--color-text)] tabular-nums">{r ? `${formatTokS(r.dec.lowTokS)}–${formatTokS(r.dec.highTokS)} tok/s` : "—"}</div>
+                  <div className="font-mono text-[9px] text-[var(--color-text-subtle)]">{r ? quantLabel(r.quant) : ""} · {g.rows.length} quant{g.rows.length > 1 ? "s" : ""} fit</div>
+                  <a href={`/models/${g.model.slug}`} onClick={(e) => e.stopPropagation()} className="font-mono text-[9px] text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline hover:underline">full page →</a>
+                </div>
+              </button>
+              {open && (
+                <table className="w-full text-sm mb-1">
+                  <tbody>
+                    {g.rows.map((row) => (
+                      <tr key={row.quant} className="border-t border-[var(--color-border)]">
+                        <td className="pl-8 pr-3 py-1 font-mono text-xs text-[var(--color-text-muted)]"><span data-popover={quantTip(row.quant)}>{quantLabel(row.quant)}</span></td>
+                        <td className="px-3 py-1 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{formatTokS(row.dec.lowTokS)}–{formatTokS(row.dec.highTokS)} tok/s</td>
+                        <td className="px-3 py-1 text-right font-mono text-[10px] text-[var(--color-text-muted)] tabular-nums w-28">{row.anchor ? <a href={row.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${row.anchor.decode_tok_s} tok/s (${row.anchor.runtime}, ${row.anchor.as_of}).`}>{row.anchor.decode_tok_s} measured ↗</a> : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          );
+        })}
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Single-stream (solo) decode estimate, calibrated to measured tokens/sec. Click a column to sort. Ladder: FP16, FP8, Q8_0, Q6_K, Q5_K_M, Q4_K_M, Q3_K_M, Q2_K. Default order: model size, then speed.
+        Single-stream (solo) decode estimate, calibrated to measured tokens/sec. Each model shows params, architecture, context, openness, what it is best at, and verified headline benchmarks (general / code / math); expand for the per-quant speeds. Quant ladder: FP16 to Q2_K.
       </p>
     </div>
   );

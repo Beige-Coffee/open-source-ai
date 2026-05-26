@@ -24,6 +24,28 @@ const PASS = new Set(["supported", "consistent", "still_supported", "pending_hor
 function hwVerified(slug: string, field: string): boolean {
   return PASS.has(HW_VERIF[slug]?.[field] ?? "");
 }
+function modelVerified(slug: string, field: string): boolean {
+  return PASS.has(MODEL_VERIF[slug]?.[field] ?? "");
+}
+
+// One headline benchmark per category, picking the first the model has
+// that is also verified (so unverified scores never render). Labels are
+// short for the scorecard.
+const HEADLINE_BENCH: Record<string, [string, string][]> = {
+  general: [["mmlu_pro", "MMLU-Pro"], ["mmlu", "MMLU"], ["gpqa_diamond", "GPQA"]],
+  code: [["swe_bench_verified", "SWE-Bench"], ["livecodebench", "LiveCodeBench"], ["humaneval", "HumanEval"]],
+  math: [["aime_2025", "AIME 25"], ["aime_2024", "AIME 24"], ["math", "MATH"]],
+};
+function headlineFor(m: any): Record<string, { label: string; score: number } | undefined> {
+  const pick = (cands: [string, string][]) => {
+    for (const [slug, label] of cands) {
+      const b = (m.benchmarks as any)?.[slug];
+      if (b && typeof b.score === "number" && modelVerified(m.slug, `bench.${slug}`)) return { label, score: b.score };
+    }
+    return undefined;
+  };
+  return { general: pick(HEADLINE_BENCH.general), code: pick(HEADLINE_BENCH.code), math: pick(HEADLINE_BENCH.math) };
+}
 
 const hardware = loadHardwareSorted();
 const benchmarks = loadHardwareBenchmarks();
@@ -51,6 +73,8 @@ const slimModels = loadModels()
     kv_bytes_per_token_fp16: m.kv_bytes_per_token_fp16,
     context_window: m.context_window,
     openness: m.openness,
+    best_at: (m.recommended_use_cases ?? []).slice(0, 4),
+    headline: headlineFor(m),
   }));
 
 // Slim model-verification map: only the calculator-relevant fields for
