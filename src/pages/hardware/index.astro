@@ -10,7 +10,6 @@ import {
   HARDWARE_CLASS_LABEL,
   MEMORY_TYPE_LABEL,
   formatBandwidth,
-  type HardwareClass,
 } from "../../lib/hardware";
 
 // --- Verification gate (mirrors /models) -------------------------------
@@ -68,7 +67,6 @@ for (const m of slimModels) {
   }
 }
 
-const classes: HardwareClass[] = ["datacenter", "workstation", "apple-unified", "x86-unified", "ai-pc"];
 const dash = "—";
 ---
 
@@ -129,56 +127,46 @@ const dash = "—";
       Per single unit. Compute figures are dense (never sparse). Bandwidth is
       the decode-speed determinant; capacity is the fit determinant.
     </p>
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mb-2">Click a column header to sort. Hover a header for what it means.</p>
     <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] overflow-x-auto">
-      <table class="w-full text-sm">
+      <table class="w-full text-sm" data-sortable>
         <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
           <tr class="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-            <th class="px-3 py-2"><span class="col-help" tabindex="0" title="The accelerator or machine. Specs are per single unit; multi-unit nodes are handled in the explorer.">Hardware</span></th>
-            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="How much the box can hold. Capacity decides whether the model weights plus KV cache fit at all.">Memory</span></th>
-            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="How fast memory is read (GB/s or TB/s). This sets the decode tokens/sec ceiling, since each token streams the active weights once.">Bandwidth</span></th>
-            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="Peak dense FP16 compute (TFLOPS). Matters for prefill, not for memory-bound decode. Dense, never the sparse marketing figure.">FP16 dense</span></th>
-            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="Thermal design power per unit (watts): a rough proxy for energy draw and cooling.">Power</span></th>
-            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="When the part shipped (year and month).">Released</span></th>
+            <th class="px-3 py-2" data-sort data-sort-type="text"><span class="has-tip" data-popover="The accelerator or machine. Specs are per single unit; multi-unit nodes are handled in the explorer above.">Hardware</span></th>
+            <th class="px-3 py-2" data-sort data-sort-type="text"><span class="has-tip" data-popover="Tier: datacenter, workstation, Apple unified, x86 unified, or AI-PC.">Class</span></th>
+            <th class="px-3 py-2 text-right" data-sort data-sort-type="num"><span class="has-tip" data-popover="How much the box can hold. Capacity decides whether the model weights plus KV cache fit at all.">Memory</span></th>
+            <th class="px-3 py-2 text-right" data-sort data-sort-type="num"><span class="has-tip" data-popover="How fast memory is read (GB/s or TB/s). This sets the decode tokens/sec ceiling, since each token streams the active weights once.">Bandwidth</span></th>
+            <th class="px-3 py-2 text-right" data-sort data-sort-type="num"><span class="has-tip" data-popover="Peak dense FP16 compute (TFLOPS). Matters for prefill, not for memory-bound decode. Dense, never the sparse marketing figure.">FP16 dense</span></th>
+            <th class="px-3 py-2 text-right" data-sort data-sort-type="num"><span class="has-tip" data-popover="Thermal design power per unit (watts): a rough proxy for energy draw and cooling.">Power</span></th>
+            <th class="px-3 py-2 text-right" data-sort data-sort-type="text"><span class="has-tip" data-popover="When the part shipped (year and month).">Released</span></th>
           </tr>
         </thead>
         <tbody>
-          {classes.map((cls) => {
-            const rows = hardware.filter((h) => h.class === cls);
-            if (rows.length === 0) return null;
-            return (
-              <>
-                <tr class="bg-[var(--color-surface-warm)] border-t border-[var(--color-border)]">
-                  <td colspan="6" class="px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                    {HARDWARE_CLASS_LABEL[cls]}
-                  </td>
-                </tr>
-                {rows.map((h) => (
-                  <tr class="border-t border-[var(--color-border)]">
-                    <td class="px-3 py-1.5">
-                      <a href={`/hardware/${h.slug}`} class="text-[var(--color-text)] no-underline hover:underline">{h.name}</a>
-                      <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-2">{h.vendor}</span>
-                    </td>
-                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
-                      {hwVerified(h.slug, "memory_capacity_gb") ? `${h.memory_capacity_gb} GB` : dash}
-                      <span class="text-[var(--color-text-subtle)] ml-1">{MEMORY_TYPE_LABEL[h.memory_type]}</span>
-                    </td>
-                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">
-                      {hwVerified(h.slug, "memory_bandwidth_gbs") ? formatBandwidth(h.memory_bandwidth_gbs) : dash}
-                    </td>
-                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
-                      {h.compute?.fp16_dense_tflops && hwVerified(h.slug, "compute.fp16_dense_tflops") ? `${h.compute.fp16_dense_tflops} TF` : dash}
-                    </td>
-                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
-                      {hwVerified(h.slug, "power_w") ? `${h.power_w} W` : dash}
-                    </td>
-                    <td class="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-subtle)]">
-                      {hwVerified(h.slug, "release_date") ? h.release_date : dash}
-                    </td>
-                  </tr>
-                ))}
-              </>
-            );
-          })}
+          {hardware.map((h) => (
+            <tr class="border-t border-[var(--color-border)]">
+              <td class="px-3 py-1.5">
+                <a href={`/hardware/${h.slug}`} class="text-[var(--color-text)] no-underline hover:underline">{h.name}</a>
+                <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-2">{h.vendor}</span>
+              </td>
+              <td class="px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">{HARDWARE_CLASS_LABEL[h.class]}</td>
+              <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums" data-sort-value={hwVerified(h.slug, "memory_capacity_gb") ? h.memory_capacity_gb : ""}>
+                {hwVerified(h.slug, "memory_capacity_gb") ? `${h.memory_capacity_gb} GB` : dash}
+                <span class="text-[var(--color-text-subtle)] ml-1">{MEMORY_TYPE_LABEL[h.memory_type]}</span>
+              </td>
+              <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums" data-sort-value={hwVerified(h.slug, "memory_bandwidth_gbs") ? h.memory_bandwidth_gbs : ""}>
+                {hwVerified(h.slug, "memory_bandwidth_gbs") ? formatBandwidth(h.memory_bandwidth_gbs) : dash}
+              </td>
+              <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums" data-sort-value={h.compute?.fp16_dense_tflops && hwVerified(h.slug, "compute.fp16_dense_tflops") ? h.compute.fp16_dense_tflops : ""}>
+                {h.compute?.fp16_dense_tflops && hwVerified(h.slug, "compute.fp16_dense_tflops") ? `${h.compute.fp16_dense_tflops} TF` : dash}
+              </td>
+              <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums" data-sort-value={hwVerified(h.slug, "power_w") ? h.power_w : ""}>
+                {hwVerified(h.slug, "power_w") ? `${h.power_w} W` : dash}
+              </td>
+              <td class="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-subtle)]" data-sort-value={hwVerified(h.slug, "release_date") ? h.release_date : ""}>
+                {hwVerified(h.slug, "release_date") ? h.release_date : dash}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -191,16 +179,3 @@ const dash = "—";
     </p>
   </section>
 </BaseLayout>
-
-<style>
-  /* Column-header help cue: dotted underline signals a hover/focus tooltip. */
-  .col-help {
-    cursor: help;
-    text-decoration: underline dotted var(--color-text-subtle);
-    text-underline-offset: 3px;
-  }
-  .col-help:focus-visible {
-    outline: 1px solid var(--color-text-muted);
-    outline-offset: 2px;
-  }
-</style>

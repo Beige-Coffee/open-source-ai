@@ -152,6 +152,27 @@ body {
   color: var(--color-accent-strong);
 }
 
+/* Click-to-sort headers (generic, used by src/lib/sortable-table.ts). */
+.th-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.th-sortable:hover {
+  color: var(--color-text);
+}
+.th-sortable[data-sort-dir="asc"]::after {
+  content: " \25B2";
+}
+.th-sortable[data-sort-dir="desc"]::after {
+  content: " \25BC";
+}
+/* Tooltip-bearing labels: subtle dotted cue, default cursor (no help "?"). */
+.has-tip {
+  text-decoration: underline dotted var(--color-text-subtle);
+  text-underline-offset: 3px;
+  cursor: default;
+}
+
 /*
  * Push-content layout for the in-site chat. When ChatBubble is open it
  * sets body[data-chat-open="true"] and the --chat-width CSS variable.

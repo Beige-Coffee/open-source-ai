@@ -311,66 +311,125 @@ function CompareView({
 }
 
 // ---------------------------------------------------------------------------
+// Sortable header + search input shared by the table views
+// ---------------------------------------------------------------------------
+
+type Sort = { key: string; dir: number };
+
+function SortTh({ label, sortKey, popover, align, type, sort, setSort }: {
+  label: string; sortKey: string; popover: string; align?: string; type?: "text" | "num";
+  sort: Sort; setSort: (f: (s: Sort) => Sort) => void;
+}) {
+  const active = sort.key === sortKey;
+  return (
+    <th
+      className={`px-3 py-2 th-sortable ${align ?? ""}`}
+      onClick={() => setSort((s) => ({ key: sortKey, dir: s.key === sortKey ? -s.dir : (type === "text" ? 1 : -1) }))}
+    >
+      <span className="has-tip" data-popover={popover}>{label}</span>{active ? (sort.dir > 0 ? " ▲" : " ▼") : ""}
+    </th>
+  );
+}
+
+function SearchBox({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+  return (
+    <input
+      type="search"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-sm w-56"
+    />
+  );
+}
+
+const TIP = {
+  hardware: "The accelerator or machine, at the unit count set above.",
+  memory: "Total memory across the selected units. Capacity decides whether the model fits.",
+  fits: "Whether the model weights, KV cache, and runtime overhead fit in usable memory.",
+  speed: "Estimated decode speed: the per-runtime realistic band over the theoretical roofline ceiling. Shown only where it fits.",
+  measured: "A real measured decode number for this model and box, where a sourced benchmark exists. Click to view the source.",
+  model: "An open-weights checkpoint. Size shown as total parameters, plus active parameters for mixture-of-experts.",
+  quant: "Quantization: bytes-per-weight precision. Lower precision shrinks the model so more fits, with some quality loss.",
+};
+
+// ---------------------------------------------------------------------------
 // Find-hardware mode (one model -> the whole catalog ranked)
 // ---------------------------------------------------------------------------
 
 function FindHardwareView({
   hardware, model, modelOk, quant, ctx, kvBytes, runtime, units, hardwareVerif, benchmarks, benchVerif,
 }: any) {
-  const rows = useMemo(() => {
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<Sort>({ key: "default", dir: -1 });
+
+  const base = useMemo(() => {
     if (!model) return [];
-    return (hardware as Hardware[])
-      .map((hw) => {
-        const ok = isHwOk(hardwareVerif, hw.slug) && modelOk;
-        const fit = fitCheck(model, hw, { quant, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime, concurrency: 1 });
-        const dec = decodeRoofline(model, hw, { quant, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime });
-        const anchor = anchorFor(benchmarks, benchVerif, model.slug, hw.slug, quant);
-        return { hw, ok, fit, dec, anchor };
-      })
-      .sort((a, b) => {
-        if (a.fit.fits !== b.fit.fits) return a.fit.fits ? -1 : 1;
-        return b.dec.highTokS - a.dec.highTokS;
-      });
+    return (hardware as Hardware[]).map((hw) => {
+      const ok = isHwOk(hardwareVerif, hw.slug) && modelOk;
+      const fit = fitCheck(model, hw, { quant, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime, concurrency: 1 });
+      const dec = decodeRoofline(model, hw, { quant, contextLength: ctx, kvPrecisionBytes: kvBytes, numUnits: units, runtime });
+      const anchor = anchorFor(benchmarks, benchVerif, model.slug, hw.slug, quant);
+      return { hw, ok, fit, dec, anchor, mem: units * hw.memory_capacity_gb };
+    });
   }, [hardware, model, modelOk, quant, ctx, kvBytes, runtime, units, hardwareVerif, benchmarks, benchVerif]);
 
-  const nFit = rows.filter((r) => r.ok && r.fit.fits).length;
   if (!model) return null;
+  const q = query.trim().toLowerCase();
+  const rows = (q ? base.filter((r) => `${r.hw.name} ${r.hw.vendor} ${HARDWARE_CLASS_LABEL[r.hw.class]}`.toLowerCase().includes(q)) : base.slice());
+  rows.sort((a, b) => {
+    if (sort.key === "default") {
+      if (a.fit.fits !== b.fit.fits) return a.fit.fits ? -1 : 1;
+      return b.dec.highTokS - a.dec.highTokS;
+    }
+    const d = sort.dir;
+    if (sort.key === "name") return a.hw.name.localeCompare(b.hw.name) * d;
+    if (sort.key === "mem") return (a.mem - b.mem) * d;
+    if (sort.key === "fits") return ((a.fit.fits ? 1 : 0) - (b.fit.fits ? 1 : 0)) * d;
+    if (sort.key === "speed") return (a.dec.highTokS - b.dec.highTokS) * d;
+    if (sort.key === "measured") return ((a.anchor?.decode_tok_s ?? -1) - (b.anchor?.decode_tok_s ?? -1)) * d;
+    return 0;
+  });
+  const nFit = base.filter((r) => r.ok && r.fit.fits).length;
 
   return (
     <div className="p-4">
-      <p className="text-sm text-[var(--color-text-muted)] mb-3">
-        {model.display_name} at {quantLabel(quant)}, {fmtCtx(ctx)} context, {units}× per box.
-        <span className="text-[var(--color-text)] font-medium"> Fits on {nFit} of {rows.length}</span> in the catalog.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <p className="text-sm text-[var(--color-text-muted)]">
+          {model.display_name} at {quantLabel(quant)}, {fmtCtx(ctx)} context, {units}× per box.
+          <span className="text-[var(--color-text)] font-medium"> Fits on {nFit} of {base.length}</span> in the catalog.
+        </p>
+        <SearchBox value={query} onChange={setQuery} placeholder="Search hardware…" />
+      </div>
       <div className="border border-[var(--color-border)] rounded-md overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
             <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-              <th className="px-3 py-2">Hardware</th>
-              <th className="px-3 py-2 text-right">Memory</th>
-              <th className="px-3 py-2 text-right">Fits?</th>
-              <th className="px-3 py-2 text-right">Realistic tok/s</th>
-              <th className="px-3 py-2 text-right">Measured</th>
+              <SortTh label="Hardware" sortKey="name" type="text" popover={TIP.hardware} sort={sort} setSort={setSort} />
+              <SortTh label="Memory" sortKey="mem" align="text-right" popover={TIP.memory} sort={sort} setSort={setSort} />
+              <SortTh label="Fits?" sortKey="fits" align="text-right" popover={TIP.fits} sort={sort} setSort={setSort} />
+              <SortTh label="Realistic tok/s" sortKey="speed" align="text-right" popover={TIP.speed} sort={sort} setSort={setSort} />
+              <SortTh label="Measured" sortKey="measured" align="text-right" popover={TIP.measured} sort={sort} setSort={setSort} />
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ hw, ok, fit, dec, anchor }) => (
+            {rows.map(({ hw, ok, fit, dec, anchor, mem }) => (
               <tr key={hw.slug} className={`border-t border-[var(--color-border)] ${!fit.fits ? "opacity-55" : ""}`}>
                 <td className="px-3 py-1.5">
                   <a href={`/hardware/${hw.slug}`} className="text-[var(--color-text)] no-underline hover:underline">{hw.name}</a>
                   <span className="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{units > 1 ? `${units}× · ` : ""}{HARDWARE_CLASS_LABEL[hw.class]}</span>
                 </td>
-                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-subtle)] tabular-nums">{units * hw.memory_capacity_gb} GB</td>
+                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-subtle)] tabular-nums">{mem} GB</td>
                 <td className="px-3 py-1.5 text-right font-mono text-xs">
                   {!ok ? <span className="text-[var(--color-text-subtle)]">—</span>
                     : fit.fits ? <span style={{ color: "#117a60" }}>yes</span>
-                    : <span style={{ color: "#ba5b4b" }} title={`needs ${formatGB(fit.requiredBytes)}`}>no</span>}
+                    : <span style={{ color: "#ba5b4b" }} data-popover={`Does not fit: needs ${formatGB(fit.requiredBytes)} of ${formatGB(fit.usableBytes)} usable.`}>no</span>}
                 </td>
                 <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">
                   {ok && fit.fits ? `${formatTokS(dec.lowTokS)}–${formatTokS(dec.highTokS)}` : "—"}
                 </td>
                 <td className="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-muted)] tabular-nums">
-                  {anchor ? <a href={anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" title={`${anchor.runtime}, ${anchor.as_of}`}>{anchor.decode_tok_s} ↗</a> : ""}
+                  {anchor ? <a href={anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${anchor.decode_tok_s} tok/s (${anchor.runtime}, ${anchor.as_of}). Click for the source.`}>{anchor.decode_tok_s} ↗</a> : ""}
                 </td>
               </tr>
             ))}
@@ -378,7 +437,7 @@ function FindHardwareView({
         </table>
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Realistic range is the per-runtime band over the theoretical ceiling; raise units to see multi-GPU nodes hold larger models. Decode shown only where it fits.
+        Click a column to sort. Realistic range is the per-runtime band over the theoretical ceiling; raise units to see multi-GPU nodes hold larger models.
       </p>
     </div>
   );
@@ -388,11 +447,19 @@ function FindHardwareView({
 // What-fits mode (one box -> every model x quant that fits)
 // ---------------------------------------------------------------------------
 
+function quantTip(id: string): string {
+  const q = QUANT_FORMATS.find((x) => x.id === id);
+  if (!q) return id;
+  return `${q.label}: ${q.bytes_per_param} bytes per parameter${q.note ? `. ${q.note}` : ""}`;
+}
+
 function WhatFitsView({
   box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif,
 }: any) {
   const [family, setFamily] = useState<string>("");
   const [minTokS, setMinTokS] = useState<number>(0);
+  const [query, setQuery] = useState<string>("");
+  const [sort, setSort] = useState<Sort>({ key: "default", dir: -1 });
 
   const all = useMemo(() => {
     if (!box || !hwOk) return [];
@@ -411,7 +478,22 @@ function WhatFitsView({
   }, [box, hwOk, models, modelVerif, ctx, kvBytes, runtime, units, benchmarks, benchVerif]);
 
   const families = useMemo(() => Array.from(new Set(all.map((r) => r.model.family))).sort(), [all]);
-  const rows = all.filter((r) => (!family || r.model.family === family) && r.dec.highTokS >= minTokS);
+  const q = query.trim().toLowerCase();
+  const rows = all.filter((r) =>
+    (!family || r.model.family === family) &&
+    r.dec.highTokS >= minTokS &&
+    (!q || `${r.model.display_name} ${r.model.family}`.toLowerCase().includes(q)),
+  );
+  if (sort.key !== "default") {
+    const d = sort.dir;
+    rows.sort((a, b) => {
+      if (sort.key === "model") return (a.model.params_total - b.model.params_total) * d;
+      if (sort.key === "quant") return (QUANT_LADDER.indexOf(a.quant) - QUANT_LADDER.indexOf(b.quant)) * d;
+      if (sort.key === "speed") return (a.dec.highTokS - b.dec.highTokS) * d;
+      if (sort.key === "measured") return ((a.anchor?.decode_tok_s ?? -1) - (b.anchor?.decode_tok_s ?? -1)) * d;
+      return 0;
+    });
+  }
 
   if (!box) return null;
   if (!hwOk) return <div className="p-4 text-sm text-[var(--color-text-subtle)] italic">Spec unverified for this box, cannot compute.</div>;
@@ -423,6 +505,7 @@ function WhatFitsView({
         <span className="text-[var(--color-text)] font-medium"> {all.length} configurations fit</span> ({rows.length} shown).
       </p>
       <div className="flex flex-wrap items-center gap-3 mb-3">
+        <SearchBox value={query} onChange={setQuery} placeholder="Search models…" />
         <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
           Family
           <select value={family} onChange={(e) => setFamily(e.target.value)} className="ml-2 px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface)] text-xs normal-case tracking-normal">
@@ -439,10 +522,10 @@ function WhatFitsView({
         <table className="w-full text-sm">
           <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)] sticky top-0">
             <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-              <th className="px-3 py-2">Model</th>
-              <th className="px-3 py-2 text-right">Quant</th>
-              <th className="px-3 py-2 text-right">Realistic tok/s</th>
-              <th className="px-3 py-2 text-right">Measured</th>
+              <SortTh label="Model" sortKey="model" type="num" popover={TIP.model} sort={sort} setSort={setSort} />
+              <SortTh label="Quant" sortKey="quant" align="text-right" type="num" popover={TIP.quant} sort={sort} setSort={setSort} />
+              <SortTh label="Realistic tok/s" sortKey="speed" align="text-right" popover={TIP.speed} sort={sort} setSort={setSort} />
+              <SortTh label="Measured" sortKey="measured" align="text-right" popover={TIP.measured} sort={sort} setSort={setSort} />
             </tr>
           </thead>
           <tbody>
@@ -452,10 +535,10 @@ function WhatFitsView({
                   <a href={`/models/${r.model.slug}`} className="text-[var(--color-text)] no-underline hover:underline">{r.model.display_name}</a>
                   <span className="font-mono text-[10px] text-[var(--color-text-subtle)] ml-1">{fmtParams(r.model.params_total)}{r.model.architecture === "moe" ? `·${fmtParams(r.model.params_active)}a` : ""}</span>
                 </td>
-                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)]">{quantLabel(r.quant)}</td>
+                <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)]"><span data-popover={quantTip(r.quant)}>{quantLabel(r.quant)}</span></td>
                 <td className="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">{formatTokS(r.dec.lowTokS)}–{formatTokS(r.dec.highTokS)}</td>
                 <td className="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-muted)] tabular-nums">
-                  {r.anchor ? <a href={r.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" title={`${r.anchor.runtime}, ${r.anchor.as_of}`}>{r.anchor.decode_tok_s} ↗</a> : ""}
+                  {r.anchor ? <a href={r.anchor.source} target="_blank" rel="noopener" className="no-underline hover:underline" data-popover={`Measured ${r.anchor.decode_tok_s} tok/s (${r.anchor.runtime}, ${r.anchor.as_of}). Click for the source.`}>{r.anchor.decode_tok_s} ↗</a> : ""}
                 </td>
               </tr>
             ))}
@@ -463,7 +546,7 @@ function WhatFitsView({
         </table>
       </div>
       <p className="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
-        Ladder: FP16, FP8, Q8_0, Q6_K, Q5_K_M, Q4_K_M, Q3_K_M, Q2_K. Sorted by model size, then speed. Realistic range is the per-runtime band.
+        Click a column to sort. Ladder: FP16, FP8, Q8_0, Q6_K, Q5_K_M, Q4_K_M, Q3_K_M, Q2_K. Default order: model size, then speed. Realistic range is the per-runtime band.
       </p>
     </div>
   );
@@ -510,15 +593,15 @@ function HardwareCard({
             <span className={`font-mono text-xs`} style={{ color: fit.fits ? "#117a60" : "#ba5b4b" }}>{fit.fits ? "Fits" : `Does not fit (needs ${formatGB(fit.requiredBytes)} of ${formatGB(usable)} usable)`}</span>
             <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">{units} × {hw.memory_capacity_gb} GB</span>
           </div>
-          <div className="h-4 w-full rounded bg-[var(--color-surface)] border border-[var(--color-border)] overflow-hidden flex mb-1" title="weights / KV cache / overhead vs usable memory">
-            <div style={{ width: `${Math.min(100, wFrac * 100)}%`, backgroundColor: "#4a6fa5" }} className="h-full" title={`weights ${formatGB(fit.weightsBytes)}`} />
-            <div style={{ width: `${Math.min(100, kFrac * 100)}%`, backgroundColor: "#ba8b4b" }} className="h-full" title={`KV cache ${formatGB(fit.kvBytes)}`} />
-            <div style={{ width: `${Math.min(100, oFrac * 100)}%`, backgroundColor: "#a7a4a0" }} className="h-full" title={`overhead ${formatGB(fit.overheadBytes)}`} />
+          <div className="h-4 w-full rounded bg-[var(--color-surface)] border border-[var(--color-border)] overflow-hidden flex mb-1">
+            <div style={{ width: `${Math.min(100, wFrac * 100)}%`, backgroundColor: "#4a6fa5" }} className="h-full" data-popover={`Model weights: ${formatGB(fit.weightsBytes)}. Total parameters times bytes-per-weight at this quantization; all of it must stay resident in memory.`} />
+            <div style={{ width: `${Math.min(100, kFrac * 100)}%`, backgroundColor: "#ba8b4b" }} className="h-full" data-popover={`KV cache: ${formatGB(fit.kvBytes)}. Per-token attention memory that grows with context length and concurrency.`} />
+            <div style={{ width: `${Math.min(100, oFrac * 100)}%`, backgroundColor: "#a7a4a0" }} className="h-full" data-popover={`Framework overhead: ${formatGB(fit.overheadBytes)}. Runtime scratch, CUDA graphs, and bookkeeping beyond weights and KV.`} />
           </div>
           <div className="flex gap-3 mb-1 font-mono text-[9px] text-[var(--color-text-subtle)]">
-            <span><span style={{ color: "#4a6fa5" }}>■</span> weights</span>
-            <span><span style={{ color: "#ba8b4b" }}>■</span> KV</span>
-            <span><span style={{ color: "#a7a4a0" }}>■</span> overhead</span>
+            <span data-popover="Model weights: total parameters times bytes-per-weight at this quantization. Must all stay resident."><span style={{ color: "#4a6fa5" }}>■</span> weights</span>
+            <span data-popover="KV cache: per-token attention memory that grows with context length and concurrency."><span style={{ color: "#ba8b4b" }}>■</span> KV</span>
+            <span data-popover="Framework overhead: runtime scratch, CUDA graphs, and bookkeeping beyond weights and KV."><span style={{ color: "#a7a4a0" }}>■</span> overhead</span>
           </div>
           <p className="font-mono text-[9px] text-[var(--color-text-subtle)] mb-3">weights {formatGB(fit.weightsBytes)} · KV {formatGB(fit.kvBytes)}{fit.kvEstimated ? " (est)" : ""} · overhead {formatGB(fit.overheadBytes)}{used > 1 ? ` · over by ${Math.round((used - 1) * 100)}%` : ""}</p>
           <div className="mb-2">
