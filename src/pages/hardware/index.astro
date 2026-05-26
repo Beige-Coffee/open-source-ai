@@ -76,30 +76,31 @@ const dash = "—";
   title="Hardware · Open-Source AI Stack"
   description="An interactive map of the hardware that runs open models: pick a model, a quantization, and a context length, then see whether it fits and how many tokens per second to expect, and why."
 >
-  <section class="max-w-5xl mx-auto px-6 pt-12 pb-4">
+  <section class="max-w-6xl mx-auto px-6 pt-12 pb-4">
     <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
       Hardware
     </p>
     <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-5">
       Will it fit, and how fast?
     </h1>
-    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-3">
       Two questions decide whether you can run an open model on a given box.
       <strong class="text-[var(--color-text)]">Memory capacity</strong> decides
       what fits. <strong class="text-[var(--color-text)]"><G term="memory-bandwidth">Memory bandwidth</G></strong>
       decides how fast it runs. They are not the same number, and a box that
       holds a model can still be too slow to serve it.
     </p>
-    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
       Pick a model, a <G term="quantization">quantization</G>, and a context
-      length below, then add hardware to compare. The explorer shows whether
+      length, then compare specific boxes, find every box a model fits on, or
+      pick a box and list everything it can run. The explorer shows whether
       the model fits, a theoretical <G term="roofline">roofline</G> tokens/sec
       ceiling with the formula, a realistic range, a measured anchor where one
       exists, and a plain-language reason that traces back to bandwidth,
       capacity, and <G term="kv-cache">KV cache</G>. The method comes straight
       from the <a href="/learn/self-host/memory-bandwidth" class="text-[var(--color-text)] underline">self-host course</a>.
     </p>
-    <p class="text-sm text-[var(--color-text-subtle)] leading-relaxed max-w-prose">
+    <p class="text-sm text-[var(--color-text-subtle)] leading-relaxed">
       Theoretical numbers are labeled as estimates and show their inputs;
       measured anchors carry a date and source. Every hardware spec flows
       through the same verification gate as <a href="/models" class="text-[var(--color-text-muted)] underline">/models</a>:
@@ -124,7 +125,7 @@ const dash = "—";
     <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
       The spectrum
     </h2>
-    <p class="text-sm text-[var(--color-text-subtle)] mb-4 max-w-prose">
+    <p class="text-sm text-[var(--color-text-subtle)] mb-4">
       Per single unit. Compute figures are dense (never sparse). Bandwidth is
       the decode-speed determinant; capacity is the fit determinant.
     </p>
@@ -132,12 +133,12 @@ const dash = "—";
       <table class="w-full text-sm">
         <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
           <tr class="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-            <th class="px-3 py-2">Hardware</th>
-            <th class="px-3 py-2 text-right">Memory</th>
-            <th class="px-3 py-2 text-right">Bandwidth</th>
-            <th class="px-3 py-2 text-right">FP16 dense</th>
-            <th class="px-3 py-2 text-right">Power</th>
-            <th class="px-3 py-2 text-right">Released</th>
+            <th class="px-3 py-2"><span class="col-help" tabindex="0" title="The accelerator or machine. Specs are per single unit; multi-unit nodes are handled in the explorer.">Hardware</span></th>
+            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="How much the box can hold. Capacity decides whether the model weights plus KV cache fit at all.">Memory</span></th>
+            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="How fast memory is read (GB/s or TB/s). This sets the decode tokens/sec ceiling, since each token streams the active weights once.">Bandwidth</span></th>
+            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="Peak dense FP16 compute (TFLOPS). Matters for prefill, not for memory-bound decode. Dense, never the sparse marketing figure.">FP16 dense</span></th>
+            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="Thermal design power per unit (watts): a rough proxy for energy draw and cooling.">Power</span></th>
+            <th class="px-3 py-2 text-right"><span class="col-help" tabindex="0" title="When the part shipped (year and month).">Released</span></th>
           </tr>
         </thead>
         <tbody>
@@ -190,3 +191,16 @@ const dash = "—";
     </p>
   </section>
 </BaseLayout>
+
+<style>
+  /* Column-header help cue: dotted underline signals a hover/focus tooltip. */
+  .col-help {
+    cursor: help;
+    text-decoration: underline dotted var(--color-text-subtle);
+    text-underline-offset: 3px;
+  }
+  .col-help:focus-visible {
+    outline: 1px solid var(--color-text-muted);
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+/**
+ * Data-driven schematic of one hardware SKU: a compute block joined to a
+ * memory pool by a bandwidth-scaled bus, with capacity sized into the
+ * memory box and multi-unit setups noted. Monochrome, in the site's
+ * visual language. Not a die photo; a "where the pieces fit" diagram that
+ * makes the fit-vs-serve story visible (wide pipe = fast decode, big box =
+ * holds big models).
+ */
+import {
+  formatBandwidth,
+  MEMORY_TYPE_LABEL,
+  HARDWARE_CLASS_LABEL,
+  type Hardware,
+} from "../lib/hardware";
+
+const { hw } = Astro.props as { hw: Hardware };
+
+const unified = hw.class === "apple-unified" || hw.class === "x86-unified" || hw.class === "ai-pc";
+const multi = hw.multi_unit_default > 1;
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
+// Bus thickness encodes memory bandwidth (the decode determinant).
+const busH = Math.round(clamp(4 + 4 * Math.log2(hw.memory_bandwidth_gbs / 100), 5, 30));
+// Memory box height encodes capacity (the fit determinant).
+const memH = Math.round(clamp(46 + 12 * Math.log2(hw.memory_capacity_gb / 16), 46, 150));
+const memY = Math.round(125 - memH / 2);
+
+const computeLabel = unified ? "CPU · GPU · NPU" : "Compute units";
+const memLabel = unified ? "Unified memory" : `${MEMORY_TYPE_LABEL[hw.memory_type]} (VRAM)`;
+const fp16 = hw.compute?.fp16_dense_tflops;
+const interLabel: Record<string, string> = {
+  nvlink: "NVLink", nvswitch: "NVSwitch", "infinity-fabric": "Infinity Fabric", pcie: "PCIe", none: "",
+};
+---
+
+<figure class="hw-arch my-2">
+  <svg viewBox="0 0 640 250" role="img" width="100%"
+    aria-label={`Schematic of ${hw.name}: ${computeLabel} connected to ${hw.memory_capacity_gb} GB ${MEMORY_TYPE_LABEL[hw.memory_type]} over a ${formatBandwidth(hw.memory_bandwidth_gbs)} bus`}>
+    <!-- multi-unit badge -->
+    {multi && (
+      <g>
+        <rect x="30" y="22" width="180" height="26" rx="4" fill="var(--color-surface-warm)" stroke="var(--color-border-strong)" />
+        <text x="120" y="39" text-anchor="middle" font-family="var(--font-mono)" font-size="12" fill="var(--color-text-muted)">
+          ×{hw.multi_unit_default} over {interLabel[hw.interconnect] || hw.interconnect}
+        </text>
+      </g>
+    )}
+
+    <!-- compute block -->
+    <rect x="30" y="65" width="180" height="120" rx="8" fill="var(--color-surface)" stroke="var(--color-text)" stroke-width="1.5" />
+    <text x="120" y="118" text-anchor="middle" font-family="var(--font-sans)" font-size="15" font-weight="600" fill="var(--color-text)">{computeLabel}</text>
+    {fp16 && (
+      <text x="120" y="142" text-anchor="middle" font-family="var(--font-mono)" font-size="12" fill="var(--color-text-subtle)">{fp16} TF FP16</text>
+    )}
+
+    <!-- bandwidth bus -->
+    <rect x="210" y={125 - busH / 2} width="220" height={busH} fill="var(--color-text-muted)" />
+    <text x="320" y={125 - busH / 2 - 10} text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="var(--color-text)">{formatBandwidth(hw.memory_bandwidth_gbs)}</text>
+    <text x="320" y={125 + busH / 2 + 22} text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-subtle)">memory bus</text>
+
+    <!-- memory pool -->
+    <rect x="430" y={memY} width="180" height={memH} rx="8" fill="var(--color-surface-warm)" stroke="var(--color-text)" stroke-width="1.5" />
+    <text x="520" y={125 - 8} text-anchor="middle" font-family="var(--font-sans)" font-size="18" font-weight="600" fill="var(--color-text)">{hw.memory_capacity_gb} GB</text>
+    <text x="520" y={125 + 14} text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--color-text-subtle)">{memLabel}</text>
+  </svg>
+  <figcaption class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-1 px-1">
+    {HARDWARE_CLASS_LABEL[hw.class]}. Bus width tracks bandwidth ({formatBandwidth(hw.memory_bandwidth_gbs)}, sets decode speed); the box tracks capacity ({hw.memory_capacity_gb} GB, sets what fits).
+    {unified ? " Unified memory is one pool shared by CPU and accelerator." : ""}
+    {multi ? ` Drawn per unit; a typical node is ${hw.multi_unit_default}×.` : ""}
+  </figcaption>
+</figure>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import G from "../../components/G.astro";
+import HardwareArchitecture from "../../components/HardwareArchitecture.astro";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { loadHardware, loadHardwareBySlug } from "../../lib/hardware-data";
@@ -67,6 +68,10 @@ const projectHref =
     </h1>
     <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-4">{hw.vendor}</p>
     {hw.notes && <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">{hw.notes}</p>}
+  </section>
+
+  <section class="max-w-4xl mx-auto px-6 mb-2">
+    <HardwareArchitecture hw={hw} />
   </section>
 
   <div class="max-w-4xl mx-auto px-6 grid gap-10 md:grid-cols-[1fr_300px] mt-4 pb-16">

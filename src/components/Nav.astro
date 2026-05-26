@@ -8,8 +8,11 @@ interface NavItem {
 }
 
 const items: NavItem[] = [
-  { href: "/stack", label: "The Stack", matchPrefix: "/stack" },
+  // The stack overview lives at the home page now; matchPrefix keeps the
+  // item highlighted on the /stack/<layer> detail pages too.
+  { href: "/", label: "The Stack", matchPrefix: "/stack" },
   { href: "/models", label: "Models", matchPrefix: "/models" },
+  { href: "/hardware", label: "Hardware", matchPrefix: "/hardware" },
   { href: "/news", label: "News", matchPrefix: "/news" },
   { href: "/grants", label: "Grants", matchPrefix: "/grants" },
   { href: "/glossary", label: "Glossary", matchPrefix: "/glossary" },
@@ -29,9 +32,9 @@ const items: NavItem[] = [
       {
         items.map((item) => {
           const active =
-            item.href === "/"
-              ? path === "/"
-              : path === item.href || path.startsWith(item.matchPrefix + "/");
+            path === item.href ||
+            (item.matchPrefix !== "/" &&
+              (path === item.matchPrefix || path.startsWith(item.matchPrefix + "/")));
           return (
             <a
               href={item.href}
