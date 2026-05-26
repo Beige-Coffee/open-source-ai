@@ -22,6 +22,11 @@ export default defineConfig({
   site: "https://open-source-ai.tech",
   output: "static",
   adapter: vercel(),
+  // The home page IS the stack overview, so /stack is folded into /.
+  // Keep the old route working for bookmarks and inbound links.
+  redirects: {
+    "/stack": "/",
+  },
   integrations: [mdx(), sitemap(), react()],
   vite: {
     plugins: [tailwindcss()],

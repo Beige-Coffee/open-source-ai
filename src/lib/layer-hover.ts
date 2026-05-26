@@ -148,8 +148,11 @@ async function showCard(trigger: HTMLElement, slug: string): Promise<void> {
   activeTrigger = trigger;
   const update = () => {
     computePosition(trigger, card, {
-      placement: "bottom-start",
-      middleware: [offset(8), flip({ padding: 12 }), shift({ padding: 12 })],
+      // Open to the upper-right of the layer so the stack stays readable
+      // on the left and the definition sits beside it on the right.
+      // flip() falls back to the left edge if there is no room.
+      placement: "right-start",
+      middleware: [offset(10), flip({ padding: 12 }), shift({ padding: 12 })],
     }).then(({ x, y }) => {
       card.style.left = `${x}px`;
       card.style.top = `${y}px`;
