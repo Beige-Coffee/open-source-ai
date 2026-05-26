@@ -1,0 +1,33 @@
+---
+term: model bandwidth utilization
+aliases: [mbu]
+primary_layer: runtime
+secondary_layers: [silicon]
+summary: MBU is the fraction of an accelerator's peak memory bandwidth a serving stack actually reaches during decode. Real systems land around 60 to 85 percent.
+sources:
+  - title: "LLM Inference Performance Engineering: Best Practices (Databricks)"
+    url: "https://www.databricks.com/blog/llm-inference-performance-engineering-best-practices"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Model bandwidth utilization is the ratio of the memory bandwidth a deployment
+actually achieves to the hardware's peak. It is the honest derating between the
+theoretical decode <G term="roofline">roofline</G> ceiling and what a real
+runtime delivers. A box rated at 1.8 TB/s does not turn all of it into tokens;
+scheduler overhead, dequantization, kernel launch latency, and imperfect
+memory access patterns each take a cut.
+
+Well-optimized CUDA stacks (<G term="vllm">vLLM</G>, TensorRT-LLM) commonly run
+in the 70 to 85 percent range; portable runtimes like <G term="gguf">llama.cpp</G>
+and Apple's MLX run lower, and AI-PC parts lower still. The exact band is a
+rule of thumb rather than a published constant, which is why this site shows a
+realistic range and overlays measured numbers rather than a single false-precise
+figure.
+
+MBU is the bandwidth-side analogue of
+<G term="model-flops-utilization">model FLOPs utilization</G>, which plays the
+same role for compute-bound work. Tracking MBU is the right way to compare
+serving stacks on the same hardware: a higher MBU at equal peak bandwidth means
+more tokens/sec for the same box.

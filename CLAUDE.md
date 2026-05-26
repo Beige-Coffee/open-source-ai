@@ -719,6 +719,81 @@ fetches HuggingFace trending + lab blog RSS + arXiv cs.CL, dedupes,
 routes candidates to `data/inbox/models-needs-review.jsonl`. Never
 auto-publishes; promotion to `data/models.yaml` is manual.
 
+## Hardware section
+
+The Hardware section at `/hardware` is an interactive map of the
+hardware that runs open models, plus a fit-and-tokens/sec explorer. It
+answers "if I pick this model at this quantization on this hardware,
+does it fit, how many tokens/sec can I expect, and why." Full design
+doc: `docs/HARDWARE.md`. Scope is the physical spectrum only:
+datacenter, workstation, Apple unified, x86 unified, AI-PC. No cloud,
+no pricing (decision D3).
+
+### Data
+
+`data/hardware.yaml`, one row per SKU (the way `models.yaml` is one row
+per checkpoint). TypeScript types and the calculator in
+`src/lib/hardware.ts` (pure, browser-safe); Node loaders in
+`src/lib/hardware-data.ts`. JSON Schema at
+`audit/schemas/hardware.schema.json`, validated by
+`audit/verify/verify_schemas.mjs`. Specs are per single unit; compute
+TFLOPS are DENSE (never sparse); every numeric value carries `url` +
+`sources`. Empirical tokens/sec anchors live in
+`data/hardware-benchmarks.yaml` (single-stream decode only, so they are
+comparable to the explorer's roofline; batched throughput is excluded).
+Each hardware row may carry a `silicon_project` slug cross-linking to
+the editorial entry in `projects.yaml` (specs live here, framing lives
+there; no duplication).
+
+The `Model` type gained optional `kv_heads`, `head_dim`, `hidden_size`,
+and `kv_bytes_per_token_fp16` (the last overrides the heads*head_dim KV
+formula for MLA models like DeepSeek). Populate these for self-hostable
+open-weights models; the calculator falls back to a labeled estimate
+otherwise.
+
+### The computation model
+
+Decode is memory-bandwidth-bound: ceiling tokens/sec is bandwidth
+divided by bytes-streamed-per-token, where bytes-per-token is
+active-params times bytes-per-weight (MoE uses active, not total) plus
+the KV cache streamed per step. Realistic output is the ceiling times a
+per-runtime MBU band, shown as a range, with a verified empirical
+anchor overlaid when one exists (decision D6). Fit compares total params
+plus KV plus per-runtime overhead against capacity; vLLM and SGLang are
+modeled as capacity-capped (utilization 0.9), llama.cpp/MLX/ExLlama as
+additive (decision D4). Prefill/TTFT is a rough, clearly-labeled
+compute-bound secondary from dense FLOPS (decision D5). All formulas are
+shown in the UI; estimates are labeled as estimates.
+
+### Routes
+
+- `/hardware` — intro, the embedded `HardwareExplorer` React island
+  (state in URL query params for sharing, decision D3b), and a
+  filterable spec table across all classes with the per-cell gate.
+- `/hardware/<slug>` — per-SKU detail: gated spec grid, a "what it runs"
+  table for reference open models, cross-links, sources.
+
+### Verification gate
+
+Same data -> ledger -> gate -> page pipeline as `/models`.
+`audit/extract-hardware.mjs` mints ledger rows
+(`hardware.<slug>.<field>` for specs, `hwbench.<...>.decode_tok_s` for
+anchors). `scripts/build-verification-map.mjs` emits
+`public/data/hardware-verification.json` and
+`hardware-bench-verification.json`. Pages render a value only when its
+verdict is in the PASS set; unverified specs render the em-dash
+placeholder, and the explorer refuses to compute (shows "spec
+unverified") when a chip's bandwidth/capacity or a model's params are
+not verified. Run `npm run audit:extract:hardware` after adding rows.
+
+### Chat agent integration
+
+Tools `find_hardware(filters)` and `read_hardware(slug)` in
+`src/lib/chat/tools.ts` (loader `getHardware` in `data.ts`). Citation
+marker `(Hardware: <slug>)` parsed in `citations.ts`, routing to
+`/hardware/<slug>`. Page-context detection routes `/hardware/<slug>` to
+a `{ kind: "hardware", slug }` entity so "this card" defaults correctly.
+
 ## Deployment
 
 Deployed to Vercel from `main`. Domain: open-source-ai.tech (managed

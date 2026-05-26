@@ -512,6 +512,15 @@ function fmtCurrency(n: number | undefined): string {
         )}
       </div>
 
+      {model.openness !== "proprietary" && (
+        <a
+          href={`/hardware?model=${model.slug}`}
+          class="block w-full text-center px-3 py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-text)] hover:text-[var(--color-text)] transition-colors text-sm text-[var(--color-text-muted)] no-underline"
+        >
+          Run this locally: fit and tokens/sec →
+        </a>
+      )}
+
       <button
         type="button"
         class="w-full px-3 py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-text)] hover:text-[var(--color-text)] cursor-pointer transition-colors text-sm text-[var(--color-text-muted)]"

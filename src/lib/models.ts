@@ -230,6 +230,18 @@ export interface Model {
   layers_count?: number;
   /** Vocab size if disclosed. */
   vocab_size?: number;
+  /** Hidden size (model dimension), if disclosed. Used by the hardware
+   *  calculator's KV-cache estimate when kv_heads/head_dim are absent. */
+  hidden_size?: number;
+  /** Number of key/value attention heads (GQA/MQA store fewer than the
+   *  query-head count). Drives the KV-cache size on the hardware page. */
+  kv_heads?: number;
+  /** Per-head dimension (typically 128). */
+  head_dim?: number;
+  /** Optional explicit KV-cache bytes per token at FP16, overriding the
+   *  heads*head_dim formula. Used for MLA models (DeepSeek) whose
+   *  compressed latent KV does not follow the standard form. */
+  kv_bytes_per_token_fp16?: number;
 
   // ---- Training ----
   /** Pretraining tokens count if disclosed; null for closed. */

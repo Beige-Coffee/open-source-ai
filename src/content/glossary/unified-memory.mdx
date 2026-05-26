@@ -1,0 +1,33 @@
+---
+term: unified memory
+aliases: [unified memory architecture, uma]
+primary_layer: silicon
+secondary_layers: [compute, runtime]
+summary: A single physical memory pool shared by CPU and GPU, so the full capacity is usable as model memory; used by Apple Silicon, Strix Halo, and DGX Spark.
+sources:
+  - title: "Apple reveals M3 Ultra"
+    url: "https://www.apple.com/newsroom/2025/03/apple-reveals-m3-ultra-taking-apple-silicon-to-a-new-extreme/"
+  - title: "AMD Ryzen AI Max+ 395"
+    url: "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Unified memory puts the CPU and GPU on one physical memory pool instead of
+giving the GPU its own separate VRAM. For local inference this removes the
+VRAM capacity ceiling that discrete consumer cards hit: a Mac Studio with 512
+GB of unified memory can hold a model that no single consumer GPU can, because
+the whole pool is addressable as model memory.
+
+The tradeoff is <G term="memory-bandwidth">bandwidth</G>. Unified-memory parts
+use <G term="lpddr5x">LPDDR5X</G> rather than <G term="hbm">HBM</G> or
+<G term="gddr7">GDDR7</G>, so their bandwidth runs lower than a discrete GPU's,
+which caps decode tokens/sec even when the model fits comfortably. The result
+is the classic split: unified memory wins on "can I run this at all," discrete
+GPUs win on "how fast does it serve."
+
+The category spans Apple Silicon (M-series), x86 appliances like AMD's Strix
+Halo (Ryzen AI Max), and NVIDIA's DGX Spark. They are the practical way to run
+large models on a single quiet box, and the reason capacity and bandwidth must
+be read as two separate specs when comparing them.

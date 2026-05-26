@@ -1,0 +1,561 @@
+# Hardware catalog. One row per SKU (the way data/models.yaml is one row
+# per checkpoint). Drives /hardware: the spec table, the per-SKU detail
+# pages, and the interactive fit/tokens-per-sec explorer.
+#
+# Discipline (see docs/HARDWARE.md):
+#   - Every numeric spec is per single accelerator/unit; multi-unit
+#     composition is a calculator concern, not a data concern.
+#   - Compute TFLOPS are DENSE, never sparse. Where only a sparse or
+#     derived figure exists, the field is omitted rather than asserting
+#     an unsourced number.
+#   - memory_bandwidth_gbs is the most important field for decode and is
+#     non-negotiable on sourcing.
+#   - Every entry carries `url` + `sources`; values flow through the
+#     claims-ledger verification gate before they render.
+#   - No cloud, no pricing (decision D3).
+
+hardware:
+  # ---- Datacenter -------------------------------------------------------
+  - slug: nvidia-h100-sxm
+    name: NVIDIA H100 SXM5
+    vendor: NVIDIA
+    class: datacenter
+    memory_capacity_gb: 80
+    memory_type: hbm3
+    memory_bandwidth_gbs: 3350
+    compute:
+      fp16_dense_tflops: 989
+      fp8_dense_tflops: 1979
+      int8_dense_tops: 1979
+    form_factor: sxm
+    power_w: 700
+    interconnect: nvlink
+    multi_unit_default: 8
+    release_date: '2022-09'
+    url: https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306
+    silicon_project: nvidia-h100
+    notes: >-
+      SXM5 board with HBM3. Datasheet tensor figures are published with
+      sparsity; the dense values here are the sparse number halved.
+      Production nodes are typically 8x over NVLink/NVSwitch.
+    sources:
+      - title: NVIDIA H100 Tensor Core GPU datasheet
+        url: https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306
+
+  - slug: nvidia-h100-pcie
+    name: NVIDIA H100 PCIe
+    vendor: NVIDIA
+    class: datacenter
+    memory_capacity_gb: 80
+    memory_type: hbm2e
+    memory_bandwidth_gbs: 2000
+    compute:
+      fp16_dense_tflops: 756
+      fp8_dense_tflops: 1513
+      int8_dense_tops: 1513
+    form_factor: pcie
+    power_w: 350
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2022-09'
+    url: https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306
+    silicon_project: nvidia-h100
+    notes: >-
+      The PCIe card uses HBM2e and a lower bandwidth and power envelope
+      than the SXM5 part. Dense tensor figures are the datasheet sparse
+      values halved.
+    sources:
+      - title: NVIDIA H100 Tensor Core GPU datasheet
+        url: https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306
+
+  - slug: nvidia-h200-sxm
+    name: NVIDIA H200 SXM
+    vendor: NVIDIA
+    class: datacenter
+    memory_capacity_gb: 141
+    memory_type: hbm3e
+    memory_bandwidth_gbs: 4800
+    compute:
+      fp16_dense_tflops: 989
+      fp8_dense_tflops: 1979
+      int8_dense_tops: 1979
+    form_factor: sxm
+    power_w: 700
+    interconnect: nvlink
+    multi_unit_default: 8
+    release_date: '2024-01'
+    url: https://www.nvidia.com/en-us/data-center/h200/
+    silicon_project: nvidia-h100
+    notes: >-
+      Same Hopper compute as the H100 SXM5 with more and faster HBM3e
+      memory. Announced 2023-11; volume shipping in 2024.
+    sources:
+      - title: NVIDIA H200 product page
+        url: https://www.nvidia.com/en-us/data-center/h200/
+
+  - slug: nvidia-b200
+    name: NVIDIA B200
+    vendor: NVIDIA
+    class: datacenter
+    memory_capacity_gb: 180
+    memory_type: hbm3e
+    memory_bandwidth_gbs: 7700
+    compute:
+      fp16_dense_tflops: 2250
+      fp8_dense_tflops: 4500
+      fp4_dense_tflops: 9000
+    form_factor: sxm
+    power_w: 1000
+    interconnect: nvswitch
+    multi_unit_default: 8
+    release_date: '2025-01'
+    url: https://www.nvidia.com/en-us/data-center/dgx-b200/
+    silicon_project: nvidia-h100
+    notes: >-
+      Blackwell-generation datacenter GPU. Datasheet headlines sparse
+      tensor numbers; dense values here are the sparse figures halved.
+      Usable HBM3e is about 180 GB air-cooled. The GB200 superchip pairs
+      two B200 dies with a Grace CPU; approximate it by selecting two
+      units.
+    sources:
+      - title: NVIDIA DGX B200 / Blackwell datasheet
+        url: https://www.nvidia.com/en-us/data-center/dgx-b200/
+
+  - slug: amd-mi300x
+    name: AMD Instinct MI300X
+    vendor: AMD
+    class: datacenter
+    memory_capacity_gb: 192
+    memory_type: hbm3
+    memory_bandwidth_gbs: 5300
+    compute:
+      fp16_dense_tflops: 1307
+      fp8_dense_tflops: 2615
+      int8_dense_tops: 2615
+    form_factor: oam
+    power_w: 750
+    interconnect: infinity-fabric
+    multi_unit_default: 8
+    release_date: '2023-12'
+    url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/data-sheets/amd-instinct-mi300x-data-sheet.pdf
+    silicon_project: amd-mi300x
+    notes: >-
+      Highest memory capacity in its generation at launch. AMD publishes
+      dense and sparse figures side by side; the dense values are used
+      here.
+    sources:
+      - title: AMD Instinct MI300X data sheet
+        url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/data-sheets/amd-instinct-mi300x-data-sheet.pdf
+
+  - slug: amd-mi325x
+    name: AMD Instinct MI325X
+    vendor: AMD
+    class: datacenter
+    memory_capacity_gb: 256
+    memory_type: hbm3e
+    memory_bandwidth_gbs: 6000
+    compute:
+      fp16_dense_tflops: 1307
+      fp8_dense_tflops: 2615
+      int8_dense_tops: 2615
+    form_factor: oam
+    power_w: 1000
+    interconnect: infinity-fabric
+    multi_unit_default: 8
+    release_date: '2024-10'
+    url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/instinct-mi325x-datasheet.pdf
+    silicon_project: amd-mi300x
+    notes: >-
+      Memory refresh of the MI300X to 256 GB HBM3e at higher bandwidth;
+      same CDNA3 dense compute.
+    sources:
+      - title: AMD Instinct MI325X data sheet
+        url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/instinct-mi325x-datasheet.pdf
+
+  - slug: amd-mi355x
+    name: AMD Instinct MI355X
+    vendor: AMD
+    class: datacenter
+    memory_capacity_gb: 288
+    memory_type: hbm3e
+    memory_bandwidth_gbs: 8000
+    compute:
+      fp16_dense_tflops: 2517
+      fp8_dense_tflops: 5033
+      fp4_dense_tflops: 10066
+    form_factor: oam
+    power_w: 1400
+    interconnect: infinity-fabric
+    multi_unit_default: 8
+    release_date: '2025-06'
+    url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf
+    silicon_project: amd-mi300x
+    notes: >-
+      CDNA4 generation; shipping. Adds an FP4 path. AMD prints dense and
+      sparse side by side; dense values used here.
+    sources:
+      - title: AMD Instinct MI355X GPU brochure
+        url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf
+
+  # ---- Workstation / consumer / open accelerators -----------------------
+  - slug: nvidia-rtx-5090
+    name: NVIDIA GeForce RTX 5090
+    vendor: NVIDIA
+    class: workstation
+    memory_capacity_gb: 32
+    memory_type: gddr7
+    memory_bandwidth_gbs: 1792
+    compute:
+      fp16_dense_tflops: 209.5
+      fp4_dense_tflops: 1676
+    form_factor: pcie
+    power_w: 575
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2025-01'
+    url: https://www.techpowerup.com/gpu-specs/geforce-rtx-5090.c4216
+    notes: >-
+      Blackwell consumer flagship. Bandwidth tier matches the workstation
+      Blackwell parts; capacity is the constraint for large models. FP8 is
+      omitted because NVIDIA publishes only a sparse AI-TOPS headline for
+      it.
+    sources:
+      - title: TechPowerUp GeForce RTX 5090 database entry
+        url: https://www.techpowerup.com/gpu-specs/geforce-rtx-5090.c4216
+      - title: NVIDIA GeForce RTX 5090 product page
+        url: https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/
+
+  - slug: nvidia-rtx-4090
+    name: NVIDIA GeForce RTX 4090
+    vendor: NVIDIA
+    class: workstation
+    memory_capacity_gb: 24
+    memory_type: gddr6x
+    memory_bandwidth_gbs: 1008
+    compute:
+      fp16_dense_tflops: 165.2
+    form_factor: pcie
+    power_w: 450
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2022-10'
+    url: https://www.techpowerup.com/gpu-specs/geforce-rtx-4090.c3889
+    notes: >-
+      Ada Lovelace flagship; the 24 GB workstation workhorse. FP16 dense
+      tensor is 165.2 TFLOPS (the often-quoted 330 figure is with
+      sparsity). No native FP8 tensor path.
+    sources:
+      - title: TechPowerUp GeForce RTX 4090 database entry
+        url: https://www.techpowerup.com/gpu-specs/geforce-rtx-4090.c3889
+
+  - slug: nvidia-rtx-pro-6000-blackwell
+    name: NVIDIA RTX PRO 6000 Blackwell
+    vendor: NVIDIA
+    class: workstation
+    memory_capacity_gb: 96
+    memory_type: gddr7
+    memory_bandwidth_gbs: 1792
+    form_factor: pcie
+    power_w: 600
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2025-03'
+    url: https://www.nvidia.com/en-us/products/workstations/professional-desktop-gpus/rtx-pro-6000/
+    notes: >-
+      Workstation Blackwell with 96 GB GDDR7: the most local model capacity
+      on a single card with workstation-class bandwidth. Compute TFLOPS are
+      omitted because NVIDIA publishes only an effective-FP4-with-sparsity
+      headline. Workstation and Server editions run 600 W at 1792 GB/s;
+      Max-Q is 300 W with identical memory, so decode behavior matches.
+    sources:
+      - title: NVIDIA RTX PRO 6000 Blackwell product page
+        url: https://www.nvidia.com/en-us/products/workstations/professional-desktop-gpus/rtx-pro-6000/
+
+  - slug: amd-radeon-ai-pro-r9700
+    name: AMD Radeon AI PRO R9700
+    vendor: AMD
+    class: workstation
+    memory_capacity_gb: 32
+    memory_type: gddr6
+    memory_bandwidth_gbs: 640
+    compute:
+      fp16_dense_tflops: 191
+      fp8_dense_tflops: 383
+      int8_dense_tops: 383
+    form_factor: pcie
+    power_w: 300
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2025-07'
+    url: https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/ai-9000-series/amd-radeon-ai-pro-r9700.html
+    notes: >-
+      RDNA-generation workstation card aimed at local AI, with 32 GB and a
+      ROCm software path. AMD lists dense and sparse matrix figures side by
+      side; dense values used here.
+    sources:
+      - title: AMD Radeon AI PRO R9700 product page
+        url: https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/ai-9000-series/amd-radeon-ai-pro-r9700.html
+
+  - slug: tenstorrent-blackhole-p150a
+    name: Tenstorrent Blackhole p150a
+    vendor: Tenstorrent
+    class: workstation
+    memory_capacity_gb: 32
+    memory_type: gddr6
+    memory_bandwidth_gbs: 512
+    compute:
+      fp8_dense_tflops: 664
+    form_factor: pcie
+    power_w: 300
+    interconnect: pcie
+    multi_unit_default: 1
+    release_date: '2025-08'
+    url: https://docs.tenstorrent.com/aibs/blackhole/specifications.html
+    silicon_project: tenstorrent
+    notes: >-
+      Open-stack accelerator (RISC-V cores plus Tensix units); the whole
+      software stack is open source. The compute figure is Tenstorrent's
+      quoted BLOCKFP8 (block-scaled FP8), not standard E4M3/E5M2, so
+      cross-vendor FP8 comparisons are not exact.
+    sources:
+      - title: Tenstorrent Blackhole specifications
+        url: https://docs.tenstorrent.com/aibs/blackhole/specifications.html
+      - title: Tenstorrent Blackhole hardware page
+        url: https://tenstorrent.com/en/hardware/blackhole
+
+  # ---- Apple unified memory ---------------------------------------------
+  - slug: apple-mac-studio-m3-ultra
+    name: Apple Mac Studio (M3 Ultra)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 512
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 819
+    form_factor: soc
+    power_w: 270
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2025-03'
+    url: https://www.apple.com/newsroom/2025/03/apple-reveals-m3-ultra-taking-apple-silicon-to-a-new-extreme/
+    silicon_project: apple-silicon
+    notes: >-
+      The capacity champion among single-box consumer hardware: up to
+      512 GB of unified memory usable as VRAM, at bandwidth that approaches
+      a workstation GPU. Apple states bandwidth as over 800 GB/s.
+    sources:
+      - title: Apple introduces M3 Ultra (newsroom)
+        url: https://www.apple.com/newsroom/2025/03/apple-reveals-m3-ultra-taking-apple-silicon-to-a-new-extreme/
+
+  - slug: apple-mac-studio-m4-max
+    name: Apple Mac Studio (M4 Max)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 128
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 546
+    form_factor: soc
+    power_w: 160
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2025-03'
+    url: https://www.apple.com/newsroom/2025/03/apple-unveils-new-mac-studio-the-most-powerful-mac-ever/
+    silicon_project: apple-silicon
+    notes: >-
+      The lower Mac Studio tier; 128 GB unified memory at mid-tier
+      bandwidth. Good capacity-per-dollar for hosting mid-size models.
+    sources:
+      - title: Apple unveils new Mac Studio (newsroom)
+        url: https://www.apple.com/newsroom/2025/03/apple-unveils-new-mac-studio-the-most-powerful-mac-ever/
+
+  - slug: apple-macbook-pro-m4-max
+    name: Apple MacBook Pro (M4 Max)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 128
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 546
+    form_factor: soc
+    power_w: 40
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2024-10'
+    url: https://www.apple.com/newsroom/2024/10/apple-introduces-m4-pro-and-m4-max/
+    silicon_project: apple-silicon
+    notes: >-
+      Bandwidth is binned by GPU core count: 410 GB/s on the 32-core part
+      and 546 GB/s on the 40-core part. The 40-core figure is used here.
+    sources:
+      - title: Apple introduces M4 Pro and M4 Max (newsroom)
+        url: https://www.apple.com/newsroom/2024/10/apple-introduces-m4-pro-and-m4-max/
+
+  - slug: apple-macbook-pro-m5-max
+    name: Apple MacBook Pro (M5 Max)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 128
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 614
+    form_factor: soc
+    power_w: 40
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2026-03'
+    url: https://www.apple.com/newsroom/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/
+    silicon_project: apple-silicon
+    notes: >-
+      M5-generation laptop; bandwidth sits between the M4 Max and the M3
+      Ultra. M5 base is 153 GB/s, M5 Pro 307 GB/s.
+    sources:
+      - title: Apple introduces MacBook Pro with M5 Pro and M5 Max (newsroom)
+        url: https://www.apple.com/newsroom/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/
+
+  - slug: apple-mac-mini-m4-pro
+    name: Apple Mac mini (M4 Pro)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 64
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 273
+    form_factor: soc
+    power_w: 65
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2024-10'
+    url: https://www.apple.com/newsroom/2024/10/apples-new-mac-mini-is-more-mighty-more-mini-and-built-for-apple-intelligence/
+    silicon_project: apple-silicon
+    notes: >-
+      The entry point to capable Apple unified-memory inference: up to
+      64 GB at 273 GB/s. Bandwidth, not capacity, is the limiter here.
+    sources:
+      - title: Apple's new Mac mini (newsroom)
+        url: https://www.apple.com/newsroom/2024/10/apples-new-mac-mini-is-more-mighty-more-mini-and-built-for-apple-intelligence/
+
+  - slug: apple-macbook-air-m5
+    name: Apple MacBook Air (M5)
+    vendor: Apple
+    class: apple-unified
+    memory_capacity_gb: 32
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 153
+    form_factor: soc
+    power_w: 20
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2026-03'
+    url: https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-macbook-air-with-m5/
+    silicon_project: apple-silicon
+    notes: >-
+      Fanless thin-and-light; fine for small models, bandwidth-starved for
+      large ones. The lower end of the Apple unified-memory range.
+    sources:
+      - title: Apple introduces the new MacBook Air with M5 (newsroom)
+        url: https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-macbook-air-with-m5/
+
+  # ---- x86 / ARM unified-memory appliances ------------------------------
+  - slug: nvidia-dgx-spark
+    name: NVIDIA DGX Spark (GB10)
+    vendor: NVIDIA
+    class: x86-unified
+    memory_capacity_gb: 128
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 273
+    form_factor: soc
+    power_w: 140
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2025-10'
+    url: https://www.nvidia.com/en-us/products/workstations/dgx-spark/
+    notes: >-
+      Grace-Blackwell developer appliance with 128 GB coherent unified
+      memory and the full CUDA stack. About 96 GB is addressable as VRAM.
+      Capacity is generous; the 273 GB/s bandwidth is the decode limiter.
+    sources:
+      - title: NVIDIA DGX Spark product page
+        url: https://www.nvidia.com/en-us/products/workstations/dgx-spark/
+
+  - slug: amd-ryzen-ai-max-395
+    name: AMD Ryzen AI Max+ 395 (Strix Halo)
+    vendor: AMD
+    class: x86-unified
+    memory_capacity_gb: 128
+    memory_type: unified-lpddr5x
+    memory_bandwidth_gbs: 256
+    npu_int8_tops: 50
+    form_factor: soc
+    power_w: 120
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2025-01'
+    url: https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html
+    notes: >-
+      The first serious x86 unified-memory contender, up to 128 GB (about
+      96 GB convertible to VRAM) over a 256-bit LPDDR5X bus. Ships in
+      mini-PCs and the Framework Desktop.
+    sources:
+      - title: AMD Ryzen AI Max+ 395 product page
+        url: https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html
+
+  # ---- AI-PC mobile (bandwidth-starved tier) ----------------------------
+  - slug: qualcomm-snapdragon-x-elite
+    name: Qualcomm Snapdragon X Elite
+    vendor: Qualcomm
+    class: ai-pc
+    memory_capacity_gb: 64
+    memory_type: lpddr5x
+    memory_bandwidth_gbs: 135
+    npu_int8_tops: 45
+    form_factor: soc
+    power_w: 80
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2024-06'
+    url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Product-Brief-Snapdragon-X-Elite.pdf
+    notes: >-
+      AI-PC class part: a capable NPU for small on-device models, but the
+      135 GB/s memory bus caps decode speed for anything larger.
+    sources:
+      - title: Qualcomm Snapdragon X Elite product brief
+        url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Product-Brief-Snapdragon-X-Elite.pdf
+
+  - slug: qualcomm-snapdragon-x2-elite
+    name: Qualcomm Snapdragon X2 Elite
+    vendor: Qualcomm
+    class: ai-pc
+    memory_capacity_gb: 48
+    memory_type: lpddr5x
+    memory_bandwidth_gbs: 228
+    npu_int8_tops: 80
+    form_factor: soc
+    power_w: 80
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2025-09'
+    url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf
+    notes: >-
+      Second-generation AI PC. The Extreme variant's 192-bit bus reaches
+      228 GB/s (the standard part is 152 GB/s); the Extreme figure is used
+      here as the meaningful inference upgrade.
+    sources:
+      - title: Qualcomm Snapdragon X2 Elite product brief
+        url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf
+
+  - slug: intel-lunar-lake
+    name: Intel Core Ultra 200V (Lunar Lake)
+    vendor: Intel
+    class: ai-pc
+    memory_capacity_gb: 32
+    memory_type: lpddr5x
+    memory_bandwidth_gbs: 136
+    npu_int8_tops: 48
+    form_factor: soc
+    power_w: 37
+    interconnect: none
+    multi_unit_default: 1
+    release_date: '2024-09'
+    url: https://www.intel.com/content/www/us/en/support/articles/000099574/processors/intel-core-ultra-processors.html
+    notes: >-
+      On-package LPDDR5X (up to 32 GB). Thin-and-light AI-PC tier: fine for
+      small models and edge tasks, bandwidth-starved for large ones.
+    sources:
+      - title: Intel Core Ultra (Series 2) overview
+        url: https://www.intel.com/content/www/us/en/support/articles/000099574/processors/intel-core-ultra-processors.html

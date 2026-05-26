@@ -22,7 +22,8 @@ export interface PageContext {
     | { kind: "project"; slug: string }
     | { kind: "glossary"; slug: string }
     | { kind: "news"; date: string }
-    | { kind: "model"; slug: string };
+    | { kind: "model"; slug: string }
+    | { kind: "hardware"; slug: string };
 }
 
 export interface ToolEventLog {

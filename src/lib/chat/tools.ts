@@ -15,6 +15,7 @@ import {
   getTodayNews,
   getGlossary,
   getModels,
+  getHardware,
 } from "./data";
 import { searchAll } from "./retrieve";
 
@@ -208,6 +209,32 @@ export const TOOLS = [
     },
   },
   {
+    name: "find_hardware",
+    description:
+      "Filter the hardware catalog (datacenter, workstation, Apple unified, x86 unified, AI-PC) by class, vendor, or free-text query, or by a minimum memory capacity. Returns each SKU's memory capacity, memory type, memory bandwidth (the decode-speed determinant), dense compute, power, and release date. Use when the user asks what hardware exists, or which boxes have enough memory or bandwidth for a model. Memory bandwidth, not FLOPS, predicts single-stream decode tokens/sec. Limit: 3 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        class: { type: "string", enum: ["datacenter", "workstation", "apple-unified", "x86-unified", "ai-pc"] },
+        vendor: { type: "string", description: "e.g. 'NVIDIA', 'AMD', 'Apple', 'Qualcomm', 'Intel', 'Tenstorrent'." },
+        min_memory_gb: { type: "number", description: "Only return SKUs with at least this much memory per unit." },
+        query: { type: "string", description: "Free-text query against name, vendor, notes." },
+      },
+    },
+  },
+  {
+    name: "read_hardware",
+    description:
+      "Fetch the full record for one hardware SKU by slug: memory capacity and type, memory bandwidth, dense compute (FP16/FP8/FP4/INT8), form factor, power, interconnect, typical multi-unit deployment, NPU TOPS if any, release date, the cross-linked silicon project, neutral notes, and sources. Use when the user asks about a specific named accelerator or box. For 'will model X fit / how fast' questions, combine with read_model: fit needs total params vs capacity; decode tokens/sec is roughly memory_bandwidth divided by (active_params times bytes-per-weight plus KV streamed). Limit: 4 calls per turn.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slug: { type: "string", description: "Hardware slug, e.g. 'nvidia-h100-sxm', 'apple-mac-studio-m3-ultra', 'nvidia-rtx-5090'." },
+      },
+      required: ["slug"],
+    },
+  },
+  {
     name: "search",
     description:
       "Full-text search across grants, funders, projects, readings, layer overviews, and models. Use as a fallback when no structured filter fits. Returns up to 10 hits with kind, title, url. Limit: 2 calls per turn.",
@@ -239,6 +266,8 @@ const LIMITS: Record<string, number> = {
   read_glossary: 4,
   read_model: 4,
   compare_models: 2,
+  find_hardware: 3,
+  read_hardware: 4,
   today_news: 1,
   search: 2,
 };
@@ -727,6 +756,60 @@ export async function executeTool(
               openness: x.openness,
             }));
           result = { ...m, siblings };
+        }
+        break;
+      }
+
+      case "find_hardware": {
+        const args = call.input as {
+          class?: string;
+          vendor?: string;
+          min_memory_gb?: number;
+          query?: string;
+        };
+        const hardware = await getHardware();
+        const hits = hardware.filter((h) => {
+          if (args.class && h.class !== args.class) return false;
+          if (args.vendor && !fuzzyMatch(h.vendor, args.vendor)) return false;
+          if (args.min_memory_gb && h.memory_capacity_gb < args.min_memory_gb) return false;
+          if (args.query) {
+            const blob = `${h.name} ${h.vendor} ${h.notes ?? ""}`;
+            if (!fuzzyMatch(blob, args.query)) return false;
+          }
+          return true;
+        });
+        hits.sort((a, b) => b.memory_bandwidth_gbs - a.memory_bandwidth_gbs);
+        result = {
+          count: hits.length,
+          hardware: hits.map((h) => ({
+            slug: h.slug,
+            name: h.name,
+            vendor: h.vendor,
+            class: h.class,
+            memory_capacity_gb: h.memory_capacity_gb,
+            memory_type: h.memory_type,
+            memory_bandwidth_gbs: h.memory_bandwidth_gbs,
+            compute: h.compute,
+            power_w: h.power_w,
+            multi_unit_default: h.multi_unit_default,
+            release_date: h.release_date,
+          })),
+        };
+        break;
+      }
+
+      case "read_hardware": {
+        const slug = String(call.input.slug ?? "").trim();
+        const hardware = await getHardware();
+        const h = hardware.find((x) => x.slug === slug);
+        if (!h) {
+          const close = hardware
+            .filter((x) => x.slug.includes(slug.toLowerCase()) || x.name.toLowerCase().includes(slug.toLowerCase()))
+            .slice(0, 5)
+            .map((x) => `${x.slug} (${x.name})`);
+          result = { error: `No hardware with slug '${slug}'.`, suggestions: close };
+        } else {
+          result = h;
         }
         break;
       }

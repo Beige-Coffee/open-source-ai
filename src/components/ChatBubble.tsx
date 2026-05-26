@@ -49,6 +49,8 @@ function derivePageContext(): PageContext {
     entity = { kind: "news", date: r[1] };
   } else if ((r = m(/^\/models\/([^/]+)\/?$/)) && r[1] !== "compare") {
     entity = { kind: "model", slug: r[1] };
+  } else if ((r = m(/^\/hardware\/([^/]+)\/?$/))) {
+    entity = { kind: "hardware", slug: r[1] };
   }
   return { pathname, entity };
 }

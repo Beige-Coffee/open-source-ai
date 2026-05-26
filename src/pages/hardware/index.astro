@@ -1,0 +1,192 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HardwareExplorer from "../../components/HardwareExplorer.tsx";
+import G from "../../components/G.astro";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { loadHardwareSorted, loadHardwareBenchmarks } from "../../lib/hardware-data";
+import { loadModels } from "../../lib/models";
+import {
+  HARDWARE_CLASS_LABEL,
+  MEMORY_TYPE_LABEL,
+  formatBandwidth,
+  type HardwareClass,
+} from "../../lib/hardware";
+
+// --- Verification gate (mirrors /models) -------------------------------
+function loadMap(name: string): Record<string, Record<string, string>> {
+  const p = resolve(`public/data/${name}`);
+  return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
+}
+const HW_VERIF = loadMap("hardware-verification.json");
+const MODEL_VERIF = loadMap("models-verification.json");
+const BENCH_VERIF = loadMap("hardware-bench-verification.json");
+const PASS = new Set(["supported", "consistent", "still_supported", "pending_horizon"]);
+function hwVerified(slug: string, field: string): boolean {
+  return PASS.has(HW_VERIF[slug]?.[field] ?? "");
+}
+
+const hardware = loadHardwareSorted();
+const benchmarks = loadHardwareBenchmarks();
+
+// Self-hostable models: anything with downloadable weights (open,
+// open-weights, or source-available like the Llama license). Only
+// proprietary checkpoints, whose weights are never released, are
+// excluded. Slim to the fields the calculator reads so the island
+// payload stays small.
+const slimModels = loadModels()
+  .filter((m) => m.openness !== "proprietary" && m.params_total > 0)
+  .sort((a, b) => a.params_total - b.params_total)
+  .map((m) => ({
+    slug: m.slug,
+    display_name: m.display_name,
+    family: m.family,
+    params_total: m.params_total,
+    params_active: m.params_active,
+    architecture: m.architecture,
+    attention_variant: m.attention_variant,
+    layers_count: m.layers_count,
+    kv_heads: m.kv_heads,
+    head_dim: m.head_dim,
+    hidden_size: m.hidden_size,
+    kv_bytes_per_token_fp16: m.kv_bytes_per_token_fp16,
+    context_window: m.context_window,
+    openness: m.openness,
+  }));
+
+// Slim model-verification map: only the calculator-relevant fields for
+// the included models.
+const modelVerifSlim: Record<string, Record<string, string>> = {};
+for (const m of slimModels) {
+  const v = MODEL_VERIF[m.slug];
+  if (v) {
+    modelVerifSlim[m.slug] = {
+      params_total: v.params_total ?? "",
+      params_active: v.params_active ?? "",
+      context_window: v.context_window ?? "",
+    };
+  }
+}
+
+const classes: HardwareClass[] = ["datacenter", "workstation", "apple-unified", "x86-unified", "ai-pc"];
+const dash = "—";
+---
+
+<BaseLayout
+  title="Hardware · Open-Source AI Stack"
+  description="An interactive map of the hardware that runs open models: pick a model, a quantization, and a context length, then see whether it fits and how many tokens per second to expect, and why."
+>
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      Hardware
+    </p>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-5">
+      Will it fit, and how fast?
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+      Two questions decide whether you can run an open model on a given box.
+      <strong class="text-[var(--color-text)]">Memory capacity</strong> decides
+      what fits. <strong class="text-[var(--color-text)]"><G term="memory-bandwidth">Memory bandwidth</G></strong>
+      decides how fast it runs. They are not the same number, and a box that
+      holds a model can still be too slow to serve it.
+    </p>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose mb-3">
+      Pick a model, a <G term="quantization">quantization</G>, and a context
+      length below, then add hardware to compare. The explorer shows whether
+      the model fits, a theoretical <G term="roofline">roofline</G> tokens/sec
+      ceiling with the formula, a realistic range, a measured anchor where one
+      exists, and a plain-language reason that traces back to bandwidth,
+      capacity, and <G term="kv-cache">KV cache</G>. The method comes straight
+      from the <a href="/learn/self-host/memory-bandwidth" class="text-[var(--color-text)] underline">self-host course</a>.
+    </p>
+    <p class="text-sm text-[var(--color-text-subtle)] leading-relaxed max-w-prose">
+      Theoretical numbers are labeled as estimates and show their inputs;
+      measured anchors carry a date and source. Every hardware spec flows
+      through the same verification gate as <a href="/models" class="text-[var(--color-text-muted)] underline">/models</a>:
+      an unverified value renders as {dash}, never a guess.
+    </p>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-6">
+    <HardwareExplorer
+      client:only="react"
+      hardware={hardware}
+      hardwareVerif={HW_VERIF}
+      models={slimModels}
+      modelVerif={modelVerifSlim}
+      benchmarks={benchmarks}
+      benchVerif={BENCH_VERIF}
+    />
+  </section>
+
+  <!-- Spec table across all classes, server-rendered with the gate. -->
+  <section class="max-w-6xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      The spectrum
+    </h2>
+    <p class="text-sm text-[var(--color-text-subtle)] mb-4 max-w-prose">
+      Per single unit. Compute figures are dense (never sparse). Bandwidth is
+      the decode-speed determinant; capacity is the fit determinant.
+    </p>
+    <div class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
+          <tr class="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+            <th class="px-3 py-2">Hardware</th>
+            <th class="px-3 py-2 text-right">Memory</th>
+            <th class="px-3 py-2 text-right">Bandwidth</th>
+            <th class="px-3 py-2 text-right">FP16 dense</th>
+            <th class="px-3 py-2 text-right">Power</th>
+            <th class="px-3 py-2 text-right">Released</th>
+          </tr>
+        </thead>
+        <tbody>
+          {classes.map((cls) => {
+            const rows = hardware.filter((h) => h.class === cls);
+            if (rows.length === 0) return null;
+            return (
+              <>
+                <tr class="bg-[var(--color-surface-warm)] border-t border-[var(--color-border)]">
+                  <td colspan="6" class="px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                    {HARDWARE_CLASS_LABEL[cls]}
+                  </td>
+                </tr>
+                {rows.map((h) => (
+                  <tr class="border-t border-[var(--color-border)]">
+                    <td class="px-3 py-1.5">
+                      <a href={`/hardware/${h.slug}`} class="text-[var(--color-text)] no-underline hover:underline">{h.name}</a>
+                      <span class="font-mono text-[10px] text-[var(--color-text-subtle)] ml-2">{h.vendor}</span>
+                    </td>
+                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
+                      {hwVerified(h.slug, "memory_capacity_gb") ? `${h.memory_capacity_gb} GB` : dash}
+                      <span class="text-[var(--color-text-subtle)] ml-1">{MEMORY_TYPE_LABEL[h.memory_type]}</span>
+                    </td>
+                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text)] tabular-nums">
+                      {hwVerified(h.slug, "memory_bandwidth_gbs") ? formatBandwidth(h.memory_bandwidth_gbs) : dash}
+                    </td>
+                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
+                      {h.compute?.fp16_dense_tflops && hwVerified(h.slug, "compute.fp16_dense_tflops") ? `${h.compute.fp16_dense_tflops} TF` : dash}
+                    </td>
+                    <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
+                      {hwVerified(h.slug, "power_w") ? `${h.power_w} W` : dash}
+                    </td>
+                    <td class="px-3 py-1.5 text-right font-mono text-[10px] text-[var(--color-text-subtle)]">
+                      {hwVerified(h.slug, "release_date") ? h.release_date : dash}
+                    </td>
+                  </tr>
+                ))}
+              </>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-3">
+      Cross-links: <a href="/stack/silicon" class="hover:text-[var(--color-text)] underline">/stack/silicon</a> ·
+      the self-host course modules on
+      <a href="/learn/self-host/gpu-memory-math" class="hover:text-[var(--color-text)] underline">memory math</a>,
+      <a href="/learn/self-host/quantization-formats" class="hover:text-[var(--color-text)] underline">quantization</a>,
+      and <a href="/learn/self-host/inference-engines" class="hover:text-[var(--color-text)] underline">inference engines</a>.
+    </p>
+  </section>
+</BaseLayout>

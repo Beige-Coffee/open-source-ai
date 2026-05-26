@@ -1,0 +1,32 @@
+---
+term: model FLOPs utilization
+aliases: [mfu]
+primary_layer: runtime
+secondary_layers: [silicon, training]
+summary: MFU is the fraction of an accelerator's peak compute a workload actually achieves. The compute-bound analogue of MBU, relevant to prefill and training, not memory-bound decode.
+sources:
+  - title: "LLM Inference Performance Engineering: Best Practices (Databricks)"
+    url: "https://www.databricks.com/blog/llm-inference-performance-engineering-best-practices"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Model FLOPs utilization is the ratio of the compute a workload actually
+sustains to the hardware's peak FLOPS. It is the compute-bound counterpart to
+<G term="model-bandwidth-utilization">model bandwidth utilization</G>, and it
+governs the phases of LLM work that saturate the matrix-multiply units rather
+than the memory bus.
+
+<G term="prefill">Prefill</G> and training are compute-bound, so MFU is the
+right efficiency metric for them. A rough prefill time-to-first-token estimate
+divides the prompt's compute (about two operations per parameter per token) by
+the chip's dense FLOPS times an MFU factor; real MFU varies more than MBU
+because it is sensitive to sequence length, kernel fusion, and how well the
+batch packs the compute units.
+
+MFU does not describe single-stream <G term="decode">decode</G>, which is
+memory-bound and stays well below peak compute no matter how good the kernels
+are. Confusing the two is a common source of wrong hardware conclusions: a chip
+with enormous FLOPS but modest bandwidth will look great on a compute-bound
+benchmark and disappoint on interactive token generation.

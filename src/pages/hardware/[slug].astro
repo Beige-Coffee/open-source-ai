@@ -1,0 +1,178 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import G from "../../components/G.astro";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { loadHardware, loadHardwareBySlug } from "../../lib/hardware-data";
+import { loadModelBySlug } from "../../lib/models";
+import {
+  fitCheck,
+  decodeRoofline,
+  formatGB,
+  formatTokS,
+  formatBandwidth,
+  HARDWARE_CLASS_LABEL,
+  MEMORY_TYPE_LABEL,
+  type Hardware,
+} from "../../lib/hardware";
+
+export async function getStaticPaths() {
+  return loadHardware().map((h) => ({ params: { slug: h.slug }, props: { hw: h } }));
+}
+const { hw } = Astro.props as { hw: Hardware };
+
+function loadMap(name: string): Record<string, Record<string, string>> {
+  const p = resolve(`public/data/${name}`);
+  return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
+}
+const HW_VERIF = loadMap("hardware-verification.json");
+const MODEL_VERIF = loadMap("models-verification.json");
+const PASS = new Set(["supported", "consistent", "still_supported", "pending_horizon"]);
+const v = (field: string) => PASS.has(HW_VERIF[hw.slug]?.[field] ?? "");
+const dash = "—";
+
+// "What it runs": a few reference open models at q4_k_m, fit + ceiling.
+const REFERENCE = ["llama-3-1-8b-instruct", "llama-3-3-70b-instruct", "qwen2-5-72b-instruct", "deepseek-v3"];
+const runsTable = REFERENCE.map((slug) => {
+  const m = loadModelBySlug(slug);
+  if (!m) return null;
+  const modelOk =
+    PASS.has(MODEL_VERIF[slug]?.params_total ?? "") &&
+    (m.architecture !== "moe" || PASS.has(MODEL_VERIF[slug]?.params_active ?? ""));
+  const hwOk = v("memory_bandwidth_gbs") && v("memory_capacity_gb");
+  const units = hw.multi_unit_default;
+  const args = { quant: "q4_k_m", contextLength: 4096, kvPrecisionBytes: 2, numUnits: units, concurrency: 1 } as const;
+  const fit = fitCheck(m, hw, { ...args, runtime: "llama.cpp" });
+  const dec = decodeRoofline(m, hw, { quant: "q4_k_m", contextLength: 4096, kvPrecisionBytes: 2, numUnits: units, runtime: "llama.cpp" });
+  return { m, units, fit, dec, compute: modelOk && hwOk };
+}).filter(Boolean) as Array<{ m: any; units: number; fit: any; dec: any; compute: boolean }>;
+
+const projectHref =
+  hw.silicon_project &&
+  ["nvidia-h100", "amd-mi300x", "tenstorrent", "risc-v", "apple-silicon"].includes(hw.silicon_project)
+    ? `/projects/${hw.silicon_project}`
+    : "/stack/silicon#projects";
+---
+
+<BaseLayout title={`${hw.name} · Hardware`} description={`${hw.name}: memory, bandwidth, compute, and what open models it runs.`}>
+  <section class="max-w-4xl mx-auto px-6 pt-8 pb-2">
+    <a href="/hardware" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] hover:text-[var(--color-text)] no-underline mb-4">
+      <span aria-hidden="true">←</span> All hardware
+    </a>
+    <p class="font-mono text-xs uppercase tracking-wider mb-2 text-[var(--color-text-subtle)]">
+      Hardware · {HARDWARE_CLASS_LABEL[hw.class]}
+    </p>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-2">
+      {hw.name}
+    </h1>
+    <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-4">{hw.vendor}</p>
+    {hw.notes && <p class="text-base text-[var(--color-text-muted)] leading-relaxed max-w-prose">{hw.notes}</p>}
+  </section>
+
+  <div class="max-w-4xl mx-auto px-6 grid gap-10 md:grid-cols-[1fr_300px] mt-4 pb-16">
+    <article>
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">Specs</h2>
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Memory</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{v("memory_capacity_gb") ? `${hw.memory_capacity_gb} GB ${MEMORY_TYPE_LABEL[hw.memory_type]}` : dash}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Bandwidth</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{v("memory_bandwidth_gbs") ? formatBandwidth(hw.memory_bandwidth_gbs) : dash}</dd>
+
+          {hw.compute?.fp16_dense_tflops && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">FP16 dense</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{v("compute.fp16_dense_tflops") ? `${hw.compute.fp16_dense_tflops} TFLOPS` : dash}</dd>
+            </>
+          )}
+          {hw.compute?.fp8_dense_tflops && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">FP8 dense</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{v("compute.fp8_dense_tflops") ? `${hw.compute.fp8_dense_tflops} TFLOPS` : dash}</dd>
+            </>
+          )}
+          {hw.npu_int8_tops && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">NPU</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{v("npu_int8_tops") ? `${hw.npu_int8_tops} INT8 TOPS` : dash}</dd>
+            </>
+          )}
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Power</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{v("power_w") ? `${hw.power_w} W` : dash}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Form factor</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{hw.form_factor}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Interconnect</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{hw.interconnect}</dd>
+
+          <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Released</dt>
+          <dd class="text-[var(--color-text)] font-mono text-xs">{v("release_date") ? hw.release_date : dash}</dd>
+        </dl>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          What it runs ({hw.multi_unit_default > 1 ? `${hw.multi_unit_default}× unit` : "single unit"}, Q4_K_M, 4K context)
+        </h2>
+        <div class="border border-[var(--color-border)] rounded-md overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-warm)]">
+              <tr class="text-left font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
+                <th class="px-3 py-2">Model</th>
+                <th class="px-3 py-2 text-right">Fits?</th>
+                <th class="px-3 py-2 text-right">Decode ceiling</th>
+              </tr>
+            </thead>
+            <tbody>
+              {runsTable.map((r) => (
+                <tr class="border-t border-[var(--color-border)]">
+                  <td class="px-3 py-1.5">
+                    <a href={`/models/${r.m.slug}`} class="text-[var(--color-text)] no-underline hover:underline">{r.m.display_name}</a>
+                  </td>
+                  <td class="px-3 py-1.5 text-right font-mono text-xs">
+                    {r.compute ? (r.fit.fits ? "yes" : "no") : dash}
+                  </td>
+                  <td class="px-3 py-1.5 text-right font-mono text-xs text-[var(--color-text-muted)] tabular-nums">
+                    {r.compute && r.fit.fits ? `~${formatTokS(r.dec.ceilingTokS)} tok/s` : dash}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2">
+          Ceiling is the theoretical <G term="roofline">roofline</G>; open the
+          <a href="/hardware" class="hover:text-[var(--color-text)] underline">explorer</a> to set quant, context, and runtime and see the realistic range.
+        </p>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">Sources</h2>
+        <ul class="space-y-1 text-sm">
+          {hw.sources.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">{s.title} ↗</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </article>
+
+    <aside class="text-sm space-y-4 md:sticky md:top-20 md:self-start">
+      <div class="border border-[var(--color-border)] rounded-md p-4 bg-[var(--color-surface)]">
+        <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-2">Related</p>
+        {hw.silicon_project && (
+          <a href={projectHref} class="block text-sm text-[var(--color-text)] no-underline hover:underline mb-2">
+            Silicon layer: {hw.silicon_project} →
+          </a>
+        )}
+        <a href="/stack/silicon" class="block text-sm text-[var(--color-text-muted)] no-underline hover:underline mb-2">The silicon layer →</a>
+        <a href={`/hardware?hw=${hw.slug}:${hw.multi_unit_default}`} class="block text-sm text-[var(--color-text-muted)] no-underline hover:underline mb-2">Open in the explorer →</a>
+        <a href="/learn/self-host/memory-bandwidth" class="block text-sm text-[var(--color-text-muted)] no-underline hover:underline">Why bandwidth decides speed →</a>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

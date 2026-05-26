@@ -1,0 +1,34 @@
+---
+term: tokens per second
+aliases: [tok/s, tps, tokens/sec]
+primary_layer: runtime
+secondary_layers: [silicon, evaluation]
+summary: The headline inference speed metric. Decode tokens/sec is what a user feels as text streams; it is bounded by memory bandwidth divided by the bytes streamed per token.
+sources:
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Tokens per second is the speed at which a model produces output. The number
+people care about for interactive use is decode tokens/sec: the rate at which
+new tokens stream after the first one appears. It is bounded by
+<G term="memory-bandwidth">memory bandwidth</G> divided by the bytes streamed
+per token, which makes it a property of the model, the
+<G term="quantization">quantization</G>, the context length, and the hardware
+together, not of any one alone.
+
+A single tokens/sec figure on a screenshot is rarely comparable, because it
+hides the workload. Single-stream decode (one user) is different from batched
+server <G term="throughput">throughput</G> (many concurrent users summed),
+often by more than ten times; <G term="prefill">prefill</G> and decode are
+different again; and different tokenizers cut the same text into different
+token counts. A useful number records the model, quant, runtime, context, and
+concurrency.
+
+This site computes a theoretical ceiling and a realistic range for decode, and
+overlays measured anchors where a sourced single-stream number exists, so the
+reader can see estimate against reality rather than trusting one figure out of
+context.

@@ -1195,6 +1195,9 @@ models:
     experts_active: 8
     context_window: 128000
     attention_variant: mla
+    layers_count: 61
+    hidden_size: 7168
+    kv_bytes_per_token_fp16: 70272
     position_encoding: rope-yarn
     tokenizer: deepseek
     pretraining_tokens: 14800000000000

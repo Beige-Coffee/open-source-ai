@@ -1,0 +1,34 @@
+---
+term: memory bandwidth
+aliases: [bandwidth]
+primary_layer: silicon
+secondary_layers: [runtime, compute]
+summary: The rate (GB/s or TB/s) at which an accelerator reads its memory. It sets the ceiling on decode tokens/sec, since each token streams the active weights once.
+sources:
+  - title: "Memory Bandwidth for Local AI Hardware (2026 Edition), Ahmad Osman"
+    url: "https://x.com/TheAhmadOsman/status/2040103488714068245"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Memory bandwidth is how fast an accelerator can move data between its memory
+and its compute units, quoted in GB/s or TB/s. It is distinct from memory
+capacity: capacity decides whether a model fits, bandwidth decides how fast it
+runs. People who collapse the two into one number buy boxes that hold a model
+but serve it slowly.
+
+Bandwidth is the binding constraint for <G term="decode">decode</G> because
+generating each token streams the model's active weights through the compute
+units once. A 70B dense model at <G term="fp16">FP16</G> moves about 140 GB per
+token, so a 1.8 TB/s card caps near 12 tokens per second on memory motion
+alone, while a 250 GB/s unified-memory box caps far lower on the same work.
+The <G term="kv-cache">KV cache</G> is streamed each step too, so long context
+raises the per-token bytes and drags speed down further.
+
+The 2026 spectrum spans roughly two orders of magnitude: datacenter
+<G term="hbm">HBM</G> parts clear 3 to 8 TB/s, workstation
+<G term="gddr7">GDDR7</G> cards sit near 1.8 TB/s, Apple and x86 unified-memory
+parts run 250 to 820 GB/s, and AI-PC laptops sit around 100 to 250 GB/s.
+Picking by capacity alone, without checking the bandwidth tier, is the most
+common self-hosting mistake.

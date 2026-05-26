@@ -1,0 +1,32 @@
+---
+term: LPDDR5X
+aliases: [lpddr5, lpddr]
+primary_layer: silicon
+secondary_layers: [compute]
+summary: Low-power DRAM used as unified memory in Apple Silicon, DGX Spark, and Strix Halo. High capacity and efficiency, with bandwidth below HBM and GDDR.
+sources:
+  - title: "Apple reveals M3 Ultra"
+    url: "https://www.apple.com/newsroom/2025/03/apple-reveals-m3-ultra-taking-apple-silicon-to-a-new-extreme/"
+  - title: "NVIDIA DGX Spark"
+    url: "https://www.nvidia.com/en-us/products/workstations/dgx-spark/"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+LPDDR5X is the low-power DRAM generation used as the shared
+<G term="unified-memory">unified memory</G> in Apple Silicon, NVIDIA's DGX
+Spark, and AMD's Strix Halo. Its advantages are capacity and efficiency: a
+single SoC can address hundreds of GB at a low power budget, which is how a Mac
+Studio reaches 512 GB usable as model memory in a quiet desktop.
+
+The tradeoff is <G term="memory-bandwidth">bandwidth</G>. LPDDR5X runs below
+stacked <G term="hbm">HBM</G> and discrete <G term="gddr7">GDDR7</G>: Apple's
+tiers span roughly 273 GB/s on a Mac mini to 819 GB/s on the M3 Ultra, while
+DGX Spark and Strix Halo sit near 256 to 273 GB/s. That bandwidth, not
+capacity, is what caps decode tokens/sec on these machines.
+
+The practical read: LPDDR5X unified-memory boxes are the way to hold a large
+model on one device, but their decode speed tracks their bandwidth tier, so a
+huge model that fits can still generate slowly. Capacity and bandwidth are
+separate specs and both belong in the decision.

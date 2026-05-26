@@ -260,6 +260,37 @@ export async function getModels(): Promise<ModelEntry[]> {
   return root.models ?? [];
 }
 
+interface HardwareEntry {
+  slug: string;
+  name: string;
+  vendor: string;
+  class: string;
+  memory_capacity_gb: number;
+  memory_type: string;
+  memory_bandwidth_gbs: number;
+  compute?: {
+    fp16_dense_tflops?: number;
+    fp8_dense_tflops?: number;
+    fp4_dense_tflops?: number;
+    int8_dense_tops?: number;
+  };
+  form_factor: string;
+  power_w: number;
+  interconnect: string;
+  multi_unit_default: number;
+  npu_int8_tops?: number;
+  release_date: string;
+  url: string;
+  silicon_project?: string;
+  notes?: string;
+  sources: { title: string; url: string }[];
+}
+
+export async function getHardware(): Promise<HardwareEntry[]> {
+  const root = await getJson<{ hardware: HardwareEntry[] }>("hardware");
+  return root.hardware ?? [];
+}
+
 export type {
   LayerEntry,
   Project,
@@ -269,4 +300,5 @@ export type {
   NewsIssue,
   GlossaryEntry,
   ModelEntry,
+  HardwareEntry,
 };

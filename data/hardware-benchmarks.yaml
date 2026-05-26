@@ -1,0 +1,156 @@
+# Empirical tokens/sec anchors: MEASURED single-stream decode for
+# open-weights models on specific hardware, overlaid against the
+# theoretical roofline in the explorer so readers see estimate vs reality.
+#
+# Discipline (see docs/HARDWARE.md):
+#   - Single-stream decode (batch 1) only here, so the numbers are
+#     comparable to the explorer's single-user roofline. Batched/server
+#     throughput (MLPerf, vLLM aggregate) is NOT comparable and is excluded.
+#   - Record runtime, quant, context, and batch every time.
+#   - decode_tok_s is generation (tg), never prefill.
+#   - Every row carries a source; rows flow through the verification gate
+#     (hwbench.* ledger rows) and render only when verified.
+#   - model_slug must exist in data/models.yaml; hardware_slug in
+#     data/hardware.yaml.
+
+benchmarks:
+  # --- Reliable curated llama-bench sweep (XiongjieDai), tg @ 1024 ctx ----
+  - model_slug: llama-3-8b-instruct
+    hardware_slug: nvidia-rtx-4090
+    num_units: 1
+    quant: q4_k_m
+    context_length: 1024
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 127.7
+    as_of: '2024-05-01'
+    source: https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference
+    notes: curated llama-bench sweep; tg at 1024 context
+
+  - model_slug: llama-3-8b-instruct
+    hardware_slug: nvidia-h100-pcie
+    num_units: 1
+    quant: q4_k_m
+    context_length: 1024
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 144.5
+    as_of: '2024-05-01'
+    source: https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference
+    notes: curated llama-bench sweep; tg at 1024 context
+
+  - model_slug: llama-3-70b-instruct
+    hardware_slug: nvidia-rtx-4090
+    num_units: 2
+    quant: q4_k_m
+    context_length: 1024
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 19.1
+    as_of: '2024-05-01'
+    source: https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference
+    notes: two-card split; tg at 1024 context
+
+  - model_slug: llama-3-70b-instruct
+    hardware_slug: nvidia-h100-pcie
+    num_units: 1
+    quant: q4_k_m
+    context_length: 1024
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 25.0
+    as_of: '2024-05-01'
+    source: https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference
+    notes: curated llama-bench sweep; tg at 1024 context
+
+  # --- Community single-stream runs (reproducible, not vendor-certified) --
+  - model_slug: llama-3-1-70b-instruct
+    hardware_slug: amd-ryzen-ai-max-395
+    num_units: 1
+    quant: q4_k_m
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 5.1
+    as_of: '2026-01-01'
+    source: https://github.com/visorcraft/strix-halo-llm-perf
+    notes: Strix Halo llama.cpp Vulkan; community benchmark
+
+  - model_slug: qwen3-32b-instruct
+    hardware_slug: nvidia-rtx-5090
+    num_units: 1
+    quant: q4_k_m
+    context_length: 4096
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 61.0
+    as_of: '2025-02-01'
+    source: https://www.hardware-corner.net/rtx-5090-llm-benchmarks/
+    notes: single-run community benchmark; quant approximate
+
+  - model_slug: gemma-2-27b-it
+    hardware_slug: nvidia-rtx-4090
+    num_units: 1
+    quant: q4_0
+    runtime: ollama
+    batch: 1
+    decode_tok_s: 76.0
+    as_of: '2024-10-01'
+    source: https://www.databasemart.com/blog/ollama-gpu-benchmark-rtx4090
+    notes: Ollama default quant; single-run
+
+  # --- Apple unified-memory (MLX / llama.cpp), single-stream -------------
+  - model_slug: qwen2-5-72b-instruct
+    hardware_slug: apple-macbook-pro-m4-max
+    num_units: 1
+    quant: mlx-4bit
+    runtime: mlx
+    batch: 1
+    decode_tok_s: 8.14
+    as_of: '2025-01-01'
+    source: https://www.linkedin.com/pulse/running-llms-locally-your-mac-deep-dive-mlx-m4-max-travis-lelle-gp6ce
+    notes: MLX 4-bit on 128 GB M4 Max; single write-up
+
+  - model_slug: llama-3-3-70b-instruct
+    hardware_slug: apple-macbook-pro-m4-max
+    num_units: 1
+    quant: mlx-8bit
+    context_length: 7800
+    runtime: mlx
+    batch: 1
+    decode_tok_s: 8.5
+    as_of: '2025-01-01'
+    source: https://www.linkedin.com/pulse/running-llms-locally-your-mac-deep-dive-mlx-m4-max-travis-lelle-gp6ce
+    notes: MLX 8-bit on 128 GB M4 Max; single write-up
+
+  - model_slug: deepseek-v3
+    hardware_slug: apple-mac-studio-m3-ultra
+    num_units: 1
+    quant: mlx-4bit
+    runtime: mlx
+    batch: 1
+    decode_tok_s: 20.0
+    as_of: '2025-03-01'
+    source: https://venturebeat.com/ai/deepseek-v3-now-runs-at-20-tokens-per-second-on-mac-studio-and-thats-a-nightmare-for-openai
+    notes: 671B MoE on 512 GB M3 Ultra; only 37B active per token
+
+  - model_slug: deepseek-r1
+    hardware_slug: apple-mac-studio-m3-ultra
+    num_units: 1
+    quant: q4_k_m
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 16.1
+    as_of: '2025-03-01'
+    source: https://www.hardware-corner.net/mac-studio-m3-ultra-deepseek-llamacpp/
+    notes: 671B MoE on 512 GB M3 Ultra; single-run
+
+  - model_slug: qwen2-5-72b-instruct
+    hardware_slug: nvidia-dgx-spark
+    num_units: 1
+    quant: q4_k_m
+    runtime: llama.cpp
+    batch: 1
+    decode_tok_s: 4.6
+    as_of: '2025-10-01'
+    source: https://forums.developer.nvidia.com/t/gdx-spark-is-extremely-slow-on-a-short-llm-test/350703
+    notes: DGX Spark short LLM test; bandwidth-bound; single-run

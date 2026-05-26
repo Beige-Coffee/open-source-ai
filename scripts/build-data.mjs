@@ -32,6 +32,8 @@ const YAML_FILES = [
   "underfunded.yaml",
   "reading-lists.yaml",
   "models.yaml",
+  "hardware.yaml",
+  "hardware-benchmarks.yaml",
 ];
 
 let total = 0;

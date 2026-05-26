@@ -33,6 +33,10 @@ const TARGETS = [
     yaml: "data/projects.yaml",
     schema: "audit/schemas/projects.schema.json",
   },
+  {
+    yaml: "data/hardware.yaml",
+    schema: "audit/schemas/hardware.schema.json",
+  },
 ];
 
 const ajv = new Ajv({ allErrors: true, strict: false });

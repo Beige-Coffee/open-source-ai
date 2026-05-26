@@ -32,6 +32,7 @@
     "audit:extract:pending": "node audit/extract/extract.mjs pending --all-priority",
     "audit:extract:batch": "node audit/extract/extract.mjs batch --all-priority",
     "audit:extract:models": "node audit/extract-models.mjs",
+    "audit:extract:hardware": "node audit/extract-hardware.mjs",
     "audit:score-layer": "node audit/score_layer.mjs prompt",
     "audit:score-all-layers": "node audit/score_layer.mjs prompt --all",
     "audit:layer-scores": "node audit/score_layer.mjs summary",

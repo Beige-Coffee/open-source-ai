@@ -111,6 +111,16 @@ const TARGETS = [
     record_array: "models",
     text_fields: ["release_context", "notable_innovations"],
   },
+  // Hardware. Numeric specs (capacity, bandwidth, compute, power) are
+  // typed schema fields documented per entry by `url` + `sources`, so the
+  // only claim-heavy free text is `notes`. Every entry carries url +
+  // sources, which satisfies the discipline for notes prose.
+  {
+    path: "data/hardware.yaml",
+    kind: "yaml",
+    record_array: "hardware",
+    text_fields: ["notes"],
+  },
   // Layer MDX bodies.
   {
     path: "src/content/layers",

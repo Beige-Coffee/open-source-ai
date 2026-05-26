@@ -1,0 +1,35 @@
+---
+term: GDDR7
+aliases: [gddr]
+primary_layer: silicon
+secondary_layers: [compute]
+summary: The graphics memory generation on 2025-era consumer and workstation GPUs such as the RTX 5090 and RTX PRO 6000. High bandwidth per board, lower capacity than HBM.
+sources:
+  - title: "JEDEC publishes GDDR7 standard"
+    url: "https://www.jedec.org/news/pressreleases/jedec-releases-gddr7-graphics-memory-standard"
+  - title: "NVIDIA GeForce RTX 5090"
+    url: "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+GDDR7 is the graphics-DRAM generation used on workstation and high-end consumer
+GPUs in the 2025 to 2026 window. It sits between low-power
+<G term="lpddr5x">LPDDR5X</G> and stacked <G term="hbm">HBM</G> on the
+<G term="memory-bandwidth">bandwidth</G> ladder: a board like the RTX 5090
+reaches about 1.8 TB/s, enough to make it competitive with older datacenter
+parts on decode-bound work where the model fits.
+
+The constraint with GDDR7 is capacity. It is mounted as discrete chips around
+the GPU rather than stacked on an interposer, so per-board capacity stays
+modest: 24 to 32 GB on consumer cards, up to 96 GB on the workstation RTX PRO
+6000. That capacity ceiling is why consumer GPUs hit a wall on 70B-class models
+even though their bandwidth is ample, and why
+<G term="unified-memory">unified memory</G> or multi-GPU is the alternative for
+large models.
+
+For self-hosting, a GDDR7 card is the high-bandwidth, modest-capacity option:
+fast for what fits, capacity-limited for what does not. The
+<G term="quantization">quantization</G> choice is what bridges the gap between
+the two.

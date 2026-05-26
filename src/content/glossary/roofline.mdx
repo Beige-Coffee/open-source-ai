@@ -1,0 +1,36 @@
+---
+term: roofline
+aliases: [roofline model]
+primary_layer: runtime
+secondary_layers: [silicon, compute]
+summary: A performance model that bounds throughput by either compute or memory bandwidth, whichever is the limiting resource for an operation's arithmetic intensity.
+sources:
+  - title: "Transformer Inference Arithmetic (kipperrii)"
+    url: "https://kipp.ly/transformer-inference-arithmetic/"
+  - title: "LLM inference speed of light (Arseny Kapoulkine)"
+    url: "https://zeux.io/2024/03/15/llm-inference-sol/"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+The roofline model plots achievable throughput against
+<G term="arithmetic-intensity">arithmetic intensity</G> (the ratio of compute
+to memory traffic). An operation with low intensity is bounded by how fast
+memory can be read; an operation with high intensity is bounded by how fast
+the compute units can run. The two regions meet at a ridge point, and where
+a workload lands tells you which resource to optimize.
+
+LLM <G term="decode">decode</G> sits firmly on the memory-bandwidth side of
+the roofline. Generating one token reads the active weights once while doing
+only about two floating-point operations per byte read, so the compute units
+mostly wait on memory. That is why the theoretical decode tokens/sec ceiling
+is <G term="memory-bandwidth">memory bandwidth</G> divided by the bytes
+streamed per token, and why a card's bandwidth, not its FLOPS, predicts how
+fast it generates text.
+
+<G term="prefill">Prefill</G> is the opposite case: it processes the whole
+prompt in parallel, reuses each weight across many tokens, and pushes the
+compute units toward saturation, so it sits on the compute-bound side. A
+single accelerator therefore has two different effective ceilings depending
+on which phase it is running.

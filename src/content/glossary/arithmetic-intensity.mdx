@@ -1,0 +1,32 @@
+---
+term: arithmetic intensity
+aliases: [operational intensity, ops per byte]
+primary_layer: runtime
+secondary_layers: [silicon]
+summary: FLOPs performed per byte read from memory. Low intensity means an operation is memory-bound; high intensity means compute-bound. LLM decode has very low intensity.
+sources:
+  - title: "Transformer Inference Arithmetic (kipperrii)"
+    url: "https://kipp.ly/transformer-inference-arithmetic/"
+updated: 2026-05-25
+---
+
+import G from "../../components/G.astro";
+
+Arithmetic intensity is the number of floating-point operations an operation
+performs for each byte it moves from memory. It is the x-axis of the
+<G term="roofline">roofline</G> model and the cleanest way to predict whether
+a workload will be limited by compute or by memory bandwidth.
+
+A matrix-vector product, which is what <G term="decode">decode</G> does at
+batch size one, reads each weight once and performs roughly two operations on
+it (a multiply and an add), giving an intensity near two operations per byte.
+Modern accelerators can do hundreds of operations per byte of bandwidth, so
+decode leaves the compute units idle and is bound by how fast weights stream
+from <G term="hbm">HBM</G> or <G term="unified-memory">unified memory</G>.
+
+Intensity rises with batch size and during <G term="prefill">prefill</G>,
+because the same weights get reused across many tokens, which is why batched
+serving and prompt processing can saturate compute while single-stream decode
+cannot. Raising intensity (batching, <G term="speculative-decoding">speculative
+decoding</G>) is the main lever for getting more tokens/sec out of a
+memory-bound box.

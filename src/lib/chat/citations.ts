@@ -10,6 +10,7 @@
  *   (News: 2026-05-13)
  *   (Glossary: mixture-of-experts)
  *   (Model: deepseek-r1)
+ *   (Hardware: nvidia-h100-sxm)
  */
 
 export type CitationKind =
@@ -20,7 +21,8 @@ export type CitationKind =
   | "reading"
   | "news"
   | "glossary"
-  | "model";
+  | "model"
+  | "hardware";
 
 export interface ParsedCitation {
   start: number;
@@ -31,7 +33,7 @@ export interface ParsedCitation {
 }
 
 const PATTERN =
-  /\((Layer|Funder|Grant|Project|Reading|News|Glossary|Model):\s*([^)]+)\)/g;
+  /\((Layer|Funder|Grant|Project|Reading|News|Glossary|Model|Hardware):\s*([^)]+)\)/g;
 
 export function parseCitations(text: string): ParsedCitation[] {
   const hits: ParsedCitation[] = [];
@@ -104,6 +106,8 @@ export function citationHref(c: ParsedCitation): string {
       return `/glossary/${c.ref}`;
     case "model":
       return `/models/${c.ref}`;
+    case "hardware":
+      return `/hardware/${c.ref}`;
   }
 }
 
