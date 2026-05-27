@@ -3237,6 +3237,12 @@ models:
       - bnb
     quantizations_source: "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
     display_name: Llama 3.2 1B Instruct
+    quantization_aware_training:
+      precision: int4
+      released_date: '2024-10-24'
+      official: true
+      source: https://ai.meta.com/blog/meta-llama-quantized-lightweight-models/
+      note: "Quantization-Aware Training with LoRA adaptors at 4-bit weights; Meta also shipped a SpinQuant PTQ build. About 56 percent smaller and 41 percent less memory."
     family: llama
     developer: Meta
     developer_country: US
@@ -3310,6 +3316,12 @@ models:
       - bnb
     quantizations_source: "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct"
     display_name: Llama 3.2 3B Instruct
+    quantization_aware_training:
+      precision: int4
+      released_date: '2024-10-24'
+      official: true
+      source: https://ai.meta.com/blog/meta-llama-quantized-lightweight-models/
+      note: "Quantization-Aware Training with LoRA adaptors at 4-bit weights; Meta also shipped a SpinQuant PTQ build. About 56 percent smaller and 41 percent less memory."
     family: llama
     developer: Meta
     developer_country: US
@@ -3773,6 +3785,12 @@ models:
       - bnb
     quantizations_source: "https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407"
     display_name: Mistral Nemo 12B Instruct
+    quantization_aware_training:
+      precision: fp8
+      released_date: '2024-07-18'
+      official: true
+      source: https://mistral.ai/news/mistral-nemo/
+      note: "Trained with quantisation awareness for lossless FP8 inference. FP8-targeted, not int4."
     family: mistral
     developer: Mistral AI
     developer_country: FR
@@ -4521,6 +4539,12 @@ models:
       - bnb
     quantizations_source: "https://huggingface.co/google/gemma-3-27b-it"
     display_name: Gemma 3 27B IT
+    quantization_aware_training:
+      precision: int4
+      released_date: '2025-04-18'
+      official: true
+      source: https://developers.googleblog.com/en/gemma-3-quantized-aware-trained-state-of-the-art-ai-to-consumer-gpus/
+      note: "Official int4 QAT checkpoints (about 5,000 QAT steps matching the BF16 logits). 27B drops from 54GB BF16 to 14.1GB int4, fitting a 24GB RTX 3090."
     family: gemma
     developer: Google DeepMind
     developer_country: US
@@ -7884,6 +7908,12 @@ models:
       note: SFT-only reasoning derivative of Phi-4 at 14B.
   - slug: apple-foundation-on-device-2025
     display_name: Apple On-Device Foundation Model (2025)
+    quantization_aware_training:
+      precision: 2-bit
+      released_date: '2025-07-17'
+      official: true
+      source: https://arxiv.org/abs/2507.13575
+      note: "Decoder weights compressed to 2 bits per weight via QAT (embedding table 4-bit, KV cache 8-bit); LoRA adapters recover quality."
     family: apple-foundation
     developer: Apple
     developer_country: US
@@ -7929,6 +7959,12 @@ models:
       - bnb
     quantizations_source: "https://huggingface.co/moonshotai/Kimi-K2-Thinking"
     display_name: Kimi K2 Thinking
+    quantization_aware_training:
+      precision: int4
+      released_date: '2025-11-06'
+      official: true
+      source: https://huggingface.co/moonshotai/Kimi-K2-Thinking
+      note: "QAT in the post-training phase; INT4 weight-only on the MoE components; native INT4 inference with a roughly 2x speed-up."
     family: kimi-k2
     developer: Moonshot AI
     developer_country: CN
@@ -8032,6 +8068,12 @@ models:
       - fp8
     quantizations_source: "https://huggingface.co/moonshotai/Kimi-K2.5"
     display_name: Kimi K2.5
+    quantization_aware_training:
+      precision: int4
+      released_date: '2026-01-29'
+      official: true
+      source: https://huggingface.co/moonshotai/Kimi-K2.5
+      note: "Adopts the same native INT4 quantization method as Kimi K2 Thinking (QAT, INT4 weight-only on the MoE)."
     family: kimi-k2
     developer: Moonshot AI
     developer_country: CN
@@ -8138,6 +8180,12 @@ models:
       - fp8
     quantizations_source: "https://huggingface.co/moonshotai/Kimi-K2.6"
     display_name: Kimi K2.6
+    quantization_aware_training:
+      precision: int4
+      released_date: '2026-04-20'
+      official: true
+      source: https://huggingface.co/moonshotai/Kimi-K2.6
+      note: "Adopts the same native INT4 quantization method as Kimi K2 Thinking (QAT, INT4 weight-only on the MoE)."
     family: kimi-k2
     developer: Moonshot AI
     developer_country: CN

@@ -571,6 +571,10 @@ const OPENNESS_RANK: Record<Openness, number> = {
         <option value="">any quantization</option>
         {QUANT_FAMILIES.map((f) => (<option value={f.id}>{f.label}</option>))}
       </select>
+      <select id="filter-qat" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm" title="Quantization-aware training: the lab trained the model to be quantized">
+        <option value="">QAT: any</option>
+        <option value="1">QAT only</option>
+      </select>
       <button id="filter-reset" type="button" class="px-2 py-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer">
         reset
       </button>
@@ -615,6 +619,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 data-openness={m.openness}
                 data-architecture={m.architecture}
                 data-quants={fams.join(" ")}
+                data-qat={m.quantization_aware_training ? "1" : "0"}
                 data-slug={m.slug}
                 data-sort-name={m.display_name.toLowerCase()}
                 data-sort-developer={m.developer.toLowerCase()}
@@ -638,6 +643,9 @@ const OPENNESS_RANK: Record<Openness, number> = {
                   <a href={`/models/${m.slug}`} class="text-[var(--color-text)] no-underline hover:underline font-medium">
                     {m.display_name}
                   </a>
+                  {m.quantization_aware_training && (
+                    <a href="/glossary/quantization-aware-training" class="ml-1.5 align-middle font-mono text-[9px] uppercase tracking-wider px-1 py-0.5 rounded bg-[var(--color-accent-soft)] text-[var(--color-accent)] no-underline whitespace-nowrap" data-popover={`Quantization-aware training (${m.quantization_aware_training.precision}): the lab trained this to be quantized and released official checkpoints.`}>QAT</a>
+                  )}
                 </td>
                 <td class="px-3 py-2 text-[var(--color-text-muted)]">{m.developer}</td>
                 <td class="px-3 py-2 font-mono text-xs text-[var(--color-text-muted)] tabular-nums">{verified(m.slug, "released_date") ? m.released_date : "—"}</td>
@@ -702,6 +710,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
     const fArch = document.getElementById("filter-architecture");
     const fDev = document.getElementById("filter-developer");
     const fQuant = document.getElementById("filter-quant");
+    const fQat = document.getElementById("filter-qat");
     const reset = document.getElementById("filter-reset");
     const count = document.getElementById("filter-count");
     const rows = Array.from(document.querySelectorAll(".models-row"));
@@ -713,6 +722,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       const a = fArch.value;
       const d = fDev.value;
       const qz = fQuant.value;
+      const qat = fQat.value;
       let visible = 0;
       for (const row of rows) {
         const name = row.dataset.name || "";
@@ -726,14 +736,15 @@ const OPENNESS_RANK: Record<Openness, number> = {
         const matchesArch = !a || arch === a;
         const matchesDev = !d || row.dataset.developer === d;
         const matchesQuant = !qz || quants.includes(qz);
-        const show = matchesQuery && matchesOpen && matchesArch && matchesDev && matchesQuant;
+        const matchesQat = !qat || row.dataset.qat === "1";
+        const show = matchesQuery && matchesOpen && matchesArch && matchesDev && matchesQuant && matchesQat;
         row.style.display = show ? "" : "none";
         if (show) visible++;
       }
       count.textContent = visible === total ? `${total} models` : `${visible} of ${total} models`;
     }
 
-    for (const el of [search, fOpen, fArch, fDev, fQuant]) {
+    for (const el of [search, fOpen, fArch, fDev, fQuant, fQat]) {
       el.addEventListener("input", apply);
       el.addEventListener("change", apply);
     }
@@ -743,6 +754,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       fArch.value = "";
       fDev.value = "";
       fQuant.value = "";
+      fQat.value = "";
       apply();
     });
   })();

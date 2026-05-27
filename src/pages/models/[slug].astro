@@ -300,6 +300,12 @@ function fmtCurrency(n: number | undefined): string {
 
           <dt class="text-[var(--color-text-subtle)] font-mono text-xs">Training code</dt>
           <dd class="text-[var(--color-text)] font-mono text-xs">{model.training_code_released ? "released" : "not released"}</dd>
+          {model.quantization_aware_training && (
+            <>
+              <dt class="text-[var(--color-text-subtle)] font-mono text-xs">QAT</dt>
+              <dd class="text-[var(--color-text)] font-mono text-xs">{model.quantization_aware_training.precision}{model.quantization_aware_training.official ? " (official)" : ""}</dd>
+            </>
+          )}
         </dl>
       </section>
 
@@ -367,6 +373,20 @@ function fmtCurrency(n: number | undefined): string {
         <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
           Available quantizations
         </h2>
+        {model.quantization_aware_training && (
+          <div class="mb-3 rounded-md border border-[var(--color-accent)] bg-[var(--color-accent-soft)] px-3 py-2">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              <a href="/glossary/quantization-aware-training" class="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--color-accent)] text-white no-underline">QAT {model.quantization_aware_training.precision}</a>
+              <span class="text-xs text-[var(--color-text)]">
+                Trained to be quantized: <a href="/glossary/quantization-aware-training" class="no-underline hover:underline">quantization-aware training</a>{model.quantization_aware_training.official ? ", with official checkpoints" : ""}{model.quantization_aware_training.released_date ? ` (${model.quantization_aware_training.released_date})` : ""}.
+              </span>
+            </div>
+            {model.quantization_aware_training.note && (
+              <p class="text-xs text-[var(--color-text-muted)] leading-snug mt-1">{model.quantization_aware_training.note}</p>
+            )}
+            <a href={model.quantization_aware_training.source} target="_blank" rel="noopener" class="font-mono text-[10px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline hover:underline">source ↗</a>
+          </div>
+        )}
         {model.openness === "proprietary" ? (
           <p class="text-sm text-[var(--color-text-muted)]">
             None. The weights are not distributed, so there are no public quantizations.

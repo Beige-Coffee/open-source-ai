@@ -1,0 +1,51 @@
+---
+term: quantization-aware training
+aliases: [qat]
+primary_layer: weights
+secondary_layers: [runtime, training]
+summary: Training or fine-tuning a model with simulated quantization in the loop, so its weights stay accurate at low precision like int4 or FP8, unlike post-hoc post-training quantization.
+sources:
+  - title: "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference (Jacob et al., 2017)"
+    url: "https://arxiv.org/abs/1712.05877"
+  - title: "Gemma 3 QAT Models (Google Developers Blog, Apr 2025)"
+    url: "https://developers.googleblog.com/en/gemma-3-quantized-aware-trained-state-of-the-art-ai-to-consumer-gpus/"
+  - title: "Introducing quantized Llama models (Meta AI, Oct 2024)"
+    url: "https://ai.meta.com/blog/meta-llama-quantized-lightweight-models/"
+updated: 2026-05-26
+---
+
+import G from "../../components/G.astro";
+
+Quantization-aware training (QAT) folds simulated quantization into the
+forward pass while the model is still training or being fine-tuned. The
+weights are stored in full precision, but a "fake-quant" step rounds
+them to the target low-precision grid (int4, FP8, 2-bit) before each
+matmul, so the gradients learn weights that survive that rounding. The
+contrast is with <G term="post-training">post-training</G> <G term="quantization">quantization</G> (GPTQ, AWQ, <G term="gguf">GGUF</G>), which
+quantizes a finished model with no further training. QAT costs a
+training run but recovers most of the quality that post-hoc methods
+leave on the table.
+
+The signal that matters is who ships the quantized weights. When a lab
+runs QAT and releases the result, the official checkpoint is the good
+low-precision one, not a community approximation. Google released int4
+QAT checkpoints for Gemma 3 that drop the 27B model from 54 GB to about
+14 GB so it fits a single 24 GB GPU; Meta shipped 4-bit QAT-plus-LoRA
+builds of Llama 3.2 1B and 3B for <G term="on-device">on-device</G> use; Moonshot's Kimi K2
+Thinking applies QAT to its <G term="moe">MoE</G> weights for native int4 <G term="inference">inference</G>;
+Apple's 2025 on-device model uses QAT at two bits per weight; and
+Mistral NeMo was trained with quantization awareness for FP8.
+
+This is distinct from native low-precision pretraining, where the
+training math itself runs in a low-precision format (DeepSeek-V3's FP8
+training is the well-known case). QAT keeps the training in higher
+precision and only simulates the eventual inference format. Both reduce
+deployment cost, but they are different techniques and should not be
+labelled the same.
+
+For open and local AI the practical upshot is reach: QAT is often what
+decides whether a capable model runs on a laptop or a single consumer
+card at close to full quality, rather than only in a data center. It
+sits between the <G term="weights">weights</G> a lab publishes and the <G term="runtime">runtime</G> that serves
+them, and in 2026 it moved from a research technique to something the
+major labs ship by default for their small and edge models.

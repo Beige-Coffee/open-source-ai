@@ -272,6 +272,22 @@ export interface Model {
    *  Hugging Face page / model tree, or the lab's release). One URL covers
    *  every family listed; the verifier checks each family against it. */
   quantizations_source?: string;
+  /** Set when the lab released official quantization-aware-trained (QAT)
+   *  checkpoints, i.e. the model was trained/fine-tuned to be quantized,
+   *  as opposed to community post-training quantization. Sourced and
+   *  ledger-trackable like the benchmark records. */
+  quantization_aware_training?: {
+    /** Target precision, e.g. "int4", "fp8", "2-bit". */
+    precision: string;
+    /** Date the QAT checkpoints were released (YYYY-MM-DD), if known. */
+    released_date?: string;
+    /** True when the lab itself released the QAT checkpoints. */
+    official: boolean;
+    /** Primary source documenting the QAT release. */
+    source: string;
+    /** Short note, e.g. "int4, near-bf16 quality; runs 27B on an RTX 3090". */
+    note?: string;
+  };
   /** Project slugs of runtimes known to support this checkpoint. */
   runtimes_supporting?: string[];
 
