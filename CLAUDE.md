@@ -369,7 +369,8 @@ whoever is in the session.
 
 - `npm run audit:layer1` — Layers 0 + 1 (JSON Schema, cross-refs,
   citation discipline). Runs on every prebuild. No LLM.
-- `npm run audit:links` — link liveness (network, not in prebuild)
+- `npm run audit:links` — external link liveness (network, not in prebuild)
+- `npm run audit:internal-links` — internal link + #anchor check over the built site (run after `npm run build`; SSR routes are auto-detected from `prerender = false` and reported, never failed)
 - `npm run audit:snapshot` — refresh source snapshots
 - `npm run audit:snapshot:stale` — only snapshots older than 30 days
 - `npm run audit:extract:pending` — list records needing extraction

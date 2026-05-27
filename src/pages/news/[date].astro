@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { issue } = Astro.props;
-const { Content } = await render(issue);
+const { Content, headings } = await render(issue);
 
 const dateStr = issue.data.date.toISOString().slice(0, 10);
 const longDate = issue.data.date.toLocaleDateString("en-US", {
@@ -30,9 +30,24 @@ const layers = loadLayers();
 const allLayers = [...layers.core, ...layers.meta];
 const findLayer = (slug: string) => allLayers.find((l) => l.slug === slug);
 
+// Resolve each layer bucket to the real in-page heading anchor. The news
+// routine writes section headings inconsistently (some as the layer title
+// "Safety and Guardrails", some slug-style "Safety-Guardrails"), and those
+// slugify to different ids than the layer slug. Match against the actually
+// rendered heading slugs so the jump chip never points at a missing anchor.
+const slugify = (s: string) =>
+  s.toLowerCase().trim().replace(/[^\w]+/g, "-").replace(/^-+|-+$/g, "");
+const h2Slugs = headings.filter((h) => h.depth === 2);
+function anchorForLayer(layer: { slug: string; title: string }): string | null {
+  const want = new Set([layer.slug, slugify(layer.title)]);
+  const h = h2Slugs.find((x) => want.has(x.slug) || want.has(slugify(x.text)));
+  return h ? h.slug : null;
+}
+
 const buckets = Object.entries(issue.data.layer_buckets || {})
   .map(([slug, count]) => ({ layer: findLayer(slug), count }))
   .filter((b) => b.layer)
+  .map((b) => ({ ...b, anchor: anchorForLayer(b.layer!) }))
   .sort((a, b) => b.count - a.count);
 
 /** Split the editorial letter into short bullet sentences. ". " is a
@@ -71,17 +86,22 @@ function bullets(letter: string): string[] {
     buckets.length > 0 && (
       <section class="max-w-3xl mx-auto px-6 my-4">
         <div class="flex flex-wrap gap-2 text-xs font-mono">
-          {buckets.map((b) => (
-            <a
-              href={`#${b.layer!.slug}`}
-              class="border border-[var(--color-border)] rounded px-2 py-1 text-[var(--color-text-muted)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-            >
-              {b.layer!.title}
-              <span class="ml-1 text-[var(--color-text-subtle)]">
-                {b.count}
+          {buckets.map((b) =>
+            b.anchor ? (
+              <a
+                href={`#${b.anchor}`}
+                class="border border-[var(--color-border)] rounded px-2 py-1 text-[var(--color-text-muted)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+              >
+                {b.layer!.title}
+                <span class="ml-1 text-[var(--color-text-subtle)]">{b.count}</span>
+              </a>
+            ) : (
+              <span class="border border-[var(--color-border)] rounded px-2 py-1 text-[var(--color-text-muted)]">
+                {b.layer!.title}
+                <span class="ml-1 text-[var(--color-text-subtle)]">{b.count}</span>
               </span>
-            </a>
-          ))}
+            ),
+          )}
         </div>
       </section>
     )

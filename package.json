@@ -19,6 +19,7 @@
     "test": "node --import tsx --test 'test/**/*.test.ts'",
     "audit:layer1": "bash audit/check.sh",
     "audit:links": "INCLUDE_LINKS=1 node audit/verify/verify_links.mjs",
+    "audit:internal-links": "node audit/verify/verify_internal_links.mjs",
     "audit:schemas": "node audit/verify/verify_schemas.mjs",
     "audit:cross-refs": "node audit/verify/verify_cross_refs.mjs",
     "audit:snapshot": "node audit/snapshot/snapshot.mjs --all",
