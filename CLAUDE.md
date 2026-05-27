@@ -712,6 +712,23 @@ npm run audit:extract:models
 The script is idempotent: re-running only appends rows for IDs not
 already present.
 
+### Quantization availability
+
+`quantizations_available` is normalized to format FAMILIES (not specific
+precisions or every community upload): `gguf, awq, gptq, exl2, mlx, fp8,
+bnb`, defined in `src/lib/quantization.ts` with the engines that load
+each. `quantizations_source` is the primary source documenting them (the
+model's Hugging Face model tree). Each family is a checkable claim
+(`models.<slug>.quant.<family>`) minted by `extract-models.mjs` and gated
+through the verification map like every other cell, so an unsourced family
+renders nothing. Proprietary (closed-weight) models have no public
+quantizations by definition and show "None"; open-weight models with no
+verified family render a dash. Surfaced as the `Quants` column + filter on
+`/models` and an "Available quantizations" panel on `/models/<slug>`. The
+data was resolved deterministically from the HF Hub API (model tree +
+safetensors), cross-checked against `params_total` to catch
+wrong-variant repo resolutions.
+
 ### Weekly routine
 
 `scripts/models-watch.md` describes the

@@ -35,6 +35,11 @@ const LEDGER_PATH = resolve(ROOT, "audit/CLAIMS_LEDGER.md");
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
+// Quantization format families surfaced on /models (mirror of
+// src/lib/quantization.ts QUANT_FAMILY_IDS). One ledger row per family.
+const QUANT_FAMILIES = new Set(["gguf", "awq", "gptq", "exl2", "mlx", "fp8", "bnb"]);
+const QUANT_LABEL = { gguf: "GGUF", awq: "AWQ", gptq: "GPTQ", exl2: "EXL2", mlx: "MLX", fp8: "FP8", bnb: "bitsandbytes" };
+
 function todayISO() {
   return TODAY;
 }
@@ -141,6 +146,23 @@ function rowsForModel(m) {
         `${m.display_name} scored ${b.score} on ${bSlug} (as of ${asOf})`,
         "factual", "benchmark", benchSource,
         "benchmark schema field with per-score source",
+      ));
+    }
+  }
+
+  // Quantization availability — factual / attribution. One row per format
+  // family; the cited source (HF model tree / official quant repo / lab
+  // release) documents the available families.
+  if (Array.isArray(m.quantizations_available)) {
+    const quantSrc = m.quantizations_source ?? primary;
+    for (const fam of m.quantizations_available) {
+      if (!QUANT_FAMILIES.has(fam)) continue;
+      rows.push(row(
+        `models.${slug}.quant.${fam}`,
+        surface, location,
+        `${m.display_name} has ${QUANT_LABEL[fam]} quantized weights available`,
+        "factual", "attribution", quantSrc,
+        "quantizations_available schema field",
       ));
     }
   }

@@ -264,8 +264,14 @@ export interface Model {
   benchmarks?: Partial<Record<BenchmarkSlug, BenchmarkScore>>;
 
   // ---- Practical ----
-  /** Quantization formats with first-party or community weights. */
+  /** Quantization format families with first-party or community weights,
+   *  normalized to QuantFamily ids (gguf, awq, gptq, exl2, mlx, fp8, bnb).
+   *  Each is a checkable claim gated through the verification map. */
   quantizations_available?: string[];
+  /** Primary source documenting the available quantizations (the model's
+   *  Hugging Face page / model tree, or the lab's release). One URL covers
+   *  every family listed; the verifier checks each family against it. */
+  quantizations_source?: string;
   /** Project slugs of runtimes known to support this checkpoint. */
   runtimes_supporting?: string[];
 

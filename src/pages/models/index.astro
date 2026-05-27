@@ -11,6 +11,7 @@ import {
   formatContext,
   type Openness,
 } from "../../lib/models";
+import { QUANT_FAMILIES } from "../../lib/quantization";
 
 const all = loadModels().slice().sort((a, b) => {
   const ad = a.released_date ?? "";
@@ -41,6 +42,10 @@ function verified(slug: string, field: string): boolean {
 function gate<T>(slug: string, field: string, value: T | null | undefined): T | null {
   if (value === null || value === undefined) return null;
   return verified(slug, field) ? (value as T) : null;
+}
+// Verified quantization family ids for a model (gated like every cell).
+function quantsFor(slug: string): string[] {
+  return QUANT_FAMILIES.filter((f) => verified(slug, `quant.${f.id}`)).map((f) => f.id);
 }
 
 const openCount = all.filter((m) => m.openness === "open").length;
@@ -562,6 +567,10 @@ const OPENNESS_RANK: Record<Openness, number> = {
         <option value="">all developers</option>
         {developers.map((d) => (<option value={d}>{d}</option>))}
       </select>
+      <select id="filter-quant" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm">
+        <option value="">any quantization</option>
+        {QUANT_FAMILIES.map((f) => (<option value={f.id}>{f.label}</option>))}
+      </select>
       <button id="filter-reset" type="button" class="px-2 py-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer">
         reset
       </button>
@@ -589,12 +598,14 @@ const OPENNESS_RANK: Record<Openness, number> = {
             <th class="px-3 py-2 text-right sortable" data-sort="mmlu" data-sort-type="numeric" data-popover={COL_HELP.mmlu}>MMLU <span class="sort-chev"></span></th>
             <th class="px-3 py-2 text-right sortable" data-sort="gpqa" data-sort-type="numeric" data-popover={COL_HELP.gpqa}>GPQA-D <span class="sort-chev"></span></th>
             <th class="px-3 py-2 text-right sortable" data-sort="humaneval" data-sort-type="numeric" data-popover={COL_HELP.humaneval}>HumanEval <span class="sort-chev"></span></th>
+            <th class="px-3 py-2" data-popover="Quantization format families with published weights, verified against the Hugging Face model tree. Proprietary (closed-weight) models have none.">Quants</th>
           </tr>
         </thead>
         <tbody>
           {all.map((m) => {
             const bm = m.benchmarks ?? {};
             const releasedTs = new Date(m.released_date).getTime();
+            const fams = m.openness === "proprietary" ? [] : quantsFor(m.slug);
             return (
               <tr
                 class="models-row border-t border-[var(--color-border)] hover:bg-[var(--color-surface-warm)]"
@@ -603,6 +614,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 data-developer={m.developer}
                 data-openness={m.openness}
                 data-architecture={m.architecture}
+                data-quants={fams.join(" ")}
                 data-slug={m.slug}
                 data-sort-name={m.display_name.toLowerCase()}
                 data-sort-developer={m.developer.toLowerCase()}
@@ -649,6 +661,13 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.mmlu") && bm.mmlu ? bm.mmlu.score.toFixed(1) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.gpqa_diamond") && bm.gpqa_diamond ? bm.gpqa_diamond.score.toFixed(1) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.humaneval") && bm.humaneval ? bm.humaneval.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 font-mono text-[10px] text-[var(--color-text-muted)] leading-tight align-middle" style="max-width:9rem">
+                  {m.openness === "proprietary"
+                    ? (<span class="text-[var(--color-text-subtle)]" data-popover="Closed weights: no public quantizations.">—</span>)
+                    : fams.length
+                      ? (<span data-popover="Quantization families with published weights (verified via the Hugging Face model tree).">{fams.join(" ")}</span>)
+                      : (<span class="text-[var(--color-text-subtle)]">—</span>)}
+                </td>
               </tr>
             );
           })}
@@ -682,6 +701,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
     const fOpen = document.getElementById("filter-openness");
     const fArch = document.getElementById("filter-architecture");
     const fDev = document.getElementById("filter-developer");
+    const fQuant = document.getElementById("filter-quant");
     const reset = document.getElementById("filter-reset");
     const count = document.getElementById("filter-count");
     const rows = Array.from(document.querySelectorAll(".models-row"));
@@ -692,6 +712,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       const o = fOpen.value;
       const a = fArch.value;
       const d = fDev.value;
+      const qz = fQuant.value;
       let visible = 0;
       for (const row of rows) {
         const name = row.dataset.name || "";
@@ -699,18 +720,20 @@ const OPENNESS_RANK: Record<Openness, number> = {
         const dev = (row.dataset.developer || "").toLowerCase();
         const open = row.dataset.openness;
         const arch = row.dataset.architecture;
+        const quants = (row.dataset.quants || "").split(" ");
         const matchesQuery = !q || name.includes(q) || fam.includes(q) || dev.includes(q);
         const matchesOpen = !o || open === o;
         const matchesArch = !a || arch === a;
         const matchesDev = !d || row.dataset.developer === d;
-        const show = matchesQuery && matchesOpen && matchesArch && matchesDev;
+        const matchesQuant = !qz || quants.includes(qz);
+        const show = matchesQuery && matchesOpen && matchesArch && matchesDev && matchesQuant;
         row.style.display = show ? "" : "none";
         if (show) visible++;
       }
       count.textContent = visible === total ? `${total} models` : `${visible} of ${total} models`;
     }
 
-    for (const el of [search, fOpen, fArch, fDev]) {
+    for (const el of [search, fOpen, fArch, fDev, fQuant]) {
       el.addEventListener("input", apply);
       el.addEventListener("change", apply);
     }
@@ -719,6 +742,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       fOpen.value = "";
       fArch.value = "";
       fDev.value = "";
+      fQuant.value = "";
       apply();
     });
   })();

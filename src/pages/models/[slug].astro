@@ -16,6 +16,7 @@ import {
   type Model,
   type BenchmarkSlug,
 } from "../../lib/models";
+import { QUANT_FAMILIES } from "../../lib/quantization";
 
 // Per-cell verification gate. See /models/index.astro for the design.
 // Cells whose ledger row is not supported/consistent/still_supported/
@@ -42,6 +43,11 @@ export async function getStaticPaths() {
 }
 
 const { model } = Astro.props as { model: Model };
+
+// Quantization families verified for this checkpoint, gated like every
+// other cell. Engines link to their glossary entry where one exists.
+const ENGINE_GLOSSARY = new Set(["llama-cpp", "ollama", "vllm", "sglang", "mlx", "tensorrt-llm"]);
+const quantFamilies = QUANT_FAMILIES.filter((f) => verified(model.slug, `quant.${f.id}`));
 
 const siblings = loadModelsByFamily(model.family)
   .filter((m) => m.slug !== model.slug)
@@ -356,6 +362,38 @@ function fmtCurrency(n: number | undefined): string {
           </ul>
         </section>
       )}
+
+      <section class="mb-10">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+          Available quantizations
+        </h2>
+        {model.openness === "proprietary" ? (
+          <p class="text-sm text-[var(--color-text-muted)]">
+            None. The weights are not distributed, so there are no public quantizations.
+          </p>
+        ) : quantFamilies.length === 0 ? (
+          <p class="text-sm text-[var(--color-text-subtle)]">— not catalogued</p>
+        ) : (
+          <div class="space-y-2">
+            {quantFamilies.map((f) => (
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <a href="/glossary/quantization" class="font-mono text-xs px-1.5 py-0.5 rounded border border-[var(--color-border)] bg-[var(--color-surface-warm)] text-[var(--color-text)] no-underline hover:border-[var(--color-text)]">{f.label}</a>
+                <span class="text-xs text-[var(--color-text-muted)]">{f.blurb}</span>
+                <span class="font-mono text-[10px] text-[var(--color-text-subtle)]">
+                  runs on {f.engines.map((e, i) => (
+                    <span>{i > 0 ? ", " : ""}{ENGINE_GLOSSARY.has(e.glossary ?? "") ? (<a href={`/glossary/${e.glossary}`} class="hover:text-[var(--color-text)] no-underline hover:underline">{e.name}</a>) : e.name}</span>
+                  ))}
+                </span>
+              </div>
+            ))}
+            {model.quantizations_source && (
+              <p class="font-mono text-[10px] text-[var(--color-text-subtle)] mt-2 leading-relaxed">
+                Verified via the <a href={model.quantizations_source} target="_blank" rel="noopener" class="hover:text-[var(--color-text)] underline">Hugging Face model tree ↗</a>. Community quantizations change over time; the families shown are those with published weights at audit time.
+              </p>
+            )}
+          </div>
+        )}
+      </section>
 
       {model.notable_innovations && model.notable_innovations.length > 0 && (
         <section class="mb-10">
