@@ -164,7 +164,7 @@ export const TOOLS = [
   {
     name: "find_models",
     description:
-      "Filter the catalog of language-model checkpoints (open and closed, since Feb 2023) by family, developer, openness tier, architecture, release year, or free-text query. Returns up to 12 checkpoints with identity, release date, openness, architecture, params, context, and any reported benchmark scores. Use when the user asks about which models exist, when, or how openness/architecture options compare. Limit: 3 calls per turn.",
+      "Filter the catalog of language-model checkpoints (open and closed, since Feb 2023) by family, developer, openness tier, architecture, release year, or free-text query. Returns up to 12 checkpoints with identity, release date, openness, architecture, params, context, any reported benchmark scores, and the verified quantization format families available (gguf, awq, gptq, exl2, mlx, fp8, bnb; empty for proprietary/closed-weight models). Use when the user asks about which models exist, when, how openness/architecture options compare, or which models ship a given quantization. Limit: 3 calls per turn.",
     input_schema: {
       type: "object",
       properties: {
@@ -688,6 +688,7 @@ export async function executeTool(
             context_window: m.context_window,
             attention_variant: m.attention_variant,
             benchmarks: m.benchmarks,
+            quantizations_available: m.quantizations_available,
           })),
         };
         break;
@@ -724,6 +725,7 @@ export async function executeTool(
             recommended_use_cases: m.recommended_use_cases,
             release_context: m.release_context,
             lineage: m.lineage,
+            quantizations_available: m.quantizations_available,
           };
         });
         result = { models: compared };
