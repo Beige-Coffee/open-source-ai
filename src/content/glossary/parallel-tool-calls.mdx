@@ -1,0 +1,34 @@
+---
+term: parallel tool calls
+aliases: [parallel function calls]
+primary_layer: agents
+secondary_layers: [runtime]
+summary: When a model emits several independent tool calls in a single turn so the host can run them concurrently, instead of one call per round-trip.
+sources:
+  - title: "OpenAI Function Calling documentation"
+    url: "https://platform.openai.com/docs/guides/function-calling"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+A single turn that contains more than one tool call. When the tasks do
+not depend on each other (look up the weather in three cities, read four
+files), a model that supports parallel calls emits them together and the
+host runs them at once, then returns all the results before the model
+continues. The alternative is one call per
+<G term="tool-call-loop">loop</G> iteration, which serializes work that
+did not need to be serial.
+
+The payoff is <G term="latency">latency</G>. Each round-trip through the model costs a full
+generation, so collapsing four sequential calls into one parallel batch
+removes three of those generations from the critical path. The cost is
+that the model has to recognize independence correctly; calls that
+actually depend on one another must stay sequential, and a model that
+parallelizes a dependent chain produces wrong results.
+
+Support and the exact request flag vary by model and provider, so the
+capability is best described generically: the model can return a list of
+calls in one turn, and the host fans them out. It pairs naturally with
+<G term="function-calling">function calling</G> and is one of the levers
+that separates a snappy agent from a sluggish one.

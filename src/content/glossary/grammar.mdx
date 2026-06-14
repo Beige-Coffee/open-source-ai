@@ -1,0 +1,36 @@
+---
+term: grammar
+aliases: [GBNF, grammar-based sampling]
+primary_layer: runtime
+secondary_layers: [agents]
+summary: A formal description of allowed output structure (for example llama.cpp's GBNF) that a decoder is constrained to; a JSON Schema can be compiled into one.
+sources:
+  - title: "llama.cpp GBNF grammars documentation"
+    url: "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+A formal specification of what an output is allowed to look like, written
+in a notation a decoder can enforce. The best-known concrete form in the
+open ecosystem is GBNF, <G term="llama-cpp">llama.cpp</G>'s variant of Backus-Naur Form: a small
+set of rules that say, for example, an object opens with a brace, then
+key-value pairs, then a closing brace, and nothing else. The decoder
+reads the grammar to know which tokens are legal at each position.
+
+Grammars and schemas are two views of the same constraint. A JSON Schema
+describes a valid document; a grammar describes the valid token
+sequences that produce one. Most engines accept a JSON Schema and
+compile it into a grammar internally, so authors rarely write GBNF by
+hand, but the grammar is what the
+<G term="constrained-decoding">constrained decoder</G> actually walks.
+Grammars also cover shapes JSON Schema cannot express directly, such as
+a specific regular-expression format or a restricted arithmetic
+expression.
+
+Grammars are the lowest layer of the
+<G term="structured-output">structured output</G> stack. When a request
+to llama.cpp carries a `grammar` field, or a
+request to a server carries a JSON Schema, the result is the same: token
+sampling is restricted to what the grammar admits.

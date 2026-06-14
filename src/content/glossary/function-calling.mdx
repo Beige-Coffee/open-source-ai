@@ -17,8 +17,11 @@ import G from "../../components/G.astro";
 The protocol that lets a language model trigger code execution. The
 caller defines a tool schema (name, description, JSON-schema parameter
 shape); the model either responds with text or emits a structured tool-
-call object naming the tool and arguments; the host runs the tool and
-returns the result; the model continues with that result in context.
+call object naming the tool and arguments (a form of
+<G term="structured-output">structured output</G>); the host runs the
+tool and returns the result; the model continues with that result in
+context. That emit-execute-feedback cycle is the
+<G term="tool-call-loop">tool-call loop</G>.
 
 The technique is what makes agents possible. Web search, code
 execution, database queries, file reads, <G term="mcp">MCP</G> server actions: all are

@@ -1,0 +1,34 @@
+---
+term: JSON mode
+aliases: [json mode]
+primary_layer: runtime
+secondary_layers: [agents]
+summary: "A weaker predecessor to structured output: the model is constrained to emit syntactically valid JSON, but not necessarily JSON that conforms to a specific schema."
+sources:
+  - title: "OpenAI Structured Outputs documentation"
+    url: "https://platform.openai.com/docs/guides/structured-outputs"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+The earlier, weaker promise that sits one step below
+<G term="structured-output">structured output</G>. JSON mode constrains
+a model to produce text that parses as valid JSON: balanced braces,
+quoted keys, no trailing commas. What it does not promise is that the
+JSON matches the schema you wanted. The keys can be wrong, a required
+field can be missing, a number can arrive as a string.
+
+The distinction matters in practice. With JSON mode a parser will not
+throw on malformed syntax, but downstream code still has to validate
+that the object has the shape it expects and handle the cases where it
+does not. Schema-conforming structured output, by contrast, is checked
+during <G term="constrained-decoding">decoding</G> against the schema
+itself, so a conforming object is the only thing that can come back.
+
+JSON mode is still useful when the exact shape is loose or the caller
+will validate anyway, and it is cheaper to support than full grammar
+compilation. It is worth naming because model and engine docs often
+expose both, and the difference between "valid JSON" and "JSON that
+matches my schema" is the difference between code that mostly works and
+code that always parses.

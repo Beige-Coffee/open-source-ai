@@ -1,6 +1,6 @@
 ---
 term: tool use
-aliases: [tool calling]
+aliases: [tool calls]
 primary_layer: agents
 secondary_layers: [protocols]
 summary: The general pattern of an LLM invoking external functions, APIs, or systems to fetch data or take action, distinct from generating an answer purely from its weights.
@@ -24,7 +24,7 @@ The dimension models compete on is decision quality. Knowing when to
 call a tool versus when to answer from prior knowledge is harder than
 the call itself. Calling the right tool from a large catalog is harder
 than calling the only available tool. Recovering from a tool error
-gracefully is harder than success. Benchmarks like τ-bench and
+gracefully is harder than success. Benchmarks like <G term="tau-bench">τ-bench</G> and
 SWE-Bench measure these end-to-end agent behaviors directly.
 
 Tool use is what separates a chat model from a production agent (coding

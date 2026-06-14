@@ -1,0 +1,40 @@
+---
+term: structured output
+aliases: [structured outputs, structured generation]
+primary_layer: runtime
+secondary_layers: [agents, evaluation]
+summary: Making a model emit text that conforms to a schema or type (often JSON matching a JSON Schema) rather than free-form prose, so downstream code can parse it reliably.
+sources:
+  - title: "Introducing Structured Outputs in the API (OpenAI, 2024)"
+    url: "https://openai.com/index/introducing-structured-outputs-in-the-api/"
+  - title: "OpenAI Structured Outputs documentation"
+    url: "https://platform.openai.com/docs/guides/structured-outputs"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+The practice of forcing a model's output into a known shape instead of
+free-form prose. The caller supplies a JSON Schema (or a type, or a
+regular expression); the model returns text that parses against it. This
+is what makes a model's output safe to feed into code: a parser never
+has to guess whether the model wrapped its answer in prose, used the
+wrong key, or emitted a trailing comma.
+
+There are two ways to get there, and they are often combined. One is
+training: a model fine-tuned to emit JSON when asked usually does. The
+other is <G term="constrained-decoding">constrained decoding</G>, where
+the runtime masks the next-token choices so only schema-valid tokens can
+be sampled. Training alone is best-effort; constrained decoding makes
+conformance a property of the decoder, not a hope about the weights. The
+weaker, older form is <G term="json-mode">JSON mode</G>, which guarantees
+valid JSON but not a specific schema.
+
+Structured output is the substrate under
+<G term="function-calling">function calling</G>: a tool call is just a
+structured object (tool name plus arguments) the model is constrained to
+produce. It is also how you get reliable extraction, classification, and
+form-filling out of open models served by
+<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, or
+<G term="llama-cpp">llama.cpp</G>, all of which expose a schema or
+<G term="grammar">grammar</G> parameter on the request.

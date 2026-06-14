@@ -12,9 +12,9 @@ updated: 2026-05-18
 
 import G from "../../components/G.astro";
 
-The pattern that proposed combining `chain of thought` with `tool use`
+The pattern that proposed combining <G term="chain-of-thought">chain of thought</G> with <G term="tool-use">tool use</G>
 in one explicit loop. The model emits a Thought (free-text reasoning),
-then an Action (a tool call), gets an Observation (the tool result), and
+then an Action (a <G term="tool-call-loop">tool call</G>), gets an Observation (the tool result), and
 repeats. The thought step is what distinguishes ReAct from pure tool
 calling: it gives the model a place to plan, hypothesize, and self-
 correct between actions.

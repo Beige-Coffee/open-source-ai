@@ -1,0 +1,40 @@
+---
+term: tool-call loop
+aliases: [tool loop, function-calling loop]
+primary_layer: agents
+secondary_layers: [protocols]
+summary: "The host-orchestrated cycle behind tool use: the model emits a tool call, the host (not the model) executes it, and the result is fed back for the next turn."
+sources:
+  - title: "OpenAI Function Calling documentation"
+    url: "https://platform.openai.com/docs/guides/function-calling"
+  - title: "Anthropic Tool Use documentation"
+    url: "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+The control loop that turns a single model into an agent. The model does
+not run anything itself. It emits a structured tool call; the host
+program parses that call, executes the actual function (an API request, a
+shell command, a database query), and appends the result to the
+conversation; the model then reads the result and either answers or
+emits the next call. The cycle repeats until the model stops calling
+tools.
+
+Naming the loop separately from
+<G term="function-calling">function calling</G> is useful because the
+hard parts live in the loop, not the call. The host decides how many
+iterations to allow, what to do when a tool errors, how to truncate a
+large result, and how to detect when the model is stuck. Providers
+signal a pending call with a stop reason (an explicit "the model wants
+to call a tool" state) so the host knows to execute and resume rather
+than show the partial output to the user.
+
+This loop is the engine under <G term="react">ReAct</G>-style agents,
+<G term="multi-agent">multi-agent</G> systems, and
+<G term="mcp">MCP</G> clients: MCP standardizes how the host discovers
+and calls tools, but the surrounding emit-execute-feedback cycle is the
+same. It is also where the <G term="agentic">agentic</G> safety surface
+opens up, since the host is executing model-chosen actions with real
+side effects.

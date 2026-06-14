@@ -28,6 +28,8 @@ and that single-agent designs are the safer default for software tasks.
 
 Frameworks that target this shape: <G term="autogen">AutoGen</G>, CrewAI, LangGraph, AG2,
 MetaGPT. They differ on communication topology (group chat vs hub-spoke
-vs DAG) and on how shared state is represented. Whether multi-agent is
+vs DAG) and on how shared state is represented. When the agents run as
+separate services rather than inside one process, the cross-agent wire
+is what <G term="a2a">A2A</G> sets out to standardize. Whether multi-agent is
 genuinely useful or a wrapper around a more careful single-agent design
 is a live question through 2026.

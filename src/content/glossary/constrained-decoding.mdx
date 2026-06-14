@@ -1,0 +1,39 @@
+---
+term: constrained decoding
+aliases: [guided decoding, grammar-constrained decoding]
+primary_layer: runtime
+secondary_layers: [agents]
+summary: Masking the model's next-token probabilities at each step so only tokens allowed by a grammar or schema can be sampled, forcing the output to be structurally valid.
+sources:
+  - title: "Efficient Guided Generation for Large Language Models (Willard and Louf, 2023)"
+    url: "https://arxiv.org/abs/2307.09702"
+  - title: "Introducing Structured Outputs in the API (OpenAI, 2024)"
+    url: "https://openai.com/index/introducing-structured-outputs-in-the-api/"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+The mechanism that makes <G term="structured-output">structured
+output</G> a guarantee rather than a hope. At each decoding step the
+model produces a probability over the whole vocabulary; constrained
+decoding computes which of those tokens could still lead to a valid
+result and sets the probability of every other token to zero before
+sampling. The model can only ever emit text that the schema or <G term="grammar">grammar</G>
+permits.
+
+The allowed set is computed from a grammar or a
+schema compiled into one. A common implementation walks a finite-state
+machine or pushdown automaton alongside generation: the current state
+says which tokens are legal next, the sampler is masked to that set, and
+the chosen token advances the state. Because the mask is applied to
+logits the model already produced, the technique adds correctness
+without retraining and works on any open-weights model.
+
+This is the difference the structured-output story turns on. A model
+fine-tuned to emit JSON is good at it but can still slip; a constrained
+decoder cannot emit an invalid token by construction. Open engines like
+<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, and
+<G term="llama-cpp">llama.cpp</G> all ship a constrained-decoding path,
+and the libraries that specialize in it (Outlines, XGrammar, llguidance)
+are what those engines call underneath.

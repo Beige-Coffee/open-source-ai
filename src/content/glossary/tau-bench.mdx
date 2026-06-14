@@ -1,0 +1,37 @@
+---
+term: tau-bench
+aliases: [τ-bench, tool-agent-user benchmark]
+primary_layer: evaluation
+secondary_layers: [agents]
+summary: An agentic benchmark where a model completes realistic retail and airline customer-service tasks through tool calls and simulated user turns, scored by reliability across repeated runs.
+sources:
+  - title: "tau-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains (Yao et al., 2024)"
+    url: "https://arxiv.org/abs/2406.12045"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+A <G term="benchmark">benchmark</G> that measures <G term="tool-use">tool use</G> the way it
+actually fails in production: across a whole conversation, not a single
+call. A model plays a customer-service agent in a realistic domain
+(retail and airline are the original two), with a real tool set, a
+policy document it must follow, and a simulated user on the other side.
+To succeed it has to ask the right questions, call the right tools in
+the right order, respect the policy, and leave the backend in the
+correct final state.
+
+What makes it a sharper signal than single-call benchmarks is the
+scoring. Tasks are checked by the end state of the database plus required
+outputs, and runs are repeated to measure reliability rather than a
+lucky single pass. A model that completes a task once but fails it on
+re-runs scores poorly, which surfaces the brittleness that matters when
+an agent runs thousands of times a day.
+
+tau-bench, alongside the
+<G term="bfcl">Berkeley Function Calling Leaderboard</G>, is one of the
+two tool-use evaluations labs now report for open models. The former
+tests end-to-end <G term="agentic">agentic</G> reliability; the latter tests the correctness
+of individual calls. Together they cover the two halves of the
+<G term="tool-call-loop">tool-call loop</G>: emitting a valid call, and
+driving a multi-step task to a correct finish.

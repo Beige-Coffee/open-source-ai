@@ -1,0 +1,39 @@
+---
+term: Berkeley Function Calling Leaderboard
+aliases: [BFCL]
+primary_layer: evaluation
+secondary_layers: [agents]
+summary: A widely-cited benchmark for function-calling ability that checks emitted calls against expected ones by abstract-syntax-tree match and by executing them, across simple, parallel, and multi-turn cases.
+sources:
+  - title: "Berkeley Function Calling Leaderboard (Gorilla, UC Berkeley)"
+    url: "https://gorilla.cs.berkeley.edu/leaderboard.html"
+  - title: "Gorilla: Large Language Model Connected with Massive APIs (Patil et al., 2023)"
+    url: "https://arxiv.org/abs/2305.15334"
+updated: 2026-06-14
+---
+
+import G from "../../components/G.astro";
+
+The standard public yardstick for
+<G term="function-calling">function calling</G>, maintained by the
+Gorilla project at UC Berkeley. It scores whether a model, given a set
+of tool schemas and a request, emits the right call with the right
+arguments. Two checking styles run side by side: an abstract-syntax-tree
+match that compares the emitted call structurally to a reference (right
+function, right required parameters, right types and values), and an
+executable check that actually runs the call and inspects the result.
+
+The <G term="benchmark">benchmark</G> separates cases that fail for different reasons. Simple
+single-call tasks test basic schema adherence; parallel and
+multiple-function tasks test whether a model picks correctly from a
+catalog and emits more than one call when needed; later additions test
+multi-turn interactions where the model gathers information across
+several steps. A relevance check also measures the opposite skill: not
+calling a tool when none of the offered tools fit, which a model eager
+to please tends to get wrong.
+
+BFCL is one of the few tool-use benchmarks reported directly by model
+labs, which makes it a comparable axis across open checkpoints. On this
+site, tool-use scores appear on a model's page only when the lab
+published the number with a date and source, the same
+benchmark discipline used for every other score.
