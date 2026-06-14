@@ -86,11 +86,12 @@ const opennessExplainer: Record<typeof model.openness, string> = {
   "proprietary": "Weights not released. Architecture and training data typically undisclosed. Available only through the lab's API or partner endpoints.",
 };
 
-const benchmarkGroupOrder = ["general", "code", "math", "arena"] as const;
+const benchmarkGroupOrder = ["general", "code", "math", "agentic", "arena"] as const;
 const benchmarkGroupLabel: Record<typeof benchmarkGroupOrder[number], string> = {
   general: "General reasoning",
   code: "Code",
   math: "Math",
+  agentic: "Agentic / tool use",
   arena: "Held-out / arena",
 };
 

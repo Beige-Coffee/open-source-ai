@@ -9,7 +9,11 @@ import {
   familyColor,
   formatParams,
   formatContext,
+  BENCHMARK_GROUPS,
+  BENCHMARK_LABEL,
   type Openness,
+  type BenchmarkSlug,
+  type Model,
 } from "../../lib/models";
 import { QUANT_FAMILIES } from "../../lib/quantization";
 
@@ -46,6 +50,17 @@ function gate<T>(slug: string, field: string, value: T | null | undefined): T | 
 // Verified quantization family ids for a model (gated like every cell).
 function quantsFor(slug: string): string[] {
   return QUANT_FAMILIES.filter((f) => verified(slug, `quant.${f.id}`)).map((f) => f.id);
+}
+// Best verified tool-use benchmark score for a model (gated). Prefers BFCL,
+// then tau-bench. Tool-use scores are nascent, so most models have none.
+function toolUseFor(m: Model): { label: string; score: number } | null {
+  for (const s of BENCHMARK_GROUPS.agentic as BenchmarkSlug[]) {
+    const score = m.benchmarks?.[s]?.score;
+    if (typeof score === "number" && verified(m.slug, `bench.${s}`)) {
+      return { label: BENCHMARK_LABEL[s], score };
+    }
+  }
+  return null;
 }
 
 const openCount = all.filter((m) => m.openness === "open").length;
@@ -575,6 +590,10 @@ const OPENNESS_RANK: Record<Openness, number> = {
         <option value="">QAT: any</option>
         <option value="1">QAT only</option>
       </select>
+      <select id="filter-tooluse" class="px-2 py-1.5 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-sm" title="Has a verified tool-use benchmark (BFCL or tau-bench)">
+        <option value="">tool use: any</option>
+        <option value="1">tool-use benchmarked</option>
+      </select>
       <button id="filter-reset" type="button" class="px-2 py-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline cursor-pointer">
         reset
       </button>
@@ -602,6 +621,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
             <th class="px-3 py-2 text-right sortable" data-sort="mmlu" data-sort-type="numeric" data-popover={COL_HELP.mmlu}>MMLU <span class="sort-chev"></span></th>
             <th class="px-3 py-2 text-right sortable" data-sort="gpqa" data-sort-type="numeric" data-popover={COL_HELP.gpqa}>GPQA-D <span class="sort-chev"></span></th>
             <th class="px-3 py-2 text-right sortable" data-sort="humaneval" data-sort-type="numeric" data-popover={COL_HELP.humaneval}>HumanEval <span class="sort-chev"></span></th>
+            <th class="px-3 py-2 text-right sortable" data-sort="tooluse" data-sort-type="numeric" data-popover="Best verified tool-use / function-calling benchmark (BFCL or tau-bench). A nascent axis: most models have no published score yet. Full scores on each model page.">Tool use <span class="sort-chev"></span></th>
             <th class="px-3 py-2" data-popover="Quantization format families with published weights, verified against the Hugging Face model tree. Proprietary (closed-weight) models have none.">Quants</th>
           </tr>
         </thead>
@@ -610,6 +630,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
             const bm = m.benchmarks ?? {};
             const releasedTs = new Date(m.released_date).getTime();
             const fams = m.openness === "proprietary" ? [] : quantsFor(m.slug);
+            const tool = toolUseFor(m);
             return (
               <tr
                 class="models-row border-t border-[var(--color-border)] hover:bg-[var(--color-surface-warm)]"
@@ -620,6 +641,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 data-architecture={m.architecture}
                 data-quants={fams.join(" ")}
                 data-qat={m.quantization_aware_training ? "1" : "0"}
+                data-tooluse={tool ? "1" : ""}
                 data-slug={m.slug}
                 data-sort-name={m.display_name.toLowerCase()}
                 data-sort-developer={m.developer.toLowerCase()}
@@ -635,6 +657,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 data-sort-mmlu={bm.mmlu ? String(bm.mmlu.score) : ""}
                 data-sort-gpqa={bm.gpqa_diamond ? String(bm.gpqa_diamond.score) : ""}
                 data-sort-humaneval={bm.humaneval ? String(bm.humaneval.score) : ""}
+                data-sort-tooluse={tool ? String(tool.score) : ""}
               >
                 <td class="px-2 py-2 text-center">
                   <input type="checkbox" class="cmp-cb" data-slug={m.slug} aria-label={`Add ${m.display_name} to compare`}/>
@@ -669,6 +692,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.mmlu") && bm.mmlu ? bm.mmlu.score.toFixed(1) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.gpqa_diamond") && bm.gpqa_diamond ? bm.gpqa_diamond.score.toFixed(1) : "—"}</td>
                 <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{verified(m.slug, "bench.humaneval") && bm.humaneval ? bm.humaneval.score.toFixed(1) : "—"}</td>
+                <td class="px-3 py-2 text-right font-mono text-xs tabular-nums">{tool ? (<span data-popover={`${tool.label}: ${tool.score}. Verified tool-use score; full agentic benchmarks on the model page.`}>{tool.score.toFixed(1)}<span class="text-[var(--color-text-subtle)] text-[9px] ml-1">{tool.label === "BFCL v3" ? "BFCL" : "τ"}</span></span>) : (<span class="text-[var(--color-text-subtle)]">—</span>)}</td>
                 <td class="px-3 py-2 font-mono text-[10px] text-[var(--color-text-muted)] leading-tight align-middle" style="max-width:9rem">
                   {m.openness === "proprietary"
                     ? (<span class="text-[var(--color-text-subtle)]" data-popover="Closed weights: no public quantizations.">—</span>)
@@ -711,6 +735,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
     const fDev = document.getElementById("filter-developer");
     const fQuant = document.getElementById("filter-quant");
     const fQat = document.getElementById("filter-qat");
+    const fTool = document.getElementById("filter-tooluse");
     const reset = document.getElementById("filter-reset");
     const count = document.getElementById("filter-count");
     const rows = Array.from(document.querySelectorAll(".models-row"));
@@ -723,6 +748,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       const d = fDev.value;
       const qz = fQuant.value;
       const qat = fQat.value;
+      const tu = fTool.value;
       let visible = 0;
       for (const row of rows) {
         const name = row.dataset.name || "";
@@ -737,14 +763,15 @@ const OPENNESS_RANK: Record<Openness, number> = {
         const matchesDev = !d || row.dataset.developer === d;
         const matchesQuant = !qz || quants.includes(qz);
         const matchesQat = !qat || row.dataset.qat === "1";
-        const show = matchesQuery && matchesOpen && matchesArch && matchesDev && matchesQuant && matchesQat;
+        const matchesTool = !tu || row.dataset.tooluse === "1";
+        const show = matchesQuery && matchesOpen && matchesArch && matchesDev && matchesQuant && matchesQat && matchesTool;
         row.style.display = show ? "" : "none";
         if (show) visible++;
       }
       count.textContent = visible === total ? `${total} models` : `${visible} of ${total} models`;
     }
 
-    for (const el of [search, fOpen, fArch, fDev, fQuant, fQat]) {
+    for (const el of [search, fOpen, fArch, fDev, fQuant, fQat, fTool]) {
       el.addEventListener("input", apply);
       el.addEventListener("change", apply);
     }
@@ -755,6 +782,7 @@ const OPENNESS_RANK: Record<Openness, number> = {
       fDev.value = "";
       fQuant.value = "";
       fQat.value = "";
+      fTool.value = "";
       apply();
     });
   })();

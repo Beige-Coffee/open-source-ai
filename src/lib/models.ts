@@ -68,13 +68,17 @@ export type BenchmarkSlug =
   // Held-out / arena
   | "lmarena_elo"
   | "livebench"
-  | "ifeval";
+  | "ifeval"
+  // Agentic / tool use
+  | "bfcl_v3"
+  | "tau_bench";
 
 export const BENCHMARK_GROUPS: Record<string, BenchmarkSlug[]> = {
   general: ["mmlu", "mmlu_pro", "gpqa_diamond"],
   code: ["humaneval", "swe_bench_verified", "livecodebench"],
   math: ["math", "aime_2024", "aime_2025", "frontiermath"],
   arena: ["lmarena_elo", "livebench", "ifeval"],
+  agentic: ["bfcl_v3", "tau_bench"],
 };
 
 export const BENCHMARK_LABEL: Record<BenchmarkSlug, string> = {
@@ -91,6 +95,8 @@ export const BENCHMARK_LABEL: Record<BenchmarkSlug, string> = {
   lmarena_elo: "LMArena Elo",
   livebench: "LiveBench",
   ifeval: "IFEval",
+  bfcl_v3: "BFCL v3",
+  tau_bench: "tau-bench",
 };
 
 export interface ReceptionQuote {
