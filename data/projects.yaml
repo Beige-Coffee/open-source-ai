@@ -2866,3 +2866,210 @@ projects:
     maturity: stable
     url: https://world.org/
     description: Proof-of-personhood identity protocol; pairs biometric verification with cryptographic credentials; agent-economy adjacent.
+  - slug: outlines
+    name: Outlines
+    layers:
+      - runtime
+    license: Apache 2.0
+    focus: open
+    maturity: stable
+    url: https://github.com/dottxt-ai/outlines
+    github: https://github.com/dottxt-ai/outlines
+    description: Structured-output library using finite-state-machine guided decoding to force model output to match a regex, JSON Schema, or grammar.
+    explainer: |
+      Outlines, from the team at .txt (dottxt), is a library for
+      structured generation: it constrains a model so its output is
+      guaranteed to match a regular expression, a JSON Schema, or a
+      context-free grammar. It does this by compiling the target into a
+      finite-state machine and masking the next-token distribution at
+      each step so only tokens that keep the output valid can be
+      sampled. The approach is the one described in Willard and Louf's
+      2023 paper on efficient guided generation.
+
+      Among the structured-output libraries, Outlines is the most
+      research-anchored and one of the most widely integrated. It is
+      used as a constrained-decoding backend inside open serving
+      engines rather than only as a standalone tool, which puts it next
+      to XGrammar and llguidance as one of the engines doing the actual
+      token masking. Instructor and Guidance sit a layer above, oriented
+      around developer ergonomics, while Outlines is closer to the
+      mechanism.
+
+      It matters for open-source AI because schema-conforming output is
+      what makes open models usable as reliable components in code,
+      rather than as chat boxes whose output has to be defensively
+      parsed. Production teams reach for it when extraction,
+      classification, or function-call arguments must be valid every
+      time.
+    sources:
+      - title: Outlines on GitHub
+        url: https://github.com/dottxt-ai/outlines
+      - title: "Efficient Guided Generation for Large Language Models (Willard and Louf, 2023)"
+        url: https://arxiv.org/abs/2307.09702
+  - slug: xgrammar
+    name: XGrammar
+    layers:
+      - runtime
+    license: Apache 2.0
+    focus: open
+    maturity: stable
+    url: https://github.com/mlc-ai/xgrammar
+    github: https://github.com/mlc-ai/xgrammar
+    description: Fast grammar-based constrained-decoding engine, used as a structured-output backend by several open serving engines.
+    explainer: |
+      XGrammar, from the MLC team, is an engine for grammar-based
+      constrained decoding focused on being fast enough to run inside a
+      production serving loop. It compiles a JSON Schema or context-free
+      grammar and applies the per-step token mask that keeps generation
+      valid, with an implementation aimed at keeping that masking cheap
+      relative to the model forward pass.
+
+      Its place in the ecosystem is as a backend rather than a
+      user-facing API. Open serving engines integrate XGrammar (and
+      alternatives like Outlines and llguidance) as the component that
+      enforces structure, so a request carrying a JSON Schema is handed
+      to one of these engines under the hood. The work is described in
+      the XGrammar paper.
+
+      For open-source AI it is part of why structured output is now a
+      standard request parameter on open engines rather than a bolt-on:
+      the masking is fast enough that schema-constrained generation is
+      practical at serving scale. Teams rarely call it directly; they
+      get it through the engine they already run.
+    sources:
+      - title: XGrammar on GitHub
+        url: https://github.com/mlc-ai/xgrammar
+      - title: "XGrammar: Flexible and Efficient Structured Generation (Dong et al., 2024)"
+        url: https://arxiv.org/abs/2411.15100
+  - slug: llguidance
+    name: llguidance
+    layers:
+      - runtime
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://github.com/guidance-ai/llguidance
+    github: https://github.com/guidance-ai/llguidance
+    description: Low-level Rust constrained-decoding engine that enforces grammars and JSON Schema at high throughput; powers Guidance.
+    explainer: |
+      llguidance is a constrained-decoding engine written in Rust,
+      maintained under the guidance-ai organization. It takes a grammar
+      or JSON Schema and computes, at each decoding step, the set of
+      tokens that keep the output valid, applying that as a mask on the
+      sampler. It is built to be the low-level enforcement layer that a
+      higher-level library or a serving engine calls, rather than a tool
+      a developer uses directly.
+
+      It is the engine underneath Guidance, and is one of the
+      interchangeable constrained-decoding backends alongside Outlines
+      and XGrammar. The split between these libraries and the
+      developer-facing tools above them (Guidance, Instructor) is the
+      main thing to understand: the same masking idea has both an
+      ergonomic API surface and a performance-critical core, and
+      llguidance is squarely the core.
+
+      For open-source AI it reflects the maturing of structured output
+      from a Python-level trick into a dedicated, low-overhead systems
+      component, which is what lets open engines offer schema
+      enforcement without giving up throughput.
+    sources:
+      - title: llguidance on GitHub
+        url: https://github.com/guidance-ai/llguidance
+  - slug: guidance
+    name: Guidance
+    layers:
+      - runtime
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://github.com/guidance-ai/guidance
+    github: https://github.com/guidance-ai/guidance
+    description: A programming model for constrained generation that interleaves control flow with model calls and enforces regex, grammars, and JSON Schema.
+    explainer: |
+      Guidance, maintained under the guidance-ai organization (the
+      project originated at Microsoft), is a programming model for
+      controlling generation. Instead of sending one prompt and parsing
+      a blob back, you write a template that interleaves fixed text,
+      control flow, and constrained model calls, where each generated
+      span can be forced to match a regex, a grammar, or a JSON Schema.
+      The result is output that is structured by construction.
+
+      Where Outlines, XGrammar, and llguidance are the enforcement
+      engines, Guidance is the developer-facing layer: it gives the
+      authoring model and delegates the token masking to an engine
+      (including llguidance). Instructor occupies a nearby niche but is
+      organized around returning typed objects from a normal call;
+      Guidance is organized around scripting the generation itself.
+
+      It matters because it changed how people think about prompting
+      open models: from coaxing free text into shape to programming the
+      output structure directly, which is more reliable and is the
+      pattern much of the structured-output tooling now follows.
+    sources:
+      - title: Guidance on GitHub
+        url: https://github.com/guidance-ai/guidance
+  - slug: instructor
+    name: Instructor
+    layers:
+      - runtime
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://github.com/567-labs/instructor
+    github: https://github.com/567-labs/instructor
+    description: Library for getting Pydantic-typed structured output from LLMs across many providers, built on function calling and JSON mode with automatic retries.
+    explainer: |
+      Instructor is a library for getting typed, validated objects out
+      of language models. You define the shape you want as a Pydantic
+      model; Instructor turns it into a schema, asks the model to fill
+      it (using the provider's function-calling or JSON-mode support),
+      validates the response, and retries automatically when validation
+      fails. It works across many providers and local engines through a
+      common interface.
+
+      Its niche is developer ergonomics rather than the decoding
+      mechanism. Outlines, XGrammar, and llguidance guarantee validity
+      by constraining the decoder; Instructor instead leans on the
+      model's own structured-output support plus validate-and-retry,
+      which is simpler to adopt and works even against hosted APIs you
+      cannot constrain directly. Guidance is the closest sibling but is
+      built around scripting generation rather than returning a typed
+      object.
+
+      For open-source AI it lowers the barrier to treating an open model
+      as a typed function in ordinary application code, which is a large
+      part of how open models get wired into real software.
+    sources:
+      - title: Instructor on GitHub
+        url: https://github.com/567-labs/instructor
+  - slug: lm-format-enforcer
+    name: LM Format Enforcer
+    layers:
+      - runtime
+    license: MIT
+    focus: open
+    maturity: stable
+    url: https://github.com/noamgat/lm-format-enforcer
+    github: https://github.com/noamgat/lm-format-enforcer
+    description: Token-filtering library that enforces a JSON Schema or regex during generation; integrates with Transformers, vLLM, and llama.cpp.
+    explainer: |
+      LM Format Enforcer constrains generation by filtering the tokens a
+      model is allowed to emit so the output conforms to a JSON Schema or
+      a regular expression. It is designed to plug into existing
+      inference stacks, with integrations for Transformers, vLLM, and
+      llama.cpp, so a team can add schema enforcement to a serving setup
+      they already run rather than adopting a new engine.
+
+      It belongs to the same enforcement family as Outlines, XGrammar,
+      and llguidance: all of them mask the sampler to keep output valid.
+      Its distinguishing emphasis is breadth of integration across
+      stacks rather than being the fastest core or the most ergonomic
+      API. That makes it a pragmatic choice when the goal is to bolt
+      structured output onto a heterogeneous set of runtimes.
+
+      For open-source AI it is one of the libraries that made
+      schema-constrained output portable across the open serving
+      ecosystem before the engines absorbed the capability natively.
+    sources:
+      - title: LM Format Enforcer on GitHub
+        url: https://github.com/noamgat/lm-format-enforcer
