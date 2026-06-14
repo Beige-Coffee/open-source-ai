@@ -821,6 +821,46 @@ marker `(Hardware: <slug>)` parsed in `citations.ts`, routing to
 `/hardware/<slug>`. Page-context detection routes `/hardware/<slug>` to
 a `{ kind: "hardware", slug }` entity so "this card" defaults correctly.
 
+## Tool-calling section
+
+The Tool-calling section at `/tool-calling` is the cross-cutting surface
+that ties together how open models call tools, spanning the runtime,
+agents, protocols, and evaluation layers. Full design doc:
+`docs/TOOL-CALLING.md` (Option C). It is a narrative page plus one
+island, not a calculator section: tool calling has no quantitative model
+to compute.
+
+The page (`src/pages/tool-calling/index.astro`) walks the arc in order:
+the tool-call loop -> structured output / constrained decoding ->
+the open tooling -> per-model formats -> MCP -> measurement. It links the
+existing glossary / course / layer / project / model pieces rather than
+duplicating them. The one island,
+`src/components/ToolCallFormatExplorer.tsx`, lets the reader pick a model
+family (Llama, Mistral, Hermes/Qwen, Command R) and see how each
+serializes the same tool call; each format carries its own primary
+source and the examples are illustrative of the documented format.
+
+Supporting pieces, all built on existing machinery:
+
+- Glossary mechanism + benchmark cluster: `structured-output`,
+  `constrained-decoding`, `grammar` (GBNF), `json-mode`,
+  `tool-call-loop`, `parallel-tool-calls`, `bfcl`, `tau-bench`. The
+  `tool calling` alias lives on `function-calling` only.
+- `/models` tool-use benchmark facet: `bfcl_v3` + `tau_bench` are in
+  `BenchmarkSlug` and a 4th `BENCHMARK_GROUPS.agentic` group; rendered as
+  the "Agentic / tool use" group on `/models/<slug>` and a gated "Tool
+  use" column + "tool-use benchmarked" filter on `/models`, all through
+  the existing verification gate (only PASS-verdict scores render, so it
+  is sparse today and grows as scores are sourced).
+- Structured-output libraries catalogued as `runtime` projects: Outlines,
+  XGrammar, llguidance, Guidance, Instructor, LM Format Enforcer.
+
+Citation-safety note (binding): this content was scoped to verified
+pre-2026 facts. Excluded as fabrication risk in this environment:
+"XGrammar-2" and its speedup numbers, "BFCL V4", "tau2/tau3-bench", the
+MCP "2025-11-25" spec revision, and project marketing latency/version
+specifics. See `docs/TOOL-CALLING.md` section 11 before extending.
+
 ## Deployment
 
 Deployed to Vercel from `main`. Domain: open-source-ai.tech (managed
