@@ -1,0 +1,137 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import G from "../../components/G.astro";
+import ToolCallFormatExplorer from "../../components/ToolCallFormatExplorer.tsx";
+---
+
+<BaseLayout
+  title="Tool calling · Open-Source AI Stack"
+  description="How open models call tools: the tool-call loop, structured output and constrained decoding, the per-model formats, MCP, and how tool use is measured."
+>
+  <section class="max-w-3xl mx-auto px-6 pt-12 pb-4">
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      Tool calling
+    </p>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight text-[var(--color-text)] mb-5">
+      How open models call tools
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-3">
+      Tool calling is what turns a model that writes text into one that can
+      act: search the web, run code, read a file, query a database. It is a
+      cross-cutting concern, so the pieces live on different layers of the
+      stack. This page walks the whole arc in order and links each piece.
+    </p>
+    <p class="text-sm text-[var(--color-text-subtle)] leading-relaxed">
+      The capability, the mechanism that makes a call valid, the open tooling
+      that produces it, the wire that standardizes it, and the benchmarks that
+      measure it.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      1 · The loop
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
+      A model never runs anything itself. It emits a structured
+      <G term="function-calling">function call</G>; the host program executes
+      the actual function and feeds the result back; the model reads it and
+      either answers or calls again. That cycle is the
+      <G term="tool-call-loop">tool-call loop</G>, and the hard parts (how many
+      iterations, what to do on error, how to truncate a large result) live in
+      the loop, not the call. It is the engine under
+      <G term="react">ReAct</G>-style and <G term="multi-agent">multi-agent</G>
+      systems, and it sits at the <a href="/stack/agents" class="text-[var(--color-text)] underline">agents layer</a>.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      2 · What makes a call valid
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
+      A tool call is only useful if it parses. Getting that guarantee is
+      <G term="structured-output">structured output</G>: making the model emit
+      text that conforms to a schema rather than free-form prose. The strong
+      form is <G term="constrained-decoding">constrained decoding</G>, where the
+      runtime masks the next-token choices at each step so only schema-valid
+      tokens can be sampled, usually by walking a
+      <G term="grammar">grammar</G> compiled from a JSON Schema. The weaker
+      predecessor is <G term="json-mode">JSON mode</G>, which promises valid
+      JSON but not a specific shape. This is a
+      <a href="/stack/runtime" class="text-[var(--color-text)] underline">runtime-layer</a>
+      concern, and it is also covered in the self-host course module on
+      <a href="/learn/how-llms-work/decoding" class="text-[var(--color-text)] underline">decoding</a>.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      3 · The open tooling
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
+      The token masking is done by a small set of open libraries.
+      <a href="/projects/outlines" class="text-[var(--color-text)] underline">Outlines</a>,
+      <a href="/projects/xgrammar" class="text-[var(--color-text)] underline">XGrammar</a>, and
+      <a href="/projects/llguidance" class="text-[var(--color-text)] underline">llguidance</a>
+      are the enforcement engines that serving runtimes call underneath;
+      <a href="/projects/guidance" class="text-[var(--color-text)] underline">Guidance</a>,
+      <a href="/projects/instructor" class="text-[var(--color-text)] underline">Instructor</a>, and
+      <a href="/projects/lm-format-enforcer" class="text-[var(--color-text)] underline">LM Format Enforcer</a>
+      sit closer to the developer. The open inference engines themselves
+      (<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>,
+      <G term="llama-cpp">llama.cpp</G>) expose a schema or grammar parameter on
+      the request and hand the work to one of these engines.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      4 · The formats differ
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+      There is no single wire format for a tool call. Each model emits only the
+      serialization it was trained on, and runtimes ship per-model parsers to
+      read them back. Pick a family to see how it serializes the same call.
+    </p>
+    <ToolCallFormatExplorer client:only="react" />
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      5 · The wire that standardizes it
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
+      Per-model formats handle how a model emits a call. A separate problem is
+      how the host discovers and connects to tools in the first place. The
+      <G term="mcp">Model Context Protocol</G> standardizes that tool layer so
+      the same server works across models, with
+      <G term="a2a">A2A</G> covering agent-to-agent communication. Both sit at
+      the <a href="/stack/protocols" class="text-[var(--color-text)] underline">protocols layer</a>.
+    </p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] mb-3">
+      6 · How it is measured
+    </h2>
+    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-3">
+      Two evaluations anchor tool use. The
+      <G term="bfcl">Berkeley Function Calling Leaderboard</G> checks the
+      correctness of individual calls; <G term="tau-bench">tau-bench</G>
+      measures end-to-end agentic reliability on realistic multi-step tasks.
+      Together they cover the two halves of the loop: emitting a valid call,
+      and driving a task to a correct finish. Where a lab has published a
+      score, it appears on the model's page and you can
+      <a href="/models" class="text-[var(--color-text)] underline">filter the models table</a>
+      to the ones that carry a tool-use benchmark.
+    </p>
+    <p class="font-mono text-[10px] text-[var(--color-text-subtle)] leading-relaxed mt-4">
+      Related: the course module on
+      <a href="/learn/how-llms-work/tool-use" class="hover:text-[var(--color-text)] underline">tool use and agents</a>,
+      the <a href="/stack/evaluation" class="hover:text-[var(--color-text)] underline">evaluation</a>
+      and <a href="/stack/agents" class="hover:text-[var(--color-text)] underline">agents</a> layers,
+      and the <a href="/glossary" class="hover:text-[var(--color-text)] underline">glossary</a>.
+    </p>
+  </section>
+</BaseLayout>
