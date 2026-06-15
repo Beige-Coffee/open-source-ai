@@ -1,44 +1,55 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-05-25T08:00:00-07:00",
+  "last_run_at": "2026-06-13T08:00:00-07:00",
   "sources": {
     "vllm-releases": {
-      "last_seen_tag": "v0.21.1rc0",
-      "last_seen_at": "2026-05-15",
-      "note": "v0.21.1rc0 tagged 2026-05-15; not published as it is a release candidate. Continue to monitor for v0.21.1 stable."
+      "last_seen_tag": "v0.23.0",
+      "last_seen_at": "2026-06-13",
+      "note": "v0.23.0 (2026-06-13) stable published as runtime item in 2026-06-13.mdx (408 commits / 200 contributors; DeepSeek-V4 across backends, Model Runner V2 for Llama/Mistral dense, unified encoder-free Gemma 4, Transformers v5 compat, multi-tier KV cache offloading). No new tag between v0.21.1rc0 and v0.23.0 surfaced in the feed."
     },
     "sglang-releases": {
-      "last_seen_tag": "v0.5.12.post1",
-      "last_seen_at": "2026-05-23",
-      "note": "v0.5.12.post1 (2026-05-23) is a post-release patch on the v0.5.12 line; processed but not published as a minor bugfix patch below the milestone bar."
+      "last_seen_tag": "v0.5.13",
+      "last_seen_at": "2026-06-13",
+      "note": "v0.5.13 (2026-06-13) stable published as runtime item in 2026-06-13.mdx (Spec V2 default speculative decoding, DeepSeek-V4 context parallelism + sparse kernels, realtime diffusion with progressive resolution, new model support)."
+    },
+    "axolotl-releases": {
+      "last_seen_tag": "v0.17.0",
+      "last_seen_at": "2026-06-03",
+      "note": "v0.17.0 (2026-06-03) published as training item in 2026-06-13.mdx (~84 commits since v0.16.1; Expert Parallelism for MoE training, BitNet 1.58-bit fine-tuning, remote training via Tinker, context parallelism for hybrid SSM models)."
+    },
+    "openhands-releases": {
+      "last_seen_tag": "1.8.0",
+      "last_seen_at": "2026-06-10",
+      "note": "1.8.0 (2026-06-10) published as agents item in 2026-06-13.mdx (LLM profiles, sandbox grouping selection, sub-agent delegation, generic ACP agent UI, App tab removed). Cloud tags cloud-1.36.0 through cloud-1.38.0 (2026-05-28 to 2026-06-09) processed but not published as routine cloud-infra patches."
     },
     "mcp-releases": {
-      "last_seen_tag": "2025-11-25",
-      "last_seen_at": "2025-11-25"
+      "last_seen_tag": "2026-07-28-RC",
+      "last_seen_at": "2026-05-29",
+      "note": "2026-07-28-RC (2026-05-29) published as protocols item in 2026-06-13.mdx, the first spec revision since 2025-11-25 stable; clearly labeled as a release candidate that the maintainers mark not final."
     },
     "mcp-blog": {
       "last_seen_at": null,
       "note": "feed returned 404 on 2026-05-13; logged to fetch-errors.jsonl"
     },
     "interconnects": {
-      "last_seen_url": "https://www.interconnects.ai/p/latest-open-artifacts-21-open-model",
-      "last_seen_at": "2026-05-25",
-      "note": "No new posts since the 2026-05-16 open-artifacts roundup as of 2026-05-25."
+      "last_seen_url": "https://www.interconnects.ai/p/claude-fable-5-and-new-ai-safety-fables",
+      "last_seen_at": "2026-06-09",
+      "note": "Claude Fable 5 and new AI safety fables (2026-06-09) and Farewell Ai2 (2026-06-02) processed but not published; both are opinion essays, not releases."
     },
     "eleutherai-blog": {
       "last_seen_url": "https://blog.eleuther.ai/reward-hacking-indicators/",
       "last_seen_at": "2026-04-15"
     },
     "semianalysis": {
-      "last_seen_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
-      "last_seen_at": "2026-05-21",
-      "note": "EDA Market Primer (2026-05-21) processed but not published; an EDA-tooling market analysis (Cadence, Synopsys, Siemens, China EDA), off-theme for the open-source AI stack and behind a paywall."
+      "last_seen_url": "https://newsletter.semianalysis.com/p/intel-should-raise-capital",
+      "last_seen_at": "2026-06-11",
+      "note": "Intel Should Raise Capital (2026-06-11) and DeepSeekV4 1.6T Day 0 to Day 43 Performance Over Time (2026-06-09) processed but not published; both are paywalled market/perf analyses off-theme for the open stack. The DeepSeekV4 piece confirms DeepSeek V4 1.6T launched ~late April 2026 (Day 43 from 2026-06-09), before this window, so it is not published as a standalone weights item; DeepSeek-V4 support is referenced in the vLLM and SGLang runtime items instead."
     },
     "chips-and-cheese": {
-      "last_seen_url": "https://chipsandcheese.com/p/evaluating-spec-cpu2026",
-      "last_seen_at": "2026-05-23",
-      "note": "Evaluating SPEC CPU2026 (2026-05-23) processed but not published; general-purpose CPU benchmark analysis (Intel Lion Cove, AMD Zen 5), not AI-accelerator or open-stack relevant."
+      "last_seen_url": "https://chipsandcheese.com/p/an-interview-with-intels-kira-boyko",
+      "last_seen_at": "2026-06-12",
+      "note": "An Interview with Intel's Kira Boyko on Xeon 6+ (2026-06-12) processed but not published; general-purpose Xeon CPU product interview, not AI-accelerator or open-stack relevant."
     },
     "latent-space": {
       "last_seen_url": "https://www.latent.space/p/ainews-all-model-labs-are-now-agent",
@@ -50,12 +61,14 @@
       "note": "feed at blog.lmarena.ai/feed.xml 301-redirects to arena.ai/blog/feed.xml; arena.ai/blog/feed.xml returned 404 on 2026-05-14; sources.yaml entry needs human investigation"
     },
     "osi-blog": {
-      "last_seen_url": "https://opensource.org/blog/open-technology-research-symposium-2026-opens-call-for-proposals",
-      "last_seen_at": "2026-05-18"
+      "last_seen_url": "https://opensource.org/blog/from-g7s-vision-on-ai-openness-to-eus-tech-sovereignty-package",
+      "last_seen_at": "2026-06-10",
+      "note": "Two items published in 2026-06-13.mdx: 'OSI helps G7 deliver vision on AI openness' (2026-06-01; Weights Available vs Open Weights vs Open Source AI with Open Data) and 'OSI welcomes the EU Tech Sovereignty Package' (2026-06-05; Open Source Maintenance Instrument, 2B euros / 7 years). The 2026-06-10 members newsletter rolls up both and was deduped. Age-attestation joint statement (2026-05-27) processed but not published, off-theme."
     },
     "import-ai": {
-      "last_seen_url": "https://importai.substack.com/p/import-ai-457-ai-stuxnet-cursed-muon",
-      "last_seen_at": "2026-05-18"
+      "last_seen_url": "https://importai.substack.com/p/import-ai-460",
+      "last_seen_at": "2026-06-08",
+      "note": "Issues 458 (2026-05-26), 459 (2026-06-01), 460 (2026-06-08) processed but not published; newsletter essays/digests rather than concrete stack releases. The RSI-at-Anthropic thread in 460 overlaps with Anthropic news already covered."
     },
     "apple-security-blog": {
       "last_seen_at": null,
@@ -66,24 +79,24 @@
       "last_seen_at": "2025-04-10"
     },
     "ollama-releases": {
-      "last_seen_tag": "v0.30.0-rc25",
-      "last_seen_at": "2026-05-25",
-      "note": "v0.30.0-rc23 (2026-05-22), rc24 (2026-05-24), rc25 (2026-05-25) processed but not published: continuation of the v0.30.0 RC line already covered in 2026-05-18/19 issues. No stable v0.30.0 yet; rc24/rc25 are version-bump and CI fixes."
+      "last_seen_tag": "v0.30.8",
+      "last_seen_at": "2026-06-12",
+      "note": "v0.30 line reaching stable published as a single runtime item in 2026-06-13.mdx: v0.30.4 (Nemotron-3-Ultra), v0.30.5/v0.30.6 (Gemma 4 QAT weights, gemma4:12b crash fix), v0.30.5-v0.30.7 (native Hermes Desktop), v0.30.8 (2026-06-12; launch provider fix + prompt caching / KV reuse). Intermediate -rc tags processed but not separately published."
     },
     "llama-cpp-releases": {
-      "last_seen_tag": "b9330",
-      "last_seen_at": "2026-05-25",
-      "note": "Nightlies b9266-b9330 (through 2026-05-25 PT) processed but not published; routine work without a clear milestone (fast Walsh-Hadamard CUDA transform, ffn_latent MUL_MAT buft-probe fix, tensor-parallel ggml context-size fix, parallel quant LUT init, cpp-httplib 0.45.1 bump, server checkpoint fixes, MTP kv-cache draft-type handling)."
+      "last_seen_tag": "b9622",
+      "last_seen_at": "2026-06-13",
+      "note": "EAGLE3 speculative decoding (b9606, 2026-06-12) published as a runtime item in 2026-06-13.mdx. Builds b9616-b9622 (Vulkan non-contiguous unary/GLU ops, server static-asset cleanup, UI filename preservation, CI release fixes) processed but not separately published as routine numbered builds."
     },
     "huggingface-blog": {
-      "last_seen_url": "https://huggingface.co/blog/agent-glossary",
-      "last_seen_at": "2026-05-25",
-      "note": "NVIDIA Nemotron-Labs Diffusion (nvidia/nemotron-labs-diffusion, 2026-05-23) published as weights item in 2026-05-25.mdx. 'Harness, Scaffold, and the AI Agent Terms Worth Getting Right' (agent-glossary, 2026-05-25) and 'Specialization Beats Scale' (Dharma-AI, 2026-05-22) processed but not published: a terminology essay and a community opinion post, not releases."
+      "last_seen_url": "https://huggingface.co/blog/olmo-eval",
+      "last_seen_at": "2026-06-12",
+      "note": "olmo-eval (2026-06-12) published as evaluation item in 2026-06-13.mdx via the AI2 primary URL. Two model-release candidates flagged to needs-review.jsonl for human URL verification: 'North Mini Code: Cohere's First Model' (2026-06-09; canonical post URL not resolved, /blog/North-Mini-Code 404) and 'Nemotron 3.5 Content Safety' (2026-06-04; /blog/nvidia/nemotron-content-safety 404). Other window posts (Profiling in PyTorch pt2, Agent Built a 3D Paris Gallery, Migrating GitHub CI to HF Jobs, OpenEnv community support, hf CLI agent-optimized, DPO Beyond Chatbots, Reachy Mini MCP, Holo3.1) processed but not published as tutorials/case-studies/essays."
     },
     "anthropic-news": {
-      "last_seen_url": "https://www.anthropic.com/news/chris-olah-pope-leo-encyclical",
-      "last_seen_at": "2026-05-25",
-      "note": "Chris Olah's remarks on Pope Leo XIV's encyclical (2026-05-25) processed but not published; co-founder commentary rather than a stack release. Project Glasswing (2026-05-22) lives under /research/ and was published from the anthropic-research source in 2026-05-25.mdx."
+      "last_seen_url": "https://www.anthropic.com/news/fable-mythos-access",
+      "last_seen_at": "2026-06-12",
+      "note": "Two items published in 2026-06-13.mdx: Claude Fable 5 and Mythos 5 announcement (2026-06-09, weights) and the US export-control directive suspending access to both (2026-06-12, governance). Project Glasswing extended to ~150 orgs in 15+ countries (2026-06-02) processed but not published as a follow-on to the 2026-05-25 Glasswing item. Cyber-threat MITRE mapping (2026-06-03), Claude Corps fellowship, TCS/DXC partnerships, Partner Hub, and Public Record initiative processed but not published as enterprise/program announcements."
     },
     "anthropic-research": {
       "last_seen_url": "https://www.anthropic.com/research/glasswing-initial-update",
@@ -91,14 +104,14 @@
       "note": "Project Glasswing: An initial update (2026-05-22) published as safety-guardrails item in 2026-05-25.mdx (AI-assisted vulnerability discovery with the withheld Mythos Preview model; Claude Security public beta and a Cyber Verification Program announced)."
     },
     "ai2-blog": {
-      "last_seen_url": "https://allenai.org/blog/olmoearth-v1-1",
-      "last_seen_at": "2026-05-19",
-      "note": "OlmoEarth v1.1 (2026-05-19) already published in 2026-05-21.mdx via the huggingface-blog cross-post. No newer AI2 posts as of 2026-05-25."
+      "last_seen_url": "https://allenai.org/blog/olmo-eval",
+      "last_seen_at": "2026-06-12",
+      "note": "olmo-eval (2026-06-12) published as evaluation item in 2026-06-13.mdx; an open evaluation workbench extending OLMES across the model development loop, code at github.com/allenai/olmo-eval."
     },
     "trl-releases": {
-      "last_seen_tag": "v1.5.0",
-      "last_seen_at": "2026-05-25",
-      "note": "v1.5.0 (2026-05-25) published as training item in 2026-05-25.mdx (chat templates for Phi-3.5/Qwen3-VL/Qwen3.5, async-GRPO final logits softcapping, KTO/DPO loss alignment, opt-out telemetry)."
+      "last_seen_tag": "v1.6.0",
+      "last_seen_at": "2026-06-11",
+      "note": "v1.6.0 (2026-06-11) published as training item in 2026-06-13.mdx (AsyncRolloutWorker in a separate process, experimental A2PO trainer, KTO vision-language support, cross-tokenizer GOLD distillation, live vLLM teacher logprobs in SDFT/SDPO, bidirectional importance sampling for GRPO)."
     },
     "lm-eval-harness-releases": {
       "last_seen_tag": "v0.5.0.dev1",
@@ -118,13 +131,19 @@
       "last_seen_at": "2026-04-13"
     },
     "nvidia-dev-blog": {
-      "last_seen_url": "https://developer.nvidia.com/blog/synthesize-realistic-3d-medical-images-at-scale-to-ship-pre-trained-models/",
-      "last_seen_at": "2026-05-22",
-      "note": "Synthesize Realistic 3D Medical Images at Scale (2026-05-22) processed but not published; a synthetic-data tutorial for medical imaging, not a stack release."
+      "last_seen_url": "https://developer.nvidia.com/blog/nvidia-achieves-leading-agentic-coding-performance-on-first-agentic-ai-benchmark/",
+      "last_seen_at": "2026-06-13",
+      "note": "Window posts (AA-AgentPerf agent-inference benchmark 2026-06-13, MiniMax M3 on Blackwell 2026-06-12, Quantum InfiniBand security 2026-06-11, DiffusionGemma on NVIDIA 2026-06-10, NVFP4 on Blackwell 2026-06-09, Nemotron 3 Ultra 2026-06-04, plus FP8/FLARE/ASR/Windows tutorials) processed but not published; vendor optimization tutorials and benchmark posts rather than primary open-stack releases. Nemotron-3-Ultra surfaces in the published Ollama runtime item; DiffusionGemma and Gemma 4 surface in the vLLM/Ollama items."
+    },
+    "latent-space": {
+      "last_seen_url": "https://www.latent.space/p/ainews-fable-and-mythos-too-dangerous",
+      "last_seen_at": "2026-06-13",
+      "note": "All three window posts are AINews-syndicated digests ('Fable and Mythos officially too dangerous to release' 2026-06-13, 'Loopcraft' 2026-06-12, 'Open Models, Model Labs vs Agent Labs - Sarah Guo' 2026-06-11); not published per the do-not-re-syndicate-AINews-digests rule."
     },
     "mistral-news": {
-      "last_seen_url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5",
-      "last_seen_at": "2026-04-29"
+      "last_seen_url": "https://mistral.ai/news/vibe-gets-to-work",
+      "last_seen_at": "2026-05-28",
+      "note": "Window items (Vibe gets to work + VS Code extension 2026-05-28, AI Now Summit 2026, Search Toolkit 2026-05-28, Physics AI 2026-05-27, Emmi partnership 2026-05-23, Remote Agents + Mistral Medium 3.5 2026-05-22, MCPs in Studio 2026-05-22) processed but not published; product launches and proprietary-model/partnership announcements off-theme for the open-source stack."
     },
     "qwen-blog": {
       "last_seen_at": "2026-05-14",
@@ -139,9 +158,9 @@
       "note": "block.github.io/goose/blog/rss.xml returned 404 on 2026-05-14; logged to fetch-errors.jsonl."
     },
     "prime-intellect-blog": {
-      "last_seen_url": "https://www.primeintellect.ai/blog/reward-hacking",
-      "last_seen_at": "2026-05-25",
-      "note": "Systematic Reward Hacking and Prime Sprints (2026-05-20) published as safety-guardrails item in 2026-05-21.mdx. No newer posts as of 2026-05-25."
+      "last_seen_url": "https://www.primeintellect.ai/blog/true-agents-model-the-world",
+      "last_seen_at": "2026-06-05",
+      "note": "True Agents Model the World (2026-06-05), Post-Training Nemotron 3 on Lab (2026-06-04), and Prime Intellect Joins the NVIDIA Nemotron Coalition (2026-06-04) processed but not published; research/partnership posts rather than decentralized-training or compute milestones."
     },
     "nemo-guardrails-releases": {
       "last_seen_tag": "v0.22.0",
@@ -168,98 +187,98 @@
     },
     "grants_watch_frontier-model-forum-updates": {
       "last_seen_url": "https://www.frontiermodelforum.org/updates/fmf-announces-first-of-its-kind-information-sharing-agreement/",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13. A 'Progress Update' follow-on to the information-sharing agreement is visible but undated and not a grant."
+      "last_seen_at": "2026-06-15",
+      "note": "No new items since 2026-05-18. Updates page still tops out at the information-sharing agreement and its undated Progress Update follow-on; no new AISF cohort or grant."
     },
     "grants_watch_nlnet-news": {
-      "last_seen_url": "https://nlnet.nl/news/2026/20260428-Jaap-Akkerhuis-Knighted.html",
-      "last_seen_at": "2026-05-18",
-      "note": "No new news items since 2026-05-13. Office hour event on 2026-05-27 is not a grant announcement."
+      "last_seen_url": "https://nlnet.nl/news/2026/20260612-NGIZero-stocktaking.html",
+      "last_seen_at": "2026-06-15",
+      "note": "Two new items since 2026-05-18. Queued the 2026-06-01 open call (20260601-call.html) as low-confidence: it accepts proposals only for NGI Taler (privacy payments) and NGI Fediversity (Nix hosting), deadline Aug 1 2026, not AI-specific. The 2026-06-12 stocktaking (20260612-NGIZero-stocktaking.html) announces regular NGI Zero Commons calls are temporarily paused during the transition to the Open Internet Stack; a status change, not a grant, not queued."
     },
     "grants_watch_nsf-news-ai": {
-      "last_seen_url": "https://www.nsf.gov/news/nsf-announces-15b-nsf-x-labs-initiative-pursue-generational",
-      "last_seen_at": "2026-05-18",
-      "note": "Queued NSF X-Labs $1.5B/decade initiative (2026-05-14) as low-confidence: AI/open-source relevance not confirmed from listing, needs human read of the announcement."
+      "last_seen_url": "https://www.nsf.gov/news/nsf-supported-teams-advanced-through-presidential-ai",
+      "last_seen_at": "2026-06-15",
+      "note": "New items since 2026-05-18 are not stack-relevant grants: 'Podcast: AI-driven tool targets hearing loss' (2026-06-03) and 'NSF-supported teams advanced through the Presidential AI Challenge' (2026-06-09, K-12 education competition). NSF X-Labs $1.5B (2026-05-14) remains queued from the prior run. Nothing new queued."
     },
     "grants_watch_schmidt-sciences-opportunities": {
-      "last_seen_at": "2026-05-18",
-      "note": "No new items. Currently listed: VIEW-2 EOIs, 2026 AI Interpretability RFP, 2026 Science of Trustworthy AI RFP, all previously known."
+      "last_seen_at": "2026-06-15",
+      "note": "Queued NEW open RFP 'Scaling AI Safety for a Multi-Agent World' (high confidence): joint with Google DeepMind, ARIA, Cooperative AI Foundation, Google.org; Tier 1 up to $300K, Tier 2 $300K-$1M, deadline Aug 8 2026 (schmidtsciences.smapply.io). Open list now also shows VICC-2 (climate, off-theme). The earlier AI Interpretability / Science of Trustworthy AI RFPs no longer listed as open."
     },
     "grants_watch_schmidt-sciences-announcements": {
       "last_seen_url": "https://www.schmidtsciences.org/worlds-largest-animal-migration-and-ocean-gyres-play-critical-roles-in-global-carbon-cycle/",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13. Most recent post 2026-04-30 (carbon cycle)."
+      "last_seen_at": "2026-06-15",
+      "note": "No new items since 2026-05-18. Most recent post still 2026-04-30 (carbon cycle). New AI-safety RFP surfaced via the /opportunities page instead (see grants_watch_schmidt-sciences-opportunities)."
     },
     "grants_watch_mozilla-foundation-press": {
       "last_seen_url": "https://foundation.mozilla.org/en/blog/funding-the-future-of-trustworthy-tech/",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13. Fetched listing returned older posts; redirect to mozillafoundation.org/en/blog observed. Worth re-checking if signal expected."
+      "last_seen_at": "2026-06-15",
+      "note": "No new items. foundation.mozilla.org/en/blog 301-redirects to mozillafoundation.org/en/blog, which returned a stale cache topping out at early-2025 posts on 2026-06-15. Could not confirm new June 2026 posts; source URL may need human re-sourcing."
     },
     "grants_watch_mozilla-builders-blog": {
-      "last_seen_at": "2026-05-18",
-      "note": "https://builders.mozilla.org/blog/ still 404 on 2026-05-18. URL needs human re-sourcing."
+      "last_seen_at": "2026-06-15",
+      "note": "https://builders.mozilla.org/blog/ still 404 on 2026-06-15. URL needs human re-sourcing."
     },
     "grants_watch_sovereign-tech-agency-news": {
       "last_seen_url": "https://www.sovereign.tech/news/standards-survey-results",
-      "last_seen_at": "2026-05-18",
-      "note": "Both sovereigntechfund.de/news and sovereign.tech/news returned 403 on 2026-05-18 (bot-block). Could not verify new items; sources.yaml feed URL needs an alternative path or auth method."
+      "last_seen_at": "2026-06-15",
+      "note": "sovereign.tech/news still returns 403 on 2026-06-15 (bot-block). Could not verify new items; sources.yaml feed URL needs an alternative path or auth method."
     },
     "grants_watch_anthropic-news-funding": {
-      "last_seen_url": "https://www.anthropic.com/news/gates-foundation-partnership",
-      "last_seen_at": "2026-05-18",
-      "note": "Queued Gates Foundation $200M partnership (2026-05-14) as low-confidence edge case. PwC expanded partnership (2026-05-14) is not a grant."
+      "last_seen_url": "https://www.anthropic.com/news/claude-corps",
+      "last_seen_at": "2026-06-15",
+      "note": "Queued 'Introducing Claude Corps' (2026-06-11), a national early-career fellowship program, as low-confidence: relevance to the open-source AI stack is unclear. Other June items not queued: Project Glasswing expansion to ~150 orgs (2026-06-02), TCS/DXC enterprise partnerships, Claude Partner Network Services Track / Partner Hub (none are grants). Gates Foundation $200M remains queued from prior run."
     },
     "grants_watch_openai-index-funding": {
-      "last_seen_at": "2026-05-18",
-      "note": "https://openai.com/index/ and /news/ still return 403 on 2026-05-18. No new visibility."
+      "last_seen_at": "2026-06-15",
+      "note": "https://openai.com/news/ still returns 403 on 2026-06-15. No new visibility."
     },
     "grants_watch_lf-aaif-blog": {
-      "last_seen_url": "https://lfaidata.foundation/blog/2026/04/27/onnx-v1-21-0-released-introducing-opset-26-new-cumprod-operator-2-bit-type-s",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13."
+      "last_seen_url": "https://lfaidata.foundation/blog/2026/05/22/kedro-1-2-0-and-kedro-viz-12-3-0-released-advancing-ai-experimentation-and-pipeline-visibility/",
+      "last_seen_at": "2026-06-15",
+      "note": "One new post since 2026-05-18: Kedro 1.2.0 / Kedro-Viz 12.3.0 (2026-05-22), a project release, not a grant. Nothing queued."
     },
     "grants_watch_open-philanthropy-grants": {
-      "last_seen_at": "2026-05-18",
-      "note": "Open Philanthropy URL now 301-redirects to coefficientgiving.org which also returns 403. Org appears rebranded to Coefficient Giving. grants-sources.yaml entry needs human update."
+      "last_seen_at": "2026-06-15",
+      "note": "Open Philanthropy URL still 301-redirects to coefficientgiving.org; coefficientgiving.org/grants/ returned 403 on 2026-06-15. Org rebranded to Coefficient Giving. grants-sources.yaml entry needs a human update to a fetchable path."
     },
     "grants_watch_ai2-blog-funding": {
-      "last_seen_url": "https://allenai.org/blog/aimip",
-      "last_seen_at": "2026-05-18",
-      "note": "No new items since 2026-05-13."
+      "last_seen_url": "https://allenai.org/blog/olmo-eval",
+      "last_seen_at": "2026-06-15",
+      "note": "New posts since 2026-05-18 (olmo-eval 2026-06-12, OlmoEarth v1.1 2026-05-19) are tooling/model releases, not funding. Nothing queued."
     },
     "grants_watch_huggingface-blog-grants": {
       "last_seen_url": "https://huggingface.co/blog/ibm-research/open-agent-leaderboard",
-      "last_seen_at": "2026-05-18",
-      "note": "Three new posts (Open Agent Leaderboard 2026-05-18, Granite Embedding R2 2026-05-14, continuous_async 2026-05-14) are all project/model releases, not grants."
+      "last_seen_at": "2026-06-15",
+      "note": "No grant/funding posts in the feed since 2026-05-18; recent posts are model releases and tutorials. Nothing queued."
     },
     "grants_watch_granted-ai": {
       "last_seen_url": "https://grantedai.com/grants/capacity-building-grant-initiative-2026-michigan-health-endowment-fund-36ec4c3e",
-      "last_seen_at": "2026-05-18",
-      "note": "Recent items are forestry, cultural districts, CAL FIRE workforce. No AI-stack-relevant grants surfaced this week."
+      "last_seen_at": "2026-06-15",
+      "note": "Trending/closing-soon items on 2026-06-15 are USDA Western SARE, substance-use prevention, SAMHSA clinical support. No AI-stack-relevant grants surfaced."
     },
     "grants_watch_opportunity-desk": {
-      "last_seen_url": "https://opportunitydesk.org/2026/05/13/sir-ratan-tata-postdoctoral-fellowship-2026-2027/",
-      "last_seen_at": "2026-05-18",
-      "note": "Recent items in environment, business, agriculture, public health, education, arts, peace/security. None AI-stack-relevant."
+      "last_seen_url": "https://opportunitydesk.org/2026/06/15/ai-explorer-program-2026/",
+      "last_seen_at": "2026-06-15",
+      "note": "June 2026 AI-tagged items (UMich AI Explorer Program, Institute for Law & AI Academic Fellowship, Youth for Responsible AI Fellowship, Presidential African Youth AI competition) are research/education/policy fellowships, not open-source-AI-stack funding. Nothing queued."
     },
     "grants_watch_ea-forum-grants": {
-      "last_seen_at": "2026-05-18",
-      "note": "https://forum.effectivealtruism.org/tag/grants/feed.xml still 404 on 2026-05-18."
+      "last_seen_at": "2026-06-15",
+      "note": "https://forum.effectivealtruism.org/tag/grants/feed.xml still 404 on 2026-06-15."
     },
     "grants_watch_lesswrong-funding": {
-      "last_seen_url": "https://www.lesswrong.com/posts/7vpvNM7viJqNWAdG7/classifier-context-rot-monitor-performance-degrades-with",
-      "last_seen_at": "2026-05-18",
-      "note": "Two new funding-adjacent posts on 2026-05-18 are Anthropic Fellows research outputs, not grant announcements."
+      "last_seen_url": "https://www.lesswrong.com/feed.xml",
+      "last_seen_at": "2026-06-15",
+      "note": "No funding/grant announcements in the feed since 2026-05-18; recent posts are opinion/analysis and link roundups. Nothing queued."
     },
     "grants_watch_eu-horizon-news": {
-      "last_seen_url": "https://digital-strategy.ec.europa.eu/en/news/eu-and-africa-strengthen-cooperation-artificial-intelligence",
-      "last_seen_at": "2026-05-21",
-      "note": "Commission opens feedback on draft high-risk AI classification guidelines (2026-05-19) published as governance item in 2026-05-21.mdx. EU-Africa AI cooperation event (2026-05-21) processed but not published; an event recap without named concrete agreements."
+      "last_seen_url": "https://digital-strategy.ec.europa.eu/en/news/commission-seeks-leading-academics-raise-high-level-academic-advisory-board",
+      "last_seen_at": "2026-06-15",
+      "note": "New items since 2026-05-21 not queued: RAISE High-Level Academic Advisory Board call (2026-06-15, governance/advisory, not a grant); 'Advanced Digital Skills: 3 grant agreements under Digital Europe Programme' (2026-06-09, EUR 25.4M for digital-skills training, off-theme for the open AI stack); EU Innovation Platform launch (2026-06-09, not a grant). No GenAI4EU / OpenEuroLLM / RAISE pilot funding round in the window."
     },
     "grants_watch_aisi-uk-grants": {
       "last_seen_url": "https://www.aisi.gov.uk/grants",
-      "last_seen_at": "2026-05-18",
-      "note": "Page unchanged. All programmes still show 'Applications closed.'"
+      "last_seen_at": "2026-06-15",
+      "note": "All programmes still show applications closed on 2026-06-15. Challenge Fund (up to GBP 200K, already queued 2026-05-13) now reads 'Applications are now closed.' Alignment Project shows over GBP 15M awarded; Systemic Safety Grants first 20 projects underway. No new open programme; nothing queued."
     }
   }
 }
