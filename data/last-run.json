@@ -1,17 +1,17 @@
 {
   "comment": "State file for the daily news routine. Maps source id to the most recently seen item id or timestamp. The agent updates this on every successful run.",
   "schema_version": 1,
-  "last_run_at": "2026-06-13T08:00:00-07:00",
+  "last_run_at": "2026-06-15T15:44:00-07:00",
   "sources": {
     "vllm-releases": {
-      "last_seen_tag": "v0.23.0",
-      "last_seen_at": "2026-06-13",
-      "note": "v0.23.0 (2026-06-13) stable published as runtime item in 2026-06-13.mdx (408 commits / 200 contributors; DeepSeek-V4 across backends, Model Runner V2 for Llama/Mistral dense, unified encoder-free Gemma 4, Transformers v5 compat, multi-tier KV cache offloading). No new tag between v0.21.1rc0 and v0.23.0 surfaced in the feed."
+      "last_seen_tag": "v0.23.1rc0",
+      "last_seen_at": "2026-06-15",
+      "note": "v0.23.1rc0 (2026-06-15) processed but not published in the 2026-06-15 quiet-day issue; a CI bugfix release candidate (Dockerfile dependency-graph PNG update), not a milestone. v0.23.0 (2026-06-13) stable was published as a runtime item in 2026-06-13.mdx."
     },
     "sglang-releases": {
-      "last_seen_tag": "v0.5.13",
-      "last_seen_at": "2026-06-13",
-      "note": "v0.5.13 (2026-06-13) stable published as runtime item in 2026-06-13.mdx (Spec V2 default speculative decoding, DeepSeek-V4 context parallelism + sparse kernels, realtime diffusion with progressive resolution, new model support)."
+      "last_seen_tag": "v0.5.13.post1",
+      "last_seen_at": "2026-06-15",
+      "note": "v0.5.13.post1 (2026-06-15) processed but not published in the 2026-06-15 quiet-day issue; a minor patch on top of v0.5.13. v0.5.13 (2026-06-13) was published as a runtime item in 2026-06-13.mdx (Spec V2 default speculative decoding, DeepSeek-V4 context parallelism + sparse kernels, realtime diffusion, Nemotron 3 Ultra / Step-3.7-Flash support)."
     },
     "axolotl-releases": {
       "last_seen_tag": "v0.17.0",
@@ -33,18 +33,18 @@
       "note": "feed returned 404 on 2026-05-13; logged to fetch-errors.jsonl"
     },
     "interconnects": {
-      "last_seen_url": "https://www.interconnects.ai/p/claude-fable-5-and-new-ai-safety-fables",
-      "last_seen_at": "2026-06-09",
-      "note": "Claude Fable 5 and new AI safety fables (2026-06-09) and Farewell Ai2 (2026-06-02) processed but not published; both are opinion essays, not releases."
+      "last_seen_url": "https://www.interconnects.ai/p/welcome-to-the-agi-era-of-ai-governance",
+      "last_seen_at": "2026-06-14",
+      "note": "Welcome to the AGI era of AI governance (2026-06-14) processed but not published in the 2026-06-15 quiet-day issue; an opinion essay on the Fable/Mythos export-control suspension already covered as a governance item in 2026-06-13.mdx. Claude Fable 5 and new AI safety fables (2026-06-09) and Farewell Ai2 (2026-06-02) likewise opinion essays, not releases."
     },
     "eleutherai-blog": {
       "last_seen_url": "https://blog.eleuther.ai/reward-hacking-indicators/",
       "last_seen_at": "2026-04-15"
     },
     "semianalysis": {
-      "last_seen_url": "https://newsletter.semianalysis.com/p/intel-should-raise-capital",
-      "last_seen_at": "2026-06-11",
-      "note": "Intel Should Raise Capital (2026-06-11) and DeepSeekV4 1.6T Day 0 to Day 43 Performance Over Time (2026-06-09) processed but not published; both are paywalled market/perf analyses off-theme for the open stack. The DeepSeekV4 piece confirms DeepSeek V4 1.6T launched ~late April 2026 (Day 43 from 2026-06-09), before this window, so it is not published as a standalone weights item; DeepSeek-V4 support is referenced in the vLLM and SGLang runtime items instead."
+      "last_seen_url": "https://newsletter.semianalysis.com/p/steel-smic-n3-teardown",
+      "last_seen_at": "2026-06-14",
+      "note": "Is SMIC N+3's Metal Pitch Smaller than Intel 18A? (2026-06-14; STEEL lab teardown of Huawei Kirin 9030 on SMIC N+3 vs TSMC N6) processed but not published in the 2026-06-15 quiet-day issue; a paywalled semiconductor-process teardown, off-theme for the open AI stack. Intel Should Raise Capital (2026-06-11) and the DeepSeekV4 1.6T performance piece (2026-06-09) likewise off-theme paywalled analyses."
     },
     "chips-and-cheese": {
       "last_seen_url": "https://chipsandcheese.com/p/an-interview-with-intels-kira-boyko",
@@ -66,9 +66,9 @@
       "note": "Two items published in 2026-06-13.mdx: 'OSI helps G7 deliver vision on AI openness' (2026-06-01; Weights Available vs Open Weights vs Open Source AI with Open Data) and 'OSI welcomes the EU Tech Sovereignty Package' (2026-06-05; Open Source Maintenance Instrument, 2B euros / 7 years). The 2026-06-10 members newsletter rolls up both and was deduped. Age-attestation joint statement (2026-05-27) processed but not published, off-theme."
     },
     "import-ai": {
-      "last_seen_url": "https://importai.substack.com/p/import-ai-460",
-      "last_seen_at": "2026-06-08",
-      "note": "Issues 458 (2026-05-26), 459 (2026-06-01), 460 (2026-06-08) processed but not published; newsletter essays/digests rather than concrete stack releases. The RSI-at-Anthropic thread in 460 overlaps with Anthropic news already covered."
+      "last_seen_url": "https://importai.substack.com/p/import-ai-461-alignment-is-not-on",
+      "last_seen_at": "2026-06-15",
+      "note": "Issue 461 (2026-06-15; the Sequent nonprofit, FrontierCode coding benchmark, synthetic research interns) processed but not published in the 2026-06-15 quiet-day issue; newsletter essay/digest, not a concrete stack release. Issues 458-460 likewise processed but not published."
     },
     "apple-security-blog": {
       "last_seen_at": null,
@@ -79,14 +79,14 @@
       "last_seen_at": "2025-04-10"
     },
     "ollama-releases": {
-      "last_seen_tag": "v0.30.8",
-      "last_seen_at": "2026-06-12",
-      "note": "v0.30 line reaching stable published as a single runtime item in 2026-06-13.mdx: v0.30.4 (Nemotron-3-Ultra), v0.30.5/v0.30.6 (Gemma 4 QAT weights, gemma4:12b crash fix), v0.30.5-v0.30.7 (native Hermes Desktop), v0.30.8 (2026-06-12; launch provider fix + prompt caching / KV reuse). Intermediate -rc tags processed but not separately published."
+      "last_seen_tag": "v0.30.9-rc1",
+      "last_seen_at": "2026-06-15",
+      "note": "v0.30.9-rc0 and v0.30.9-rc1 (both 2026-06-15) processed but not published in the 2026-06-15 quiet-day issue; release candidates that only bump bundled llama.cpp to b9637. The v0.30 line reaching stable through v0.30.8 (2026-06-12) was published as a single runtime item in 2026-06-13.mdx (Nemotron-3-Ultra, Gemma 4 QAT weights, native Hermes Desktop, prompt caching / KV reuse)."
     },
     "llama-cpp-releases": {
-      "last_seen_tag": "b9622",
-      "last_seen_at": "2026-06-13",
-      "note": "EAGLE3 speculative decoding (b9606, 2026-06-12) published as a runtime item in 2026-06-13.mdx. Builds b9616-b9622 (Vulkan non-contiguous unary/GLU ops, server static-asset cleanup, UI filename preservation, CI release fixes) processed but not separately published as routine numbered builds."
+      "last_seen_tag": "b9660",
+      "last_seen_at": "2026-06-15",
+      "note": "Builds through b9660 (2026-06-15) processed but not published in the 2026-06-15 quiet-day issue; rolling numbered builds (PEG-native tool-call parsing hardening and LFM2 double-escape fix, mtmd token-count and post-decode callback, Vulkan/SYCL/WASM fixes), no tagged milestone. EAGLE3 speculative decoding (b9606, 2026-06-12) was published as a runtime item in 2026-06-13.mdx."
     },
     "huggingface-blog": {
       "last_seen_url": "https://huggingface.co/blog/olmo-eval",
@@ -126,14 +126,19 @@
       "last_seen_tag": "v0.86.3.dev",
       "last_seen_at": "2026-02-12"
     },
+    "cline-releases": {
+      "last_seen_tag": "nightly-dpc-sdk-migration-simpler-login-20260615184517-a419c53e0963",
+      "last_seen_at": "2026-06-15",
+      "note": "A nightly build (2026-06-15) published from the dpc/sdk-migration-simpler-login branch processed but not published in the 2026-06-15 quiet-day issue; a branch nightly, not a tagged stable release."
+    },
     "x402-releases": {
       "last_seen_tag": "npm-@x402/next@v2.10.0",
       "last_seen_at": "2026-04-13"
     },
     "nvidia-dev-blog": {
-      "last_seen_url": "https://developer.nvidia.com/blog/nvidia-achieves-leading-agentic-coding-performance-on-first-agentic-ai-benchmark/",
-      "last_seen_at": "2026-06-13",
-      "note": "Window posts (AA-AgentPerf agent-inference benchmark 2026-06-13, MiniMax M3 on Blackwell 2026-06-12, Quantum InfiniBand security 2026-06-11, DiffusionGemma on NVIDIA 2026-06-10, NVFP4 on Blackwell 2026-06-09, Nemotron 3 Ultra 2026-06-04, plus FP8/FLARE/ASR/Windows tutorials) processed but not published; vendor optimization tutorials and benchmark posts rather than primary open-stack releases. Nemotron-3-Ultra surfaces in the published Ollama runtime item; DiffusionGemma and Gemma 4 surface in the vLLM/Ollama items."
+      "last_seen_url": "https://developer.nvidia.com/blog/fine-tuning-biological-foundation-models-with-lora-using-nvidia-bionemo-recipes/",
+      "last_seen_at": "2026-06-15",
+      "note": "Fine-Tuning Biological Foundation Models with LoRA via BioNeMo Recipes and Boosting MoE Training Throughput with Advanced Fusion Kernels (both 2026-06-15) processed but not published in the 2026-06-15 quiet-day issue; vendor optimization tutorials, not primary open-stack releases. Earlier window posts (AA-AgentPerf benchmark, MiniMax M3 on Blackwell, NVFP4, Nemotron 3 Ultra, etc.) likewise processed but not published."
     },
     "latent-space": {
       "last_seen_url": "https://www.latent.space/p/ainews-fable-and-mythos-too-dangerous",

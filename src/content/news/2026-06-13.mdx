@@ -1,0 +1,105 @@
+---
+date: 2026-06-13
+editorial_letter: "This issue covers the window from 2026-05-26 through 2026-06-13, the first publish since the May 25 issue, across seven layers: training, weights, runtime, agents, protocols, evaluation, and governance. The runtime layer carried the most activity, with vLLM 0.23.0 and SGLang 0.5.13 both tagged on 2026-06-13, each adding support for DeepSeek-V4 and Google's Gemma 4. In governance, the US government issued an export control directive on 2026-06-12 suspending all access to Anthropic's Claude Fable 5 and Mythos 5, two days after their release, and the Open Source Initiative reported its role in a G7 framework that separates Weights Available from Open Weights. Training logged two releases; weights, agents, protocols, and evaluation each logged one."
+item_count: 13
+layer_buckets:
+  training: 2
+  weights: 1
+  runtime: 4
+  agents: 1
+  protocols: 1
+  evaluation: 1
+  governance: 3
+---
+
+## Training
+
+### TRL v1.6.0
+
+Hugging Face tagged TRL v1.6.0 on 2026-06-11. The AsyncRolloutWorker now runs in a separate process to avoid GIL contention, and the release adds an experimental A2PO trainer that implements optimal advantage regression for reasoning tasks. It extends KTO with vision-language model support, adds cross-tokenizer alignment in GOLD distillation, live teacher logprobs from vLLM servers in SDFT and SDPO, and bidirectional importance sampling for GRPO.
+
+Source: [TRL GitHub Releases](https://github.com/huggingface/trl/releases/tag/v1.6.0)
+
+### Axolotl v0.17.0
+
+Axolotl released v0.17.0 on 2026-06-03, described in the notes as roughly 84 commits since v0.16.1. It adds Expert Parallelism for mixture-of-experts training, BitNet 1.58-bit fine-tuning, and remote training through Tinker. The release also adds context parallelism for hybrid state-space models.
+
+Source: [Axolotl GitHub Releases](https://github.com/axolotl-ai-cloud/axolotl/releases/tag/v0.17.0)
+
+## Weights
+
+### Claude Fable 5 and Mythos 5
+
+Anthropic announced Claude Fable 5 and Claude Mythos 5 on 2026-06-09. The post describes Fable 5 as a Mythos-class model made safe for general use and Mythos 5 as the same underlying model with safeguards lifted in some areas, and claims state-of-the-art results on nearly all tested capability benchmarks, naming software engineering, knowledge work, vision, and scientific research, with Mythos 5 cited for cybersecurity. Both models are proprietary and offered through Anthropic's API and subscription plans; the announcement publishes no weights or open license terms. Three days later the US government suspended access to both, covered in the governance section below.
+
+Source: [Anthropic News](https://www.anthropic.com/news/claude-fable-5-mythos-5)
+
+## Runtime
+
+### vLLM v0.23.0
+
+The vLLM project tagged v0.23.0 on 2026-06-13, a stable release the notes describe as 408 commits from 200 contributors. It adds improvements to DeepSeek-V4 across backends, expands Model Runner V2 to cover Llama and Mistral dense models, and adds unified encoder-free support for Gemma 4. The notes also list compatibility with Transformers v5 and multi-tier KV cache offloading, plus Rust frontend work.
+
+Source: [vLLM GitHub Releases](https://github.com/vllm-project/vllm/releases/tag/v0.23.0)
+
+### SGLang v0.5.13
+
+SGLang tagged v0.5.13 on 2026-06-13. The release makes Spec V2 the default speculative decoding path, adds DeepSeek-V4 context parallelism and sparse kernels, and introduces realtime diffusion with progressive resolution. It also adds support for new models.
+
+Source: [SGLang GitHub Releases](https://github.com/sgl-project/sglang/releases/tag/v0.5.13)
+
+### Ollama v0.30 line reaches stable
+
+Ollama moved its v0.30 line to stable across late May and June, reaching v0.30.8 on 2026-06-12. Along the way the releases added the Nemotron-3-Ultra model (v0.30.4), Gemma 4 QAT-optimized weights (v0.30.6), and a native Hermes Desktop interface launched with ollama launch hermes-desktop (v0.30.5 through v0.30.7). The v0.30.8 release fixed launch provider selection and improved prompt caching with better KV cache reuse.
+
+Source: [Ollama GitHub Releases](https://github.com/ollama/ollama/releases)
+
+### llama.cpp adds EAGLE3 speculative decoding
+
+The llama.cpp project added EAGLE3 speculative decoding in build b9606 on 2026-06-12, a multi-author change that extracts layer inputs to drive the speculative path. Builds through b9622 on 2026-06-13 carried Vulkan support for non-contiguous unary and GLU ops and a server static-asset cleanup. These ship as the project's rolling numbered builds rather than a tagged milestone.
+
+Source: [llama.cpp GitHub Releases](https://github.com/ggml-org/llama.cpp/releases/tag/b9606)
+
+## Agents
+
+### OpenHands 1.8.0
+
+All-Hands-AI tagged OpenHands 1.8.0 on 2026-06-10. The release adds LLM profiles, sandbox grouping selection, sub-agent delegation, and a minimal generic ACP agent UI, and removes the App tab from the conversation interface. The notes list 31 commits and six new contributors.
+
+Source: [OpenHands GitHub Releases](https://github.com/All-Hands-AI/OpenHands/releases/tag/1.8.0)
+
+## Protocols
+
+### MCP 2026-07-28 specification release candidate
+
+The Model Context Protocol project published a release candidate of its 2026-07-28 specification revision, tagged 2026-07-28-RC and dated 2026-05-29. It is the first new spec revision since the 2025-11-25 stable version. The maintainers mark the specification as not final and subject to change before the stable release.
+
+Source: [MCP Spec GitHub Releases](https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2026-07-28-RC)
+
+## Evaluation
+
+### olmo-eval
+
+The Allen Institute for AI released olmo-eval on 2026-06-12, an open evaluation workbench that builds on OLMES and extends it across the model development loop. It supports agent-based and multi-turn evaluations, configurable run targets, statistical tools to separate real gains from noise, and question-by-question comparison between checkpoints. The code is published openly at allenai/olmo-eval on GitHub.
+
+Source: [Allen Institute for AI Blog](https://allenai.org/blog/olmo-eval)
+
+## Governance
+
+### US export controls suspend access to Fable 5 and Mythos 5
+
+Anthropic posted on 2026-06-12 that the US government, citing national security authorities, issued an export control directive to suspend all access to Fable 5 and Mythos 5 by any foreign national, which Anthropic says required disabling both models for all customers while leaving its other models unaffected. The post states Anthropic received the directive at 5:21pm ET that day and that the government cited a method of jailbreaking Fable 5. Anthropic writes that it reviewed a demonstration of the technique, found it involved a small number of previously known minor vulnerabilities that other public models can also discover, and says it disagrees that a narrow jailbreak should prompt recalling a commercial model.
+
+Source: [Anthropic News](https://www.anthropic.com/news/fable-mythos-access)
+
+### OSI helps G7 define AI openness terminology
+
+The Open Source Initiative reported on 2026-06-01 that it served as a knowledge partner to a G7 Digital and Technology ministers framework on AI openness approved in Paris on 2026-05-29. The framework separates Weights Available models, distributed under proprietary licensing, from Open Weights models released under open source licenses aligned with the OSI Open Source AI Definition. It defines a third category, Open Source AI with Open Data, requiring weights, deployment code, training code, and training data to be released openly.
+
+Source: [Open Source Initiative Blog](https://opensource.org/blog/open-source-initiative-helps-g7-deliver-vision-on-ai-openness)
+
+### OSI welcomes the EU Tech Sovereignty Package
+
+The Open Source Initiative welcomed the European Union's Tech Sovereignty Package on 2026-06-05, a 29-page communication in which more than a third of the text addresses open source. OSI highlights a pledge to make the public sector an anchor consumer for open source, a proposed Open Source Maintenance Instrument mobilizing 2 billion euros over seven years, and accelerator support for open source startups. It also notes gaps, including the absence of mandatory rights-waived standards and of an explicit ban on proprietary-only procurement specifications.
+
+Source: [Open Source Initiative Blog](https://opensource.org/blog/osi-welcomes-the-european-unions-tech-sovereignty-package)

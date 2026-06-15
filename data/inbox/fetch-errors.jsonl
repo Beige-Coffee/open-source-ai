@@ -12,3 +12,9 @@
 {"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "deepseek-news", "url": "https://api-docs.deepseek.com/news", "error": "HTTP 404 (recurring); needs human re-sourcing"}
 {"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "lf-ai-data-blog", "url": "https://lfaidata.foundation/blog/feed/", "error": "feed has no item entries (last build 2025-07-01); needs human investigation"}
 {"timestamp": "2026-05-25T08:00:00-07:00", "source_id": "nous-research", "url": "https://nousresearch.com/blog/", "error": "scrape exposes post titles without dates; cannot date-verify items (Hermes 4.3 confirmed Dec 2025 via HF model pages, excluded)"}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "hf-trending-models", "error": "HTTP 400 on https://huggingface.co/api/models?sort=trending&limit=30; recurring (also 400 on 2026-05-25). JSON API rejects the unauthenticated WebFetch request."}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "meta-ai-blog", "error": "HTTP 404 on https://ai.meta.com/blog/rss/; recurring (also 404 on 2026-05-25)."}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "deepseek-news", "error": "HTTP 404 on https://api-docs.deepseek.com/news; recurring."}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "qwen-blog", "error": "Near-empty scrape on https://qwen.ai/blog; recurring, needs human re-sourcing."}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "redhat-ai-blog", "error": "HTTP 404 on https://developers.redhat.com/blog/category/ai-ml/feed."}
+{"timestamp": "2026-06-15T15:52:06-07:00", "routine": "oss-ai-stack-daily-news", "source": "metr-blog", "error": "HTTP 404 on https://metr.org/blog/feed.xml; recurring (also 404 on 2026-05-19)."}
