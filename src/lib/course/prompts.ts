@@ -145,10 +145,13 @@ PHASE: READ.
 The learner is reading the module's prose. You are not active in this phase. If the learner messages you anyway (e.g. asks a definition question while reading), answer briefly using the tools to ground the answer, then nudge them back to the reading. Do not summarize the module for them.`;
 
 function probePrompt({ module, passChoice, probePrimer }: PhaseContext): string {
+  // Express is the default. Only an explicit "deep" pass opts into the
+  // long, citation-demanding version, so a learner who never picked a
+  // pass gets the short one-sitting experience.
   const depthRule =
-    passChoice === "fast"
-      ? "Aim for 3-4 question-and-answer exchanges before the learner is ready to advance."
-      : "Aim for 8-12 question-and-answer exchanges. Demand citation grounding where applicable. Probe deeper on vague answers.";
+    passChoice === "deep"
+      ? "Aim for 8-12 question-and-answer exchanges. Demand citation grounding where applicable. Probe deeper on vague answers."
+      : "Ask 2 questions total, one at a time. Accept any reasonable answer and keep moving; add a brief follow-up only when an answer is clearly wrong or empty, and never demand citations. Once the learner has given two solid answers, emit the completion token so they can advance. Keep it light: this is a fast pass meant to be finished in one sitting.";
 
   // The primer is the explicit list of claims from the Read content
   // the learner can see in the panel beside this chat. Anchor every
@@ -196,10 +199,11 @@ For your first message, start with a question that opens the layer. Don't introd
 }
 
 function comparePrompt({ module, passChoice }: PhaseContext): string {
+  // Express is the default; only explicit "deep" demands the long version.
   const depthRule =
-    passChoice === "fast"
-      ? "Two axes per anchor is enough. Accept reasonable answers."
-      : "Four axes per anchor. Demand the learner cite specific evidence (license, performance number, dependency on closed components) before accepting a cell.";
+    passChoice === "deep"
+      ? "Four axes per anchor. Demand the learner cite specific evidence (license, performance number, dependency on closed components) before accepting a cell."
+      : "One axis is enough. Pick the single most important axis from the prompt, have the learner characterize two of the anchors on it, accept reasonable answers, then complete. Ask 'why' at most once, and do not demand cited evidence.";
 
   // Layerless tracks (self-host, how-llms-work) do not map 1:1 to a
   // layer slug, so find_projects(layer=...) would query a non-layer and
@@ -244,7 +248,14 @@ Open with the axis prompt above, framed as a question the learner can start answ
 When the comparison feels substantive (at least the anchor list has been worked through with the learner's reasoning), end with <COMPARE_COMPLETE/> on its own line.`;
 }
 
-function whyOpenPrompt({ module }: PhaseContext): string {
+function whyOpenPrompt({ module, passChoice }: PhaseContext): string {
+  // Express (default) asks once and accepts any concrete answer; only the
+  // explicit deep pass probes repeatedly.
+  const depthRule =
+    passChoice === "deep"
+      ? `Reject vague answers. If the learner says "freedom" or "transparency" without specifying who/what/against-whom, push back with a specific case: "Imagine the runtime layer goes 100% closed-source over the next 5 years, only TensorRT-LLM and proprietary equivalents. What concretely changes for whom?" Probe at least twice on weak answers.`
+      : `Accept any answer that names a concrete actor and a concrete scenario; you do not need more than that. Re-ask once only if the answer is purely abstract (just "freedom" or "transparency" with no specifics), then accept their next answer.`;
+
   return `
 
 PHASE: WHY-OPEN. Current module: ${module.title}.
@@ -252,9 +263,9 @@ PHASE: WHY-OPEN. Current module: ${module.title}.
 YOUR JOB:
 Ask the learner: "Why does open source specifically matter at this layer? Not as an abstract value. As a concrete mechanism. Who does it protect, against what specifically, in what scenario?"
 
-Reject vague answers. If the learner says "freedom" or "transparency" without specifying who/what/against-whom, push back with a specific case: "Imagine the runtime layer goes 100% closed-source over the next 5 years, only TensorRT-LLM and proprietary equivalents. What concretely changes for whom?"
+${depthRule}
 
-Probe at least twice on weak answers. When the learner produces a substantive mechanism-level answer (names specific actors, specific scenarios, specific tradeoffs), tell them their answer is good and that you'll save it as part of their personal sovereignty thesis. End with <WHY_OPEN_COMPLETE/> on its own line.
+When the learner produces a mechanism-level answer (names specific actors, scenarios, tradeoffs), tell them their answer is good and that you'll save it as part of their personal sovereignty thesis. End with <WHY_OPEN_COMPLETE/> on its own line.
 
 Open with the prompt above; don't recap the module.`;
 }

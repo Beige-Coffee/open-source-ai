@@ -228,12 +228,12 @@ const totalComplete = [...progressBySlug.values()].filter(
                 type="radio"
                 name="pass_choice"
                 value="fast"
-                checked={passChoice === "fast"}
+                checked={passChoice !== "deep"}
               />
               <span>
                 <span class="text-[var(--color-text)]">Fast pass</span>
                 <span class="block text-xs text-[var(--color-text-subtle)] leading-relaxed">
-                  Shape of the stack in a day or two.
+                  The whole track in one sitting, a few hours.
                 </span>
               </span>
             </label>

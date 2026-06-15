@@ -376,12 +376,12 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
           >
             <div class="flex flex-col gap-2 mb-3 text-sm">
               <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-                <input type="radio" name="pass_choice" value="fast" checked={currentPassChoice === "fast"} class="accent-[var(--color-accent)]"/>
-                <span><span class="text-[var(--color-text)] font-medium">Fast pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · a day or two</span></span>
+                <input type="radio" name="pass_choice" value="fast" checked={currentPassChoice !== "deep"} class="accent-[var(--color-accent)]"/>
+                <span><span class="text-[var(--color-text)] font-medium">Fast pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · one sitting, a few hours</span></span>
               </label>
               <label class="inline-flex items-baseline gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
                 <input type="radio" name="pass_choice" value="deep" checked={currentPassChoice === "deep"} class="accent-[var(--color-accent)]"/>
-                <span><span class="text-[var(--color-text)] font-medium">Deep pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · about a week</span></span>
+                <span><span class="text-[var(--color-text)] font-medium">Deep pass</span><span class="text-[var(--color-text-subtle)] text-xs"> · thorough, several days</span></span>
               </label>
             </div>
             <button
