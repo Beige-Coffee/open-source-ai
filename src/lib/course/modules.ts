@@ -41,6 +41,11 @@ export interface CourseModule {
   /** Optional probe primer claims for self-host modules. Stack-walk
    *  modules leave this empty and pull from the layer frontmatter. */
   probe_primer?: string[];
+  /** Optional (deep-dive) module: not part of the one-sitting core path.
+   *  Progress, percent, and completion count only the core modules, so a
+   *  learner finishes the track by completing the core; optional modules
+   *  are reachable as bonus. Defaults to false (core). */
+  optional?: boolean;
 }
 
 export const MODULES: readonly CourseModule[] = [
@@ -312,6 +317,7 @@ export const SELF_HOST_MODULES: readonly CourseModule[] = [
     title: "Production serving",
     type: "core",
     track: "self-host",
+    optional: true,
     layer_slugs: [],
     one_liner: "Prefill, decode, batching, scheduling, parallelism. The system around the model.",
     compare_axis_label: "Compare vLLM, SGLang, TensorRT-LLM on PagedAttention, disaggregation, routing, and parallelism",
@@ -330,6 +336,7 @@ export const SELF_HOST_MODULES: readonly CourseModule[] = [
     title: "Benchmarking and operations",
     type: "capstone",
     track: "self-host",
+    optional: true,
     layer_slugs: [],
     one_liner: "Bad benchmark: 180 tok/s. Good benchmark: TTFT, TPOT, p95, cost per million tokens, at your workload shape.",
     compare_axis_label: "Compare engines on TTFT, TPOT, p95, KV cache hit rate, cost per million tokens",
@@ -619,13 +626,25 @@ function modulesForTrack(track: CourseTrack): readonly CourseModule[] {
   return MODULES;
 }
 
+/** The required (core) modules of a track: everything not flagged optional.
+ *  Progress and completion are measured against these. */
+export function coreModules(track: CourseTrack): readonly CourseModule[] {
+  return modulesForTrack(track).filter((m) => !m.optional);
+}
+
 export function nextModule(slug: string): CourseModule | null {
   const m = MODULE_BY_SLUG[slug];
   if (!m) return null;
   const list = modulesForTrack(m.track ?? "stack-walk");
   const idx = list.findIndex((x) => x.slug === slug);
-  if (idx < 0 || idx === list.length - 1) return null;
-  return list[idx + 1];
+  if (idx < 0) return null;
+  // Advance along the required path: return the next non-optional module.
+  // After the last core module this is null, so the core path ends cleanly
+  // and optional deep-dives are reached from the track index instead.
+  for (let i = idx + 1; i < list.length; i++) {
+    if (!list[i].optional) return list[i];
+  }
+  return null;
 }
 
 export function prevModule(slug: string): CourseModule | null {

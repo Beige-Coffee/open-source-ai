@@ -13,6 +13,10 @@ const SELF_HOST_MODULES = selfHostRaw
   .map((m) => ({ ...m.data }))
   .sort((a, b) => a.order - b.order);
 const SELF_HOST_SLUGS = new Set(SELF_HOST_MODULES.map((m) => m.slug));
+// The core (one-sitting) path: optional deep-dives do not count toward
+// progress or completion.
+const SELF_HOST_CORE = SELF_HOST_MODULES.filter((m) => !m.optional);
+const SELF_HOST_CORE_SLUGS = new Set(SELF_HOST_CORE.map((m) => m.slug));
 
 // Load how-llms-work modules so the track card can show count + progress.
 const howRaw = await getCollection("how_llms_work_modules");
@@ -109,7 +113,7 @@ let howNextSlug: string | null = null;
 if (user) {
   for (const [slug, p] of progressBySlug.entries()) {
     if (STACK_SLUGS.has(slug) && p.phase === "complete") stackComplete++;
-    if (SELF_HOST_SLUGS.has(slug) && p.phase === "complete") selfHostComplete++;
+    if (SELF_HOST_CORE_SLUGS.has(slug) && p.phase === "complete") selfHostComplete++;
     if (HOW_SLUGS.has(slug) && p.phase === "complete") howComplete++;
   }
   // Re-derive totalComplete from the stack-walk only (the earlier
@@ -129,7 +133,7 @@ if (user) {
       break;
     }
   }
-  for (const m of SELF_HOST_MODULES) {
+  for (const m of SELF_HOST_CORE) {
     const p = progressBySlug.get(m.slug);
     if (!p || p.phase !== "complete") {
       selfHostNextSlug = m.slug;
@@ -152,9 +156,9 @@ const stackPercent = Math.round((stackComplete / MODULES.length) * 100);
 const stackResumeSlug = stackInProgressSlug ?? stackNextSlug ?? MODULES[0].slug;
 const stackResumeModule = MODULES.find((m) => m.slug === stackResumeSlug) ?? MODULES[0];
 
-// Self-host resume target.
-const selfHostPercent = SELF_HOST_MODULES.length > 0
-  ? Math.round((selfHostComplete / SELF_HOST_MODULES.length) * 100)
+// Self-host resume target. Progress is measured against the core path.
+const selfHostPercent = SELF_HOST_CORE.length > 0
+  ? Math.round((selfHostComplete / SELF_HOST_CORE.length) * 100)
   : 0;
 const selfHostResumeSlug = selfHostNextSlug ?? SELF_HOST_MODULES[0]?.slug;
 const selfHostResumeModule = SELF_HOST_MODULES.find((m) => m.slug === selfHostResumeSlug) ?? SELF_HOST_MODULES[0];
@@ -428,6 +432,9 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
                           class={`text-[12px] leading-tight ${isComplete ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)]"} group-hover/row:text-[var(--color-accent-strong)] transition-colors`}
                         >
                           {m.title}
+                          {(m as { optional?: boolean }).optional && (
+                            <span class="ml-1.5 font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)]">optional</span>
+                          )}
                         </div>
                         <div class="text-[11px] text-[var(--color-text-muted)] leading-snug truncate font-mono mt-0.5">
                           {m.one_liner}
@@ -528,6 +535,9 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
                           class={`text-[12px] leading-tight ${isComplete ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)]"} group-hover/row:text-[var(--color-accent-strong)] transition-colors`}
                         >
                           {m.title}
+                          {(m as { optional?: boolean }).optional && (
+                            <span class="ml-1.5 font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)]">optional</span>
+                          )}
                         </div>
                         <div class="text-[11px] text-[var(--color-text-muted)] leading-snug truncate font-mono mt-0.5">
                           {m.one_liner}
@@ -549,18 +559,19 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
             Self-host the stack
           </span>
           <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)]">
-            {SELF_HOST_MODULES.length} modules · practical
+            {SELF_HOST_CORE.length} core · {SELF_HOST_MODULES.length - SELF_HOST_CORE.length} optional
           </span>
         </div>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
           VRAM math, memory bandwidth tiers, quantization formats, inference engines, hardware
-          strategy, production serving, benchmarking. Skim or read in order.
+          strategy. The {SELF_HOST_CORE.length}-module core path is one sitting; production serving and
+          benchmarking are optional deep-dives.
         </p>
         <div class="mt-auto">
           {user && (
             <>
               <p class="text-xs text-[var(--color-text-muted)] mb-2 font-mono">
-                {selfHostComplete} of {SELF_HOST_MODULES.length} complete
+                {selfHostComplete} of {SELF_HOST_CORE.length} core complete
                 <span class="text-[var(--color-text-subtle)]"> · {selfHostPercent}%</span>
               </p>
               <div class="h-1.5 w-full rounded-full bg-[var(--color-surface-warm)] mb-4 overflow-hidden">
@@ -577,8 +588,8 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
               href={`/learn/self-host/${selfHostResumeSlug}`}
               class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
             >
-              {user && selfHostComplete === SELF_HOST_MODULES.length
-                ? "Review the track"
+              {user && selfHostComplete === SELF_HOST_CORE.length
+                ? "Core path done · review or go deeper"
                 : user && selfHostComplete > 0
                   ? `Continue module ${String(selfHostResumeModule.order).padStart(2, "0")} →`
                   : `Begin module 01 · ${selfHostResumeModule.title} →`}
@@ -628,6 +639,9 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
                           class={`text-[12px] leading-tight ${isComplete ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)]"} group-hover/row:text-[var(--color-accent-strong)] transition-colors`}
                         >
                           {m.title}
+                          {(m as { optional?: boolean }).optional && (
+                            <span class="ml-1.5 font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)]">optional</span>
+                          )}
                         </div>
                         <div class="text-[11px] text-[var(--color-text-muted)] leading-snug truncate font-mono mt-0.5">
                           {m.one_liner}

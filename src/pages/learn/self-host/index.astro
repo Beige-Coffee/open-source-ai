@@ -6,9 +6,15 @@ import { SELF_HOST_MODULES, phaseLabel } from "../../../lib/course/modules";
 
 const { user, supabase } = Astro.locals;
 
+// The one-sitting core path vs the optional deep-dives. Progress is
+// measured against the core; optional modules are bonus.
+const CORE = SELF_HOST_MODULES.filter((m) => !m.optional);
+const OPTIONAL = SELF_HOST_MODULES.filter((m) => m.optional);
+const CORE_SLUGS = new Set(CORE.map((m) => m.slug));
+
 type ProgressRow = { module_slug: string; phase: string };
 const progressBySlug = new Map<string, ProgressRow>();
-let totalComplete = 0;
+let coreComplete = 0;
 
 if (user && supabase) {
   const slugs = SELF_HOST_MODULES.map((m) => m.slug);
@@ -19,7 +25,7 @@ if (user && supabase) {
     .in("module_slug", slugs);
   for (const r of data ?? []) {
     progressBySlug.set(r.module_slug, r as ProgressRow);
-    if (r.phase === "complete") totalComplete++;
+    if (r.phase === "complete" && CORE_SLUGS.has(r.module_slug)) coreComplete++;
   }
 }
 
@@ -69,12 +75,16 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
   <section class="max-w-3xl mx-auto px-6 mt-8 mb-16">
     {user && (
       <p class="font-mono text-xs text-[var(--color-text-subtle)] mb-3">
-        {totalComplete} of {SELF_HOST_MODULES.length} complete
+        {coreComplete} of {CORE.length} core complete · {OPTIONAL.length} optional deep-dive{OPTIONAL.length === 1 ? "" : "s"}
       </p>
     )}
-    <ol class="border-t border-[var(--color-border)]">
+
+    <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+      Core path · one sitting
+    </p>
+    <ol class="border-t border-[var(--color-border)] mb-8">
       {
-        SELF_HOST_MODULES.map((m) => {
+        CORE.map((m) => {
           const badge = user ? progressBadge(m.slug) : null;
           return (
             <li>
@@ -105,5 +115,47 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
         })
       }
     </ol>
+
+    {OPTIONAL.length > 0 && (
+      <>
+        <p class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-subtle)] mb-1">
+          Optional deep-dives · when you have more time
+        </p>
+        <ol class="border-t border-[var(--color-border)]">
+          {
+            OPTIONAL.map((m) => {
+              const badge = user ? progressBadge(m.slug) : null;
+              return (
+                <li>
+                  <a
+                    href={`/learn/self-host/${m.slug}`}
+                    title={m.one_liner}
+                    class="flex items-baseline gap-3 py-3 px-1 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-warm)] no-underline group"
+                  >
+                    <span class="font-mono text-xs text-[var(--color-text-subtle)] w-6 shrink-0">
+                      {String(m.order).padStart(2, "0")}
+                    </span>
+                    <span class="flex-1">
+                      <span class="block font-serif text-base text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] mb-0.5">
+                        {m.title}
+                        <span class="ml-1.5 font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-subtle)] align-middle">optional</span>
+                      </span>
+                      <span class="block text-xs text-[var(--color-text-muted)] leading-snug">
+                        {m.one_liner}
+                      </span>
+                    </span>
+                    {badge && (
+                      <span class={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${badge.cls}`}>
+                        {badge.label}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ol>
+      </>
+    )}
   </section>
 </BaseLayout>

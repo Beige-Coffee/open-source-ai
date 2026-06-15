@@ -184,18 +184,49 @@ const prev = prevModule(moduleSlug);
           <Fragment>
             <ModuleContent />
 
-            {currentPhase === "complete" && next && (
+            {currentPhase === "complete" && (
               <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
-                <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-                  You've completed this module. Move on to the next, or revisit
-                  any phase from the ribbon above.
-                </p>
-                <a
-                  href={`/learn/self-host/${next.slug}`}
-                  class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
-                >
-                  Next: {next.title} →
-                </a>
+                {next ? (
+                  <>
+                    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                      You've completed this module. Move on to the next, or revisit
+                      any phase from the ribbon above.
+                    </p>
+                    <a
+                      href={`/learn/self-host/${next.slug}`}
+                      class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                    >
+                      Next: {next.title} →
+                    </a>
+                  </>
+                ) : courseModule.optional ? (
+                  <>
+                    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                      Optional deep-dive done. Head back to the track for anything
+                      you have not covered yet.
+                    </p>
+                    <a
+                      href="/learn/self-host"
+                      class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                    >
+                      Back to the track →
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
+                      That is the core path done. You can stop here with the whole
+                      shape of self-hosting covered, or go deeper with the optional
+                      modules on production serving and benchmarking.
+                    </p>
+                    <a
+                      href="/learn/self-host"
+                      class="inline-block px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline"
+                    >
+                      Optional deep-dives →
+                    </a>
+                  </>
+                )}
               </div>
             )}
           </Fragment>
@@ -246,9 +277,12 @@ const prev = prevModule(moduleSlug);
             {next.title} →
           </a>
         ) : (
-          <span class="text-sm text-[var(--color-text-subtle)]">
-            (capstone)
-          </span>
+          <a
+            href="/learn/self-host"
+            class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] no-underline"
+          >
+            {courseModule.optional ? "Back to the track" : "Optional deep-dives"} →
+          </a>
         )
       }
     </nav>

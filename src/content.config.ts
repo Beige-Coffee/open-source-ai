@@ -135,6 +135,9 @@ const self_host_modules = defineCollection({
     one_liner: z.string(),
     sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
     updated: z.coerce.date(),
+    // Optional (deep-dive) module: outside the one-sitting core path. Keep
+    // in sync with the `optional` flag in src/lib/course/modules.ts.
+    optional: z.boolean().default(false),
   }),
 });
 
