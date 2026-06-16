@@ -55,6 +55,7 @@ import {
   readAnonPassChoice,
   readAnonPhase,
   writeAnonChat,
+  writeAnonPassChoice,
   writeAnonPhase,
   writeAnonSynth,
   writeAnonWhyOpen,
@@ -666,19 +667,64 @@ export default function CoursePanel({
 
   if (!hasKey) {
     return (
-      <div className="p-4 text-sm text-[var(--color-text-muted)]">
-        <p className="mb-3">
-          The course agent needs your API key to drive the dialogue.
-        </p>
-        <p className="mb-4">
-          Open <a href="/settings" className="text-[var(--color-text)] underline">Settings</a> and paste an OpenRouter key. It stays in your browser; the server never sees it.
-        </p>
-        <a
-          href="/settings"
-          className="inline-block px-3 py-1.5 text-xs rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
-        >
-          Open Settings →
-        </a>
+      <>
+        <PhaseHeader />
+        <div className="p-4 text-sm text-[var(--color-text-muted)]">
+          <p className="mb-3">
+            The course agent needs your API key to drive the dialogue.
+          </p>
+          <p className="mb-4">
+            Open <a href="/settings" className="text-[var(--color-text)] underline">Settings</a> and paste an OpenRouter key. It stays in your browser; the server never sees it.
+          </p>
+          <a
+            href="/settings"
+            className="inline-block px-3 py-1.5 text-xs rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-warm)] no-underline text-[var(--color-text)]"
+          >
+            Open Settings →
+          </a>
+        </div>
+      </>
+    );
+  }
+
+  // Change the course pace. Updates the live agent immediately and
+  // persists it (profile for logged-in learners, local storage otherwise)
+  // so it sticks across modules and sessions.
+  function setPass(choice: "fast" | "deep") {
+    if (choice === effectivePass) return;
+    setEffectivePass(choice);
+    if (userId && supabase) {
+      void supabase
+        .from("profiles")
+        .upsert({ user_id: userId, pass_choice: choice }, { onConflict: "user_id" });
+    } else if (!userId) {
+      writeAnonPassChoice(choice);
+    }
+  }
+
+  function PaceToggle() {
+    const opts: { id: "fast" | "deep"; label: string; title: string }[] = [
+      { id: "fast", label: "Fast", title: "Fast: about 2 questions per phase. The whole track in one sitting." },
+      { id: "deep", label: "Deep", title: "Deep: 8 to 12 questions per phase, grounded in sources. Several days." },
+    ];
+    return (
+      <div className="flex rounded border border-[var(--color-border)] overflow-hidden" role="group" aria-label="Course pace">
+        {opts.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => setPass(o.id)}
+            title={o.title}
+            aria-pressed={effectivePass === o.id}
+            className={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 cursor-pointer transition-colors ${
+              effectivePass === o.id
+                ? "bg-[var(--color-text)] text-[var(--color-surface)]"
+                : "text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
       </div>
     );
   }
@@ -686,19 +732,21 @@ export default function CoursePanel({
   function PhaseHeader() {
     // The read state is now framed as "not started yet" rather than
     // a named phase — the phase ribbon hides Read too — so we suppress
-    // the right-side label until the learner is actually in Probe or
-    // later.
+    // the phase label until the learner is actually in Probe or later.
     const phaseChip = phase === "read" ? null : phaseLabel(phase);
     return (
-      <div className="px-4 py-2 border-b border-[var(--color-border)] flex items-baseline justify-between">
+      <div className="px-4 py-2 border-b border-[var(--color-border)] flex items-center justify-between gap-2">
         <span className="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
           Course agent
         </span>
-        {phaseChip && (
-          <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">
-            {phaseChip}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          <PaceToggle />
+          {phaseChip && (
+            <span className="font-mono text-[10px] text-[var(--color-text-subtle)]">
+              {phaseChip}
+            </span>
+          )}
+        </div>
       </div>
     );
   }
