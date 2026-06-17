@@ -7,6 +7,7 @@ import {
   decodeRoofline,
   prefillTTFT,
   effectiveBandwidthBytesPerS,
+  RUNTIME_PROFILES,
   type Hardware,
 } from "../src/lib/hardware.ts";
 import type { Model } from "../src/lib/models.ts";
@@ -225,4 +226,24 @@ test("compute-bound cap is computed when the chip has dense FLOPS and never belo
   // Strix Halo has no sourced compute -> no cap.
   const noCap = decodeRoofline(qwen35ba3b, strixHalo, { quant: "q2_k", contextLength: 512, kvPrecisionBytes: 1, numUnits: 1, runtime: "llama.cpp" });
   assert.equal(noCap.computeBoundTokS, undefined);
+});
+
+// The Recipe Strip (src/components/RecipeStrip.tsx) duplicates the byte math
+// to teach it without picking a box. These guard that its recipe stays equal
+// to the calculator's required memory, and that the quant term binds to total
+// params (not active), so the strip and the cards can never disagree.
+test("Recipe Strip recipe equals fitCheck.requiredBytes (additive runtime)", () => {
+  const m = llama8b;
+  const quant = "q4_k_m";
+  const ctx = 4096;
+  const kvB = 2;
+  const GB = 1e9;
+  const profile = RUNTIME_PROFILES["llama.cpp"];
+  const weights = m.params_total * bytesPerParam(quant);
+  const kv = kvBytesPerToken(m, kvB).bytes_per_token * ctx;
+  const overhead = profile.fixed_gb * GB + profile.weight_fraction * weights;
+  const recipeRequired = weights + kv + overhead;
+  const fit = fitCheck(m, rtx4090, { quant, contextLength: ctx, kvPrecisionBytes: kvB, numUnits: 1, runtime: "llama.cpp", concurrency: 1 });
+  assert.ok(Math.abs(recipeRequired - fit.requiredBytes) < 1, `strip recipe ${recipeRequired} must equal fitCheck.requiredBytes ${fit.requiredBytes}`);
+  assert.equal(weights, fit.weightsBytes, "weights term binds to total params, matching the card");
 });

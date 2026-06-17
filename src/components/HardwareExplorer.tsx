@@ -16,6 +16,7 @@ import {
   type Runtime,
 } from "../lib/hardware";
 import type { Model } from "../lib/models";
+import RecipeStrip from "./RecipeStrip";
 
 type VerifMap = Record<string, Record<string, string>>;
 const PASS = new Set(["supported", "consistent", "still_supported", "pending_horizon"]);
@@ -254,6 +255,13 @@ export default function HardwareExplorer({
           )}
         </div>
       </div>
+
+      {/* Educational recipe strip: explains the current model + quant + context
+          + KV + runtime selection. Hardware-independent, so it only shows in the
+          modes that pick a single model (not What runs on a box). */}
+      {mode !== "what-fits" && model && (
+        <RecipeStrip model={model} quant={quant} ctx={ctx} kvBytes={kvBytes} runtime={runtime} />
+      )}
 
       {/* Mode body */}
       {mode === "compare" && (
