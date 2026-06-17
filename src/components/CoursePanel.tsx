@@ -210,6 +210,20 @@ export default function CoursePanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  // Mark the module as started (a "read" row) the moment a logged-in
+  // learner opens it, so /learn shows "Resume" rather than "Begin" even
+  // before they begin the Probe dialog. Guarded on initialPhase === "read":
+  // that is the server's truth only when no further progress is saved, so
+  // this never downgrades a probe/complete row.
+  useEffect(() => {
+    if (!userId || !supabase) return;
+    if (initialPhase !== "read") return;
+    void supabase
+      .from("module_progress")
+      .upsert({ user_id: userId, module_slug: moduleSlug, phase: "read" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, supabase, moduleSlug, initialPhase]);
+
   // For anonymous users, restore the saved phase from localStorage on
   // mount and on module change. The page SSR can't read localStorage,
   // so it always passes initialPhase="read" for anonymous learners —

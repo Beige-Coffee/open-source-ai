@@ -105,16 +105,27 @@ const STACK_SLUGS = new Set(MODULES.map((m) => m.slug));
 let stackComplete = 0;
 let stackInProgressSlug: string | null = null;
 let stackNextSlug: string | null = null;
+let stackStarted = false;
 let selfHostComplete = 0;
 let selfHostNextSlug: string | null = null;
+let selfHostStarted = false;
 let howComplete = 0;
 let howNextSlug: string | null = null;
+let howStarted = false;
 
 if (user) {
   for (const [slug, p] of progressBySlug.entries()) {
     if (STACK_SLUGS.has(slug) && p.phase === "complete") stackComplete++;
     if (SELF_HOST_CORE_SLUGS.has(slug) && p.phase === "complete") selfHostComplete++;
     if (HOW_SLUGS.has(slug) && p.phase === "complete") howComplete++;
+  }
+  // "Started" = any saved progress in the track (a module opened or a
+  // Probe begun), so the resume button shows for a learner mid-course,
+  // not only after a module is fully complete.
+  for (const slug of progressBySlug.keys()) {
+    if (STACK_SLUGS.has(slug)) stackStarted = true;
+    else if (SELF_HOST_SLUGS.has(slug)) selfHostStarted = true;
+    else if (HOW_SLUGS.has(slug)) howStarted = true;
   }
   // Re-derive totalComplete from the stack-walk only (the earlier
   // counter was per-row regardless of track).
@@ -354,7 +365,7 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
                 href={`/learn/${stackResumeSlug}`}
                 class="inline-block w-full px-4 py-2 rounded-md bg-[var(--color-accent-strong)] text-white text-sm font-medium hover:bg-[var(--color-accent)] no-underline text-center"
               >
-                {stackInProgressSlug ? "Resume" : (stackComplete > 0 ? "Continue" : "Begin")}
+                {stackStarted ? "Resume" : "Begin"}
                 {" module "}{String(stackResumeModule.order).padStart(2, "0")} →
               </a>
             ) : (
@@ -486,8 +497,8 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
             >
               {user && howComplete === HOW_LLMS_WORK_MODULES.length
                 ? "Review the track"
-                : user && howComplete > 0
-                  ? `Continue module ${String(howResumeModule.order).padStart(2, "0")} →`
+                : user && howStarted
+                  ? `Resume module ${String(howResumeModule.order).padStart(2, "0")} · ${howResumeModule.title} →`
                   : `Begin module 01 · ${howResumeModule.title} →`}
             </a>
           ) : (
@@ -590,8 +601,8 @@ function progressBadge(slug: string): { label: string; cls: string } | null {
             >
               {user && selfHostComplete === SELF_HOST_CORE.length
                 ? "Core path done · review or go deeper"
-                : user && selfHostComplete > 0
-                  ? `Continue module ${String(selfHostResumeModule.order).padStart(2, "0")} →`
+                : user && selfHostStarted
+                  ? `Resume module ${String(selfHostResumeModule.order).padStart(2, "0")} · ${selfHostResumeModule.title} →`
                   : `Begin module 01 · ${selfHostResumeModule.title} →`}
             </a>
           ) : (
