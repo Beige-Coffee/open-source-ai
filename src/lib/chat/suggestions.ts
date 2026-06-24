@@ -24,7 +24,6 @@ const GENERIC_SUGGESTIONS: string[] = [
   "Which funders cross over from Bitcoin OSS to AI?",
   "What's vLLM and why does it matter for local AI?",
   "Show me grants under $100K at the identity-trust layer",
-  "Recent news at the runtime layer?",
 ];
 
 /**
@@ -50,7 +49,6 @@ export async function suggestionsForContext(
       `What are the most important projects at the ${name} layer?`,
       `Why does open source matter at the ${name} layer?`,
       `Who funds work at the ${name} layer?`,
-      `Recent news at the ${name} layer?`,
     ];
   }
 
@@ -90,15 +88,6 @@ export async function suggestionsForContext(
     ];
   }
 
-  if (ctx.entity.kind === "news") {
-    return [
-      `Summarize the news from ${ctx.entity.date}.`,
-      "What changed at the runtime layer recently?",
-      "Any new grant announcements this week?",
-      "Which layer saw the most activity?",
-    ];
-  }
-
   return GENERIC_SUGGESTIONS;
 }
 
@@ -110,14 +99,6 @@ function routeSuggestions(pathname: string): string[] | null {
       "Which funders are sovereignty-focused?",
       "What are the underfunded areas in the stack?",
       "Grants over $1M, in any layer?",
-    ];
-  }
-  if (pathname === "/news" || pathname === "/today") {
-    return [
-      "Summarize the most recent news issue.",
-      "What changed at the runtime layer recently?",
-      "Any new grant announcements this week?",
-      "Which layer saw the most activity recently?",
     ];
   }
   if (pathname === "/glossary") {

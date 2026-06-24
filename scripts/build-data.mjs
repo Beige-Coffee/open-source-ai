@@ -3,9 +3,6 @@
  * Convert all data/*.yaml files into public/data/*.json so the
  * client-side chat agent can fetch them at runtime.
  *
- * Also reads the latest news MDX issue and writes a structured
- * public/data/today-news.json for the today_news() tool.
- *
  * Runs as a prebuild / predev step (see package.json).
  */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from "node:fs";
@@ -17,7 +14,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DATA_DIR = resolve(ROOT, "data");
 const OUT_DIR = resolve(ROOT, "public/data");
-const NEWS_DIR = resolve(ROOT, "src/content/news");
 const LAYERS_DIR = resolve(ROOT, "src/content/layers");
 const GLOSSARY_DIR = resolve(ROOT, "src/content/glossary");
 
@@ -107,46 +103,13 @@ try {
   console.warn(`[build-data] glossary skipped: ${e.message}`);
 }
 
-// Parse the latest news MDX into structured form for today_news().
-try {
-  const newsFiles = readdirSync(NEWS_DIR)
-    .filter((f) => extname(f) === ".mdx")
-    .sort()
-    .reverse();
-  if (newsFiles.length === 0) {
-    writeFileSync(resolve(OUT_DIR, "today-news.json"), "null");
-  } else {
-    const latest = newsFiles[0];
-    const text = readFileSync(resolve(NEWS_DIR, latest), "utf8");
-    const { frontmatter, body } = parseFrontmatter(text);
-    const dateStr = basename(latest, ".mdx");
-    writeFileSync(
-      resolve(OUT_DIR, "today-news.json"),
-      JSON.stringify(
-        {
-          date: dateStr,
-          editorial_letter: frontmatter.editorial_letter ?? "",
-          item_count: frontmatter.item_count ?? 0,
-          layer_buckets: frontmatter.layer_buckets ?? {},
-          body,
-        },
-        null,
-        0,
-      ),
-    );
-    console.log(`[build-data] news/${latest} -> public/data/today-news.json`);
-    total++;
-  }
-} catch (e) {
-  console.warn(`[build-data] news content skipped: ${e.message}`);
-}
 
 // Unified search index for the /search page and the global Cmd+K
 // popover. One JSON shaped as a flat array of typed docs; the client
 // loads it once, builds a MiniSearch index, and groups hits by type.
 // Kept separate from the chat agent's retrieve.ts so the user-facing
 // search UI can evolve independently. The slim shape (no full MDX
-// bodies for layers / news / glossary; only the first ~600 chars per
+// bodies for layers / glossary; only the first ~600 chars per
 // doc) keeps the wire size bounded; the agent's deeper retrieval
 // already has the full text.
 function clip(s, n) {
@@ -306,29 +269,6 @@ try {
       meta: { aliases },
     });
   }
-
-  // News: one doc per daily issue (not per item inside).
-  try {
-    const newsFiles = readdirSync(NEWS_DIR)
-      .filter((f) => extname(f) === ".mdx")
-      .sort()
-      .reverse();
-    for (const file of newsFiles) {
-      const text = readFileSync(resolve(NEWS_DIR, file), "utf8");
-      const { frontmatter, body } = parseFrontmatter(text);
-      const dateStr = basename(file, ".mdx");
-      search.push({
-        id: `news:${dateStr}`,
-        type: "news",
-        title: `News issue ${dateStr}`,
-        summary: frontmatter.editorial_letter ?? "",
-        body: clip(stripMdx(body), 600),
-        url: `/news/${dateStr}`,
-        layers: Object.keys(frontmatter.layer_buckets ?? {}),
-        meta: { date: dateStr, item_count: frontmatter.item_count ?? 0 },
-      });
-    }
-  } catch (_e) { /* news dir may be empty */ }
 
   // Readings: each item is one doc; url is the reading itself.
   let readIdx = 0;

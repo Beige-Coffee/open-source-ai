@@ -14,7 +14,6 @@ const items: NavItem[] = [
   { href: "/models", label: "Models", matchPrefix: "/models" },
   { href: "/tool-calling", label: "Tool calling", matchPrefix: "/tool-calling" },
   { href: "/hardware", label: "Hardware", matchPrefix: "/hardware" },
-  { href: "/news", label: "News", matchPrefix: "/news" },
   { href: "/grants", label: "Grants", matchPrefix: "/grants" },
   { href: "/glossary", label: "Glossary", matchPrefix: "/glossary" },
   { href: "/learn", label: "Learn", matchPrefix: "/learn" },
@@ -67,13 +66,6 @@ const items: NavItem[] = [
         <span class="hidden md:inline">Search</span>
         <kbd class="hidden md:inline-block ml-1 px-1 border border-[var(--color-border)] rounded text-[10px] text-[var(--color-text-subtle)]">⌘K</kbd>
       </button>
-      <a
-        href="/rss/news.xml"
-        class="text-xs font-mono text-[var(--color-text-subtle)] hover:text-[var(--color-accent)] no-underline"
-        title="Subscribe via RSS"
-      >
-        RSS
-      </a>
       {/* Profile menu placeholder. Populated client-side by the script
           below once we know whether the visitor has a Supabase session,
           since most nav-bearing pages are prerendered and don't have

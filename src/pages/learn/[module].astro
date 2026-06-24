@@ -49,18 +49,6 @@ const sidebarFunders = loadFunders()
   .slice(0, 5);
 const sidebarReadings = loadReadingsForLayer(primaryLayerSlug);
 
-// Recent news days that mentioned this layer (via layer_buckets). Most
-// recent first; cap to 5.
-const newsEntries = await getCollection("news");
-const sidebarNews = newsEntries
-  .filter((n) => (n.data.layer_buckets ?? {})[primaryLayerSlug] > 0)
-  .map((n) => ({
-    date: n.data.date.toISOString().slice(0, 10),
-    count: n.data.layer_buckets[primaryLayerSlug],
-  }))
-  .sort((a, b) => b.date.localeCompare(a.date))
-  .slice(0, 5);
-
 // Look up the user's current progress for this module (if logged in).
 let currentPhase: ProgressPhase = "read";
 let jumped = false;
@@ -324,7 +312,6 @@ const prev = prevModule(moduleSlug);
         <div class="mt-6">
           <ModuleSidebar
             funders={sidebarFunders}
-            news={sidebarNews}
             readings={sidebarReadings}
             layerSlug={primaryLayerSlug}
           />

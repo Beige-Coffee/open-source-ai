@@ -3,9 +3,8 @@
  * Cross-reference sidebar for /learn/<module> pages.
  *
  * Surfaces the same data the rest of the site indexes, filtered to
- * the module's primary layer slug: recent news days that mentioned
- * the layer, top funders whose focus_layers include the layer, and
- * the curated reading list for the layer.
+ * the module's primary layer slug: top funders whose focus_layers
+ * include the layer, and the curated reading list for the layer.
  *
  * Per locked design (decision #10 in COURSE.md): every module is a
  * hub onto the broader site data.
@@ -14,56 +13,19 @@ import type { Funder } from "../lib/grants";
 import type { Reading } from "../lib/reading-lists";
 import { typeLabel } from "../lib/reading-lists";
 
-interface NewsItem {
-  date: string;
-  count: number;
-}
-
 interface Props {
   funders: Funder[];
-  news: NewsItem[];
   readings: Reading[];
   layerSlug: string;
 }
 
-const { funders, news, readings, layerSlug } = Astro.props;
+const { funders, readings, layerSlug } = Astro.props;
 ---
 
 <aside class="space-y-4 text-sm">
   <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)]">
     From the rest of the stack
   </h2>
-
-  {
-    news.length > 0 && (
-      <details class="border border-[var(--color-border)] rounded-md bg-[var(--color-surface)]">
-        <summary class="px-3 py-2 font-mono text-xs uppercase tracking-wider text-[var(--color-text-subtle)] cursor-pointer flex items-baseline justify-between">
-          <span>Recent news ({news.length})</span>
-          <a
-            href="/news"
-            class="text-[10px] hover:text-[var(--color-text)] no-underline"
-          >
-            all →
-          </a>
-        </summary>
-        <ul class="px-3 py-2 border-t border-[var(--color-border)] space-y-1.5">
-          {news.slice(0, 5).map((n) => (
-            <li class="text-xs leading-relaxed flex items-baseline justify-between gap-2">
-              <a
-                href={`/news/${n.date}`}
-                class="text-[var(--color-text)] hover:no-underline no-underline"
-              >
-                {n.date}
-              </a>
-              <span class="text-[var(--color-text-subtle)] font-mono">
-                {n.count} item{n.count === 1 ? "" : "s"}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </details>
-    )
-  }
 
   {
     funders.length > 0 && (
@@ -131,8 +93,7 @@ const { funders, news, readings, layerSlug } = Astro.props;
   }
 
   {
-    news.length === 0 &&
-      funders.length === 0 &&
+    funders.length === 0 &&
       readings.length === 0 && (
         <p class="text-xs text-[var(--color-text-subtle)] italic px-1">
           No cross-references yet for this layer.

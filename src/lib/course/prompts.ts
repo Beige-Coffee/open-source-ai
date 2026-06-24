@@ -29,7 +29,7 @@ CITATION FORMAT (verbatim, no variation):
 - (Layer: <slug>)               for layer pages, e.g. (Layer: silicon)
 - (Project: <slug>)             for projects, e.g. (Project: vllm)
 - (Glossary: <slug>)            for glossary terms, e.g. (Glossary: mixture-of-experts)
-- (Funder: <slug>) / (Grant: <title>) / (Reading: <title>) / (News: <date>)
+- (Funder: <slug>) / (Grant: <title>) / (Reading: <title>)
 
 The UI renders these markers as clickable pills that go to the
 local entry's page. Every time you reference a specific project,

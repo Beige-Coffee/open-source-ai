@@ -85,13 +85,6 @@ interface Reading {
 }
 
 
-interface NewsIssue {
-  date: string;
-  editorial_letter: string;
-  item_count: number;
-  layer_buckets: Record<string, number>;
-  body: string;
-}
 
 interface GlossaryEntry {
   slug: string;
@@ -150,9 +143,6 @@ export async function getReadings(): Promise<Reading[]> {
   return root.readings;
 }
 
-export async function getTodayNews(): Promise<NewsIssue | null> {
-  return getJson<NewsIssue | null>("today-news");
-}
 
 export async function getGlossary(): Promise<GlossaryEntry[]> {
   return getJson<GlossaryEntry[]>("glossary");
@@ -297,7 +287,6 @@ export type {
   Funder,
   Grant,
   Reading,
-  NewsIssue,
   GlossaryEntry,
   ModelEntry,
   HardwareEntry,

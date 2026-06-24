@@ -9,7 +9,7 @@
  */
 import type { Mode, PageContext } from "./types";
 
-const COMMON_HEADER = `You are the in-site chat agent for open-source-ai.tech, a curated reference on the open AI stack (10 production-pipeline layers + 5 cross-cutting meta-layers, plus projects, grants, funders, readings, and a daily news log).
+const COMMON_HEADER = `You are the in-site chat agent for open-source-ai.tech, a curated reference on the open AI stack (10 production-pipeline layers + 5 cross-cutting meta-layers, plus projects, grants, funders, and readings).
 
 The 10 core layers from foundation up: infrastructure (data centers, power, cooling, grid; the physical substrate; added May 2026), silicon (chips and ISAs), compute (scheduling and access control plane), data (corpora), training (pretrain and fine-tune tools), weights (model artifacts and licenses), runtime (inference engines), retrieval-memory (RAG, vector DBs, embeddings, agent memory), agents (frameworks and agent products), protocols (MCP, A2A, agentic payments). The 5 meta-layers observe or constrain the pipeline: evaluation, governance, identity-trust, safety-guardrails, sovereignty-decentralization.
 
@@ -35,7 +35,6 @@ THE FIVE RULES:
    - (Grant: <exact-title>)        for grants, e.g. (Grant: Maple AI)
    - (Project: <slug>)             for projects, e.g. (Project: vllm)
    - (Reading: <exact-title>)      for readings, e.g. (Reading: Building Effective Agents)
-   - (News: <YYYY-MM-DD>)          for a daily news issue
    - (Glossary: <slug>)            for glossary term definitions, e.g. (Glossary: mixture-of-experts)
    - (Model: <slug>)               for model checkpoints, e.g. (Model: deepseek-r1)
    - (Hardware: <slug>)            for hardware SKUs, e.g. (Hardware: nvidia-h100-sxm)
@@ -121,10 +120,6 @@ export function buildContextBlock(ctx: PageContext): string {
     } else if (ctx.entity.kind === "glossary") {
       lines.push(
         `They are looking at the glossary entry for '${ctx.entity.slug}'. If they ask "this term" or similar, default to that. Use read_glossary to ground references.`,
-      );
-    } else if (ctx.entity.kind === "news") {
-      lines.push(
-        `They are reading the news issue dated ${ctx.entity.date}.`,
       );
     } else if (ctx.entity.kind === "model") {
       lines.push(

@@ -7,14 +7,14 @@ agent is grounded in this data. Co-evolve with Austin as conventions
 firm up.
 
 The repo follows Karpathy's LLM-wiki pattern (https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
-three layers — immutable raw sources (news fetched from RSS feeds),
 LLM-maintained structured data (the YAML/MDX files this doc describes),
-and the schema doc you are reading now.
+the schema doc you are reading now, and a claims-audit system that keeps
+the data honest against primary sources.
 
 ## Project context
 
 The site is a living map of the open AI stack: 10 production-pipeline
-layers and 5 cross-cutting meta-layers, with the projects, news, grants,
+layers and 5 cross-cutting meta-layers, with the projects, grants,
 predictions, and reading lists at each. Audience-of-one mode for now:
 Austin and one other person; not optimized for public traffic.
 
@@ -69,11 +69,8 @@ open-source-ai-stack/
     underfunded.yaml
     reading-lists.yaml
     predictions.yaml
-    sources.yaml         # RSS feed sources for the daily news routine
     grants-sources.yaml  # grant RSS sources for the weekly grants-watch
-    news-rules.yaml      # editorial rules for the news routine
-    last-run.json        # state from the most recent news run
-    inbox/               # append-only queues (run-log.jsonl, fetch-errors.jsonl, grants-needs-review.jsonl)
+    inbox/               # append-only queues (grants-needs-review.jsonl, grant-candidates.jsonl, grants-audit.jsonl)
   public/
     data/                # generated JSON for client-side chat agent (built from data/*.yaml)
     favicon.svg, favicon.ico, apple-touch-icon.png
@@ -83,7 +80,6 @@ open-source-ai-stack/
     content.config.ts    # Astro content collection schemas
     content/
       layers/<slug>.mdx  # 15 layer pages (3-5 sentence intros)
-      news/YYYY-MM-DD.mdx # daily news issues from the scheduled routine
     lib/
       layers.ts, projects.ts, grants.ts, predictions.ts, reading-lists.ts
       chat/              # agent infrastructure
@@ -106,7 +102,7 @@ open-source-ai-stack/
       BaseLayout.astro   # mounts ChatBubble globally
     pages/
       index.astro
-      stack/, grants/, news/
+      stack/, grants/
       projects/[slug].astro # per-project pages for the ~35 with explainers
       settings.astro     # the BYOK settings page
       predictions.astro
@@ -195,12 +191,6 @@ Type: `paper | post | talk | podcast | book | thread | docs`.
 
 Schema: `layer, claim, horizon (date), confidence (1-5), resolves_when, filed (date)`.
 
-### `src/content/news/<date>.mdx` — daily news issues
-
-Append-only log written by the scheduled news routine. Frontmatter:
-`date, editorial_letter, item_count, layer_buckets (record of
-layer-slug → count)`.
-
 ### `src/content/glossary/<slug>.mdx` — technical term glossary
 
 Curated definitions for the ~130 technical concepts, protocols,
@@ -239,17 +229,6 @@ The citation marker is `(Glossary: <slug>)`, which renders as a
 clickable pill in chat output.
 
 ## Operations
-
-### Daily news routine (08:00 PT)
-
-`mcp__scheduled-tasks__create_scheduled_task` named
-`oss-ai-stack-daily-news`. Runs three stages: fetch (~30 RSS / Atom
-feeds defined in `data/sources.yaml`), dedupe-route (URL normalize +
-SimHash + per-layer routing), summarize-publish (writes one MDX to
-`src/content/news/YYYY-MM-DD.mdx` and commits). Run state appended to
-`data/inbox/run-log.jsonl`. Fetch errors to
-`data/inbox/fetch-errors.jsonl`. Does not modify the canonical YAML
-data files.
 
 ### Weekly grants-watch routine (Mondays 09:00 PT)
 
@@ -532,8 +511,8 @@ resizable side panel.
 
 ### Modes
 
-- **Answer mode** (default on `/stack/<slug>`, `/grants`, `/news`,
-  `/predictions`, `/today`, `/`): factual, neutral-observational,
+- **Answer mode** (default on `/stack/<slug>`, `/grants`,
+  `/predictions`, `/`): factual, neutral-observational,
   cites sources inline, uses tools to ground every claim.
 - **Socratic mode** (opt-in via toggle in the chat header): asks one
   question at a time, pushes the user to think, refuses to give the
@@ -561,7 +540,6 @@ has a per-turn rate limit and a dedup cache (per
 | `read_prediction(layer)` | Fetch predictions for a layer | 2 |
 | `find_glossary(filters)` | Filter glossary by layer or free-text query against term + summary | 3 |
 | `read_glossary(slug)` | Fetch a glossary entry by canonical slug or any alias (resolves "moe" → "mixture-of-experts") | 4 |
-| `today_news()` | Fetch the latest daily issue | 1 |
 | `search(query)` | MiniSearch over everything as fallback | 2 |
 
 ### Chat triggers (from page elements)
@@ -595,7 +573,6 @@ Agent must cite sources inline with these markers:
 - `(Grant: Maple AI)` — links to the grant's URL or to a per-grant page
 - `(Project: vllm)` — links to `/projects/vllm` (the dedicated project page; only ~35 priority projects with `explainer` get a page, others 404)
 - `(Reading: <title>)` — links to the reading URL
-- `(News: 2026-05-13)` — links to `/news/2026-05-13`
 - `(Glossary: mixture-of-experts)` — links to `/glossary/mixture-of-experts`
 
 Citations are parsed in `src/lib/chat/citations.ts` and rendered as

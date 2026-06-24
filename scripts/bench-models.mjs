@@ -289,11 +289,6 @@ const TOOLS = [
     },
   },
   {
-    name: "today_news",
-    description: "Fetch the latest daily news issue. Limit: 1 call/turn.",
-    input_schema: { type: "object", properties: {} },
-  },
-  {
     name: "search",
     description: "Full-text search across everything as fallback. Limit: 2 calls/turn.",
     input_schema: {
@@ -307,7 +302,7 @@ const TOOLS = [
 const TOOL_LIMITS = {
   find_grants: 3, find_funders: 2, find_projects: 3, find_readings: 3,
   find_glossary: 3, read_layer: 3, read_funder: 3, read_grant: 3,
-  read_project: 4, read_glossary: 4, today_news: 1,
+  read_project: 4, read_glossary: 4,
   search: 2,
 };
 
@@ -336,7 +331,6 @@ function loadData() {
     grants: (read("grants.json") ?? { grants: [] }).grants,
     readings: (read("reading-lists.json") ?? { readings: [] }).readings,
     glossary: read("glossary.json") ?? [],
-    todayNews: read("today-news.json"),
   };
   return DATA_CACHE;
 }
@@ -547,10 +541,6 @@ function executeTool(name, args, budget) {
           .filter((e) => e.slug.includes(want) || String(e.term).toLowerCase().includes(raw.toLowerCase()))
           .slice(0, 5).map((e) => `${e.slug} (${e.term})`),
       };
-      break;
-    }
-    case "today_news": {
-      result = data.todayNews ?? { error: "No news issues published yet." };
       break;
     }
     case "search": {

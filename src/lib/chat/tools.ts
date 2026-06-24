@@ -12,7 +12,6 @@ import {
   getReadings,
   getLayers,
   getLayerContent,
-  getTodayNews,
   getGlossary,
   getModels,
   getHardware,
@@ -130,12 +129,6 @@ export const TOOLS = [
       },
       required: ["title"],
     },
-  },
-  {
-    name: "today_news",
-    description:
-      "Fetch today's daily news roundup. Returns date, editorial letter, layer buckets (which layers had items), and the body. Use when user asks about recent news. Limit: 1 call per turn.",
-    input_schema: { type: "object", properties: {} },
   },
   {
     name: "find_glossary",
@@ -268,7 +261,6 @@ const LIMITS: Record<string, number> = {
   compare_models: 2,
   find_hardware: 3,
   read_hardware: 4,
-  today_news: 1,
   search: 2,
 };
 
@@ -574,15 +566,6 @@ export async function executeTool(
         break;
       }
 
-      case "today_news": {
-        const news = await getTodayNews();
-        if (!news) {
-          result = { error: "No news issues published yet." };
-        } else {
-          result = news;
-        }
-        break;
-      }
 
       case "find_glossary": {
         const args = call.input as { layer?: string; query?: string };

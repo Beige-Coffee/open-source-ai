@@ -113,7 +113,6 @@ function escapeRe(s) {
 //   - src/content/layers/*.mdx bodies
 //   - src/pages/**/*.astro prose
 // We do NOT scan:
-//   - src/content/news/*.mdx (news is dated, archived, low priority to retag)
 //   - src/content/glossary/*.mdx (glossary entries themselves)
 //   - node_modules, dist, public/data
 // ---------------------------------------------------------------------------

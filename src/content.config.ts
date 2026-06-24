@@ -60,24 +60,6 @@ const layers = defineCollection({
 });
 
 /**
- * News content collection. One MDX file per published day, ingested by
- * the daily scheduled agent in Week 2. Each item inside a day has a
- * layer tag so per-layer feeds can filter.
- */
-const news = defineCollection({
-  loader: glob({
-    pattern: "**/*.mdx",
-    base: "./src/content/news",
-  }),
-  schema: z.object({
-    date: z.coerce.date(),
-    editorial_letter: z.string(),
-    item_count: z.number().int().nonnegative().default(0),
-    layer_buckets: z.record(z.string(), z.number().int()).default({}),
-  }),
-});
-
-/**
  * Glossary content collection. One MDX file per canonical term in
  * `src/content/glossary/<slug>.mdx`. Body is a soft 4-part senior-
  * engineer-voice paragraph (what / how / where / related) read by the
@@ -167,7 +149,6 @@ const how_llms_work_modules = defineCollection({
 
 export const collections = {
   layers,
-  news,
   glossary,
   self_host_modules,
   how_llms_work_modules,

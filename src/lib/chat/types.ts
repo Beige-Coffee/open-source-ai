@@ -21,7 +21,6 @@ export interface PageContext {
     | { kind: "funder"; slug: string }
     | { kind: "project"; slug: string }
     | { kind: "glossary"; slug: string }
-    | { kind: "news"; date: string }
     | { kind: "model"; slug: string }
     | { kind: "hardware"; slug: string };
 }

@@ -12,9 +12,9 @@ import G from "../components/G.astro";
 
     <p>
       The Open-Source AI Stack is a living map of ten production-pipeline
-      layers and five cross-cutting meta-layers, with the projects, news,
-      and funding flowing through each. A scheduled agent updates the news
-      once a day at 08:00 Pacific.
+      layers and five cross-cutting meta-layers, with the projects and
+      funding flowing through each. The catalog is maintained by hand and
+      kept honest by a set of scheduled audit routines.
     </p>
 
     <p class="about-hint">
@@ -33,7 +33,7 @@ import G from "../components/G.astro";
         </p>
         <ul>
           <li>
-            <strong>Reference site</strong> (the stack pages, grants, news,
+            <strong>Reference site</strong> (the stack pages, grants,
             glossary): static HTML. No server-side state, no cookies needed
             to read.
           </li>
@@ -41,10 +41,6 @@ import G from "../components/G.astro";
             <strong>In-site chat agent</strong> (the floating bubble): pure
             BYOK. The API key you paste on <a href="/settings">/settings</a>
             stays in your browser localStorage. No proxy, no shared key.
-          </li>
-          <li>
-            <strong>Daily news routine</strong>: a scheduled agent updates
-            the news MDX files; no user data involved.
           </li>
           <li>
             <strong>Course at <code>/learn</code></strong>: email-and-password
@@ -62,35 +58,15 @@ import G from "../components/G.astro";
     </details>
 
     <details class="about-section">
-      <summary>The agent and what it does</summary>
-      <div class="about-section-body">
-        <p>
-          A scheduled remote Claude agent runs three stages each day. <strong>Fetch</strong>:
-          it pulls about forty layer-specific RSS and Atom feeds (GitHub
-          releases, vendor blogs, academic newsletters) plus about twenty
-          HTML-scrape sources for vendor blogs without RSS. Items go into an
-          inbox keyed on a content hash. <strong>Dedupe and route</strong>: URLs are
-          normalized, SimHash clustering removes near-duplicates, and each
-          remaining item is classified by stack layer. <strong>Summarize and
-          publish</strong>: per-layer summaries are generated with prompt-cached
-          system prompts, an editorial letter is drafted, and the day's MDX
-          file is committed to the repo. Vercel rebuilds and the site goes
-          live.
-        </p>
-      </div>
-    </details>
-
-    <details class="about-section">
       <summary>What is on each layer page</summary>
       <div class="about-section-body">
         <p>
-          Each of the 15 layer pages is a five-in-one view. <strong>What it is</strong>:
+          Each of the 15 layer pages is a four-in-one view. <strong>What it is</strong>:
           a 3-5 sentence editorial intro. <strong>Key projects</strong>: a curated
           catalog (5-10 per layer, ordered open-first, with license, maturity,
           and a one-line description) sourced from
           <code>data/projects.yaml</code> in the repo.
-          <strong>Latest news</strong>: the count of items at this layer in
-          today's daily issue, with a link out. <strong>Grants flowing in</strong>:
+          <strong>Grants flowing in</strong>:
           the most recent grants tagged to this layer, sourced from
           <code>data/grants.yaml</code>. <strong>Learn more</strong>: a curated reading
           list (papers, posts, talks, docs) from <code>data/reading-lists.yaml</code>.
@@ -132,25 +108,11 @@ import G from "../components/G.astro";
       <summary>Editorial voice</summary>
       <div class="about-section-body">
         <p>
-          Neutral-observational. The editorial letter at the top of each day
-          describes what moved; per-item summaries are factual and source-linked.
-          A linter rejects vocabulary that drifts into AI-slop ("delve,"
-          "tapestry," "landscape," "fascinating") and marketing buzzwords
-          ("transformative," "robust," "leveraging," "utilize").
-        </p>
-      </div>
-    </details>
-
-    <details class="about-section">
-      <summary>Source list</summary>
-      <div class="about-section-body">
-        <p>
-          Per-layer feeds plus a few aggregators. AI News by smol AI
-          (news.smol.ai) is the spine; SemiAnalysis, Interconnects, Latent
-          Space, Import AI, and The Batch are the highest-signal newsletters
-          across layers. GitHub release feeds (<G term="vllm">vLLM</G>, <G term="sglang">SGLang</G>, <G term="llama-cpp">llama.cpp</G>, <G term="mcp">MCP</G>,
-          OpenHands, Aider) plus vendor blogs cover the rest. Full source
-          list is at <code>data/sources.yaml</code> in the repo.
+          Neutral-observational. Entries are factual and source-linked; every
+          specific claim carries a primary source. A linter rejects vocabulary
+          that drifts into AI-slop ("delve," "tapestry," "landscape,"
+          "fascinating") and marketing buzzwords ("transformative," "robust,"
+          "leveraging," "utilize").
         </p>
       </div>
     </details>
@@ -251,7 +213,7 @@ import G from "../components/G.astro";
           The stack taxonomy and the layer overview prose started from a
           personal wiki built by Austin in May 2026 (a Karpathy-style
           LLM-wiki, separately maintained). The wiki seeded the foundations;
-          this site is the public, daily-updated, polished form.
+          this site is the public, polished form.
         </p>
       </div>
     </details>

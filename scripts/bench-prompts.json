@@ -58,15 +58,6 @@
       "judge_rubric": "Did the model resolve 'MoE' to the mixture-of-experts glossary entry and cite (Glossary: mixture-of-experts)? 5 = correct resolution + clear explanation. 1 = wrong resolution or no citation."
     },
     {
-      "id": "recency",
-      "shape": "lookup",
-      "text": "What's in today's news at the agents layer?",
-      "expected_tools": ["today_news"],
-      "expected_marker_kinds": ["News"],
-      "min_markers": 1,
-      "judge_rubric": "Did the model fetch today's news, filter to agents-layer items, summarize them with a (News: YYYY-MM-DD) marker? 5 = accurate summary. 1 = invention or wrong date."
-    },
-    {
       "id": "hallucination-trap",
       "shape": "edge",
       "text": "Which funders fund pizza-making research?",

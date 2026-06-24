@@ -19,7 +19,7 @@
  * abstraction + tools + streaming:
  *   - useSettings  (BYOK key from /settings)
  *   - makeClient   (Anthropic SDK client)
- *   - TOOLS        (existing 13 tools: find_*, read_*, today_news, search)
+ *   - TOOLS        (existing 12 tools: find_*, read_*, search)
  *   - executeTool  (browser-side tool execution)
  *   - streamText   (Anthropic streaming + tool loop)
  */
@@ -105,8 +105,6 @@ function humanizeTool(name: string, input: Record<string, unknown>): string {
       return "Searching readings";
     case "find_glossary":
       return "Searching glossary";
-    case "today_news":
-      return "Reading today's news";
     case "search":
       return `Searching the wiki for "${arg("query")}"`;
     default:

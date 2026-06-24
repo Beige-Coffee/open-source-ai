@@ -19,7 +19,6 @@
  *     (Project: <slug>) -> projects.yaml
  *     (Grant: <title>) -> grants.yaml (title match)
  *     (Reading: <title>) -> reading-lists.yaml (title match)
- *     (News: <date>) -> src/content/news/<date>.mdx exists
  *
  * Exit 0 on clean, 1 on any unresolved reference.
  */
@@ -52,13 +51,6 @@ const projectSlugs = new Set(projects.map((p) => p.slug));
 
 const readings = loadYaml("data/reading-lists.yaml").readings;
 const readingTitles = new Set(readings.map((r) => r.title));
-
-const newsDir = resolve(ROOT, "src/content/news");
-const newsDates = new Set(
-  readdirSync(newsDir)
-    .filter((f) => extname(f) === ".mdx")
-    .map((f) => f.replace(/\.mdx$/, "")),
-);
 
 const errors = [];
 
@@ -102,18 +94,15 @@ for (const r of readings) {
 }
 
 // Agent citation markers in MDX + Astro pages.
-// Pattern: (Layer|Funder|Grant|Project|Reading|News: <ref>)
-const CITATION_RE = /\((Layer|Funder|Grant|Project|Reading|News):\s*([^)]+)\)/g;
+// Pattern: (Layer|Funder|Grant|Project|Reading: <ref>)
+const CITATION_RE = /\((Layer|Funder|Grant|Project|Reading):\s*([^)]+)\)/g;
 
 const scanTargets = [];
 function collectMdx(dir) {
   for (const name of readdirSync(dir, { withFileTypes: true })) {
     const full = resolve(dir, name.name);
     if (name.isDirectory()) collectMdx(full);
-    else if (
-      [".mdx", ".astro"].includes(extname(name.name)) &&
-      !full.includes("/news/")
-    ) {
+    else if ([".mdx", ".astro"].includes(extname(name.name))) {
       scanTargets.push(full);
     }
   }
@@ -145,9 +134,6 @@ for (const file of scanTargets) {
         break;
       case "reading":
         ok = readingTitles.has(ref);
-        break;
-      case "news":
-        ok = newsDates.has(ref);
         break;
     }
     if (!ok) {

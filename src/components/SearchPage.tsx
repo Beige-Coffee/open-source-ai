@@ -24,7 +24,6 @@ const ALL_TYPES: SearchType[] = [
   "project",
   "grant",
   "funder",
-  "news",
   "reading",
 ];
 
@@ -134,7 +133,7 @@ export default function SearchPage({ initialQuery = "" }: Props) {
       <div className="mb-6">
         <h1 className="font-serif text-3xl font-semibold mb-1">Search</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
-          Search across layers, glossary, projects, grants, funders, news,
+          Search across layers, glossary, projects, grants, funders,
           and readings.
         </p>
       </div>
@@ -299,8 +298,6 @@ function MetaLine({ hit }: { hit: SearchHit }) {
     if (m.source) bits.push(String(m.source));
     if (m.year) bits.push(String(m.year));
     if (m.type) bits.push(String(m.type));
-  } else if (hit.type === "news") {
-    if (m.item_count) bits.push(`${m.item_count} items`);
   }
   if (hit.layers.length > 0) {
     bits.push(hit.layers.slice(0, 3).join(" · "));
@@ -324,7 +321,7 @@ function TypePill({ type }: { type: SearchType }) {
 function EmptyState() {
   const examples = [
     { q: "MoE", note: "glossary, projects" },
-    { q: "vLLM", note: "project + grants + news" },
+    { q: "vLLM", note: "project + grants" },
     { q: "OpenSats", note: "funder + grants" },
     { q: "sovereignty", note: "layer + funders + readings" },
     { q: "RISC-V", note: "silicon + readings" },

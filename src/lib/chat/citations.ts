@@ -7,7 +7,6 @@
  *   (Grant: Maple AI)
  *   (Project: vllm)
  *   (Reading: Building Effective Agents)
- *   (News: 2026-05-13)
  *   (Glossary: mixture-of-experts)
  *   (Model: deepseek-r1)
  *   (Hardware: nvidia-h100-sxm)
@@ -19,7 +18,6 @@ export type CitationKind =
   | "grant"
   | "project"
   | "reading"
-  | "news"
   | "glossary"
   | "model"
   | "hardware";
@@ -33,7 +31,7 @@ export interface ParsedCitation {
 }
 
 const PATTERN =
-  /\((Layer|Funder|Grant|Project|Reading|News|Glossary|Model|Hardware):\s*([^)]+)\)/g;
+  /\((Layer|Funder|Grant|Project|Reading|Glossary|Model|Hardware):\s*([^)]+)\)/g;
 
 export function parseCitations(text: string): ParsedCitation[] {
   const hits: ParsedCitation[] = [];
@@ -88,8 +86,6 @@ export function citationHref(c: ParsedCitation): string {
       return `/stack/${c.ref}`;
     case "funder":
       return `/grants/funder/${c.ref}`;
-    case "news":
-      return `/news/${c.ref}`;
     case "grant":
       // No per-grant page; deep-link the grants section.
       return `/grants#grants-browser`;

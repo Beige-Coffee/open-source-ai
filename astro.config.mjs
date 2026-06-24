@@ -16,7 +16,7 @@ import vercel from "@astrojs/vercel";
 //
 // Why hybrid: the course at /learn requires per-user state (Supabase
 // auth + progress + notes) and cannot be prerendered. The reference
-// site (stack, grants, news, glossary, projects, predictions, about)
+// site (stack, grants, glossary, projects, predictions, about)
 // stays static and ships at zero per-request cost.
 export default defineConfig({
   site: "https://open-source-ai.tech",
